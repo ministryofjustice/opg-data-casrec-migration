@@ -1,0 +1,131 @@
+==> account.csv <==
+rct,Create,at,Modify,at.1,by,Case,Acc Ind,End Date,Lodge Date,Followup Date,Further Code,Review Date,Rcvd Date,Type,Late Reason,Revise Date,Review by,Rev Stat,Review Code,Init,Next Yr,Annual Sent,Chase 1,Chase 2,Review Chase,Further Date1,Further Date2,Further Date3,Further Date4,Further Date6,Further Date6.1,Sent1,Sent2,Sent3,Sent4,Sent5,Sent6,Further1,Further2,Further3,Further4,Further5,Further6,Rcvd Date1,Rcvd Date2,Rcvd Date3,Rcvd Date4,Rcvd Date5,Rcvd Date6,Chase11,Chase21,Chase31,Chase41,Chase51,Chase61,Chase12,Chase22,Chase32,Chase42,Chase52,Chase62,WDays Lodge,WDays Review,WDays Rcvd,WRDays Lodge,WRDays Review,W4Days Lodge,W4Days Review,Lodge Entered,Lodge by,Lodge Time,CHASENEW,Type3 Ind,Action Date
+
+==> activity_tracking.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Track Id,Sup ID,Defn ID,Status,Date Created,Comp Target Date,Outcome,Invcreate,Action by,Further,Follow Target,Date Completed,Start Date,Invstart,Case,Order No,Comment
+
+==> cfoaccount.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Case,Account No,Type,Usage,Stat,Balance,Prev Bal,Loaded,Deposit,Remit Date
+
+==> contact_dm.csv <==
+Case,KeyDateTime,Create,at,by,Modify,at.1,by.1,C Forename,C Surname,Inits,C Adrs1,C Adrs2,C Adrs3,C Adrs4,C Adrs5,Postcode,DX No,DX Exchange,Phone,Mobile,Email,CoType,Title,Status,Personal,Sols Ref,Relationship,Comments,Letter Sent,Foreign,Phone 2
+
+==> crec.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Case,Type,CRisk,Score,Updt,Comments,Manual Set,InAct
+
+==> crecind.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Case,Type,CRisk,CInd,Score,Updt,Comments,InAct
+
+==> crecline.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Case,Type,CRisk,CInd,QCO,Seq,QNo,Updt
+
+==> cwsdata.csv <==
+rct,Cwsno,Create,at,by,Modify,at.1,by.1,Source,KPI Type,Date Rcvd,Branch,Team Ref.,Case,Staff,Activity1,Act Date1,Complete Date,Due Date,Due Date2,Due Date3,Urg,Stat,FOI,Scan Date,Docid,Node ID,Sender Co,Sender Forename,Sender Surname,Folder,Comments,Form Type,Batch,Work Station,WDays Rcvd,Wdays Scan,Alpha
+
+==> deplink.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Deputy No,Dep Addr No,Main Addr,Dep Dup,Addr Dup,In Use
+
+==> deputy_address.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Dep Addr No,Dep Adrs1,Dep Adrs2,Dep Adrs3,Dep Adrs4,Dep Adrs5,Dep Postcode,Telephone,Tel Ext.,DX No,DX Exchange,Addr Stat,Fax,Inuse,Inuse Arc,Foreign
+
+==> deputy.csv <==
+rct,Create,at,by,Modify,by.1,at.1,Deputy No,Dep Type,Title,Dep Forename,Dep Surname,Inits,AKA Name,Stat,Welsh,Email,Second EMail,Third EMail,By Email,Addr Type,Contact Telephone,Contact Tele2,Contact Tele3,Mobile,Mobile2,Special,Disch Death,Investigation,VWM,SIM,Pathfinder Split,DPfcw,Comms Method,Inuse,Inuse Arc,Inuse Live,Assrc Visit Comm,Assrc Visit Comp,Assrc Temp Issue,Assrc Temp Rev,Assrc Tele Comp,PI Rcvd,PI Expiry,PI Amount,PI Requested,Stop Report gen,Digital,Digital Date,Type 3 Phased,Has Acc,Deputy No URL,Dig Regdate,Dig Reps,Dig Act,NDR,Dig Report,Stop Chases
+
+==> deputylink.csv <==
+rct,Deputy No,Link Deputy No,Comment,Create,at,by,Modify,at.1,by.1
+
+==> deputy_remarks.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Deputy No,Keydate,Keytime,Log Type,Log Date,Log Time,Remarks,Sect,Pri
+
+==> deputyship.csv <==
+rct,Create,at,by,Modify,at.1,by.1,CoP Case,Case,AppNo,Appl No,Joint,Appointed,Deputy No,Dep Addr No,Order No,Corr,News Letter,Fee Payer
+
+==> drepvis.csv <==
+rct,by,Create,at,by.1,Modify,at.1,Report No,Deputy No,Dep Addr No,Req By,Visitor,Date Allocated,Prev Visitor,Prev Allocated,Prev2 Visitor,Prev2 Allocted,Commission Dated,Commission Issued,Report Due,Report Rcvd.,Outcome,Reason,Fee Approved,Fee Amount,Categ,Review,Area,Extension 1,Extension2,Fee band,Rep Xref,Review Date,Rev By,Fee Ref,Rcvd Entered,Staff
+
+==> drlog.csv <==
+rct,Create,at,by,Deputy No,Pri,Keydate,Keytime,Log Type,Logdate,Logtime
+
+==> feeaas.csv <==
+rct,CoP Case,Case,AppNo,Create,at,by,Modify,at.1,by.1,Order No,Invoice Date,Amount,Amt Paid,Deputy No,Dep Addr No,Fee Type,Fee Band,Award Date,Asmt Date,Invoice No,Break1,Break2,Break3,Break4,Break5,Break6,Comments,Type 1,Type 2A,Type 2,Type 3,Remit,Appl Type,Sort by,BatchNo,Phoenix No,Sageno,Asmt Level,Remis,Exempt,Remit Sent,Evidence,Refund,Remitted,Remit Date,Remit by,FinYr,Refund Done,Executor,Keydate,ODP,Remis. 2,Split1,Split2,FOE,Notified,Welsh
+
+==> feebacs.csv <==
+rct,Create,at,by,Modify,by.1,at.1,Sched No,Lockbox Date,Sched Done,Lockbox Created,Pay Date,RBS Date,Bacs Total
+
+==> feebacs_det.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Sched No,Line No,Bacs Line,Case,Invoice No,Fee Paid,Bacs Date,Bacs Amount,Overpaid,Comments,Error Code,Bacs Line.1
+
+==> feeexport1.csv <==
+rct,Batch No,Case,Create,at,by,Modify,at.1,by.1,Invoice Date,Due Date,Invoice No,Ref 2,Amount,Vat Amount,GL Code,Line Amount,Cust Ref,Service Code,GL Ind,Sage No,Asmt Lvl,FinYr,Phoenix No,Orig Invoice,Keydate,Keytime,Paid Amt,CCWO Type,CCWO Amount,CCWO Copid,CCWO Date,CCWO Comments,CCWO Authby,CCWO Memo,CCWO Sent,CCWO Sent Date,CCWO Sent by,CCWO No
+
+==> feepays.csv <==
+rct,Create,at,by,Modify,by.1,at.1,Sched No,Lockbox Date,Sched Done,Lockbox Created,Pay Date,RBS Date,Moto Total
+
+==> feepays_det.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Sched No,Line No,Case,Invoice No,Fee Paid,Moto Date,Moto Amount,Overpaid,Comments,Error Code,Moto Line
+
+==> feesched.csv <==
+rct,Create,at,by,Modify,by.1,at.1,Sched No,Cashiers Date,Payslip,Banked Date,Sched Done,Lockbox Created
+
+==> feesched_det.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Sched No,Line No,Case,Invoice No,Fee Paid,Cheque No,CHQ Amount,Overpaid Amt,Comments,Pay Ln,In SOP
+
+==> order.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Order No,CoP Case,Case,AppNo,Ord Stat,Ord Type,Made Date,Issue Date,Fee Rqd,Bond Rqd,Dep App,Spvn Received,Expiry Date,Judge,Clause Expiry,Chase1,Chase2,Chs Ind,Bond Co,Bond No.,Bond Amount,Bond Renewal,Bond Discharge,Bondc,Bondyy,Ord Risk Lvl,Asmt Cre,Acc Rev,Init AccRev,Old Stat,Last Rev,Review Set,Bond Pay Type,Keydate,Bond OS,Bond Issued,Ord Not Rcvd,COP1,COP1A,COP1B,COP2,COP3,COP4,COP999,Rqd Asmt,Rcvd Entered,Bond Amt OPG
+
+==> panel_audit.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Panel No,Keydate,Keytime,Due Date,Completed Date,Type,Outcome,Followup Date,Info Req.
+
+==> panel_refer.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Panel No,Case,Application Date,Referral Date,App Req,Last Contact,Acc/Rej,App Rcvd,Pr Batchno,Reject,Case Type
+
+==> panel_remarks.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Panel No,Keydate,Keytime,Log Tyoe,Log Date,Log Time,Remarks,Sect
+
+==> panlink.csv <==
+rct,at,by,Modify,at.1,by.1,Panel No,Deputy No,Dep Addr No
+
+==> panrec.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Panel No,Surname,Forename,Inits,Title,AKA Name,Type,Status,Email,Mobile,Telephone,Day Tele,Fax,Adrs1,Adrs2,Adrs3,Adrs4,Adrs5,Postcode,DX No,DX Exchange,Addr Type,Appoint Date,Removal Date,Category,Urlnode,Removal,Old Categ
+
+==> pat.csv <==
+rct,by,Create,at,by.1,Modify,at.1,Case,Forename,Surname,Init,Adrs1,Adrs2,Adrs3,Adrs4,Adrs5,Postcode,Client Phone,Title,AKA Name,Accom Type,Birth Yr,Sex,Will,Fee Band,Reason,Term Date,Term Type,Away Date,Term User,Term by,Report Due,Due Date,Award Date,Remis,Exempt,Corref,DOB,Marital Status,CFO Account,Rev Stat,Rev Date,Rev Init,Rev Type,Final Account,Notified,Letter Sent,Papers Create,Papers Completed,Paper to Date,Strap1,Strap2,Papers to Loc,Papers to Phone,Unverified Dcsd,Boxno,Destroy,Destruct Req,OPG Rtype,Tnt Date,Complaint,Investigation,Notify,Meris No,Area Ref,Medical Area,Url Node,AppNo,Auto Term,Open CWS/Appl,Was Dep,New Account No,Proof,VWM,SIM,Old Corref,PFCWorker,DMT Proof check,Type3 Phased,Debt chase,SAAR Date,Invest ID,Lay Team,Dcsd Auto,SAAR LA,2nd Letter Deceased,3rd Letter Deceased,SAAR Check,Foreign,Sirius,Public Hearing,GRO
+
+==> phoenixmap.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Case,Phoenix No,PORA,Error Code,SOP No
+
+==> prexpertise.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Panel No,Expertise,Level
+
+==> prgeoarea.csv <==
+rct,at,by,Modify,at.1,by.1,Panel No,Geo Area,Level
+
+==> prlang.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Panel No,Lang,Level
+
+==> prneeds.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Panel No,Needs,Level
+
+==> prskills.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Panel No,Skill,Level
+
+==> remarks.csv <==
+rct,Create,at,by,Modify,at.1,by.1,Case,Keydate,Keytime,Log Type,Logdate,Logtime,Remarks,Call No,Sect,Pri
+
+==> repvis1.csv <==
+rct,by,Create,at,by.1,Modify,at.1,Report No,Case,Req By,Rep On,Report Type,Reason Code,Source,Visitor,Date Allocated,Prev Visitor,Prev Allocated,Prev2 Visitor,Prev2 Allocted,Commission Dated,Commission Issued,Report Due,Report Rcvd.,Outcome,Reason,Outcome Comment,Fee Approved,Recom1,Recom2,Recom3,Recom4,Recomm Comment,Recomm Comment2,Att1,Att2,Att3,Att4,Att5,Att6,Other Attendee,Comments,Comments2,Fee Amount,Categ,Email,Review,Judge,Deputy No,Dep Addr No,Area,Quest,S49 Date,Partner No,Asmt Lvl,Extension 1,Extension 2,Fee band,Rep Xref,Review Date,Rev By,Fee Ref,Rcvd Entered,Staff,Date Completed
+
+==> risk_assessment1.csv <==
+rct,Asmt Id,Create,at,by,Modify,at.1,by.1,Case,Order No,Date Create,Invcreate,Date Complete,Start Date,Status,Assessor,Auto Ind,Asmt Lvl,Setter ID,Rate Ovr Flag,Override Date,Override Comment,Ovr ID,Next Asmt Date,New Asmt Date,Reason New,New ID,Next Created,Appeal,Order Made,U Cnt,X Cnt,AB Cnt,C Cnt,DE Cnt,Y Cnt,N Cnt,Old Stat,Curr State Date,OV Reason,Date Rcvd,Branch
+
+==> setupextract.csv <==
+rct,Create,at,by,Modify,at.1,by.1,CoP Case,Case,AppNo,Partner No,Order No,ExtFlag,Asf Flag,Asf Annl,Dcsd Flag,Fee Order,Dep Fee,FOE Flag,ODP Flag
+
+==> sup_activity.csv <==
+rct,Create,at,by,Modify,at.1,by.1,SupID,DefnID,Status,Create by,Date Create,Term By,Date Term,Act Type,Sup Desc,Req,Freq,Lead Time,Target Period,Start Date,Target,Track Completed,Case,Order No,Next Due,Comment,Mand Ind,Esc Ind,Esc Lvl,Old Stat,Old Start,Stat Reason,Old Next Due,Sett Time,Wdays Comp,Intro Created
+
+==> tbpassfile.csv <==
+Opid,Logon,PUNAMEX,Modify,by,New PW,Last Logon,Last Time,Log Cnt,Comments,Name,Block,CQuery,Sys,New User,PR Date,T/L,Reset Pswd,Invest,Invoice,Account Dates,Dep Update,Asmt,CoP,Read Only,Back Date,Super User,Contact Centre,Fin,OPG,Telephone,Email,Branch,Visit,Team Ref.,BUR,Spvn Ovride,Supvn,Site,Panel Upd,Password Changed,Password Expiry,WFM,REM Markers,Add Dep,Cheques,Cashiers,Auto Bur,Dom1 ID
+
+==> visit.csv <==
+rct,Visit No,Case,Priority,Crit,Crit Code,Other Comment,Visit Inits,Date Allocated,PVisit Init1,PDate Visit1,PVisit Init2,PDate Visit2,Outcome,Fail Reason,Outcome Comment,Redef Stat,Curr Stat,Date on List,Addr Conf Req.,Instruct Sent,Visit Made,Report From Visitor,Report To CaseWrk,Chaseup to CaseWrk,Report from CaseWrk,Fee Approved,Spot Chk,Post Recommends,Recomm1,Recommend Comment,Act Taken,Attendees,Attend1,Other Attend,Comments,by,Create,at,by.1,Modify,at.1,Fee Amt,Select Date,DueDate For Visit,Due Return,Due Iss to Branch,Due Action Report,Extension1,Extension2,Extension3,Categ,by Email

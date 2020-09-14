@@ -32,3 +32,5 @@ process.yml
 # Misc
 *crash.log
 
+/anon_data/anon_data/
+/anon_data/data/
