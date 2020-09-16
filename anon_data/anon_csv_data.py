@@ -7,38 +7,85 @@ start = time.time()
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', None)
-pd.set_option('display.max_colwidth', -1)
+# pd.set_option('display.max_colwidth', -1)
 
 data_dir = 'data'
 anon_data_dir = 'anon_data'
 fake = Faker('en-GB')
 
+try:
+    os.remove('change_log.txt')
+except OSError:
+    pass
 
-
+log_file = open('change_log.txt', "a", )
 
 id = {
-    "first_name": ['forename', 'firstname', 'aka'],
-    "surname": ['surname', 'lastname', 'last_name'],
-    "title": ['title'],
-    "initial": ['init'],
-    "full_name": ['name'],
-    "dob": ['dob'],
-    "birth_year": ['birth_yr'],
-    "email": ['email'],
-    "phone": ['phone', 'mobile', 'contact_tele', 'day_tele'],
-    "address": ['adrs'],
-    "postcode": ['postcode'],
-    "free_text": ['comment', 'note', 'remarks'],
-
+    "first_name": {
+        "include": ['forename', 'firstname', 'aka'],
+        "exclude": [],
+    },
+    "surname": {
+        "include": ['surname', 'lastname', 'last_name'],
+        "exclude": [],
+    },
+    "title": {
+        "include": ['title'],
+        "exclude": [],
+    },
+    "initial": {
+        "include": ['init'],
+        "exclude": [],
+    },
+    "dob": {
+        "include": ['dob'],
+        "exclude": [],
+    },
+    "birth_year": {
+        "include": ['birth_yr'],
+        "exclude": [],
+    },
+    "email": {
+        "include": ['email'],
+        "exclude": [],
+    },
+    "phone": {
+        "include": ['phone', 'mobile', 'contact_tele', 'day_tele'],
+        "exclude": ['Papers_to_Phone', 'Papers to Phone'],
+    },
+    "address": {
+        "include": ['adrs'],
+        "exclude": [],
+    },
+    "postcode": {
+        "include": ['postcode'],
+        "exclude": [],
+    },
+    "free_text": {
+        "include": ['comment', 'note', 'remarks'],
+        "exclude": [],
+    },
 }
 
 def get_cols(data_name, columns):
-    return [x for x in columns if any(i in x.lower() for i in id[data_name])]
+
+    include_cols = id[data_name]['include']
+    exclude_cols = id[data_name]['exclude']
+
+    matching_columns =  [x for x in columns if any(i in x.lower() for i in include_cols)]
+    cols_to_change = [x for x in matching_columns if x not in exclude_cols]
+
+    return cols_to_change
 
 
 
 for file in os.listdir(data_dir):
     file_name = file.split('.')[0]
+    log_file.write(f"===== Starting file {file_name} ===== \n")
+    file_start = time.time()
+    columns_changed = []
+
+
 
     df = pd.read_csv(os.path.join(data_dir, file))
 
@@ -47,7 +94,6 @@ for file in os.listdir(data_dir):
     first_names = get_cols('first_name', df.columns)
     initials = get_cols('initial', df.columns)
     surnames = get_cols('surname', df.columns)
-    full_names = get_cols('full_name', df.columns)
 
     # dob
     dobs = get_cols('dob', df.columns)
@@ -71,49 +117,52 @@ for file in os.listdir(data_dir):
 
     for index in df.index:
 
-        if len(titles) > 0:
-            fake_title = fake.prefix_nonbinary()
-            df.loc[index, titles] = fake_title
+        replacements = [
+            {
+                "col_list": titles,
+                "fake_data": fake.prefix_nonbinary(),
+            },
+            {
+                "col_list": first_names,
+                "fake_data": fake.first_name_nonbinary(),
+            },
+            {
+                "col_list": surnames,
+                "fake_data": fake.last_name_nonbinary(),
+            },
+            {
+                "col_list": dobs,
+                "fake_data": fake.date(pattern="%Y%m%d"),
+            },
+            {
+                "col_list": emails,
+                "fake_data": fake.email(),
+            },
+            {
+                "col_list": phones,
+                "fake_data": fake.phone_number(),
+            },
+            {
+                "col_list": postcodes,
+                "fake_data": fake.postcode(),
+            },
+            {
+                "col_list": free_text_fields,
+                "fake_data": fake.catch_phrase(),
+            },
+        ]
 
-        if len(first_names) > 0:
-            fake_name = fake.first_name_nonbinary()
-            df.loc[index, first_names] = fake_name
-            df.loc[index, initials] = fake_name[0]
+        # simple replacements
+        for r in replacements:
+            if len(r['col_list']) > 0:
+                for i, col in enumerate(r['col_list'], start=1):
+                    df.loc[index, col] = r['fake_data']
 
-        if len(surnames) > 0:
-            fake_surname = fake.last_name_nonbinary()
-            df.loc[index, surnames] = fake_surname
-
-        if len(full_names) > 0:
-            fake_full_name = fake.name_nonbinary()
-            df.loc[index, full_names] = fake_full_name
+                if r['col_list'] not in columns_changed:
+                    columns_changed.append(r['col_list'])
 
 
-        # dob
-        if len(dobs) > 0:
-            fake_dob = fake.date(pattern="%Y%m%d")
-            fake_birth_year = fake_dob[:4]
-            df.loc[index, dobs] = fake_dob
-            df.loc[index, birth_years] = fake_birth_year
-
-        # email
-        if len(emails)> 0:
-            for i, email in enumerate(emails, start=1):
-                fake_email = fake.email()
-                df.loc[index, email] = fake_email
-
-        # phone
-        if len(phones) > 0:
-            for i, phone in enumerate(phones, start=1):
-                fake_phone = fake.phone_number()
-                df.loc[index, phone] = fake_phone
-
-
-        # address
-        if len(postcodes) > 0:
-            fake_postcode = fake.postcode()
-            df.loc[index, postcodes] = fake_postcode
-
+        # complicated replacements
         if len(addresses) > 0:
             fake_address = fake.address()
             if len(addresses) > 1:
@@ -122,20 +171,39 @@ for file in os.listdir(data_dir):
                         df.loc[index, line] = fake_address.split('\n')[i]
                     except:
                         df.loc[index, line] = ""
+
+                if addresses not in columns_changed:
+                    columns_changed.append(addresses)
             else:
                 df.loc[index, addresses] = fake_address
+                if addresses not in columns_changed:
+                    columns_changed.append(addresses)
 
 
-        # free text
-        if len(free_text_fields)> 0:
-            for i, comment in enumerate(free_text_fields, start=1):
-                fake_comment = fake.catch_phrase()
-                df.loc[index, comment] = fake_comment
+
+        # replacements that rely on other column data
+        if len(initials) > 0 and len(first_names) > 0:
+            df.loc[index, initials] = df.loc[index, first_names][0][0]
+            if initials not in columns_changed:
+                columns_changed.append(initials)
+
+        if len(birth_years) > 0 and len(dobs) > 0:
+            df.loc[index, birth_years] = df.loc[index, dobs][0][:4]
+            if birth_years not in columns_changed:
+                columns_changed.append(birth_years)
+
+
+
+    column_list = [', '.join(x) for x in columns_changed]
+    log_file.write(f"{', '.join(column_list)} \n")
 
 
     df.to_csv(os.path.join(anon_data_dir, file))
 
+    log_file.write(f"===== Finished file {file_name} in"
+          f" {round(time.time() - file_start, 2)} secs "
+                   f"===== \n\n\n")
 
-
-
+log_file.write(f"Total time: {time.time()-start}")
+log_file.close()
 print(f"Time: {time.time()-start}")
