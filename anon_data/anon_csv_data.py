@@ -132,7 +132,7 @@ for file in os.listdir(data_dir):
             },
             {
                 "col_list": dobs,
-                "fake_data": fake.date(pattern="%Y%m%d"),
+                "fake_data": fake.date(pattern="%Y-%m-%d"),
             },
             {
                 "col_list": emails,
@@ -200,7 +200,7 @@ for file in os.listdir(data_dir):
 
     df.to_csv(os.path.join(anon_data_dir, file))
 
-    log_file.write(f"===== Finished file {file_name} in"
+    log_file.write(f"===== Finished anonymising {len(df)} rows in {file_name} in"
           f" {round(time.time() - file_start, 2)} secs "
                    f"===== \n\n\n")
 
