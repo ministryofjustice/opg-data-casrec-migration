@@ -32,5 +32,7 @@ process.yml
 # Misc
 *crash.log
 
-/anon_data/anon_data/
-/anon_data/data/
+*.csv
+*.sql
+
+casrec_data/do_anonymising/change_log.txt

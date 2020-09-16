@@ -10,7 +10,7 @@ pd.set_option('display.width', None)
 # pd.set_option('display.max_colwidth', -1)
 
 data_dir = 'data'
-anon_data_dir = 'anon_data'
+anon_data_dir = '../anon_data'
 fake = Faker('en-GB')
 
 try:

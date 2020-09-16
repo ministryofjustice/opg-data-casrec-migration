@@ -14,7 +14,7 @@ with open("allcsvrows.txt", "r") as f:
 
             title = line[4:][:-4].split('.')[0]
 
-            file_to_write = os.path.join('data', f'{title}.csv')
+            file_to_write = os.path.join('../data', f'{title}.csv')
             cols = lines[i+1].split(',')
             formatted_cols = [f"{tidy_column_name(x)}" for x in cols]
 
