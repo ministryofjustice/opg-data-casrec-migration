@@ -15,5 +15,5 @@ pip3 install -r requirements
 Then run this to loop through the sample CSV files and create new, 'anonymised' files in the `anon_data` folder
 
 ```bash
-sudo python3 -m anon.py
+sudo python3 -m anon_csv_data.py
 ```
