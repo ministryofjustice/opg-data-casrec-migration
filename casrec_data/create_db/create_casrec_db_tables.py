@@ -1,16 +1,14 @@
 import os
 import time
 import pandas as pd
-start = time.time()
 
-
-import csv
-import psycopg2
-conn = psycopg2.connect("host=localhost port=6666 dbname=casrec user=casrec "
-                        "password=casrec")
-cur = conn.cursor()
+# import psycopg2
+# conn = psycopg2.connect("host=localhost port=6666 dbname=casrec user=casrec "
+#                         "password=casrec")
+# cur = conn.cursor()
 
 anon_data_dir = '../anon_data'
+sql_out = open('create_tables.sql', "w")
 
 for file in os.listdir(anon_data_dir):
 
@@ -29,8 +27,9 @@ for file in os.listdir(anon_data_dir):
             statement += ","
 
     statement += "); \n\n\n"
+    sql_out.write(statement)
 
-    cur.execute(statement)
+    # cur.execute(statement)
 
-
-conn.commit()
+sql_out.close()
+# conn.commit()
