@@ -1,10 +1,7 @@
 import os
 import time
 import pandas as pd
-start = time.time()
 
-
-import csv
 import psycopg2
 conn = psycopg2.connect("host=localhost port=6666 dbname=casrec user=casrec "
                         "password=casrec")

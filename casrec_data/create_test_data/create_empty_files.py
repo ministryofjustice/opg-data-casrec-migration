@@ -2,6 +2,11 @@ import pandas as pd
 import os
 import random
 
+try:
+    os.mkdir('../do_anonymising/data')
+except OSError:
+    pass
+
 def tidy_column_name(col):
     formatted_col = col.replace(' ', '_').replace('.', '_').replace('\n', '')
     return formatted_col
@@ -14,7 +19,7 @@ with open("allcsvrows.txt", "r") as f:
 
             title = line[4:][:-4].split('.')[0]
 
-            file_to_write = os.path.join('../data', f'{title}.csv')
+            file_to_write = os.path.join('../do_anonymising/data', f'{title}.csv')
             cols = lines[i+1].split(',')
             formatted_cols = [f"{tidy_column_name(x)}" for x in cols]
 

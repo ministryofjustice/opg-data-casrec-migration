@@ -27,12 +27,13 @@ services:
       POSTGRES_PASSWORD: api
       PGPASSWORD: api
       POSTGRES_DB: api
+    depends_on: [postgres-api]
   casrec_db:
     image: postgres:10.11
     ports:
     - 6666:5432
-#    volumes:
-#      - ./casrec_database/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+    volumes:
+      - ./casrec_data/create_db/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
     environment:
       POSTGRES_USER: casrec
       POSTGRES_PASSWORD: casrec

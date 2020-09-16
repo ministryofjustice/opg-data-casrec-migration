@@ -1,24 +1,56 @@
-# What are all these folders?
+# How to run these scripts
+
+Steps 1 and 2 are temporary and will no longer be relevant once we have suitable sample data.
+
+Steps 3 and 4 are expected to only be run when building the containers, so these will need to be refactored accordingly.
+Once we have suitable data to work with, the create/schema files will be fixed, we don't want to dynamically create
+the DB from the CSV files.
 
 
+1. #### Create fake sample data 
 
-## anon_data
+   ```bash
+   cd create_test_data	
+   python3 create_empty_files.py
+   ```
 
-This is where the anonymised data will end up as CSVs
+   *We don't want the real sample data locally, but we need to check the anonymising works.*  
+   *This will create a load of CSVs in the same format as the sample data, but with placeholder data* 
 
-## create_db
+2. #### Run the anonymising on the fake sample data
 
-Creates the fake 'casrec' database based on the `anon_data` files
+   ```bash
+   cd ../do_anonymising
+   python3 anon_csv_data.py
+   
+   ```
 
-## create_test_data
+   *Creates a folder of CSVs based off the sample data, but with personal data replaced with random values from Faker.* 
 
-This was for developing the anonymising script locally, not very important
+   *IRL, this would be run on Cloud9, and the resulting files would be downloaded manually. The real data would never 
+   touch our local envs - this is just for testing the anonymising and db creation scripts.*  
 
-## do_anonymising
+3. #### Create the casrec database tables
 
-The anonymisation scripts to run on Cloud9
+   ```bash
+   cd ../create_db
+   cp -r ../do_anonymising/anon_data/ ../anon_data
+   python3 create_casrec_db_tables.py
+   cd ../..
+   docker-compose up --build
+   ```
 
+   *The script dumps an sql file full of create statements based off the column headings of the CSV files with generic text datatypes. 
+   The docker-compose uses when building the container*
 
+4. #### Insert the anonymised test data 
 
+   ######You will need the casrec postgres container running and the tables created to run this as it connects directly to the pg database
+    
+   ```bash
+   cd ../create_db
+   python3 insert_data.py
+   ```
 
-
+    *The `cp` is only because we're using the test data generated above. When we have the real anonymised data we won't 
+    need to do this bit*
