@@ -1,3 +1,5 @@
+import random
+
 import pandas as pd
 import os
 from faker import Faker
@@ -30,13 +32,17 @@ id = {
         "include": ['surname', 'lastname', 'last_name'],
         "exclude": [],
     },
+    "full_name": {
+        "include": ['name'],
+        "exclude": [],
+    },
     "title": {
         "include": ['title'],
         "exclude": [],
     },
     "initial": {
         "include": ['init'],
-        "exclude": [],
+        "exclude": ['Rev_Init'],
     },
     "dob": {
         "include": ['dob'],
@@ -48,11 +54,11 @@ id = {
     },
     "email": {
         "include": ['email'],
-        "exclude": [],
+        "exclude": ['by_Email'],
     },
     "phone": {
-        "include": ['phone', 'mobile', 'contact_tele', 'day_tele'],
-        "exclude": ['Papers_to_Phone', 'Papers to Phone'],
+        "include": ['phone', 'mobile', 'tele'],
+        "exclude": ['Papers_to_Phone', 'Papers to Phone', 'Assrc_Tele_Comp'],
     },
     "address": {
         "include": ['adrs'],
@@ -63,18 +69,34 @@ id = {
         "exclude": [],
     },
     "free_text": {
-        "include": ['comment', 'note', 'remarks'],
+        "include": ['comment', 'note', 'remarks', 'sup_desc', 'sup desc'],
         "exclude": [],
     },
+    "documents": {
+        "include": ['docid'],
+        "exclude": [],
+    },
+    "payslip": {
+        "include": ['payslip'],
+        "exclude": []
+    },
+    "solicitor_name": {
+        "include": ['sender_co', 'sender co', 'pathfinder', 'pathfinder'],
+        "exclude": []
+    }
 }
 
-def get_cols(data_name, columns):
+def get_cols(data_name, columns, exact_match=False):
 
     include_cols = id[data_name]['include']
     exclude_cols = id[data_name]['exclude']
 
-    matching_columns =  [x for x in columns if any(i in x.lower() for i in include_cols)]
-    cols_to_change = [x for x in matching_columns if x not in exclude_cols]
+    if exact_match:
+        matching_columns =  [x for x in columns if x.lower() in include_cols]
+        cols_to_change = [x for x in matching_columns if x not in exclude_cols]
+    else:
+        matching_columns =  [x for x in columns if any(i in x.lower() for i in include_cols)]
+        cols_to_change = [x for x in matching_columns if x not in exclude_cols]
 
     return cols_to_change
 
@@ -95,6 +117,7 @@ for file in os.listdir(data_dir):
     first_names = get_cols('first_name', df.columns)
     initials = get_cols('initial', df.columns)
     surnames = get_cols('surname', df.columns)
+    full_names = get_cols('full_name', df.columns, exact_match=True)
 
     # dob
     dobs = get_cols('dob', df.columns)
@@ -113,9 +136,17 @@ for file in os.listdir(data_dir):
     # free text
     free_text_fields = get_cols('free_text', df.columns)
 
+    # documents
+    documents = get_cols('documents', df.columns)
+
+    # payslip
+    payslips = get_cols('payslip', df.columns)
+
+    # solicitor
+    solicitor_names = get_cols('solicitor_name', df.columns)
 
 
-
+    # if file_name == 'cwsdata':
     for index in df.index:
 
         replacements = [
@@ -130,6 +161,10 @@ for file in os.listdir(data_dir):
             {
                 "col_list": surnames,
                 "fake_data": fake.last_name_nonbinary(),
+            },
+            {
+                "col_list": full_names,
+                "fake_data": fake.name(),
             },
             {
                 "col_list": dobs,
@@ -150,6 +185,14 @@ for file in os.listdir(data_dir):
             {
                 "col_list": free_text_fields,
                 "fake_data": fake.catch_phrase(),
+            },
+            {
+                "col_list": solicitor_names,
+                "fake_data": f"{fake.company()} {fake.company_suffix()}",
+            },
+            {
+                "col_list": payslips,
+                "fake_data": random.randint(100000, 1000000),
             },
         ]
 
@@ -192,6 +235,18 @@ for file in os.listdir(data_dir):
             df.loc[index, birth_years] = df.loc[index, dobs][0][:4]
             if birth_years not in columns_changed:
                 columns_changed.append(birth_years)
+
+        if len(documents) > 0 :
+            try:
+                rec_date = [x for x in df.columns if x.lower() in ['date_rcvd', 'date rcvd']]
+                df.loc[index, documents] = f"{random.randint(100000, 1000000)}  " \
+                                           f"{df.loc[index, rec_date][0]} " \
+                                           f"{df.loc[index, 'Case']} " \
+                                           f"{df.loc[index, surnames][0]}"
+            except:
+                df.loc[index, documents] = fake.catch_phrase()
+            if documents not in columns_changed:
+                columns_changed.append(documents)
 
 
 
