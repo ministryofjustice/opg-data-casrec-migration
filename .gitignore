@@ -33,7 +33,7 @@ process.yml
 *crash.log
 
 *.csv
-*.sql
+
 
 casrec_data/do_anonymising/change_log.txt
 *PLAY*
