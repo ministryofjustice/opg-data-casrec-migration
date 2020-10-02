@@ -1,9 +1,7 @@
 version: '3.6'
 services:
   casrec_db:
-    build:
-      context: ./casrec_db
-      dockerfile: Dockerfile
+    image: postgres:10.11
     ports:
       - 6666:5432
     environment:
@@ -14,9 +12,9 @@ services:
   localstack:
     image: localstack/localstack:0.10.9
     ports:
-        - 4572:4572
+        - 4566:4566
     environment:
-        - SERVICES=s3:4572
+        - SERVICES=s3:4566
         - DEFAULT_REGION=eu-west-1
   load_casrec:
     build:
@@ -29,34 +27,32 @@ services:
       DB_PORT: 5432
       ENVIRONMENT: local
     depends_on: [localstack, casrec_db]
-#
-# We can put this back in when we know how we're using it!
-#
-#  postgres-api:
-#    image: postgres:10.11
-#    ports:
-#      - 5555:5432
-#    environment:
-#      POSTGRES_USER: api
-#      POSTGRES_PASSWORD: api
-#      POSTGRES_DB: api
-#      PGPASSWORD: api
-#  postgres-api-restore:
-#    image: postgres:10.11
-#    entrypoint: pg_restore
-#    volumes: ["./sirius-snapshot:/sirius-snapshot"]
-#    command:
-#      - /sirius-snapshot/api.backup
-#      - --clean
-#      - --if-exists
-#      - --host=postgres-api
-#      - --dbname=api
-#      - --username=api
-#      - -v
-#      - --format=custom
-#    environment:
-#      POSTGRES_USER: api
-#      POSTGRES_PASSWORD: api
-#      PGPASSWORD: api
-#      POSTGRES_DB: api
-#    depends_on: [postgres-api]
+#  Please read the readme in ./sirius-snapshot before building the Sirius db
+  postgres-api:
+    image: postgres:10.11
+    ports:
+      - 5555:5432
+    environment:
+      POSTGRES_USER: api
+      POSTGRES_PASSWORD: api
+      POSTGRES_DB: api
+      PGPASSWORD: api
+  postgres-api-restore:
+    image: postgres:10.11
+    entrypoint: pg_restore
+    volumes: ["./sirius-snapshot:/sirius-snapshot"]
+    command:
+      - /sirius-snapshot/api.backup
+      - --clean
+      - --if-exists
+      - --host=postgres-api
+      - --dbname=api
+      - --username=api
+      - -v
+      - --format=custom
+    environment:
+      POSTGRES_USER: api
+      POSTGRES_PASSWORD: api
+      PGPASSWORD: api
+      POSTGRES_DB: api
+    depends_on: [postgres-api]

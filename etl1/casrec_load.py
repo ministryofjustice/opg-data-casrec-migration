@@ -144,7 +144,7 @@ def main():
     if environment == "local":
         s3 = s3_session.client(
             "s3",
-            endpoint_url="http://localstack:4572",
+            endpoint_url="http://localstack:4566",
             aws_access_key_id="fake",
             aws_secret_access_key="fake",
         )
