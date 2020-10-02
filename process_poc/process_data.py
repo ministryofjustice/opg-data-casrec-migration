@@ -30,7 +30,8 @@ col_names = [item for sublist in col_names for item in sublist]
 
 col_names_string = ", ".join([f"\"{x.strip(' ')}\"" for x in col_names])
 
-conn = psycopg2.connect("host=localhost port=6666 dbname=casrec user=casrec password=casrec")
+conn = psycopg2.connect("host=localhost port=6666 dbname=casrecmigration user=casrec "
+                        "password=casrec")
 pat_df = pd.read_sql_query(f"select {col_names_string} from etl1.pat limit 3;",conn)
 # print(pat_df.to_markdown())
 
