@@ -4,12 +4,12 @@ from sqlalchemy import create_engine
 import transformations
 from mapping import Mapping
 from source_data import SourceData
-from table_config import definitions, excel_doc
+from table_config import data_table_definitions, excel_doc
 
 
 def all_steps(sheet_name):
 
-    debug_mode = True
+    debug_mode = 'insert'
     excel_doc = 'mapping_doc.xlsx'
     source_table_name = definitions[sheet_name]['source_table_name']
     sirius_table_name = definitions[sheet_name]['sirius_table_name']
@@ -20,10 +20,7 @@ def all_steps(sheet_name):
     """
     Step 1 - load the mapping details from the spreadsheet
     """
-
-    print("===========================")
-    print(sheet_name)
-    print("===========================")
+    print(f"Executing {sheet_name}")
 
     mapping_from_excel = Mapping()
     mapping_df = mapping_from_excel.mapping_df(file_name=excel_doc,
@@ -36,11 +33,11 @@ def all_steps(sheet_name):
     """
     source_data = SourceData()
     source_data_query = source_data.generate_select_string(mapping=mapping_df,
-                                                           source_table_name=source_table_name, limit=3)
+                                                           source_table_name=source_table_name, limit=100)
 
     source_data_df = source_data.get_source_data(query=source_data_query, db_conn=casrec_db_connection)
 
-    if debug_mode:
+    if 'df' in debug_mode:
         print(f"\n\nStep 2 - source_data_df: {sheet_name}")
         print(source_data_df.to_markdown())
 
@@ -57,7 +54,7 @@ def all_steps(sheet_name):
     else:
         simple_mapping_df = source_data_df
 
-    if debug_mode:
+    if 'df' in debug_mode:
         print(f"\n\nStep 3 - simple_mapping_df: {sheet_name}")
         print(simple_mapping_df.to_markdown())
 
@@ -71,11 +68,10 @@ def all_steps(sheet_name):
     if len(transformation_mapping) > 0:
         transformed_df = transformations.do_transformations(df=simple_mapping_df,
                                                         transformations=transformation_mapping)
-        print(transformed_df.to_markdown())
     else:
         transformed_df = simple_mapping_df
 
-    if debug_mode:
+    if 'df' in debug_mode:
         print(f"\n\nStep 4 - transformed_df: {sheet_name}")
         print(transformed_df.to_markdown())
 
@@ -92,7 +88,7 @@ def all_steps(sheet_name):
     else:
         required_cols_df = transformed_df
 
-    if debug_mode:
+    if 'df' in debug_mode:
         print(f"\n\nStep 5 - required_cols_df: {sheet_name}")
         print(required_cols_df.to_markdown())
 
@@ -108,7 +104,7 @@ def all_steps(sheet_name):
                                                        column_name=unique_column_name,
                                                        starting_number=next_id)
 
-    if debug_mode:
+    if 'df' in debug_mode:
         print(f"\n\nStep 6 - unique_id_df: {sheet_name}")
         print(unique_id_df.to_markdown())
 
@@ -119,7 +115,7 @@ def all_steps(sheet_name):
     migrated_df = unique_id_df
     migrated_df['from_casrec'] = True
 
-    if debug_mode:
+    if 'df' in debug_mode:
         print(f"\n\nStep 7 - migrated_df: {sheet_name}")
         print(migrated_df.to_markdown())
 
@@ -128,9 +124,12 @@ def all_steps(sheet_name):
     Step 8 - insert into destination db
     """
 
-    if debug_mode:
+    if any(x in debug_mode for x in ['df', 'final']):
         print(f"\n\nStep 8 - this is what would be inserted into the destination db "
               f"if we turned debug off: {sheet_name}")
         print(migrated_df.to_markdown())
     else:
         migrated_df.to_sql(sirius_table_name, sirius_engine, if_exists='append', index=False)
+        get_count = f"select count(*) from public.persons2 where from_casrec = True"
+        count = sirius_engine.execute(get_count).fetchall()[0]
+        print(f"{sirius_table_name}: {count}")
