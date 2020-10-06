@@ -7,7 +7,7 @@ from source_data import SourceData
 from table_config import definitions, excel_doc
 
 debug_mode = True
-sheet_name = "addresses (Client)"
+sheet_name = "persons (Client)"
 source_table_name = definitions[sheet_name]['source_table_name']
 sirius_table_name = definitions[sheet_name]['sirius_table_name']
 
@@ -76,10 +76,12 @@ if __name__ == '__main__':
     """
 
     required_columns = mapping_definitions['required_columns']
+    print(required_columns)
 
     if len(required_columns) > 0:
         required_cols_df = transformations.populate_required_columns(df=transformed_df,
                                                                  required_cols=required_columns)
+
     else:
         required_cols_df = transformed_df
 

@@ -1,5 +1,5 @@
 import json
-
+import random
 
 def do_simple_remap(simple_mapping_dict, source_table_name, source_data):
     simple_column_remap = [{v['alias']: k} for k, v in simple_mapping_dict.items() if v[
@@ -57,7 +57,7 @@ def populate_required_columns(df, required_cols):
     for col, details in required_cols.items():
         df[col] = details['default_value']
 
-        return df
+    return df
 
 # Not really for here but got no where else sensible to put it at the moment
 def get_next_sirius_id(engine, sirius_table_name):
