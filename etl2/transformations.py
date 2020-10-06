@@ -48,7 +48,7 @@ def do_transformations(df, transformations):
             for t in transformations['unique_number']:
                 transformed_df = unique_number(t['aggregate_col'], transformed_df)
     else:
-        transformed_df = new_df
+        transformed_df = df
 
     return transformed_df
 
