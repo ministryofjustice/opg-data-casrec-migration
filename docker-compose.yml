@@ -13,6 +13,7 @@ services:
     image: localstack/localstack:0.10.9
     ports:
         - 4572:4572
+        - 4566:4566
     environment:
         - SERVICES=s3:4572
         - DEFAULT_REGION=eu-west-1
@@ -36,34 +37,32 @@ services:
     depends_on: [localstack, casrec_db]
   wait-for-it:
     build: ./wait-for-it
-
-# We can put this back in when we know how we're using it!
-#
-#  postgres-api:
-#    image: postgres:10.11
-#    ports:
-#      - 5555:5432
-#    environment:
-#      POSTGRES_USER: api
-#      POSTGRES_PASSWORD: api
-#      POSTGRES_DB: api
-#      PGPASSWORD: api
-#  postgres-api-restore:
-#    image: postgres:10.11
-#    entrypoint: pg_restore
-#    volumes: ["./sirius-snapshot:/sirius-snapshot"]
-#    command:
-#      - /sirius-snapshot/api.backup
-#      - --clean
-#      - --if-exists
-#      - --host=postgres-api
-#      - --dbname=api
-#      - --username=api
-#      - -v
-#      - --format=custom
-#    environment:
-#      POSTGRES_USER: api
-#      POSTGRES_PASSWORD: api
-#      PGPASSWORD: api
-#      POSTGRES_DB: api
-#    depends_on: [postgres-api]
+#  Please read the readme in ./sirius-snapshot before building the Sirius db
+  postgres-api:
+    image: postgres:10.11
+    ports:
+      - 5555:5432
+    environment:
+      POSTGRES_USER: api
+      POSTGRES_PASSWORD: api
+      POSTGRES_DB: api
+      PGPASSWORD: api
+  postgres-api-restore:
+    image: postgres:10.11
+    entrypoint: pg_restore
+    volumes: ["./sirius-snapshot:/sirius-snapshot"]
+    command:
+      - /sirius-snapshot/api.backup
+      - --clean
+      - --if-exists
+      - --host=postgres-api
+      - --dbname=api
+      - --username=api
+      - -v
+      - --format=custom
+    environment:
+      POSTGRES_USER: api
+      POSTGRES_PASSWORD: api
+      PGPASSWORD: api
+      POSTGRES_DB: api
+    depends_on: [postgres-api]
