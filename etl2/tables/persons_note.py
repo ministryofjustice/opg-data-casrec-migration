@@ -17,10 +17,10 @@ def final(persons_df, notes_df):
                               right_on='rct')
 
     person_note_df = notes_df.merge(persons_df, how='left', left_on='Case',
-                               right_on="caserecnumber", suffixes=['_note', '_case'])
+                               right_on="caserecnumber", suffixes=['_note', '_person'])
 
-    person_note_df = person_note_df.rename(columns={'id_case': 'case_id',
+    person_note_df = person_note_df.rename(columns={'id_person': 'person_id',
                                                         'id_note': 'note_id'})
 
-    person_note_df = person_note_df[['case_id', 'note_id']]
+    person_note_df = person_note_df[['person_id', 'note_id']]
     return person_note_df

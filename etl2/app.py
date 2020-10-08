@@ -47,6 +47,6 @@ if __name__ == '__main__':
 
     person_note_df = caseitem_note(persons_client_df, notes_df)
     if debug_mode:
-        print_result(person_note_df, 'caseitem_note')
+        print_result(person_note_df, 'person_note')
     else:
-        insert_result(person_note_df, 'caseitem_note')
+        insert_result(person_note_df, 'person_note')
