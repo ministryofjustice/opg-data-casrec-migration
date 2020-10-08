@@ -30,8 +30,8 @@ resource "aws_rds_cluster" "cluster_serverless" {
     auto_pause               = true
     max_capacity             = 16
     min_capacity             = 2
-    seconds_until_auto_pause = 300
-    timeout_action           = "ForceApplyCapacityChange"
+    seconds_until_auto_pause = 600
+    timeout_action           = "RollbackCapacityChange"
   }
 }
 

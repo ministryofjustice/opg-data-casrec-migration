@@ -1,14 +1,15 @@
 import pandas as pd
 import io
 import os
+import argparse
 from sqlalchemy import create_engine
 import boto3
 
 
-def list_bucket_contents(bucket_name, s3, path):
-
+def get_list_of_files(bucket_name, s3, path, tables):
     resp = s3.list_objects_v2(Bucket=bucket_name)
     files_in_bucket = []
+    files_to_process = []
 
     for obj in resp["Contents"]:
         file_folder = obj["Key"]
@@ -19,8 +20,17 @@ def list_bucket_contents(bucket_name, s3, path):
             print(f"file is: {file}")
             files_in_bucket.append(file)
 
+    if tables[0].lower() == "all":
+        print("Will process all files")
+        files_to_process.extend(files_in_bucket)
+    else:
+        print("Bring back specific tables")
+        for bucket_file in files_in_bucket:
+            if bucket_file.split(".")[0].lower() in tables:
+                files_to_process.append(bucket_file)
+
     print(f"Total files returned: {len(files_in_bucket)}")
-    return files_in_bucket
+    return files_to_process
 
 
 def check_table_exists(table_name, schema_name, engine):
@@ -118,6 +128,18 @@ def create_schema(schema, engine):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Load into casrec.")
+    parser.add_argument(
+        "--tables", default="all", help="list of tables to load",
+    )
+    parser.add_argument(
+        "--chunk", default="50000", help="chunk size",
+    )
+    args = parser.parse_args()
+
+    table_list = args.tables.split(",")
+    chunk_size = int(args.chunk)
+
     password = os.environ["DB_PASSWORD"]
     db_host = os.environ["DB_HOST"]
     port = os.environ["DB_PORT"]
@@ -170,7 +192,7 @@ def main():
     else:
         s3 = s3_session.client("s3")
 
-    for file in list_bucket_contents(bucket_name, s3, path):
+    for file in get_list_of_files(bucket_name, s3, path, table_list):
         file_key = f"{path}/{file}"
         print(f'Retrieving "{file_key}" from bucket')
         obj = s3.get_object(Bucket=bucket_name, Key=file_key)
@@ -199,13 +221,16 @@ def main():
 
         print(f'Inserting records into "{schema}"."{table_name}"')
         if len(df_renamed.index) > 0:
+            n = chunk_size  # chunk row size
+            list_df = [df_renamed[i : i + n] for i in range(0, df_renamed.shape[0], n)]
 
-            engine.execute(
-                create_insert_statement(table_name, schema, columns, df_renamed)
-            )
-            print(
-                f'Rows inserted into "{schema}"."{table_name}": {get_rows_inserted(table_name, schema, engine)}\n\n'
-            )
+            for df_chunked in list_df:
+                engine.execute(
+                    create_insert_statement(table_name, schema, columns, df_chunked)
+                )
+                print(
+                    f'Rows inserted into "{schema}"."{table_name}": {get_rows_inserted(table_name, schema, engine)}\n\n'
+                )
         else:
             print(f"No rows to insert for table {table_name}")
 
