@@ -1,6 +1,3 @@
-
-
-
 """
 create and insert the notes table
 """
@@ -12,10 +9,8 @@ definition = {
     "sirius_table_name": "notes",
 }
 
+
 def final():
     final_df = all_steps(table_definition=definition)
 
     return final_df
-
-
-
