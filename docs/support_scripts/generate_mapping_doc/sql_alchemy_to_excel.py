@@ -147,7 +147,7 @@ def build_class(tables):
 
 
 
-tables = ['persons', 'cases', 'person_caseitem', 'notes', 'caseitem_note', 'addresses']
+tables = ['persons', 'cases', 'person_caseitem', 'notes', 'person_note', 'addresses']
 table_dicts = build_class(tables)
 
 for table in table_dicts:

@@ -1,128 +1,52 @@
-import psycopg2
 from sqlalchemy import create_engine
 
-import transformations
-from mapping import Mapping
-from source_data import SourceData
-from table_config import definitions, excel_doc
+from helpers import print_result, insert_result
+from tables.persons_client import final as persons_client
+from tables.addresses_client import final as addresses_client
+from tables.cases import final as cases
+from tables.notes import final as notes
+from tables.persons_note import final as caseitem_note
+from tables.person_caseitem_client import final as person_caseitem
 
-debug_mode = True
-sheet_name = "persons (Client)"
-source_table_name = definitions[sheet_name]['source_table_name']
-sirius_table_name = definitions[sheet_name]['sirius_table_name']
-
-casrec_db_connection = psycopg2.connect("host=localhost port=6666 dbname=casrecmigration user=casrec password=casrec")
-sirius_engine = create_engine('postgresql://api:api@0.0.0.0:5555/api')
+debug_mode = False
 
 if __name__ == '__main__':
-    """
-    Step 1 - load the mapping details from the spreadsheet
-    """
-    mapping_from_excel = Mapping()
-    mapping_df = mapping_from_excel.mapping_df(file_name=excel_doc,
-                                              sheet_name=sheet_name,
-                                       source_table_name=source_table_name)
-    mapping_definitions = mapping_from_excel.mapping_definitions(mapping_df=mapping_df)
 
-    """
-    Step 2 - get the source data from casrec
-    """
-    source_data = SourceData()
-    source_data_query = source_data.generate_select_string(mapping=mapping_df,
-                                                           source_table_name=source_table_name, limit=3)
-
-    source_data_df = source_data.get_source_data(query=source_data_query, db_conn=casrec_db_connection)
-
+    persons_client_df = persons_client()
     if debug_mode:
-        print("\n\nStep 2 - source_data_df:")
-        print(source_data_df.to_markdown())
-
-    """
-    Step 3 - perform the simple 1-1 mappings
-    """
-
-    simple_mapping = mapping_definitions['simple_mapping']
-
-    if len(simple_mapping) > 0:
-        simple_mapping_df = transformations.do_simple_remap(
-            simple_mapping_dict=simple_mapping, source_table_name=source_table_name,
-            source_data=source_data_df)
+        print_result(persons_client_df, 'persons')
     else:
-        simple_mapping_df = source_data_df
+        insert_result(persons_client_df, 'persons')
 
+    addresses_client_df = addresses_client()
     if debug_mode:
-        print("\n\nStep 3 - simple_mapping_df:")
-        print(simple_mapping_df.to_markdown())
-
-    """
-    Step 4 - perform the standard transformations
-    """
-
-    transformation_mapping = mapping_definitions['transformations']
-
-    if len(transformation_mapping) > 0:
-        transformed_df = transformations.do_transformations(df=simple_mapping_df,
-                                                        transformations=transformation_mapping)
+        print_result(addresses_client_df, 'addresses')
     else:
-        transformed_df = simple_mapping_df
+        insert_result(addresses_client_df, 'addresses')
 
+
+    cases_df = cases()
     if debug_mode:
-        print("\n\nStep 4 - transformed_df:")
-        print(transformed_df.to_markdown())
-
-
-    """
-    Step 5 - fill in required columns
-    """
-
-    required_columns = mapping_definitions['required_columns']
-    print(required_columns)
-
-    if len(required_columns) > 0:
-        required_cols_df = transformations.populate_required_columns(df=transformed_df,
-                                                                 required_cols=required_columns)
-
+        print_result(cases_df, 'cases')
     else:
-        required_cols_df = transformed_df
+        insert_result(cases_df, 'cases')
 
+    person_caseitem_df = person_caseitem(persons_client_df, cases_df)
     if debug_mode:
-        print("\n\nStep 5 - required_cols_df:")
-        print(required_cols_df.to_markdown())
-
-    """
-    Step 6 - add unique id based on destination table
-    """
-
-    next_id = transformations.get_next_sirius_id(engine=sirius_engine,
-                                                 sirius_table_name=sirius_table_name)
-    unique_column_name = 'id'
-
-    unique_id_df = transformations.add_incremental_ids(df=transformed_df,
-                                                       column_name=unique_column_name,
-                                                       starting_number=next_id)
-
-    if debug_mode:
-        print("\n\nStep 6 - unique_id_df:")
-        print(unique_id_df.to_markdown())
-
-    """
-    Step 7 - add migrated flag
-    """
-
-    migrated_df = unique_id_df
-    migrated_df['from_casrec'] = True
-
-    if debug_mode:
-        print("\n\nStep 7 - migrated_df:")
-        print(migrated_df.to_markdown())
-
-
-    """
-    Step 8 - insert into destination db
-    """
-
-    if debug_mode:
-        print("\n\nStep 8 - this is what would be inserted into the destination db if we turned debug off:")
-        print(migrated_df.to_markdown())
+        print_result(person_caseitem_df, 'person_caseitem')
     else:
-        migrated_df.to_sql(sirius_table_name, sirius_engine, if_exists='append', index=False)
+        insert_result(person_caseitem_df, 'person_caseitem')
+
+
+    notes_df = notes()
+    if debug_mode:
+        print_result(notes_df, 'notes')
+    else:
+        insert_result(notes_df, 'notes')
+
+
+    person_note_df = caseitem_note(persons_client_df, notes_df)
+    if debug_mode:
+        print_result(person_note_df, 'caseitem_note')
+    else:
+        insert_result(person_note_df, 'caseitem_note')

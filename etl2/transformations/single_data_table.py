@@ -1,18 +1,17 @@
 import psycopg2
 from sqlalchemy import create_engine
 
-import transformations
-from mapping import Mapping
-from source_data import SourceData
-from table_config import data_table_definitions, excel_doc
+from transformations import standard_transformations
+from mapping.mapping import Mapping
+from transformations.source_data import SourceData
 
 
-def all_steps(sheet_name):
+def all_steps(table_definition, debug_mode='final', limit=None):
 
-    debug_mode = 'insert'
-    excel_doc = 'mapping_doc.xlsx'
-    source_table_name = definitions[sheet_name]['source_table_name']
-    sirius_table_name = definitions[sheet_name]['sirius_table_name']
+    excel_doc = 'etl2/docs/mapping_doc.xlsx'
+    sheet_name = table_definition['sheet_name']
+    source_table_name = table_definition['source_table_name']
+    sirius_table_name = table_definition['sirius_table_name']
     casrec_db_connection = psycopg2.connect(
         "host=localhost port=6666 dbname=casrecmigration user=casrec password=casrec")
     sirius_engine = create_engine('postgresql://api:api@0.0.0.0:5555/api')
@@ -20,7 +19,7 @@ def all_steps(sheet_name):
     """
     Step 1 - load the mapping details from the spreadsheet
     """
-    print(f"Executing {sheet_name}")
+
 
     mapping_from_excel = Mapping()
     mapping_df = mapping_from_excel.mapping_df(file_name=excel_doc,
@@ -33,11 +32,11 @@ def all_steps(sheet_name):
     """
     source_data = SourceData()
     source_data_query = source_data.generate_select_string(mapping=mapping_df,
-                                                           source_table_name=source_table_name, limit=100)
+                                                           source_table_name=source_table_name, limit=limit)
 
     source_data_df = source_data.get_source_data(query=source_data_query, db_conn=casrec_db_connection)
 
-    if 'df' in debug_mode:
+    if any(x in debug_mode for x in ['df', 'initial']):
         print(f"\n\nStep 2 - source_data_df: {sheet_name}")
         print(source_data_df.to_markdown())
 
@@ -48,7 +47,7 @@ def all_steps(sheet_name):
     simple_mapping = mapping_definitions['simple_mapping']
 
     if len(simple_mapping) > 0:
-        simple_mapping_df = transformations.do_simple_remap(
+        simple_mapping_df = standard_transformations.do_simple_remap(
             simple_mapping_dict=simple_mapping, source_table_name=source_table_name,
             source_data=source_data_df)
     else:
@@ -66,8 +65,8 @@ def all_steps(sheet_name):
 
 
     if len(transformation_mapping) > 0:
-        transformed_df = transformations.do_transformations(df=simple_mapping_df,
-                                                        transformations=transformation_mapping)
+        transformed_df = standard_transformations.do_transformations(df=simple_mapping_df,
+                                                                     transformations=transformation_mapping)
     else:
         transformed_df = simple_mapping_df
 
@@ -83,8 +82,8 @@ def all_steps(sheet_name):
     required_columns = mapping_definitions['required_columns']
 
     if len(required_columns) > 0:
-        required_cols_df = transformations.populate_required_columns(df=transformed_df,
-                                                                 required_cols=required_columns)
+        required_cols_df = standard_transformations.populate_required_columns(df=transformed_df,
+                                                                              required_cols=required_columns)
     else:
         required_cols_df = transformed_df
 
@@ -96,13 +95,13 @@ def all_steps(sheet_name):
     Step 6 - add unique id based on destination table
     """
 
-    next_id = transformations.get_next_sirius_id(engine=sirius_engine,
-                                                 sirius_table_name=sirius_table_name)
+    next_id = standard_transformations.get_next_sirius_id(engine=sirius_engine,
+                                                          sirius_table_name=sirius_table_name)
     unique_column_name = 'id'
 
-    unique_id_df = transformations.add_incremental_ids(df=transformed_df,
-                                                       column_name=unique_column_name,
-                                                       starting_number=next_id)
+    unique_id_df = standard_transformations.add_incremental_ids(df=transformed_df,
+                                                                column_name=unique_column_name,
+                                                                starting_number=next_id)
 
     if 'df' in debug_mode:
         print(f"\n\nStep 6 - unique_id_df: {sheet_name}")
@@ -124,12 +123,14 @@ def all_steps(sheet_name):
     Step 8 - insert into destination db
     """
 
-    if any(x in debug_mode for x in ['df', 'final']):
-        print(f"\n\nStep 8 - this is what would be inserted into the destination db "
-              f"if we turned debug off: {sheet_name}")
-        print(migrated_df.to_markdown())
-    else:
-        migrated_df.to_sql(sirius_table_name, sirius_engine, if_exists='append', index=False)
-        get_count = f"select count(*) from public.persons2 where from_casrec = True"
-        count = sirius_engine.execute(get_count).fetchall()[0]
-        print(f"{sirius_table_name}: {count}")
+
+    return migrated_df
+    # if any(x in debug_mode for x in ['df', 'final']):
+    #     print(f"\n\nStep 8 - this is what would be inserted into the destination db "
+    #           f"if we turned debug off: {sheet_name}")
+    #     print(migrated_df.to_markdown())
+    # else:
+    #     migrated_df.to_sql(sirius_table_name, sirius_engine, if_exists='append', index=False)
+    #     get_count = f"select count(*) from public.persons2 where from_casrec = True"
+    #     count = sirius_engine.execute(get_count).fetchall()[0]
+    #     print(f"{sirius_table_name}: {count}")
