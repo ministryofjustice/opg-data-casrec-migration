@@ -1,5 +1,6 @@
 import json
 import random
+import pandas as pd
 
 
 def do_simple_remap(simple_mapping_dict, source_table_name, source_data):
@@ -39,6 +40,17 @@ def unique_number(new_col, df, length=12):
     return df
 
 
+def date_format_standard(original_col, aggregate_col, df):
+    df["new"] = df[original_col].astype(str)
+    df["new"] = pd.to_datetime(df["new"], format="%Y-%m-%d %H:%M:%S")
+    df["new"] = [x.strftime("%Y-%m-%d") for x in df.new]
+
+    df = df.drop(columns=original_col)
+    df = df.rename(columns={"new": aggregate_col})
+
+    return df
+
+
 def do_transformations(df, transformations):
 
     transformed_df = df
@@ -51,6 +63,11 @@ def do_transformations(df, transformations):
         if "convert_to_bool" in transformations:
             for t in transformations["convert_to_bool"]:
                 transformed_df = convert_to_bool(
+                    t["original_columns"], t["aggregate_col"], transformed_df
+                )
+        if "date_format_standard" in transformations:
+            for t in transformations["date_format_standard"]:
+                transformed_df = date_format_standard(
                     t["original_columns"], t["aggregate_col"], transformed_df
                 )
         if "unique_number" in transformations:

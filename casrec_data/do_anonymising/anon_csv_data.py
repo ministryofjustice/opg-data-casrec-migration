@@ -116,7 +116,7 @@ for file in os.listdir(data_dir):
             {"col_list": first_names, "fake_data": fake.first_name_nonbinary(),},
             {"col_list": surnames, "fake_data": fake.last_name_nonbinary(),},
             {"col_list": full_names, "fake_data": fake.name(),},
-            {"col_list": dobs, "fake_data": fake.date(pattern="%Y-%m-%d"),},
+            {"col_list": dobs, "fake_data": fake.date(pattern="%Y-%m-%d %H:%M:%S"),},
             {"col_list": emails, "fake_data": fake.email(),},
             {"col_list": phones, "fake_data": fake.phone_number(),},
             {"col_list": postcodes, "fake_data": fake.postcode(),},
