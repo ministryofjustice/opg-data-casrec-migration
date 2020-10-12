@@ -1,5 +1,7 @@
 import time
+from configparser import ConfigParser, RawConfigParser
 
+import config
 from tables.persons_client import final as persons_client
 from tables.addresses_client import final as addresses_client
 from tables.cases import final as cases
@@ -11,11 +13,15 @@ from sqlalchemy import create_engine
 
 from database.db_insert import InsertData
 
-db_engine = create_engine(
-    "postgresql://casrec:casrec@0.0.0.0:6666/casrecmigration"  # pragma: allowlist secret
+config = config.get_config()
+
+etl2_db_engine = create_engine(config["etl2_db"]["connection_string"])
+etl2_db_schema = config["etl2_db"]["schema_name"]
+
+
+insert_data = InsertData(
+    db_engine=etl2_db_engine, schema=etl2_db_schema, is_verbose=True
 )
-db_schema = "etl2"
-insert_data = InsertData(db_engine=db_engine, schema=db_schema, is_verbose=True)
 
 if __name__ == "__main__":
     t = time.process_time()
