@@ -1,3 +1,5 @@
+import time
+
 import psycopg2
 from sqlalchemy import create_engine
 
@@ -7,6 +9,7 @@ from transformations.source_data import SourceData
 
 
 def all_steps(table_definition, debug_mode="final", limit=None):
+    t = time.process_time()
 
     excel_doc = "etl2/docs/mapping_doc.xlsx"
     sheet_name = table_definition["sheet_name"]
@@ -130,6 +133,9 @@ def all_steps(table_definition, debug_mode="final", limit=None):
     Step 8 - insert into destination db
     """
 
+    print(
+        f"Processing time for {sirius_table_name} table: {round(time.process_time() - t, 2)}"
+    )
     return migrated_df
     # if any(x in debug_mode for x in ['df', 'final']):
     #     print(f"\n\nStep 8 - this is what would be inserted into the destination db "

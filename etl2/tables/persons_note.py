@@ -9,8 +9,14 @@ casrec_db_connection = psycopg2.connect(
 )
 
 
-def final(persons_df, notes_df):
-    persons_df = persons_df[["id", "caserecnumber"]]
+def final():
+    # persons_df = persons_df[["id", "caserecnumber"]]
+
+    persons_query = f'select "id", "caserecnumber" from etl2.persons;'
+    persons_df = pd.read_sql_query(persons_query, casrec_db_connection)
+
+    notes_query = f"select * from etl2.notes;"
+    notes_df = pd.read_sql_query(notes_query, casrec_db_connection)
 
     notes_query = f'select "rct", "Case" from etl1.remarks;'
     notes_with_case_df = pd.read_sql_query(notes_query, casrec_db_connection)
