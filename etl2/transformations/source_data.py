@@ -15,8 +15,11 @@ class SourceData:
         statement = "SELECT "
         for i, col in enumerate(col_names_with_alias):
             if "," in col["casrec_column_name"]:
-
-                statement += re.sub(r"(\w+)", r'"\1"', col["casrec_column_name"])
+                # split comma separated list of cols
+                # eg "Dep Adrs1,Dep Adrs2,Dep Adrs3"
+                statement += re.sub(
+                    r"([^,\s][^\,]*[^,\s]*)", r'"\1"', col["casrec_column_name"]
+                )
             else:
                 statement += f"\"{col['casrec_column_name']}\" as \"{col['alias']}\""
             if i + 1 < len(col_names_with_alias):

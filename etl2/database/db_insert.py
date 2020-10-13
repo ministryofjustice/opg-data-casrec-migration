@@ -109,8 +109,9 @@ class InsertData:
         self.db_engine.execute(create_schema_statement)
 
         if self._check_table_exists(table_name=table_name):
-            truncate_statement = self._truncate_table_statement(table_name=table_name)
-            self.db_engine.execute(truncate_statement)
+            pass
+            # truncate_statement = self._truncate_table_statement(table_name=table_name)
+            # self.db_engine.execute(truncate_statement)
         else:
             create_table_statement = self._create_table_statement(
                 table_name=table_name, df=df
@@ -120,11 +121,13 @@ class InsertData:
         insert_statement = self._create_insert_statement(table_name=table_name, df=df)
         self.db_engine.execute(insert_statement)
 
-        inserted_count_statement = self._inserted_count_statement(table_name=table_name)
+        # inserted_count_statement = self._inserted_count_statement(table_name=table_name)
+        #
+        # inserted_count = self.db_engine.execute(inserted_count_statement).fetchall()[0][
+        #     0
+        # ]
 
-        inserted_count = self.db_engine.execute(inserted_count_statement).fetchall()[0][
-            0
-        ]
+        inserted_count = len(df)
 
         self.log.info(
             f"inserted {inserted_count} records into '{table_name}' "

@@ -8,7 +8,7 @@ from mapping.mapping import Mapping
 from transformations.source_data import SourceData
 
 
-def all_steps(table_definition, debug_mode="final", limit=None):
+def all_steps(table_definition, debug_mode="", limit=None):
     t = time.process_time()
 
     excel_doc = "etl2/docs/mapping_doc.xlsx"
@@ -18,10 +18,6 @@ def all_steps(table_definition, debug_mode="final", limit=None):
     casrec_db_connection = psycopg2.connect(
         "host=localhost port=6666 dbname=casrecmigration user=casrec password=casrec"
     )
-    sirius_engine = create_engine(
-        "postgresql://api:api@0.0.0.0:5555/api"  # pragma: allowlist secret
-    )
-
     """
     Step 1 - load the mapping details from the spreadsheet
     """
@@ -30,6 +26,8 @@ def all_steps(table_definition, debug_mode="final", limit=None):
     mapping_df = mapping_from_excel.mapping_df(
         file_name=excel_doc, sheet_name=sheet_name, source_table_name=source_table_name
     )
+
+    # print(mapping_df.to_markdown())
     mapping_definitions = mapping_from_excel.mapping_definitions(mapping_df=mapping_df)
 
     """
@@ -105,9 +103,15 @@ def all_steps(table_definition, debug_mode="final", limit=None):
     Step 6 - add unique id based on destination table
     """
 
-    next_id = standard_transformations.get_next_sirius_id(
-        engine=sirius_engine, sirius_table_name=sirius_table_name
+    # next_id = standard_transformations.get_next_sirius_id(
+    #     engine=sirius_engine, sirius_table_name=sirius_table_name
+    # )
+    next_id = standard_transformations.get_next_id(
+        db_conn=casrec_db_connection,
+        db_schema="etl2",
+        sirius_table_name=sirius_table_name,
     )
+
     unique_column_name = "id"
 
     unique_id_df = standard_transformations.add_incremental_ids(
@@ -132,6 +136,10 @@ def all_steps(table_definition, debug_mode="final", limit=None):
     """
     Step 8 - insert into destination db
     """
+
+    if any(x in debug_mode for x in ["df", "final"]):
+        print(f"\n\nStep 8 - insert into db: {sheet_name}")
+        print(migrated_df.to_markdown())
 
     print(
         f"Processing time for {sirius_table_name} table: {round(time.process_time() - t, 2)}"

@@ -11,9 +11,11 @@ casrec_db_connection = psycopg2.connect(
 
 def final():
 
+    # persons_df = persons_df[["id", "caserecnumber"]]
+
     persons_query = (
         f'select "id", "caserecnumber" from etl2.persons '
-        f"where \"type\" = 'actor_client';"
+        f"where \"type\" = 'actor_deputy';"
     )
     persons_df = pd.read_sql_query(persons_query, casrec_db_connection)
 

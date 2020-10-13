@@ -1,6 +1,7 @@
 import json
 import random
 import pandas as pd
+from psycopg2 import errors
 
 
 def do_simple_remap(simple_mapping_dict, source_table_name, source_data):
@@ -86,12 +87,14 @@ def populate_required_columns(df, required_cols):
     return df
 
 
-# Not really for here but got no where else sensible to put it at the moment
-def get_next_sirius_id(engine, sirius_table_name):
-
-    query = f"select max(id) from {sirius_table_name};"
-    max_id = engine.execute(query).fetchall()
-    next_id = max_id[0][0] + 1
+def get_next_id(db_conn, db_schema, sirius_table_name):
+    query = f"select max(id) from {db_schema}.{sirius_table_name};"
+    try:
+        df = pd.read_sql_query(query, db_conn)
+        max_id = df.iloc[0]["max"]
+    except Exception:
+        max_id = 0
+    next_id = int(max_id) + 1
 
     return next_id
 
