@@ -29,7 +29,7 @@ def insert_addresses_clients(config, etl2_db):
 
     persons_query = (
         f'select "id", "caserecnumber" from etl2.persons '
-        f"where \"type\" = 'actor_deputy';"
+        f"where \"type\" = 'actor_client';"
     )
     persons_df = pd.read_sql_query(
         persons_query, config["etl2_db"]["connection_string"]
