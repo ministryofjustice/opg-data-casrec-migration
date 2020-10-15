@@ -1,12 +1,12 @@
+import psycopg2
 import pandas as pd
-
 
 definition = {
     "destination_table_name": "person_caseitem",
 }
 
 
-def insert_person_caseitem_deputies(config, etl2_db):
+def insert_person_caseitem_client(config, etl2_db):
 
     persons_query = (
         f'select "id", "caserecnumber" from etl2.persons '

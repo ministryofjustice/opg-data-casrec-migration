@@ -1,13 +1,43 @@
+import re
+
 import pandas as pd
+
+from config import get_config
+
+config = get_config()
 
 
 class Mapping:
-    def _read_mapping_doc(self, file_name, sheet_name):
-        sheet = pd.read_excel(io=file_name, sheet_name=sheet_name)
+    def __init__(self, excel_doc, table_definitions):
+        self.excel_doc = excel_doc
+        self.sheet_name = table_definitions["sheet_name"]
+        self.source_table_name = table_definitions["source_table_name"]
+        self.additional_columns = (
+            table_definitions["source_table_additional_columns"]
+            if "source_table_additional_columns" in table_definitions
+            else None
+        )
+        self.additional_columns_list = (
+            [
+                {"casrec_column_name": x, "alias": f"c_{x.lower()}"}
+                for x in self.additional_columns
+            ]
+            if self.additional_columns
+            else None
+        )
+        self.limit = (
+            config["debug_mode"]["limit"]
+            if config["debug_mode"]["on"] == "True"
+            else None
+        )
+
+    def _read_mapping_doc(self):
+        sheet = pd.read_excel(io=self.excel_doc, sheet_name=self.sheet_name)
 
         return sheet
 
     def _apply_column_alias(self, df):
+
         df["count"] = df.groupby("casrec_column_name").cumcount()
         df["alias"] = df[["casrec_column_name", "count"]].values.tolist()
         df["alias"] = df["alias"].apply(
@@ -16,11 +46,11 @@ class Mapping:
 
         return df
 
-    def _apply_source_unique_id(self, df, source_table_name):
+    def _apply_source_unique_id(self, df):
         df = df.append(
             {
                 "column_name": "casrec_id",
-                "casrec_table": source_table_name,
+                "casrec_table": self.source_table_name,
                 "casrec_column_name": "rct",
                 "alias": "rct",
             },
@@ -99,16 +129,18 @@ class Mapping:
 
         return required_columns_dict
 
-    def mapping_df(self, file_name, sheet_name, source_table_name):
-        mapping_doc = self._read_mapping_doc(file_name=file_name, sheet_name=sheet_name)
-        mapping_doc = self._apply_column_alias(df=mapping_doc)
-        mapping_doc = self._apply_source_unique_id(
-            df=mapping_doc, source_table_name=source_table_name
+    def generate_mapping_df(self):
+        raw_mapping_doc = self._read_mapping_doc()
+        mapping_doc_with_alias = self._apply_column_alias(df=raw_mapping_doc)
+        mapping_doc_with_unique_id = self._apply_source_unique_id(
+            df=mapping_doc_with_alias
         )
 
-        return mapping_doc
+        return mapping_doc_with_unique_id
 
-    def mapping_definitions(self, mapping_df):
+    def mapping_definitions(self):
+
+        mapping_df = self.generate_mapping_df()
 
         mapping_definitions = {}
         mapping_definitions["simple_mapping"] = self.simple_mapping(
@@ -122,3 +154,35 @@ class Mapping:
         )
 
         return mapping_definitions
+
+    def generate_select_string_from_mapping(self):
+        mapping = self.generate_mapping_df()
+
+        cols = mapping[mapping["casrec_column_name"].notna()]
+
+        cols = cols[cols["casrec_table"].str.lower() == self.source_table_name][
+            ["casrec_column_name", "alias"]
+        ]
+
+        col_names_with_alias = cols.to_dict(orient="records")
+        if self.additional_columns_list:
+            col_names_with_alias = col_names_with_alias + self.additional_columns_list
+
+        statement = "SELECT "
+        for i, col in enumerate(col_names_with_alias):
+            if "," in col["casrec_column_name"]:
+                # split comma separated list of cols
+                # eg "Dep Adrs1,Dep Adrs2,Dep Adrs3"
+                statement += re.sub(
+                    r"([^,\s][^\,]*[^,\s]*)", r'"\1"', col["casrec_column_name"]
+                )
+            else:
+                statement += f"\"{col['casrec_column_name']}\" as \"{col['alias']}\""
+            if i + 1 < len(col_names_with_alias):
+                statement += ", "
+            else:
+                statement += " "
+        statement += f"FROM etl1.{self.source_table_name} "
+        if self.limit:
+            statement += f"LIMIT {self.limit}"
+        return f"{statement};"

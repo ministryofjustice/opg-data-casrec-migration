@@ -4,13 +4,13 @@ import pandas as pd
 
 
 definition = {
-    "sheet_name": "addresses (Deputy)",
-    "source_table_name": "deputy_address",
-    "destination_table_name": "addresses",
+    "sheet_name": "persons (Client)",
+    "source_table_name": "pat",
+    "destination_table_name": "persons",
 }
 
 
-def insert_addresses_deputies(config, etl2_db):
+def insert_persons_clients(config, etl2_db):
 
     mapping_from_excel = Mapping(
         excel_doc=config["mapping_document"]["excel_doc"], table_definitions=definition

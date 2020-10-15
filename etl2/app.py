@@ -1,52 +1,62 @@
 import time
-from configparser import ConfigParser, RawConfigParser
-
-import config
-from tables.persons_client import final as persons_client
-from tables.addresses_client import final as addresses_client
-from tables.cases import final as cases
-from tables.notes import final as notes
-from tables.persons_note import final as person_note
-from tables.person_caseitem_client import final as person_caseitem_client
-from tables.deputies.person_caseitem import final as person_caseitem_deputy
-from tables.deputies.persons import final as persons_deputy
-from tables.deputies.addresses import final as addresses_deputy
 
 from sqlalchemy import create_engine
+import click
 
-
+from config import get_config
+from database.clear_database import clear_tables
 from database.db_insert import InsertData
+from tables.cases.cases import insert_cases
+from tables.clients.addresses import insert_addresses_clients
+from tables.clients.persons import insert_persons_clients
+from tables.deputies.addresses import insert_addresses_deputies
+from tables.deputies.person_caseitem import insert_person_caseitem_deputies
+from tables.deputies.persons import insert_persons_deputies
+from tables.notes.notes import insert_notes
+from tables.notes.persons_note import insert_person_notes
+from tables.person_case.person_caseitem_client import insert_person_caseitem_clients
 
-config = config.get_config()
+config = get_config()
 
 etl2_db_engine = create_engine(config["etl2_db"]["connection_string"])
 etl2_db_schema = config["etl2_db"]["schema_name"]
 
 
-insert_data = InsertData(
-    db_engine=etl2_db_engine, schema=etl2_db_schema, is_verbose=True
-)
+etl2_db = InsertData(db_engine=etl2_db_engine, schema=etl2_db_schema, is_verbose=True)
+
+
+@click.command()
+@click.option("--clear", prompt=False, default=False)
+def main(clear):
+
+    if clear:
+        clear_tables(config)
+
+    # Clients - personal details
+    insert_persons_clients(config, etl2_db)
+    insert_addresses_clients(config, etl2_db)
+
+    # Deputies - personal details
+    insert_persons_deputies(config, etl2_db)
+    insert_addresses_deputies(config, etl2_db)
+
+    # Cases
+    insert_cases(config, etl2_db)
+
+    # Join Persons to Cases
+    insert_person_caseitem_clients(config, etl2_db)
+    insert_person_caseitem_deputies(config, etl2_db)
+
+    # Notes
+    insert_notes(config, etl2_db)
+
+    # Join Notes to Persons
+    insert_person_notes(config, etl2_db)
+
 
 if __name__ == "__main__":
     t = time.process_time()
 
-    # persons_client()
-    # persons_deputy()
-
-    # # Clients
-    insert_data.insert_data(table_name="persons", df=persons_client())
-    insert_data.insert_data(table_name="addresses", df=addresses_client())
-    # # Deputies
-    insert_data.insert_data(table_name="persons", df=persons_deputy())
-    insert_data.insert_data(table_name="addresses", df=addresses_deputy())
-    #
-    # # Cases
-    insert_data.insert_data(table_name="cases", df=cases())
-    insert_data.insert_data(table_name="person_caseitem", df=person_caseitem_client())
-    insert_data.insert_data(table_name="person_caseitem", df=person_caseitem_deputy())
-    #
-    # # Notes
-    insert_data.insert_data(table_name="notes", df=notes())
-    insert_data.insert_data(table_name="person_note", df=person_note())
+    main()
 
     print(f"Total time: {round(time.process_time() - t, 2)}")
