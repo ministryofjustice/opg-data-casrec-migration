@@ -100,7 +100,35 @@ class InsertData:
     def _inserted_count_statement(self, table_name):
         return f"select count(*) from {self.schema}.{table_name};"
 
+    def _check_columns_exist(self, table_name, df):
+        columns = self._list_table_columns(df=df)
+
+        existing_cols_statement = (
+            f"SELECT column_name FROM "
+            f"information_schema.columns "
+            f"WHERE  table_schema = '{self.schema}'"
+            f"AND    table_name   = '{table_name}';"
+        )
+
+        existing_cols = self.db_engine.execute(existing_cols_statement)
+        existing_cols_list = [row[0] for row in existing_cols]
+
+        col_diff = [i for i in columns if i not in existing_cols_list]
+
+        return col_diff
+
+    def _add_missing_columns(self, table_name, col_diff):
+        statement = f"ALTER TABLE {self.schema}.{table_name} "
+        for i, col in enumerate(col_diff):
+            statement += f'ADD COLUMN "{col}" text'
+            if i + 1 < len(col_diff):
+                statement += ","
+        statement += ";"
+
+        return statement
+
     def insert_data(self, table_name, df):
+
         t = time.process_time()
 
         self.log.info(f"inserting {table_name} into " f"database....")
@@ -109,9 +137,12 @@ class InsertData:
         self.db_engine.execute(create_schema_statement)
 
         if self._check_table_exists(table_name=table_name):
-            pass
-            # truncate_statement = self._truncate_table_statement(table_name=table_name)
-            # self.db_engine.execute(truncate_statement)
+            col_diff = self._check_columns_exist(table_name, df)
+            if len(col_diff) > 0:
+                add_missing_colums_statement = self._add_missing_columns(
+                    table_name, col_diff
+                )
+                self.db_engine.execute(add_missing_colums_statement)
         else:
             create_table_statement = self._create_table_statement(
                 table_name=table_name, df=df
