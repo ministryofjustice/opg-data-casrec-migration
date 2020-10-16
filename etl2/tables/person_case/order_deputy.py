@@ -13,18 +13,14 @@ def insert_order_deputy(config, etl2_db):
         f'select "id", "c_deputy_no" from etl2.persons '
         f"where \"type\" = 'actor_deputy';"
     )
-    persons_df = pd.read_sql_query(
-        persons_query, config["etl2_db"]["connection_string"]
-    )
+    persons_df = pd.read_sql_query(persons_query, config.connection_string)
 
     deputyship_query = (
         f'select "Deputy No", "Case", "Order No" '
-        f"from {config['etl1_db']['schema_name']}.deputyship;"
+        f"from {config.etl1_schema}.deputyship;"
     )
 
-    deuptyship_df = pd.read_sql_query(
-        deputyship_query, config["etl1_db"]["connection_string"]
-    )
+    deuptyship_df = pd.read_sql_query(deputyship_query, config.connection_string)
 
     person_with_case_df = persons_df.merge(
         deuptyship_df, how="inner", left_on="c_deputy_no", right_on="Deputy No"
@@ -34,7 +30,7 @@ def insert_order_deputy(config, etl2_db):
     # person_with_case_df = person_with_case_df.drop(columns=['Case', 'Deputy No'])
 
     cases_query = f'select "id", "caserecnumber", "c_order_no" from etl2.cases;'
-    cases_df = pd.read_sql_query(cases_query, config["etl2_db"]["connection_string"])
+    cases_df = pd.read_sql_query(cases_query, config.connection_string)
 
     order_deputy_df = cases_df.merge(
         person_with_case_df,

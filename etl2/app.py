@@ -3,7 +3,7 @@ import time
 from sqlalchemy import create_engine
 import click
 
-from config import get_config
+
 from database.clear_database import clear_tables
 from database.db_insert import InsertData
 from tables.cases.cases import insert_cases
@@ -16,15 +16,16 @@ from tables.notes.notes import insert_notes
 from tables.notes.persons_note import insert_person_notes
 from tables.person_case.order_deputy import insert_order_deputy
 from tables.person_case.person_caseitem import insert_person_caseitem
+from config import LocalConfig, get_config
 
 
 config = get_config()
 
-etl2_db_engine = create_engine(config["etl2_db"]["connection_string"])
-etl2_db_schema = config["etl2_db"]["schema_name"]
+etl2_db_engine = create_engine(config.connection_string)
 
-
-etl2_db = InsertData(db_engine=etl2_db_engine, schema=etl2_db_schema, is_verbose=True)
+etl2_db = InsertData(
+    db_engine=etl2_db_engine, schema=config.etl2_schema, is_verbose=True
+)
 
 
 @click.command()

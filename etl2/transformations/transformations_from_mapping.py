@@ -53,9 +53,9 @@ def add_required_columns(required_columns, source_data_df):
     return source_data_df
 
 
-def add_unique_id(db_conn_details, table_definition, source_data_df):
-    db_conn = db_conn_details["connection_string"]
-    db_schema = db_conn_details["schema_name"]
+def add_unique_id(db_conn_string, db_schema, table_definition, source_data_df):
+    db_conn = db_conn_string
+    db_schema = db_schema
     destination_table_name = table_definition["destination_table_name"]
     unique_column_name = "id"
 
@@ -77,7 +77,7 @@ def add_unique_id(db_conn_details, table_definition, source_data_df):
 
 
 def perform_transformations(
-    mapping_definitions, table_definition, source_data_df, db_conn_details
+    mapping_definitions, table_definition, source_data_df, db_conn_string, db_schema
 ):
     final_df = source_data_df
 
@@ -94,6 +94,6 @@ def perform_transformations(
     if len(required_columns) > 0:
         final_df = add_required_columns(required_columns, final_df)
 
-    final_df = add_unique_id(db_conn_details, table_definition, final_df)
+    final_df = add_unique_id(db_conn_string, db_schema, table_definition, final_df)
 
     return final_df

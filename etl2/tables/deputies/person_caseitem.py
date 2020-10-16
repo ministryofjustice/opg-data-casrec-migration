@@ -12,12 +12,10 @@ def insert_person_caseitem_deputies(config, etl2_db):
         f'select "id", "caserecnumber" from etl2.persons '
         f"where \"type\" = 'actor_deputy';"
     )
-    persons_df = pd.read_sql_query(
-        persons_query, config["etl2_db"]["connection_string"]
-    )
+    persons_df = pd.read_sql_query(persons_query, config.connection_string)
 
     cases_query = f'select "id", "caserecnumber" from etl2.cases;'
-    cases_df = pd.read_sql_query(cases_query, config["etl2_db"]["connection_string"])
+    cases_df = pd.read_sql_query(cases_query, config.connection_string)
 
     person_caseitem_df = cases_df.merge(
         persons_df,

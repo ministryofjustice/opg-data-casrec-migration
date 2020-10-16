@@ -2,10 +2,6 @@ import re
 
 import pandas as pd
 
-from config import get_config
-
-config = get_config()
-
 
 class Mapping:
     def __init__(self, excel_doc, table_definitions):
@@ -25,11 +21,11 @@ class Mapping:
             if self.additional_columns
             else None
         )
-        self.limit = (
-            config["debug_mode"]["limit"]
-            if config["debug_mode"]["on"] == "True"
-            else None
-        )
+        # self.limit = (
+        #     config.row_limit
+        #     if config.row_limit is not None
+        #     else None
+        # )
 
     def _read_mapping_doc(self):
         sheet = pd.read_excel(io=self.excel_doc, sheet_name=self.sheet_name)
@@ -183,6 +179,6 @@ class Mapping:
             else:
                 statement += " "
         statement += f"FROM etl1.{self.source_table_name} "
-        if self.limit:
-            statement += f"LIMIT {self.limit}"
+        # if self.limit:
+        #     statement += f"LIMIT {self.limit}"
         return f"{statement};"

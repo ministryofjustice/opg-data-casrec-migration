@@ -9,12 +9,10 @@ definition = {
 def insert_person_notes(config, etl2_db):
 
     persons_query = f'select "id", "caserecnumber" from etl2.persons;'
-    persons_df = pd.read_sql_query(
-        persons_query, config["etl2_db"]["connection_string"]
-    )
+    persons_df = pd.read_sql_query(persons_query, config.connection_string)
 
     notes_query = f'select "id", "c_case" from etl2.notes;'
-    notes_df = pd.read_sql_query(notes_query, config["etl2_db"]["connection_string"])
+    notes_df = pd.read_sql_query(notes_query, config.connection_string)
 
     person_note_df = notes_df.merge(
         persons_df,

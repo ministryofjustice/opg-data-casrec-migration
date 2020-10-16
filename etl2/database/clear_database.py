@@ -3,7 +3,7 @@ import psycopg2
 
 
 def clear_tables(config):
-    conn = psycopg2.connect(config["etl2_db"]["connection_string"])
+    conn = psycopg2.connect(config.connection_string)
 
     cursor = conn.cursor()
 
@@ -18,8 +18,8 @@ def clear_tables(config):
     ]
 
     for t in tables:
-        print(f"drop table if exists {config['etl2_db']['schema_name']}.{t};")
-        cursor.execute(f"drop table if exists {config['etl2_db']['schema_name']}.{t};")
+        print(f"drop table if exists {config.etl2_schema}.{t};")
+        cursor.execute(f"drop table if exists {config.etl2_schema}.{t};")
 
     conn.commit()
     cursor.close()

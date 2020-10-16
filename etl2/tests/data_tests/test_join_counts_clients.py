@@ -1,41 +1,37 @@
 import pandas as pd
 import psycopg2
 
+from config import LocalConfig
 
-def test_joins_clients():
 
-    casrec_db_connection = psycopg2.connect(
-        "host=localhost port=6666 "
-        "dbname=casrecmigration "
-        "user=casrec "
-        "password=casrec"
-    )
+def test_joins_clients(get_config):
+    config = get_config
 
-    etl1_query = """
+    etl1_query = f"""
         select
            "Case" as caserecnumber,
            "Forename" as firstname,
            "Surname" as surname,
            1 as address_count,
-           (select count(*) from etl1."order" where "Case" = etl1.pat."Case") as cases,
-           (select count(*) from etl1."remarks" where "Case" = etl1.pat."Case") as notes
-        from etl1.pat;
+           (select count(*) from {config.etl1_schema}."order" where "Case" = etl1.pat."Case") as cases,
+           (select count(*) from {config.etl1_schema}."remarks" where "Case" = etl1.pat."Case") as notes
+        from {config.etl1_schema}.pat;
     """
 
-    etl2_query = """
+    etl2_query = f"""
         select
            persons.caserecnumber,
            persons.firstname,
            persons.surname,
-           (select count(*) from etl2.addresses as addresses where addresses.person_id = persons.id) as address_count,
-           (select count(*) from etl2.person_caseitem as person_caseitem where person_caseitem.person_id = persons.id) as cases,
-           (select count(*) from etl2.person_note as person_note where person_note.person_id = persons.id) as notes
-        from etl2.persons as persons
+           (select count(*) from {config.etl2_schema}.addresses as addresses where addresses.person_id = persons.id) as address_count,
+           (select count(*) from {config.etl2_schema}.person_caseitem as person_caseitem where person_caseitem.person_id = persons.id) as cases,
+           (select count(*) from {config.etl2_schema}.person_note as person_note where person_note.person_id = persons.id) as notes
+        from {config.etl2_schema}.persons as persons
         where persons.type = 'actor_client'
     """
 
-    etl1_df = pd.read_sql_query(etl1_query, casrec_db_connection)
-    etl2_df = pd.read_sql_query(etl2_query, casrec_db_connection)
+    etl1_df = pd.read_sql_query(etl1_query, config.connection_string)
+    etl2_df = pd.read_sql_query(etl2_query, config.connection_string)
 
     match = etl1_df.equals(etl2_df)
 

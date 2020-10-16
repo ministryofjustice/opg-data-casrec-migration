@@ -2,38 +2,33 @@ import pandas as pd
 import psycopg2
 
 
-def test_joins_deputies():
+def test_joins_deputies(get_config):
+    config = get_config
 
-    casrec_db_connection = psycopg2.connect(
-        "host=localhost port=6666 "
-        "dbname=casrecmigration "
-        "user=casrec "
-        "password=casrec"
-    )
-
-    etl1_query = """
+    etl1_query = f"""
         select
             "Dep Forename" as firstname,
             "Dep Surname" as surname,
            (select count(*)
-                from etl1.deputyship
-                inner join etl1."order"
-                    on etl1.deputyship."Case" = etl1."order"."Case"
-                    and etl1.deputyship."Order No" = etl1."order"."Order No"
-                where etl1.deputyship."Deputy No" = deputy."Deputy No") as cases
-        from etl1.deputy as deputy;
+                from {config.etl1_schema}.deputyship
+                inner join {config.etl1_schema}."order"
+                    on {config.etl1_schema}.deputyship."Case" = {config.etl1_schema}."order"."Case"
+                    and {config.etl1_schema}.deputyship."Order No" = {config.etl1_schema}."order"."Order No"
+                where {config.etl1_schema}.deputyship."Deputy No" = deputy."Deputy No") as cases
+        from {config.etl1_schema}.deputy as deputy;
     """
 
-    etl2_query = """
+    etl2_query = f"""
         select
                persons.firstname,
                persons.surname,
-               (select count(*) from etl2.order_deputy as order_deputy where order_deputy.deputy_id = persons.id) as cases
-        from etl2.persons as persons where persons.type = 'actor_deputy'
+               (select count(*) from {config.etl2_schema}.order_deputy as order_deputy where order_deputy.deputy_id = persons.id) as cases
+        from {config.etl2_schema}.persons as persons
+        where persons.type = 'actor_deputy'
     """
 
-    etl1_df = pd.read_sql_query(etl1_query, casrec_db_connection)
-    etl2_df = pd.read_sql_query(etl2_query, casrec_db_connection)
+    etl1_df = pd.read_sql_query(etl1_query, config.connection_string)
+    etl2_df = pd.read_sql_query(etl2_query, config.connection_string)
 
     match = etl1_df.equals(etl2_df)
 

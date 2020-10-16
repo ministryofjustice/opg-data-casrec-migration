@@ -14,26 +14,28 @@ definition = {
 def insert_addresses_clients(config, etl2_db):
 
     mapping_from_excel = Mapping(
-        excel_doc=config["mapping_document"]["excel_doc"], table_definitions=definition
+        excel_doc=config.mapping_document, table_definitions=definition
     )
     mapping_dict = mapping_from_excel.mapping_definitions()
     source_data_query = mapping_from_excel.generate_select_string_from_mapping()
 
     source_data_df = pd.read_sql_query(
-        sql=source_data_query, con=config["etl2_db"]["connection_string"]
+        sql=source_data_query, con=config.connection_string
     )
 
     addresses_df = transformations_from_mapping.perform_transformations(
-        mapping_dict, definition, source_data_df, config["etl2_db"]
+        mapping_dict,
+        definition,
+        source_data_df,
+        config.connection_string,
+        config.etl2_schema,
     )
 
     persons_query = (
         f'select "id", "caserecnumber" from etl2.persons '
         f"where \"type\" = 'actor_client';"
     )
-    persons_df = pd.read_sql_query(
-        persons_query, config["etl2_db"]["connection_string"]
-    )
+    persons_df = pd.read_sql_query(persons_query, config.connection_string)
 
     persons_df = persons_df[["id", "caserecnumber"]]
 
