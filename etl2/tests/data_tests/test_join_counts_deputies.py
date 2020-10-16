@@ -9,6 +9,8 @@ def test_joins_deputies(get_config):
         select
             "Dep Forename" as firstname,
             "Dep Surname" as surname,
+            (select count(distinct "Dep Addr No") from {config.etl1_schema}.deputyship
+                where {config.etl1_schema}.deputyship."Deputy No" = deputy."Deputy No") as address_count,
            (select count(*)
                 from {config.etl1_schema}.deputyship
                 inner join {config.etl1_schema}."order"
@@ -22,10 +24,14 @@ def test_joins_deputies(get_config):
         select
                persons.firstname,
                persons.surname,
+                (select count(*) from {config.etl2_schema}.addresses as addresses where addresses.person_id = persons.id) as address_count,
                (select count(*) from {config.etl2_schema}.order_deputy as order_deputy where order_deputy.deputy_id = persons.id) as cases
         from {config.etl2_schema}.persons as persons
         where persons.type = 'actor_deputy'
     """
+
+    print(f"etl1_query: {etl1_query}")
+    print(f"etl2_query: {etl2_query}")
 
     etl1_df = pd.read_sql_query(etl1_query, config.connection_string)
     etl2_df = pd.read_sql_query(etl2_query, config.connection_string)
