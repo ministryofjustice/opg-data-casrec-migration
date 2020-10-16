@@ -6,6 +6,7 @@ import pandas as pd
 definition = {
     "sheet_name": "cases",
     "source_table_name": "order",
+    "source_table_additional_columns": ["Order No"],
     "destination_table_name": "cases",
 }
 

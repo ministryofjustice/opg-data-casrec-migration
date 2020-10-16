@@ -10,11 +10,13 @@ from tables.cases.cases import insert_cases
 from tables.clients.addresses import insert_addresses_clients
 from tables.clients.persons import insert_persons_clients
 from tables.deputies.addresses import insert_addresses_deputies
-from tables.deputies.person_caseitem import insert_person_caseitem_deputies
+
 from tables.deputies.persons import insert_persons_deputies
 from tables.notes.notes import insert_notes
 from tables.notes.persons_note import insert_person_notes
-from tables.person_case.person_caseitem_client import insert_person_caseitem_clients
+from tables.person_case.order_deputy import insert_order_deputy
+from tables.person_case.person_caseitem import insert_person_caseitem
+
 
 config = get_config()
 
@@ -44,8 +46,8 @@ def main(clear):
     insert_cases(config, etl2_db)
 
     # Join Persons to Cases
-    insert_person_caseitem_clients(config, etl2_db)
-    insert_person_caseitem_deputies(config, etl2_db)
+    insert_person_caseitem(config, etl2_db)
+    insert_order_deputy(config, etl2_db)
 
     # Notes
     insert_notes(config, etl2_db)

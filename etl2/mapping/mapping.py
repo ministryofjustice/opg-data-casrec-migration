@@ -19,7 +19,7 @@ class Mapping:
         )
         self.additional_columns_list = (
             [
-                {"casrec_column_name": x, "alias": f"c_{x.lower()}"}
+                {"casrec_column_name": x, "alias": f"c_{x.lower().replace(' ', '_')}"}
                 for x in self.additional_columns
             ]
             if self.additional_columns

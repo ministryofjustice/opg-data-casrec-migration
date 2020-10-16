@@ -132,6 +132,7 @@ class InsertData:
         t = time.process_time()
 
         self.log.info(f"inserting {table_name} into " f"database....")
+        self.log.debug(df.sample(n=5).to_markdown())
 
         create_schema_statement = self._create_schema_statement()
         self.db_engine.execute(create_schema_statement)

@@ -14,6 +14,7 @@ def clear_tables(config):
         "notes",
         "person_caseitem",
         "person_note",
+        "order_deputy",
     ]
 
     for t in tables:

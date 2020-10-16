@@ -6,7 +6,7 @@ definition = {
 }
 
 
-def insert_person_caseitem_clients(config, etl2_db):
+def insert_person_caseitem(config, etl2_db):
 
     persons_query = (
         f'select "id", "caserecnumber" from etl2.persons '
