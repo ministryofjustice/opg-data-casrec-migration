@@ -9,8 +9,13 @@ def test_joins_deputies(get_config):
         select
             "Dep Forename" as firstname,
             "Dep Surname" as surname,
-            (select count(distinct "Dep Addr No") from {config.etl1_schema}.deputyship
-                where {config.etl1_schema}.deputyship."Deputy No" = deputy."Deputy No") as address_count,
+            (select count(distinct {config.etl1_schema}.deputy_address.*)
+                from {config.etl1_schema}.deputy_address
+                inner join {config.etl1_schema}.deputyship
+                on {config.etl1_schema}.deputy_address."Dep Addr No"
+                    = {config.etl1_schema}.deputyship."Dep Addr No"
+                where {config.etl1_schema}.deputyship."Deputy No"
+                    = deputy."Deputy No") as address_count,
            (select count(*)
                 from {config.etl1_schema}.deputyship
                 inner join {config.etl1_schema}."order"
@@ -24,8 +29,10 @@ def test_joins_deputies(get_config):
         select
                persons.firstname,
                persons.surname,
-                (select count(*) from {config.etl2_schema}.addresses as addresses where addresses.person_id = persons.id) as address_count,
-               (select count(*) from {config.etl2_schema}.order_deputy as order_deputy where order_deputy.deputy_id = persons.id) as cases
+                (select count(*) from {config.etl2_schema}.addresses as addresses
+                where cast(addresses.person_id as int) = persons.id) as address_count,
+               (select count(*) from {config.etl2_schema}.order_deputy as order_deputy
+                    where cast(order_deputy.deputy_id as int) = persons.id) as cases
         from {config.etl2_schema}.persons as persons
         where persons.type = 'actor_deputy'
     """

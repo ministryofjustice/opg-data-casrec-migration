@@ -33,7 +33,11 @@ class InsertData:
         columns = self._list_table_columns(df=df)
         create_statement = f'CREATE TABLE "{self.schema}"."{table_name}" ('
         for i, col in enumerate(columns):
-            create_statement += f'"{col}" text'
+            if col == "id":
+                datatype = "int"
+            else:
+                datatype = "text"
+            create_statement += f'"{col}" {datatype}'
             if i + 1 < len(columns):
                 create_statement += ","
         create_statement += ");"

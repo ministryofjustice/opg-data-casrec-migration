@@ -23,12 +23,18 @@ def test_joins_clients(get_config):
            persons.caserecnumber,
            persons.firstname,
            persons.surname,
-           (select count(*) from {config.etl2_schema}.addresses as addresses where addresses.person_id = persons.id) as address_count,
-           (select count(*) from {config.etl2_schema}.person_caseitem as person_caseitem where person_caseitem.person_id = persons.id) as cases,
-           (select count(*) from {config.etl2_schema}.person_note as person_note where person_note.person_id = persons.id) as notes
+           (select count(*) from {config.etl2_schema}.addresses as addresses
+                where cast(addresses.person_id as int) = persons.id) as address_count,
+           (select count(*) from {config.etl2_schema}.person_caseitem as person_caseitem
+                where cast(person_caseitem.person_id as int) = persons.id) as cases,
+           (select count(*) from {config.etl2_schema}.person_note as person_note
+                where cast(person_note.person_id as int) = persons.id) as notes
         from {config.etl2_schema}.persons as persons
         where persons.type = 'actor_client'
     """
+
+    print(etl1_query)
+    print(etl2_query)
 
     etl1_df = pd.read_sql_query(etl1_query, config.connection_string)
     etl2_df = pd.read_sql_query(etl2_query, config.connection_string)

@@ -1,5 +1,6 @@
 import pandas as pd
 
+from logger import custom_logger
 from transformations.standard_transformations import (
     unique_number,
     squash_columns,
