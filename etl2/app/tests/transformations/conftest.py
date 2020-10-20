@@ -2,6 +2,7 @@ import pytest
 
 from logger import custom_logger
 from transformations import transformations_from_mapping
+import pandas as pd
 
 logger = custom_logger(name="transformation_test")
 
@@ -36,3 +37,11 @@ def mock_standard_transformations(monkeypatch):
     monkeypatch.setattr(
         transformations_from_mapping, "unique_number", mock_unique_number
     )
+
+
+@pytest.fixture()
+def mock_max_id_from_db(monkeypatch):
+    def mock_df(query, db_conn):
+        return pd.DataFrame([55], columns=["max"])
+
+    monkeypatch.setattr(pd, "read_sql_query", mock_df)
