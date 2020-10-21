@@ -37,11 +37,3 @@ def mock_standard_transformations(monkeypatch):
     monkeypatch.setattr(
         transformations_from_mapping, "unique_number", mock_unique_number
     )
-
-
-@pytest.fixture()
-def mock_max_id_from_db(monkeypatch):
-    def mock_df(query, db_conn):
-        return pd.DataFrame([55], columns=["max"])
-
-    monkeypatch.setattr(pd, "read_sql_query", mock_df)
