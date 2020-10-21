@@ -37,3 +37,37 @@ def mock_standard_transformations(monkeypatch):
     monkeypatch.setattr(
         transformations_from_mapping, "unique_number", mock_unique_number
     )
+
+
+@pytest.fixture()
+def mock_transformation_steps(monkeypatch):
+    def mock_do_simple_mapping(mapping, table_defs, df):
+        logger.info("mock do_simple_mapping")
+        return df
+
+    def mock_do_simple_transformations(mapping, df):
+        logger.info("mock do_simple_transformations")
+        return df
+
+    def mock_add_required_columns(mapping, df):
+        logger.info("mock add_required_columns")
+        return df
+
+    def mock_add_unique_id(db_conn_string, db_schema, table_definition, df):
+        logger.info("mock add_unique_id")
+        return df
+
+    monkeypatch.setattr(
+        transformations_from_mapping, "do_simple_mapping", mock_do_simple_mapping
+    )
+    monkeypatch.setattr(
+        transformations_from_mapping,
+        "do_simple_transformations",
+        mock_do_simple_transformations,
+    )
+    monkeypatch.setattr(
+        transformations_from_mapping, "add_required_columns", mock_add_required_columns
+    )
+    monkeypatch.setattr(
+        transformations_from_mapping, "add_unique_id", mock_add_unique_id
+    )
