@@ -19,7 +19,10 @@ def squash_columns(
     return df
 
 
-def convert_to_bool(original_col, new_col, df, drop_original_col=True):
+def convert_to_bool(
+    original_col: str, new_col: str, df: pd.DataFrame, drop_original_col: bool = True,
+) -> pd.DataFrame:
+
     df[new_col] = df[original_col] == "1.0"
     if drop_original_col:
         df = df.drop(columns=original_col)
