@@ -48,10 +48,3 @@ def date_format_standard(
     df = df.rename(columns={"new": aggregate_col})
 
     return df
-
-
-def populate_required_columns(df: pd.DataFrame, required_cols: dict) -> pd.DataFrame:
-    for col, details in required_cols.items():
-        df[col] = details["default_value"]
-
-    return df
