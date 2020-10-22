@@ -2,11 +2,8 @@ from tests.transformations.standard_transformations.convert_to_bool import (
     cases_convert_to_bool_shape,
     cases_convert_to_bool_data,
 )
-from tests.transformations.standard_transformations.squash_columns import (
-    cases_squash_columns_shape,
-    cases_squash_columns_data,
-)
-from transformations.standard_transformations import squash_columns, convert_to_bool
+
+from transformations.standard_transformations import convert_to_bool
 from pytest_cases import parametrize_with_cases
 import pandas as pd
 

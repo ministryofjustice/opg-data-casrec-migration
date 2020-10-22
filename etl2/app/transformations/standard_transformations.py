@@ -29,7 +29,7 @@ def convert_to_bool(
     return df
 
 
-def unique_number(new_col, df, length=12):
+def unique_number(new_col: str, df: pd.DataFrame, length: int = 12) -> pd.DataFrame:
     df[new_col] = df.apply(
         lambda x: random.randint(10 ** (length - 1), 10 ** length - 1), axis=1
     )
@@ -37,7 +37,9 @@ def unique_number(new_col, df, length=12):
     return df
 
 
-def date_format_standard(original_col, aggregate_col, df):
+def date_format_standard(
+    original_col: str, aggregate_col: str, df: pd.DataFrame
+) -> pd.DataFrame:
     df["new"] = df[original_col].astype(str)
     df["new"] = pd.to_datetime(df["new"], format="%Y-%m-%d %H:%M:%S")
     df["new"] = [x.strftime("%Y-%m-%d") for x in df.new]
@@ -48,26 +50,8 @@ def date_format_standard(original_col, aggregate_col, df):
     return df
 
 
-def populate_required_columns(df, required_cols):
+def populate_required_columns(df: pd.DataFrame, required_cols: dict) -> pd.DataFrame:
     for col, details in required_cols.items():
         df[col] = details["default_value"]
-
-    return df
-
-
-def get_next_id(db_conn, db_schema, sirius_table_name):
-    query = f"select max(id) from {db_schema}.{sirius_table_name};"
-    try:
-        df = pd.read_sql_query(query, db_conn)
-        max_id = df.iloc[0]["max"]
-    except Exception:
-        max_id = 0
-    next_id = int(max_id) + 1
-
-    return next_id
-
-
-def add_incremental_ids(df, column_name, starting_number):
-    df.insert(0, column_name, range(starting_number, starting_number + len(df)))
 
     return df
