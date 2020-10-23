@@ -16,12 +16,15 @@ definition = {
 
 def insert_cases(config, etl2_db):
 
-    with open("tables/cases/mapping.json") as mapping:
-        mapping_dict = json.load(mapping)
+    mapping_from_excel = Mapping(
+        excel_doc=config.mapping_document, table_definitions=definition
+    )
+    mapping_dict = mapping_from_excel.mapping_definitions()
 
     source_data_query = generate_select_string_from_mapping(
         mapping=mapping_dict,
         source_table_name=definition["source_table_name"],
+        additional_columns=definition["source_table_additional_columns"],
         db_schema=config.etl1_schema,
     )
 
