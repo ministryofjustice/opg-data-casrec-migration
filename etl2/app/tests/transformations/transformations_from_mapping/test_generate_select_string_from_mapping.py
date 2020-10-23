@@ -3,16 +3,14 @@ import re
 from pytest_cases import parametrize_with_cases
 
 from tests.transformations.transformations_from_mapping.cases import (
-    cases_generate_select_statement_2,
+    cases_generate_select_statement,
 )
-from transformations.generate_source_query_new import (
-    generate_select_string_from_mapping,
-)
+from transformations.generate_source_query import generate_select_string_from_mapping
 
 
 @parametrize_with_cases(
     ("mapping", "source_table_name", "additional_columns", "expected_result"),
-    cases=cases_generate_select_statement_2,
+    cases=cases_generate_select_statement,
 )
 def test_generate_select_string_from_mapping(
     mapping, source_table_name, additional_columns, expected_result

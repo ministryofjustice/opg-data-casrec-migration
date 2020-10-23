@@ -123,7 +123,6 @@ class Mapping:
         required_columns.set_index("column_name", drop=True, inplace=True)
         required_columns_dict = required_columns.to_dict(orient="index")
 
-        print(required_columns_dict)
         return required_columns_dict
 
     def generate_mapping_df(self):
@@ -162,8 +161,6 @@ class Mapping:
         ]
 
         col_names_with_alias = cols.to_dict(orient="records")
-
-        print(f"col_names_with_alias: {col_names_with_alias}")
 
         if self.additional_columns_list:
             col_names_with_alias = col_names_with_alias + self.additional_columns_list
