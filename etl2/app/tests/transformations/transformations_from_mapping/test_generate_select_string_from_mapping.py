@@ -66,7 +66,7 @@ expected_result = """
 
 def test_generate_select_string_from_mapping():
     result = generate_select_string_from_mapping(
-        mapping, source_table_name, db_schema="etl1"
+        mapping, source_table_name, additional_columns, db_schema="etl1"
     )
 
     assert result.split() == expected_result.split()
