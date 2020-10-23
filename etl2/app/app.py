@@ -38,25 +38,25 @@ def main(clear):
         clear_tables(config)
 
     # Clients - personal details
-    # insert_persons_clients(config, etl2_db)
-    # insert_addresses_clients(config, etl2_db)
-    #
-    # # Deputies - personal details
-    # insert_persons_deputies(config, etl2_db)
-    # insert_addresses_deputies(config, etl2_db)
+    insert_persons_clients(config, etl2_db)
+    insert_addresses_clients(config, etl2_db)
+
+    # Deputies - personal details
+    insert_persons_deputies(config, etl2_db)
+    insert_addresses_deputies(config, etl2_db)
 
     # Cases
     insert_cases(config, etl2_db)
 
     # Join Persons to Cases
-    # insert_person_caseitem(config, etl2_db)
-    # insert_order_deputy(config, etl2_db)
-    #
-    # # Notes
-    # insert_notes(config, etl2_db)
-    #
-    # # Join Notes to Persons
-    # insert_person_notes(config, etl2_db)
+    insert_person_caseitem(config, etl2_db)
+    insert_order_deputy(config, etl2_db)
+
+    # Notes
+    insert_notes(config, etl2_db)
+
+    # Join Notes to Persons
+    insert_person_notes(config, etl2_db)
 
 
 if __name__ == "__main__":

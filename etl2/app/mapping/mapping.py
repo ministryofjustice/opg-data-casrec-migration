@@ -8,19 +8,19 @@ class Mapping:
         self.excel_doc = excel_doc
         self.sheet_name = table_definitions["sheet_name"]
         self.source_table_name = table_definitions["source_table_name"]
-        # self.additional_columns = (
-        #     table_definitions["source_table_additional_columns"]
-        #     if "source_table_additional_columns" in table_definitions
-        #     else None
-        # )
-        # self.additional_columns_list = (
-        #     [
-        #         {"casrec_column_name": x, "alias": f"c_{x.lower().replace(' ', '_')}"}
-        #         for x in self.additional_columns
-        #     ]
-        #     if self.additional_columns
-        #     else None
-        # )
+        self.additional_columns = (
+            table_definitions["source_table_additional_columns"]
+            if "source_table_additional_columns" in table_definitions
+            else None
+        )
+        self.additional_columns_list = (
+            [
+                {"casrec_column_name": x, "alias": f"c_{x.lower().replace(' ', '_')}"}
+                for x in self.additional_columns
+            ]
+            if self.additional_columns
+            else None
+        )
         # self.limit = (
         #     config.row_limit
         #     if config.row_limit is not None
@@ -152,38 +152,37 @@ class Mapping:
 
         return mapping_definitions
 
-    # def generate_select_string_from_mapping(self):
-    #     mapping = self.generate_mapping_df()
-    #
-    #     cols = mapping[mapping["casrec_column_name"].notna()]
-    #
-    #     cols = cols[cols["casrec_table"].str.lower() == self.source_table_name][
-    #         ["casrec_column_name", "alias"]
-    #     ]
-    #
-    #
-    #     col_names_with_alias = cols.to_dict(orient="records")
-    #
-    #     print(f"col_names_with_alias: {col_names_with_alias}")
-    #
-    #     if self.additional_columns_list:
-    #         col_names_with_alias = col_names_with_alias + self.additional_columns_list
-    #
-    #     statement = "SELECT "
-    #     for i, col in enumerate(col_names_with_alias):
-    #         if "," in col["casrec_column_name"]:
-    #             # split comma separated list of cols
-    #             # eg "Dep Adrs1,Dep Adrs2,Dep Adrs3"
-    #             statement += re.sub(
-    #                 r"([^,\s][^\,]*[^,\s]*)", r'"\1"', col["casrec_column_name"]
-    #             )
-    #         else:
-    #             statement += f"\"{col['casrec_column_name']}\" as \"{col['alias']}\""
-    #         if i + 1 < len(col_names_with_alias):
-    #             statement += ", "
-    #         else:
-    #             statement += " "
-    #     statement += f"FROM etl1.{self.source_table_name} "
-    #     # if self.limit:
-    #     #     statement += f"LIMIT {self.limit}"
-    #     return f"{statement};"
+    def generate_select_string_from_mapping(self):
+        mapping = self.generate_mapping_df()
+
+        cols = mapping[mapping["casrec_column_name"].notna()]
+
+        cols = cols[cols["casrec_table"].str.lower() == self.source_table_name][
+            ["casrec_column_name", "alias"]
+        ]
+
+        col_names_with_alias = cols.to_dict(orient="records")
+
+        print(f"col_names_with_alias: {col_names_with_alias}")
+
+        if self.additional_columns_list:
+            col_names_with_alias = col_names_with_alias + self.additional_columns_list
+
+        statement = "SELECT "
+        for i, col in enumerate(col_names_with_alias):
+            if "," in col["casrec_column_name"]:
+                # split comma separated list of cols
+                # eg "Dep Adrs1,Dep Adrs2,Dep Adrs3"
+                statement += re.sub(
+                    r"([^,\s][^\,]*[^,\s]*)", r'"\1"', col["casrec_column_name"]
+                )
+            else:
+                statement += f"\"{col['casrec_column_name']}\" as \"{col['alias']}\""
+            if i + 1 < len(col_names_with_alias):
+                statement += ", "
+            else:
+                statement += " "
+        statement += f"FROM etl1.{self.source_table_name} "
+        # if self.limit:
+        #     statement += f"LIMIT {self.limit}"
+        return f"{statement};"

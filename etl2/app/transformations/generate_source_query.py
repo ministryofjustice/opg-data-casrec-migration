@@ -9,7 +9,7 @@ def additional_cols(additional_columns):
 
 
 def generate_select_string_from_mapping(
-    mapping, source_table_name, additional_columns, db_schema
+    mapping, source_table_name, db_schema, additional_columns=[]
 ):
 
     cols = [
