@@ -1,5 +1,6 @@
 import re
 
+from transformations.generate_source_query import generate_select_string_from_mapping
 
 mapping = {
     "simple_mapping": {
@@ -49,44 +50,23 @@ source_table_name = "order"
 additional_columns = ["Order No"]
 
 
-def additional_cols(additional_columns):
-    return [
-        {"casrec_column_name": x, "alias": f"c_{x.lower().replace(' ', '_')}"}
-        for x in additional_columns
-    ]
+expected_result = """
+    SELECT
+        "Made Date" as "Made Date",
+        "Issue Date" as "Issue Date",
+        "Made Date" as "Made Date 1",
+        "Made Date" as "Made Date 2",
+        "Case" as "Case",
+        "Ord Type" as "Ord Type",
+        "rct" as "rct",
+        "Order No" as "c_order_no"
+    FROM etl1.order;
+"""
 
 
-def generate_select_string_from_mapping(mapping, source_table_name, db_schema):
+def test_generate_select_string_from_mapping():
+    result = generate_select_string_from_mapping(
+        mapping, source_table_name, db_schema="etl1"
+    )
 
-    cols = [
-        {"casrec_column_name": v["casrec_column_name"], "alias": v["alias"]}
-        for k, v in mapping["simple_mapping"].items()
-        if v["casrec_table"].lower() == source_table_name
-    ]
-
-    additional_columns_list = additional_cols(additional_columns)
-
-    col_names_with_alias = cols + additional_columns_list
-
-    statement = "SELECT "
-
-    for i, col in enumerate(col_names_with_alias):
-        if "," in col["casrec_column_name"]:
-            # split comma separated list of cols
-            # eg "Dep Adrs1,Dep Adrs2,Dep Adrs3"
-            statement += re.sub(
-                r"([^,\s][^\,]*[^,\s]*)", r'"\1"', col["casrec_column_name"]
-            )
-
-        else:
-            statement += f"\"{col['casrec_column_name']}\" as \"{col['alias']}\""
-
-        if i + 1 < len(col_names_with_alias):
-            statement += ", "
-
-        else:
-            statement += " "
-
-    statement += f"FROM {db_schema}.{source_table_name};"
-
-    return statement
+    assert result.split() == expected_result.split()
