@@ -1,4 +1,4 @@
-from mapping.mapping_2 import Mapping
+from mapping.mapping import Mapping
 from transformations import transformations_from_mapping
 import pandas as pd
 

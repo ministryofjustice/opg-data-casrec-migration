@@ -12,12 +12,14 @@ from transformations.standard_transformations import (
 def do_simple_mapping(
     simple_mapping: dict, table_definition: dict, source_data_df: pd.DataFrame
 ) -> pd.DataFrame:
+
     source_table_name = table_definition["source_table_name"]
+
     simple_column_remap = [
         {v["alias"]: k}
         for k, v in simple_mapping.items()
-        if v["casrec_table"].lower() == source_table_name
-        and v["casrec_column_name"] != "unknown"
+        if v["requires_transformation"] == ""
+        and v["casrec_table"].lower() == source_table_name
     ]
     columns = {k: v for d in simple_column_remap for k, v in d.items()}
 

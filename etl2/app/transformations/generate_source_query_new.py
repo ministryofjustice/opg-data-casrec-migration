@@ -10,7 +10,7 @@ def additional_cols(additional_columns: list) -> list:
 
 
 def generate_select_string_from_mapping(
-    mapping: dict, source_table_name: str, db_schema: str, additional_columns: list
+    mapping: dict, source_table_name: str, db_schema: str, additional_columns: list = []
 ) -> str:
 
     pp(mapping)
@@ -36,14 +36,6 @@ def generate_select_string_from_mapping(
     statement = "SELECT "
 
     for i, col in enumerate(col_names_with_alias):
-
-        # if "," in col["casrec_column_name"]:
-        #     # split comma separated list of cols
-        #     # eg "Dep Adrs1,Dep Adrs2,Dep Adrs3"
-        #     statement += re.sub(
-        #         r"([^,\s][^\,]*[^,\s]*)", r'"\1"', col["casrec_column_name"]
-        #     )
-
         if isinstance(col["casrec_column_name"], list):
 
             for j, c in enumerate(col["casrec_column_name"]):
