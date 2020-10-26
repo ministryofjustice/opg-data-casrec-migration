@@ -1,6 +1,6 @@
 import pandas as pd
 from sqlalchemy import create_engine
-from config import LocalConfig, SiriusConfig
+from config import CasrecMigConfig, SiriusConfig
 from sqlalchemy.types import (
     Integer,
     Text,
@@ -12,11 +12,9 @@ from sqlalchemy.types import (
     Boolean,
     JSON,
 )
-import json
 
-db_engine = create_engine(LocalConfig.connection_string)
+db_engine = create_engine(CasrecMigConfig.connection_string)
 sirius_db_engine = create_engine(SiriusConfig.connection_string)
-# sirius_db_engine = create_engine(SiriusConfig.connection_string, echo=True)
 
 print("Updating the skeleton clients")
 print("- People")
@@ -112,9 +110,7 @@ updatesql = (
     "FROM addresses_migrated migrated "
     "WHERE migrated.id = addresses.id"
 )
-#             "county = migrated.county, " \
-#             "postcode = migrated.postcode, " \
-#             "isairmailrequired = migrated.isairmailrequired " \
+
 sirius_db_engine.execute(updatesql)
 
 
@@ -196,7 +192,7 @@ sirius_persons = pd.read_sql_query(sql, con=sirius_db_engine, index_col=None)
 sirius_persons.to_sql(
     "sirius_map_persons",
     con=db_engine,
-    schema=LocalConfig.etl3_schema,
+    schema=CasrecMigConfig.etl3_schema,
     if_exists="replace",
     index=False,
     chunksize=500,
@@ -285,53 +281,3 @@ cases_df.to_sql(
         "statusdate": Date,
     },
 )
-
-
-# sql = "SELECT * " \
-#       "FROM persons " \
-#       "ORDER BY id DESC"
-# sirius_persons_df = pd.read_sql_query(sql, con=sirius_db_engine, index_col=None)
-# sirius_persons_df.update(persons_df)
-
-# # Option 1 build update statements
-# def generate_sql_update_from_df(source_df, table):
-#     statements = []
-#     sql_texts = []
-#     for index, row in source_df.iterrows():
-#         colUpdates = ''
-#         for column in source_df.columns:
-#         print(column)
-#         statement = f"UPDATE {table} updates WHERE id = sirius_id"
-#         statements.append(statement)
-#     return statements
-#
-# print(generate_sql_update_from_df(source_df=persons_df, table='persons'))
-
-# def SQL_INSERT_STATEMENT_FROM_DATAFRAME(source_df, target_table):
-#     sql_texts = []
-#     for index, row in sirius_db_engine.iterrows():
-#         sql_texts.append('INSERT INTO '+TARGET+' ('+ str(', '.join(SOURCE.columns))+ ') VALUES '+ str(tuple(row.values)))
-#     return sql_texts
-
-
-# if you fancy dropping all the constraints!
-# sirius_persons_df.to_sql(
-#     'persons',
-#     sirius_db_engine,
-#     if_exists='replace',
-#     index=False,
-#     chunksize=500,
-#     dtype={
-#         "firstname": String(255),
-#         "surname": String(255),
-#         "createddate": TIMESTAMP(),
-#         "type": String(255),
-#         "caserecnumber": String(255),
-#         "correspondencebypost": Boolean,
-#         "correspondencebyphone": Boolean,
-#         "correspondencebyemail": Boolean,
-#         "uid": BigInteger,
-#         "clientsource": String(255),
-#         "supervisioncaseowner_id": Integer
-#     }
-# )

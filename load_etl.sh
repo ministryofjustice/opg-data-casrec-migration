@@ -24,3 +24,4 @@ cat docker_load.log
 rm docker_load.log
 docker-compose run --rm transform_casrec python3 app.py --clear=True
 docker-compose run --rm stage_sirius_transform ./stage_sirius_transform.sh
+docker-compose run --rm load_sirius ./run_load.sh
