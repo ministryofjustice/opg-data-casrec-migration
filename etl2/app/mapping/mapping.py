@@ -77,14 +77,3 @@ class Mapping:
         pp(mapping_definitions)
 
         return mapping_definitions
-
-
-#
-# def convert_to_list(columns:str) -> list:
-#     if ',' in columns:
-#         return columns.replace('"', '').replace(' ','').split(',')
-#     else:
-#         return columns
-#
-#
-# re.sub(r"([^,\s][^\,]*[^,\s]*)", r'"\1"', x)
