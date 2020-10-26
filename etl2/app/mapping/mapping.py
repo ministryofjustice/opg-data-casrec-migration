@@ -12,8 +12,6 @@ class Mapping:
     def _read_mapping_doc(self):
         sheet = pd.read_excel(io=self.excel_doc, sheet_name=self.sheet_name)
 
-        # print(f"\n{sheet.to_markdown()}")
-
         return sheet
 
     def _apply_column_alias(self, df):
