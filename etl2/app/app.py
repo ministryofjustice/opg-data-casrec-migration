@@ -37,25 +37,25 @@ def main(clear):
     if clear:
         clear_tables(config)
 
-    # Clients - personal details
+    # # Clients - personal details
     insert_persons_clients(config, etl2_db)
     insert_addresses_clients(config, etl2_db)
-
-    # Deputies - personal details
+    #
+    # # Deputies - personal details
     insert_persons_deputies(config, etl2_db)
     insert_addresses_deputies(config, etl2_db)
 
     # Cases
     insert_cases(config, etl2_db)
 
-    # Join Persons to Cases
+    # # Join Persons to Cases
     insert_person_caseitem(config, etl2_db)
     insert_order_deputy(config, etl2_db)
-
-    # Notes
+    #
+    # # Notes
     insert_notes(config, etl2_db)
-
-    # Join Notes to Persons
+    #
+    # # Join Notes to Persons
     insert_person_notes(config, etl2_db)
 
 

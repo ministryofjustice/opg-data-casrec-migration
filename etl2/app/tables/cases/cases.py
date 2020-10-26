@@ -3,9 +3,7 @@ from transformations import transformations_from_mapping
 import pandas as pd
 
 
-from transformations.generate_source_query_new import (
-    generate_select_string_from_mapping,
-)
+from transformations.generate_source_query import generate_select_string_from_mapping
 
 definition = {
     "sheet_name": "cases",

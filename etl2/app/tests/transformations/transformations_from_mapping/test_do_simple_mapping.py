@@ -7,16 +7,19 @@ test_simple_mapping_dict = {
         "casrec_table": "REMARKS",
         "casrec_column_name": "Log Type",
         "alias": "Log Type",
+        "requires_transformation": "",
     },
     "description": {
         "casrec_table": "REMARKS",
         "casrec_column_name": "Remarks",
         "alias": "Remarks",
+        "requires_transformation": "",
     },
     "createdtime": {
         "casrec_table": "REMARKS",
         "casrec_column_name": "Logdate",
         "alias": "Logdate",
+        "requires_transformation": "",
     },
 }
 

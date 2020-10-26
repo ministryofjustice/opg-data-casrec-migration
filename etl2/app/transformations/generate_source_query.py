@@ -3,6 +3,7 @@ from beeprint import pp
 
 
 def additional_cols(additional_columns: list) -> list:
+    print("ADDITIONAL COLUMNS")
     return [
         {"casrec_column_name": x, "alias": f"c_{x.lower().replace(' ', '_')}"}
         for x in additional_columns

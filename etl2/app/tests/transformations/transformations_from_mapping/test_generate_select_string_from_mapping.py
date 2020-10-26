@@ -4,7 +4,7 @@ from tests.transformations.transformations_from_mapping.cases import (
     cases_generate_select_statement_2,
 )
 
-from transformations.generate_source_query_new import (
+from transformations.generate_source_query import (
     generate_select_string_from_mapping as generate_select_string_from_mapping_2,
 )
 
