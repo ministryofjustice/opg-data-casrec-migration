@@ -26,6 +26,8 @@ db_schema = "db_schema"
 
 @parametrize_with_cases(("mapping", "log_message"), cases=cases_steps_called)
 def test_correct_steps_called(caplog, mock_transformation_steps, mapping, log_message):
+
+    print(mapping)
     perform_transformations(
         mapping, table_definition, test_source_data_df, db_conn_string, db_schema
     )
