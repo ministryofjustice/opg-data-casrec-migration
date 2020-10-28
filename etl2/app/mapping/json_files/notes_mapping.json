@@ -1,0 +1,30 @@
+{
+    "status": {
+        "casrec_table": "REMARKS",
+        "casrec_column_name": "Log Type",
+        "alias": "Log Type",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "description": {
+        "casrec_table": "REMARKS",
+        "casrec_column_name": "Remarks",
+        "alias": "Remarks",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "createdtime": {
+        "casrec_table": "REMARKS",
+        "casrec_column_name": "Logdate",
+        "alias": "Logdate",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "direction": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "default_direction"
+    }
+}

@@ -1,0 +1,72 @@
+{
+    "casetype": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "ORDER"
+    },
+    "uid": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "unique_number",
+        "default_value": ""
+    },
+    "type": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "order"
+    },
+    "orderdate": {
+        "casrec_table": "ORDER",
+        "casrec_column_name": "Made Date",
+        "alias": "Made Date",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "orderissuedate": {
+        "casrec_table": "ORDER",
+        "casrec_column_name": "Issue Date",
+        "alias": "Issue Date",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "securitybond": {
+        "casrec_table": "ORDER",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "orderexpirydate": {
+        "casrec_table": "ORDER",
+        "casrec_column_name": "Made Date",
+        "alias": "Made Date 1",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "statusdate": {
+        "casrec_table": "ORDER",
+        "casrec_column_name": "Made Date",
+        "alias": "Made Date 2",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "caserecnumber": {
+        "casrec_table": "ORDER",
+        "casrec_column_name": "Case",
+        "alias": "Case",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "ordersubtype": {
+        "casrec_table": "ORDER",
+        "casrec_column_name": "Ord Type",
+        "alias": "Ord Type",
+        "requires_transformation": "",
+        "default_value": ""
+    }
+}

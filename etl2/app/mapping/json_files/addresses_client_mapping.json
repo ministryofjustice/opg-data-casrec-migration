@@ -1,0 +1,59 @@
+{
+    "id": {
+        "casrec_table": "PAT",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "person_id": {
+        "casrec_table": "PAT",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "address_lines": {
+        "casrec_table": "PAT",
+        "casrec_column_name": [
+            "Adrs1",
+            "Adrs2",
+            "Adrs3"
+        ],
+        "alias": [
+            "Adrs1",
+            "Adrs2",
+            "Adrs3"
+        ],
+        "requires_transformation": "squash_columns",
+        "default_value": ""
+    },
+    "town": {
+        "casrec_table": "PAT",
+        "casrec_column_name": "Adrs4",
+        "alias": "Adrs4",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "county": {
+        "casrec_table": "PAT",
+        "casrec_column_name": "Adrs5",
+        "alias": "Adrs5",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "postcode": {
+        "casrec_table": "PAT",
+        "casrec_column_name": "Postcode",
+        "alias": "Postcode",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "isairmailrequired": {
+        "casrec_table": "PAT",
+        "casrec_column_name": "Foreign",
+        "alias": "Foreign",
+        "requires_transformation": "convert_to_bool",
+        "default_value": ""
+    }
+}
