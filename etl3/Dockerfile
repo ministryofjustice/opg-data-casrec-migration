@@ -9,4 +9,5 @@ COPY ./app /app
 WORKDIR app
 RUN chmod 755 stage_sirius_transform.sh
 RUN chmod 755 app.py
+RUN chmod 755 fixtures.py
 CMD ["tail", "-f", "/dev/null"]

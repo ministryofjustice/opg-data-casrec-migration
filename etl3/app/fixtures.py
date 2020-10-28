@@ -33,8 +33,8 @@ sql = "DELETE FROM addresses WHERE person_id > 179; "
 sql += "DELETE FROM person_note WHERE person_id > 179; "
 sql += "DELETE FROM person_caseitem WHERE person_id > 179; "
 sql += "DELETE FROM notes WHERE id > 16; "
-sql += "DELETE FROM persons WHERE id > 179; "
 sql += "DELETE FROM cases WHERE id > 61; "
+sql += "DELETE FROM persons WHERE id > 179; "
 sirius_db_engine.execute(sql)
 sql = "UPDATE etl3.persons SET sirius_id = null WHERE sirius_id IS NOT NULL; "
 db_engine.execute(sql)
