@@ -1,3 +1,5 @@
+import json
+
 from logger import custom_logger
 from mapping.mapping import Mapping
 from transformations import transformations_from_mapping
@@ -15,12 +17,8 @@ definition = {
 
 def insert_persons_deputies(config, etl2_db):
 
-    print("DEPUTIES")
-
-    mapping_from_excel = Mapping(
-        excel_doc=config.mapping_document, sheet_name=definition["sheet_name"]
-    )
-    mapping_dict = mapping_from_excel.mapping_definitions()
+    with open("mapping/json_files/persons_deputy_mapping.json") as mapping_json:
+        mapping_dict = json.load(mapping_json)
 
     source_data_query = generate_select_string_from_mapping(
         mapping=mapping_dict,
