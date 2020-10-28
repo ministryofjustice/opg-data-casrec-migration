@@ -1,0 +1,45 @@
+{
+    "address_lines": {
+        "casrec_table": "DEPUTY_ADDRESS",
+        "casrec_column_name": [
+            "Dep Adrs1",
+            "Dep Adrs2",
+            "Dep Adrs3"
+        ],
+        "alias": [
+            "Dep Adrs1",
+            "Dep Adrs2",
+            "Dep Adrs3"
+        ],
+        "requires_transformation": "squash_columns",
+        "default_value": ""
+    },
+    "town": {
+        "casrec_table": "DEPUTY_ADDRESS",
+        "casrec_column_name": "Dep Adrs4",
+        "alias": "Dep Adrs4",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "county": {
+        "casrec_table": "DEPUTY_ADDRESS",
+        "casrec_column_name": "Dep Adrs5",
+        "alias": "Dep Adrs5",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "postcode": {
+        "casrec_table": "DEPUTY_ADDRESS",
+        "casrec_column_name": "Dep Postcode",
+        "alias": "Dep Postcode",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "isairmailrequired": {
+        "casrec_table": "DEPUTY_ADDRESS",
+        "casrec_column_name": "Foreign",
+        "alias": "Foreign",
+        "requires_transformation": "convert_to_bool",
+        "default_value": ""
+    }
+}
