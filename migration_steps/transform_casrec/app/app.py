@@ -4,26 +4,14 @@ import os
 from sqlalchemy import create_engine
 import click
 
+from entities import cases, clients, order_deputy, notes, deputies, person_case
+from entities.person_case import person_caseitem
 from utilities.clear_database import clear_tables
 from utilities.db_insert import InsertData
-from entities.cases.cases import insert_cases
-from entities.clients.addresses import insert_addresses_clients
-from entities.clients.persons import insert_persons_clients
-from entities.deputies.addresses import insert_addresses_deputies
 
-from entities.deputies.persons import insert_persons_deputies
-from entities.notes.notes import insert_notes
-from entities.notes.persons_note import insert_person_notes
-from entities.person_case.order_deputy import insert_order_deputy
-from entities.person_case.person_caseitem import insert_person_caseitem
-from config import LocalConfig, get_config
-from pathlib import Path
-from dotenv import load_dotenv
+# from entities.cases.cases import insert_cases
 
-
-current_path = Path(os.path.dirname(os.path.realpath(__file__)))
-env_path = current_path / ".env"
-load_dotenv(dotenv_path=env_path)
+from config import get_config
 
 environment = os.environ.get("ENVIRONMENT")
 
@@ -38,31 +26,36 @@ etl2_db = InsertData(
 
 @click.command()
 @click.option("--clear", prompt=False, default=False)
-def main(clear):
+@click.option("--entity_list", multiple=True, prompt=False)
+def main(clear, entity_list):
 
     if clear:
         clear_tables(config)
 
-    # Clients - personal details
-    insert_persons_clients(config, etl2_db)
-    insert_addresses_clients(config, etl2_db)
+    if entity_list:
+        allowed_entities = (entity_list)[0].split(",")
 
-    # Deputies - personal details
-    insert_persons_deputies(config, etl2_db)
-    insert_addresses_deputies(config, etl2_db)
+        print(f"Processing entities: {(', ').join(entity_list)}")
 
-    # Cases
-    insert_cases(config, etl2_db)
+    else:
+        allowed_entities = []
+        print("Processing all entities")
 
-    # Join Persons to Cases
-    insert_person_caseitem(config, etl2_db)
-    insert_order_deputy(config, etl2_db)
+    # Data - each entity can be run independently
+    if len(allowed_entities) == 0 or "clients" in allowed_entities:
+        clients.runner(config, etl2_db)
+    if len(allowed_entities) == 0 or "deputies" in allowed_entities:
+        deputies.runner(config, etl2_db)
+    if len(allowed_entities) == 0 or "cases" in allowed_entities:
+        cases.runner(config, etl2_db)
+    if len(allowed_entities) == 0 or "notes" in allowed_entities:
+        notes.runner(config, etl2_db)
 
-    # Notes
-    insert_notes(config, etl2_db)
-
-    # Join Notes to Persons
-    insert_person_notes(config, etl2_db)
+    # Join tables - rely on other entities to run
+    if len(allowed_entities) == 0 or "person_case" in allowed_entities:
+        person_case.runner(config, etl2_db)
+    if len(allowed_entities) == 0 or "order_deputy" in allowed_entities:
+        order_deputy.runner(config, etl2_db)
 
 
 if __name__ == "__main__":

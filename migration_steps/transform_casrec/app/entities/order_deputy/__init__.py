@@ -1,15 +1,15 @@
-from entities.person_case.person_caseitem import insert_person_caseitem
+from entities.order_deputy.order_deputy import insert_order_deputy
 
 
 def runner(config, etl2_db):
     """
     | Name                  | Running Order | Requires          |
     | --------------------- | ------------- | ----------------- |
-    | person_caseitem       | 1             | persons, cases    |
+    | order_deputy          | 1             | deputies, cases   |
     |                       |               |                   |
 
     """
-    insert_person_caseitem(config, etl2_db)
+    insert_order_deputy(config, etl2_db)
 
 
 if __name__ == "__main__":
