@@ -1,8 +1,13 @@
+import logging
 import sys
 import psycopg2
 
+log = logging.getLogger("root")
+
 
 def clear_tables(config):
+    log.info("Clearing tables")
+
     conn = psycopg2.connect(config.connection_string)
 
     cursor = conn.cursor()
@@ -18,7 +23,7 @@ def clear_tables(config):
     ]
 
     for t in tables:
-        print(f"drop table if exists {config.etl2_schema}.{t};")
+        log.log(config.VERBOSE, (f"drop table if exists {config.etl2_schema}.{t};"))
         cursor.execute(f"drop table if exists {config.etl2_schema}.{t};")
 
     conn.commit()

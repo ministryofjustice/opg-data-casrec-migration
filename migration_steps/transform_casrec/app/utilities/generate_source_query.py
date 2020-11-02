@@ -1,9 +1,17 @@
 import re
 from beeprint import pp
+import os
+import logging
+
+from config import get_config
+
+log = logging.getLogger("root")
+environment = os.environ.get("ENVIRONMENT")
+
+config = get_config(env=environment)
 
 
 def additional_cols(additional_columns: list) -> list:
-    print("ADDITIONAL COLUMNS")
     return [
         {"casrec_column_name": x, "alias": f"c_{x.lower().replace(' ', '_')}"}
         for x in additional_columns
@@ -13,8 +21,6 @@ def additional_cols(additional_columns: list) -> list:
 def generate_select_string_from_mapping(
     mapping: dict, source_table_name: str, db_schema: str, additional_columns: list = []
 ) -> str:
-
-    pp(mapping)
 
     cols = []
     for destination_column, source_details in mapping.items():
@@ -31,6 +37,16 @@ def generate_select_string_from_mapping(
             cols.append({"casrec_column_name": col_name, "alias": alias})
 
     additional_columns_list = additional_cols(additional_columns)
+
+    log.log(
+        config.VERBOSE,
+        f"columns from mapping: " f"{[x['casrec_column_name'] for x in cols]}",
+    )
+    log.log(
+        config.VERBOSE,
+        f"additional columns: "
+        f"{[x['casrec_column_name'] for x in additional_columns_list]}",
+    )
 
     col_names_with_alias = cols + additional_columns_list
 
@@ -55,6 +71,6 @@ def generate_select_string_from_mapping(
 
     statement += f"FROM {db_schema}.{source_table_name};"
 
-    print(statement)
+    log.debug(f"Using SQL statement to select from source database:\n{statement}")
 
     return statement

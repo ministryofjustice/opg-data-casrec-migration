@@ -2,7 +2,7 @@ import json
 
 import pandas as pd
 
-from logger import custom_logger
+
 from utilities import transformations_from_mapping
 from utilities.generate_source_query import generate_select_string_from_mapping
 from utilities.json_helpers import get_mapping_file
@@ -13,8 +13,6 @@ definition = {
     "source_table_additional_columns": ["Dep Addr No"],
     "destination_table_name": "addresses",
 }
-
-log = custom_logger()
 
 
 def insert_addresses_deputies(config, etl2_db):

@@ -1,6 +1,15 @@
 import json
 import random
 import pandas as pd
+import os
+import logging
+
+from config import get_config
+
+log = logging.getLogger("root")
+environment = os.environ.get("ENVIRONMENT")
+
+config = get_config(env=environment)
 
 
 def squash_columns(

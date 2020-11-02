@@ -1,26 +1,19 @@
 import logging
+import os
 import time
-import sys
+
+from config import get_config
+
+log = logging.getLogger("root")
+environment = os.environ.get("ENVIRONMENT")
+
+config = get_config(env=environment)
 
 
 class InsertData:
-    def __init__(self, db_engine, schema, is_verbose=False):
+    def __init__(self, db_engine, schema):
         self.db_engine = db_engine
         self.schema = schema
-
-        if is_verbose:
-            self.log_level = logging.DEBUG
-        else:
-            self.log_level = logging.INFO
-
-        self.log = logging.getLogger(__name__)
-        self.log.setLevel(self.log_level)
-
-        log_format = logging.Formatter("[%(asctime)s] [%(levelname)s] - %(message)s")
-        handler = logging.StreamHandler(sys.stdout)
-        handler.setLevel(self.log_level)
-        handler.setFormatter(log_format)
-        self.log.addHandler(handler)
 
     def _list_table_columns(self, df):
         return [x for x in df.columns.values]
@@ -135,8 +128,10 @@ class InsertData:
 
         t = time.process_time()
 
-        self.log.info(f"inserting {table_name} into " f"database....")
-        self.log.debug(df.sample(n=5).to_markdown())
+        # self.log.info(f"inserting {table_name} into " f"database....")
+        # self.log.debug(df.sample(n=5).to_markdown())
+        log.debug(f"inserting {table_name} into " f"database....")
+        log.log(config.VERBOSE, f"\n{df.sample(n=5).to_markdown()}")
 
         create_schema_statement = self._create_schema_statement()
         self.db_engine.execute(create_schema_statement)
@@ -165,7 +160,7 @@ class InsertData:
 
         inserted_count = len(df)
 
-        self.log.info(
-            f"inserted {inserted_count} records into '{table_name}' "
-            f"table in {round(time.process_time() - t, 2)} seconds\n==============\n\n"
+        log.info(
+            f"Inserted {inserted_count} records into '{table_name}' "
+            f"table in {round(time.process_time() - t, 2)} seconds"
         )

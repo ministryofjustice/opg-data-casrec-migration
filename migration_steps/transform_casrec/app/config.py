@@ -12,6 +12,7 @@ class BaseConfig:
 
 class LocalConfig(BaseConfig):
     connection_string = f"postgresql://casrec:casrec@localhost:6666/casrecmigration"  # pragma: allowlist secret
+    VERBOSE = 5
 
 
 class AWSConfig(BaseConfig):

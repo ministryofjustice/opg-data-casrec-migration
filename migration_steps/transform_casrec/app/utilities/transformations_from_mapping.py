@@ -8,6 +8,16 @@ from utilities.standard_transformations import (
     date_format_standard,
 )
 
+import os
+import logging
+
+from config import get_config
+
+log = logging.getLogger("root")
+environment = os.environ.get("ENVIRONMENT")
+
+config = get_config(env=environment)
+
 
 def do_simple_mapping(
     simple_mapping: dict, table_definition: dict, source_data_df: pd.DataFrame
@@ -113,7 +123,6 @@ def get_transformations(mapping_definitions: dict) -> dict:
         else:
             transformations[tr] = [d]
 
-    pp(transformations)
     return transformations
 
 
@@ -141,7 +150,7 @@ def perform_transformations(
     if len(simple_mapping) > 0:
         final_df = do_simple_mapping(simple_mapping, table_definition, final_df)
 
-        print(final_df.head().to_markdown())
+        log.log(config.VERBOSE, f"\n{final_df.head().to_markdown()}")
 
     if len(transformations) > 0:
         final_df = do_simple_transformations(transformations, final_df)

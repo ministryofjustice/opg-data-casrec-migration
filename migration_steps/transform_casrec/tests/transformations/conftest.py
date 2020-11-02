@@ -1,6 +1,6 @@
 import pytest
 
-from logger import custom_logger
+from custom_logger import custom_logger
 from utilities import transformations_from_mapping
 import pandas as pd
 
