@@ -1,9 +1,11 @@
 import pandas as pd
 import psycopg2
+import pytest
 
 from config import LocalConfig
 
 
+@pytest.mark.skip(reason="not required")
 def test_joins_clients(get_config):
     config = get_config
 

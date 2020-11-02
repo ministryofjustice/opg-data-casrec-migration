@@ -1,7 +1,9 @@
 import pandas as pd
 import psycopg2
+import pytest
 
 
+@pytest.mark.skip(reason="not required")
 def test_joins_deputies(get_config):
     config = get_config
 

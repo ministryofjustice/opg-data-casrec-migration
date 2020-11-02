@@ -5,11 +5,11 @@ import pandas as pd
 
 
 class Mapping:
-    def __init__(self, excel_doc: str, columns: List[str] = []):
+    def __init__(self, excel_doc: str, output_folder: str, columns: List[str] = []):
         self.excel_doc = excel_doc
         self.index_column = "column_name"
         self.source_column_name = "casrec_column_name"
-        self.json_path = os.path.join("mapping", "json_files")
+        self.json_path = output_folder
         self.default_columns = [
             "casrec_table",
             "casrec_column_name",
@@ -122,7 +122,3 @@ class Mapping:
                     self.export_single_module_as_json_file(
                         module_name=name, mapping_dict=module_dict
                     )
-
-
-# mapping = Mapping(excel_doc="docs/mapping_doc_mini.xlsx")
-# mapping.generate_json_files()
