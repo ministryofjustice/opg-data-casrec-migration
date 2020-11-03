@@ -4,7 +4,7 @@ import pandas as pd
 
 from utilities import transformations_from_mapping
 from utilities.generate_source_query import generate_select_string_from_mapping
-from utilities.json_helpers import get_mapping_file
+from utilities.helpers import get_mapping_file
 
 definition = {
     "sheet_name": "addresses (Client)",

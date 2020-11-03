@@ -1,4 +1,9 @@
+import logging
+
 from entities.order_deputy.order_deputy import insert_order_deputy
+from utilities.helpers import log_title
+
+log = logging.getLogger("root")
 
 
 def runner(config, etl2_db):
@@ -9,6 +14,10 @@ def runner(config, etl2_db):
     |                       |               |                   |
 
     """
+
+    log.info(log_title(message="order_deputy"))
+
+    log.debug("insert_order_deputy")
     insert_order_deputy(config, etl2_db)
 
 

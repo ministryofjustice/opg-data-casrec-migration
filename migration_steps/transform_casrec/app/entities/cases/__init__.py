@@ -1,4 +1,9 @@
+import logging
+
 from entities.cases.cases import insert_cases
+from utilities.helpers import log_title
+
+log = logging.getLogger("root")
 
 
 def runner(config, etl2_db):
@@ -9,6 +14,10 @@ def runner(config, etl2_db):
     |           |               |          |
 
     """
+
+    log.info(log_title(message="cases"))
+
+    log.debug("insert_cases")
     insert_cases(config, etl2_db)
 
 
