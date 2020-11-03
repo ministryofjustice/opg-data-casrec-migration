@@ -14,32 +14,36 @@ from utilities.db_insert import InsertData
 from config import get_config
 
 
-def verbose(msg, *args, **kwargs):
-    if logging.getLogger().isEnabledFor(5):
-        logging.log(5, msg)
+# set config
+environment = os.environ.get("ENVIRONMENT")
+config = get_config(env=environment)
 
-
+# logging
 log = logging.getLogger("root")
 log.addHandler(custom_logger.MyHandler())
 
-VERBOSE = 5
-logging.addLevelName(VERBOSE, "VERBOSE")
-logging.Logger.verbose = verbose
+config.custom_log_level()
+verbosity_levels = config.verbosity_levels
 
-verbosity_levels = {0: "INFO", 1: "DEBUG", 2: "VERBOSE"}
-
-environment = os.environ.get("ENVIRONMENT")
-
-config = get_config(env=environment)
-
+# database
 etl2_db_engine = create_engine(config.connection_string)
 
 etl2_db = InsertData(db_engine=etl2_db_engine, schema=config.etl2_schema)
 
 
 @click.command()
-@click.option("--clear", prompt=False, default=False)
-@click.option("--entity_list", multiple=True, prompt=False)
+@click.option(
+    "--clear",
+    prompt=False,
+    default=False,
+    help="Clear existing database tables: True or False",
+)
+@click.option(
+    "--entity_list",
+    multiple=True,
+    prompt=False,
+    help="List of entities you want to transform, eg 'clients,deputies,cases'.",
+)
 @click.option("-v", "--verbose", count=True)
 def main(clear, entity_list, verbose):
 

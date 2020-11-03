@@ -150,7 +150,7 @@ def perform_transformations(
     if len(simple_mapping) > 0:
         final_df = do_simple_mapping(simple_mapping, table_definition, final_df)
 
-        log.log(config.VERBOSE, f"\n{final_df.head().to_markdown()}")
+        log.log(config.DATA, f"\n{final_df.sample(n=config.row_limit).to_markdown()}")
 
     if len(transformations) > 0:
         final_df = do_simple_transformations(transformations, final_df)

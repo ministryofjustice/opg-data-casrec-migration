@@ -131,7 +131,7 @@ class InsertData:
         # self.log.info(f"inserting {table_name} into " f"database....")
         # self.log.debug(df.sample(n=5).to_markdown())
         log.debug(f"inserting {table_name} into " f"database....")
-        log.log(config.VERBOSE, f"\n{df.sample(n=5).to_markdown()}")
+        log.log(config.DATA, f"\n{df.sample(n=config.row_limit).to_markdown()}")
 
         create_schema_statement = self._create_schema_statement()
         self.db_engine.execute(create_schema_statement)

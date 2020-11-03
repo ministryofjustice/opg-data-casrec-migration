@@ -1,18 +1,40 @@
 import os
+import logging
 
 
 class BaseConfig:
     etl1_schema = "etl1"
     etl2_schema = "etl2"
 
-    mapping_document = "docs/mapping_doc.xlsx"
-    verbose = False
-    row_limit = None
+    row_limit = 5
+
+    VERBOSE = 5
+    DATA = 2
+    verbosity_levels = {0: "INFO", 1: "DEBUG", 2: "VERBOSE"}
+
+    def verbose(self, msg, *args, **kwargs):
+        if logging.getLogger().isEnabledFor(self.VERBOSE):
+            logging.log(self.VERBOSE, msg)
+
+    def custom_log_level(self):
+        logging.addLevelName(self.VERBOSE, "VERBOSE")
+        logging.Logger.verbose = self.verbose
 
 
 class LocalConfig(BaseConfig):
     connection_string = f"postgresql://casrec:casrec@localhost:6666/casrecmigration"  # pragma: allowlist secret
-    VERBOSE = 5
+    verbosity_levels = {0: "INFO", 1: "DEBUG", 2: "VERBOSE", 3: "DATA"}
+
+    def data(self, msg, *args, **kwargs):
+        if logging.getLogger().isEnabledFor(self.DATA):
+            logging.log(self.DATA, msg)
+
+    def custom_log_level(self):
+        logging.addLevelName(self.VERBOSE, "VERBOSE")
+        logging.Logger.verbose = self.verbose
+
+        logging.addLevelName(self.DATA, "DATA")
+        logging.Logger.data = self.data
 
 
 class AWSConfig(BaseConfig):

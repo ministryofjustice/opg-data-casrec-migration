@@ -17,7 +17,7 @@ def runner(config, etl2_db):
     """
 
     log.info("================")
-    log.info("Transforming  and inserting 'clients' entity")
+    log.info("Transforming and inserting 'clients' entity")
 
     log.debug("insert_persons_clients")
     insert_persons_clients(config, etl2_db)
