@@ -25,8 +25,18 @@ etl2_db = InsertData(
 
 
 @click.command()
-@click.option("--clear", prompt=False, default=False)
-@click.option("--entity_list", multiple=True, prompt=False)
+@click.option(
+    "--clear",
+    prompt=False,
+    default=False,
+    help="Clear existing database " "tables: True or False",
+)
+@click.option(
+    "--entity_list",
+    multiple=True,
+    prompt=False,
+    help="List of entities you want to transform, eg 'clients,deputies,cases'.",
+)
 def main(clear, entity_list):
 
     if clear:
