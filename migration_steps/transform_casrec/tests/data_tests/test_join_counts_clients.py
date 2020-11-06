@@ -50,3 +50,9 @@ def test_joins_clients(get_config):
         print(merged.to_markdown())
 
     assert match is True
+
+
+def test_path():
+    import os
+
+    print(os.environ.get("PYTHONPATH"))
