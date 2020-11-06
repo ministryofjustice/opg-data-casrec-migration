@@ -57,6 +57,10 @@ If something goes wrong with a sheet, we can recreate them using the little scri
 
   These are just the basics at the moment, more will be added as we need them.
 
+#### lookup_table
+
+​	For lookup tables. Not sure how this works yet but we know we're going to need it.
+
 #### default_value
 
 ​	If the column has a default value, this is the place to put it. Currently this is only applied when a casrec column is not mapped, so can't be used as a kind of backup of the casrec data is null.

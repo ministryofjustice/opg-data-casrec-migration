@@ -145,6 +145,7 @@ def build_class(tables):
                 # "casrec_format": "",
                 # "casrec_unique_key": "",
                 "requires_transformation": "",
+                "lookup_table": "",
                 "default_value": "",
                 "is_complete": "",
                 "comments": "",
