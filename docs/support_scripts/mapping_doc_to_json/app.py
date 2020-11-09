@@ -7,10 +7,12 @@ from mapping_all_sheets import Mapping
 @click.option(
     "--mapping_doc",
     prompt="path to the mapping spreadsheet",
-    default="./docs/mapping_doc_mini.xlsx",
+    default="./docs/Casrec_Mapping_Document_v0.1.xlsx",
 )
 @click.option(
-    "--output_dir", prompt="path to the output directory", default="./json_files"
+    "--output_dir",
+    prompt="path to the output directory",
+    default="../../../migration_steps/transform_casrec/app/mapping_definitions",
 )
 def main(mapping_doc, output_dir):
 

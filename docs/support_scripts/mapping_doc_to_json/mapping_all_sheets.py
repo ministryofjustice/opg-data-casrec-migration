@@ -67,11 +67,11 @@ class Mapping:
         """
 
         for col, details in mapping_dict.items():
-            if "," in details[self.source_column_name]:
+            if "\n" in details[self.source_column_name]:
                 details[self.source_column_name] = [
-                    x.strip() for x in details[self.source_column_name].split(",")
+                    x.strip() for x in details[self.source_column_name].split("\n")
                 ]
-                details["alias"] = [x.strip() for x in details["alias"].split(",")]
+                details["alias"] = [x.strip() for x in details["alias"].split("\n")]
 
         return mapping_dict
 
@@ -113,12 +113,13 @@ class Mapping:
 
         for module in all_modules:
             for name, df in module.items():
-                module_dict = self._clean_up_and_convert_to_dict(df=df)
-                if len(module_dict) > 0:
-                    module_dict = self._format_multiple_columns(
-                        mapping_dict=module_dict
-                    )
+                if "_lookup" not in name:
+                    module_dict = self._clean_up_and_convert_to_dict(df=df)
+                    if len(module_dict) > 0:
+                        module_dict = self._format_multiple_columns(
+                            mapping_dict=module_dict
+                        )
 
-                    self.export_single_module_as_json_file(
-                        module_name=name, mapping_dict=module_dict
-                    )
+                        self.export_single_module_as_json_file(
+                            module_name=name, mapping_dict=module_dict
+                        )
