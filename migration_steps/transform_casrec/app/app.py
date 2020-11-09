@@ -15,8 +15,11 @@ from config import get_config
 
 
 # set config
+print(os.environ.get("ENVIRONMENT"))
+
 environment = os.environ.get("ENVIRONMENT")
 config = get_config(env=environment)
+
 
 # logging
 log = logging.getLogger("root")
@@ -26,6 +29,7 @@ config.custom_log_level()
 verbosity_levels = config.verbosity_levels
 
 # database
+print(config.connection_string)
 etl2_db_engine = create_engine(config.connection_string)
 
 etl2_db = InsertData(db_engine=etl2_db_engine, schema=config.etl2_schema)
@@ -69,18 +73,18 @@ def main(clear, entity_list, verbose):
     # Data - each entity can be run independently
     if len(allowed_entities) == 0 or "clients" in allowed_entities:
         clients.runner(config, etl2_db)
-    if len(allowed_entities) == 0 or "deputies" in allowed_entities:
-        deputies.runner(config, etl2_db)
-    if len(allowed_entities) == 0 or "cases" in allowed_entities:
-        cases.runner(config, etl2_db)
-    if len(allowed_entities) == 0 or "notes" in allowed_entities:
-        notes.runner(config, etl2_db)
+    # if len(allowed_entities) == 0 or "deputies" in allowed_entities:
+    #     deputies.runner(config, etl2_db)
+    # if len(allowed_entities) == 0 or "cases" in allowed_entities:
+    #     cases.runner(config, etl2_db)
+    # if len(allowed_entities) == 0 or "notes" in allowed_entities:
+    #     notes.runner(config, etl2_db)
 
     # Join tables - rely on other entities to run
-    if len(allowed_entities) == 0 or "person_case" in allowed_entities:
-        person_case.runner(config, etl2_db)
-    if len(allowed_entities) == 0 or "order_deputy" in allowed_entities:
-        order_deputy.runner(config, etl2_db)
+    # if len(allowed_entities) == 0 or "person_case" in allowed_entities:
+    #     person_case.runner(config, etl2_db)
+    # if len(allowed_entities) == 0 or "order_deputy" in allowed_entities:
+    #     order_deputy.runner(config, etl2_db)
 
 
 if __name__ == "__main__":

@@ -16,7 +16,7 @@ definition = {
 
 def insert_addresses_clients(config, etl2_db):
 
-    with open(get_mapping_file(file_name="addresses_client_mapping")) as mapping_json:
+    with open(get_mapping_file(file_name="client_addresses_mapping")) as mapping_json:
         mapping_dict = json.load(mapping_json)
 
     source_data_query = generate_select_string_from_mapping(

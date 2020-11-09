@@ -15,7 +15,7 @@ definition = {
 
 def insert_persons_clients(config, etl2_db):
 
-    with open(get_mapping_file(file_name="persons_client_mapping")) as mapping_json:
+    with open(get_mapping_file(file_name="client_persons_mapping")) as mapping_json:
         mapping_dict = json.load(mapping_json)
 
     source_data_query = generate_select_string_from_mapping(

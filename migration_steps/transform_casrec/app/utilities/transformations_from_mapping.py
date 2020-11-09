@@ -23,6 +23,8 @@ def do_simple_mapping(
     simple_mapping: dict, table_definition: dict, source_data_df: pd.DataFrame
 ) -> pd.DataFrame:
 
+    log.log(config.VERBOSE, f"simple mapping dict: {simple_mapping}")
+
     source_table_name = table_definition["source_table_name"]
 
     simple_column_remap = [
