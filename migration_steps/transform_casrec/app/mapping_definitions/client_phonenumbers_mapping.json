@@ -1,0 +1,44 @@
+{
+    "id": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "unique_number"
+    },
+    "person_id": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "client_persons.id"
+    },
+    "phone_number": {
+        "casrec_table": "PAT",
+        "casrec_column_name": "Client Phone",
+        "alias": "Client Phone",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "type": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "Home"
+    },
+    "is_default": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": false
+    },
+    "updateddate": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "Todays Date"
+    }
+}

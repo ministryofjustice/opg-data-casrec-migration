@@ -1,0 +1,205 @@
+{
+    "dob": {
+        "casrec_table": "PAT",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "no",
+        "default_value": ""
+    },
+    "salutation": {
+        "casrec_table": "PAT",
+        "casrec_column_name": "Title",
+        "alias": "Title",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "firstname": {
+        "casrec_table": "PAT",
+        "casrec_column_name": "Forename",
+        "alias": "Forename",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "middlenames": {
+        "casrec_table": "PAT",
+        "casrec_column_name": "Forename",
+        "alias": "Forename 1",
+        "requires_transformation": "unknown",
+        "default_value": ""
+    },
+    "surname": {
+        "casrec_table": "PAT",
+        "casrec_column_name": "Surname",
+        "alias": "Surname",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "uid": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "unique_number",
+        "default_value": ""
+    },
+    "type": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "Client"
+    },
+    "systemstatus": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": true
+    },
+    "isreplacementattorney": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": false
+    },
+    "istrustcorporation": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": false
+    },
+    "previousnames": {
+        "casrec_table": "PAT",
+        "casrec_column_name": "AKA Name",
+        "alias": "AKA Name",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "caserecnumber": {
+        "casrec_table": "Pat",
+        "casrec_column_name": "Case",
+        "alias": "Case",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "clientaccommodation": {
+        "casrec_table": "PAT",
+        "casrec_column_name": "Accom Type",
+        "alias": "Accom Type",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "maritalstatus": {
+        "casrec_table": "PAT",
+        "casrec_column_name": "Marital Status",
+        "alias": "Marital Status",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "clientstatus": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "Active"
+    },
+    "statusdate": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "Todays date"
+    },
+    "correspondencebywelsh": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": false
+    },
+    "countryofresidence": {
+        "casrec_table": "PAT",
+        "casrec_column_name": "Adrs5",
+        "alias": "Adrs5",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "newsletter": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": false
+    },
+    "specialcorrespondencerequirements_audiotape": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": false
+    },
+    "specialcorrespondencerequirements_largeprint": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": false
+    },
+    "specialcorrespondencerequirements_hearingimpaired": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": false
+    },
+    "specialcorrespondencerequirements_spellingofnamerequirescare": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": false
+    },
+    "digital": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": false
+    },
+    "isorganisation": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": false
+    },
+    "casesmanagedashybrid": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": false
+    },
+    "supervisioncaseowner_id": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": 10
+    },
+    "clientsource": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "Casrec"
+    },
+    "updateddate": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "Todays date"
+    }
+}

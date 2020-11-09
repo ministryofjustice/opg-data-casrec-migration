@@ -1,59 +1,64 @@
 {
-    "id": {
-        "casrec_table": "PAT",
-        "casrec_column_name": "",
-        "alias": "",
-        "requires_transformation": "",
-        "default_value": ""
-    },
     "person_id": {
-        "casrec_table": "PAT",
+        "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": ""
+        "default_value": "client_persons.id"
     },
     "address_lines": {
         "casrec_table": "PAT",
         "casrec_column_name": [
             "Adrs1",
-            "Adrs2",
-            "Adrs3"
+            "Adrs2"
         ],
         "alias": [
             "Adrs1",
-            "Adrs2",
-            "Adrs3"
+            "Adrs2"
         ],
         "requires_transformation": "squash_columns",
         "default_value": ""
     },
     "town": {
-        "casrec_table": "PAT",
+        "casrec_table": "",
+        "casrec_column_name": "Adrs3",
+        "alias": "Adrs3",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "county": {
+        "casrec_table": "",
         "casrec_column_name": "Adrs4",
         "alias": "Adrs4",
         "requires_transformation": "",
         "default_value": ""
     },
-    "county": {
-        "casrec_table": "PAT",
-        "casrec_column_name": "Adrs5",
-        "alias": "Adrs5",
-        "requires_transformation": "",
-        "default_value": ""
-    },
     "postcode": {
-        "casrec_table": "PAT",
+        "casrec_table": "",
         "casrec_column_name": "Postcode",
         "alias": "Postcode",
         "requires_transformation": "",
         "default_value": ""
     },
+    "country": {
+        "casrec_table": "",
+        "casrec_column_name": "Adrs5",
+        "alias": "Adrs5",
+        "requires_transformation": "",
+        "default_value": ""
+    },
+    "type": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "Primary"
+    },
     "isairmailrequired": {
-        "casrec_table": "PAT",
+        "casrec_table": "",
         "casrec_column_name": "Foreign",
         "alias": "Foreign",
-        "requires_transformation": "convert_to_bool",
+        "requires_transformation": "",
         "default_value": ""
     }
 }
