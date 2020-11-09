@@ -4,10 +4,14 @@ from pytest_cases import case
 @case(tags="simple")
 def case_clients(get_config):
     simple_matches = {
-        "Forename": "firstname",
-        "Surname": "surname",
         "Title": "salutation",
-        "Create": "createddate",
+        "Forename": "firstname",
+        # 'Forename': 'middlenames',
+        "Surname": "surname",
+        "AKA Name": "previousnames",
+        "Accom Type": "clientaccommodation",
+        "Marital Status": "maritalstatus",
+        "Adrs5": "countryofresidence",
     }
     merge_columns = {"source": "Case", "transformed": "caserecnumber"}
 

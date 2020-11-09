@@ -1,6 +1,8 @@
+import pytest
 from pytest_cases import case
 
 
+@pytest.mark.xfail(reason="Cases not implemented")
 @case(tags="simple")
 def case_cases(get_config):
     simple_matches = {"Ord Type": "ordersubtype", "Case": "caserecnumber"}

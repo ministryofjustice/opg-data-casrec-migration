@@ -46,7 +46,7 @@
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": "Client"
+        "default_value": "actor_client"
     },
     "systemstatus": {
         "casrec_table": "",
