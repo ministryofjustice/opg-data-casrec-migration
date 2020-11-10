@@ -6,22 +6,23 @@ from data_tests.helpers import (
     get_data_from_query,
     get_merge_col_data_as_list,
     merge_source_and_transformed_df,
+    SAMPLE_PERCENTAGE,
 )
 
-list_of_cases = [cases_clients_simple]
+list_of_test_cases = [cases_clients_simple]
 
 
 @parametrize_with_cases(
     ("simple_matches", "merge_columns", "source_query", "transformed_query"),
-    cases=list_of_cases,
+    cases=list_of_test_cases,
     has_tag="simple",
 )
 def test_simple_transformations(
     get_config, simple_matches, merge_columns, source_query, transformed_query
 ):
 
-    print(f"source_query: {source_query}")
-    print(f"transformed_query: {transformed_query}")
+    # print(f"source_query: {source_query}")
+    # print(f"transformed_query: {transformed_query}")
 
     config = get_config
 
@@ -31,7 +32,7 @@ def test_simple_transformations(
 
     assert source_sample_df.shape[0] > 0
 
-    sample_cases = get_merge_col_data_as_list(
+    sample_caserefs = get_merge_col_data_as_list(
         df=source_sample_df, column_name=merge_columns["source"]
     )
 
@@ -45,7 +46,7 @@ def test_simple_transformations(
     assert transformed_df.shape[0] > 0
 
     transformed_sample_df = transformed_df[
-        transformed_df[merge_columns["transformed"]].isin(sample_cases)
+        transformed_df[merge_columns["transformed"]].isin(sample_caserefs)
     ]
 
     result_df = merge_source_and_transformed_df(
@@ -54,7 +55,11 @@ def test_simple_transformations(
         merge_columns=merge_columns,
     )
 
-    print(f"Checking {result_df.shape[0]} rows of data")
+    print(f"Checking {result_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) ")
     assert result_df.shape[0] > 0
     for k, v in simple_matches.items():
-        assert result_df[k].equals(result_df[v]) is True
+        for i in v:
+            match = result_df[k].equals(result_df[i])
+            print(f"checking {k} == {i}.... {'OK' if match is True else 'oh no'} ")
+
+            assert match is True

@@ -24,7 +24,7 @@
         "casrec_table": "PAT",
         "casrec_column_name": "Forename",
         "alias": "Forename 1",
-        "requires_transformation": "unknown",
+        "requires_transformation": "",
         "default_value": ""
     },
     "surname": {
