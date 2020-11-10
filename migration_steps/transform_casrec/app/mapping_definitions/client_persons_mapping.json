@@ -140,9 +140,9 @@
         "fk_parents": ""
     },
     "createddate": {
-        "casrec_table": "",
-        "casrec_column_name": "",
-        "alias": "",
+        "casrec_table": "PAT",
+        "casrec_column_name": "Create",
+        "alias": "Create",
         "requires_transformation": "",
         "default_value": "",
         "calculated": "",

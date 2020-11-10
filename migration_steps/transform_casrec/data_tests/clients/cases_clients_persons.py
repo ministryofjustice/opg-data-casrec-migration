@@ -6,6 +6,7 @@ def case_clients_1(get_config):
     simple_matches = {
         "Title": ["salutation"],
         "DOB": ["dob"],
+        "Create": ["createddate"],
         "Forename": ["firstname", "middlenames"],
         "Surname": ["surname"],
         "AKA Name": ["previousnames"],
