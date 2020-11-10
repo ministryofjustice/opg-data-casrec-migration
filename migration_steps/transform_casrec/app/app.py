@@ -12,7 +12,7 @@ from utilities.clear_database import clear_tables
 from utilities.db_insert import InsertData
 
 # set config
-print(os.environ.get("ENVIRONMENT"))
+
 
 environment = os.environ.get("ENVIRONMENT")
 config = get_config(env=environment)
@@ -26,7 +26,7 @@ config.custom_log_level()
 verbosity_levels = config.verbosity_levels
 
 # database
-print(config.connection_string)
+
 etl2_db_engine = create_engine(config.connection_string)
 
 etl2_db = InsertData(db_engine=etl2_db_engine, schema=config.etl2_schema)
@@ -55,6 +55,8 @@ def main(clear, entity_list, verbose):
         log.setLevel("INFO")
         log.info(f"{verbose} is not a valid verbosity level")
         log.info(f"INFO logging enabled")
+
+    log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
     if clear:
         clear_tables(config)
