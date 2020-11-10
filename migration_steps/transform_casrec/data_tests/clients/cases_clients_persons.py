@@ -5,6 +5,7 @@ from pytest_cases import case
 def case_clients_1(get_config):
     simple_matches = {
         "Title": ["salutation"],
+        "DOB": ["dob"],
         "Forename": ["firstname", "middlenames"],
         "Surname": ["surname"],
         "AKA Name": ["previousnames"],

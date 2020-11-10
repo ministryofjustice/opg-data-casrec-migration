@@ -1,15 +1,11 @@
 from pytest_cases import parametrize_with_cases
 
-from data_tests.cases import cases_cases_simple
-from data_tests.clients import cases_clients_simple
+from data_tests.conftest import list_of_test_cases, SAMPLE_PERCENTAGE
 from data_tests.helpers import (
     get_data_from_query,
     get_merge_col_data_as_list,
     merge_source_and_transformed_df,
-    SAMPLE_PERCENTAGE,
 )
-
-list_of_test_cases = [cases_clients_simple]
 
 
 @parametrize_with_cases(

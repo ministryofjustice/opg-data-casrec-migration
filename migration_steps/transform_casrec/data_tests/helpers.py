@@ -1,6 +1,6 @@
 import pandas as pd
 
-SAMPLE_PERCENTAGE = 1
+from data_tests.conftest import SAMPLE_PERCENTAGE
 
 
 def get_data_from_query(

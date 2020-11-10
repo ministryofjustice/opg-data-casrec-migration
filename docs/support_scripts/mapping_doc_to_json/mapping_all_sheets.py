@@ -16,9 +16,10 @@ class Mapping:
             "alias",
             "requires_transformation",
             "default_value",
-            # 'is_pk',
+            "calculated",
+            "is_pk",
             # 'fk_children',
-            # 'fk_parents'
+            "fk_parents",
         ]
         self.columns = columns if len(columns) > 0 else self.default_columns
 
@@ -113,7 +114,8 @@ class Mapping:
 
         for module in all_modules:
             for name, df in module.items():
-                if "_lookup" not in name:
+                # if "_lookup" not in name:
+                if name in ["client_persons", "client_addresses"]:
                     module_dict = self._clean_up_and_convert_to_dict(df=df)
                     if len(module_dict) > 0:
                         module_dict = self._format_multiple_columns(

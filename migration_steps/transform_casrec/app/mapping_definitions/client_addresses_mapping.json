@@ -1,10 +1,23 @@
 {
+    "id": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": true,
+        "fk_parents": ""
+    },
     "person_id": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": "client_persons.id"
+        "default_value": "client_persons.id",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": "persons:id"
     },
     "address_lines": {
         "casrec_table": "PAT",
@@ -17,48 +30,69 @@
             "Adrs2"
         ],
         "requires_transformation": "squash_columns",
-        "default_value": ""
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "town": {
-        "casrec_table": "",
+        "casrec_table": "PAT",
         "casrec_column_name": "Adrs3",
         "alias": "Adrs3",
         "requires_transformation": "",
-        "default_value": ""
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "county": {
-        "casrec_table": "",
+        "casrec_table": "PAT",
         "casrec_column_name": "Adrs4",
         "alias": "Adrs4",
         "requires_transformation": "",
-        "default_value": ""
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "postcode": {
-        "casrec_table": "",
+        "casrec_table": "PAT",
         "casrec_column_name": "Postcode",
         "alias": "Postcode",
         "requires_transformation": "",
-        "default_value": ""
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "country": {
-        "casrec_table": "",
+        "casrec_table": "PAT",
         "casrec_column_name": "Adrs5",
         "alias": "Adrs5",
         "requires_transformation": "",
-        "default_value": ""
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "type": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": "Primary"
+        "default_value": "Primary",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "isairmailrequired": {
-        "casrec_table": "",
+        "casrec_table": "PAT",
         "casrec_column_name": "Foreign",
         "alias": "Foreign",
-        "requires_transformation": "",
-        "default_value": ""
+        "requires_transformation": "convert_to_bool",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     }
 }

@@ -1,15 +1,7 @@
 from pytest_cases import parametrize_with_cases
 
-from data_tests.cases import cases_cases_simple
-from data_tests.clients import cases_clients_simple
-from data_tests.helpers import (
-    get_data_from_query,
-    get_merge_col_data_as_list,
-    merge_source_and_transformed_df,
-    SAMPLE_PERCENTAGE,
-)
-
-list_of_test_cases = [cases_clients_simple]
+from data_tests.conftest import list_of_test_cases, SAMPLE_PERCENTAGE
+from data_tests.helpers import get_data_from_query
 
 
 @parametrize_with_cases(
@@ -25,7 +17,7 @@ def test_default_values(get_config, defaults, source_query):
         query=source_query, config=config, sample=True
     )
 
-    print(source_sample_df.to_markdown())
+    # print(source_sample_df.to_markdown())
 
     assert source_sample_df.shape[0] > 0
 
@@ -37,8 +29,3 @@ def test_default_values(get_config, defaults, source_query):
         success = total_matches == source_sample_df.shape[0]
         print(f"checking {k} == {v}.... {'OK' if success else 'oh no'} ")
         assert success
-
-        # match = source_sample_df[k] == v
-
-        #
-        # assert match is True

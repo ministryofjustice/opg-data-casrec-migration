@@ -1,205 +1,812 @@
 {
-    "dob": {
-        "casrec_table": "PAT",
+    "id": {
+        "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
-        "requires_transformation": "no",
-        "default_value": ""
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": true,
+        "fk_parents": ""
+    },
+    "parent_id": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "email": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "dob": {
+        "casrec_table": "PAT",
+        "casrec_column_name": "DOB",
+        "alias": "DOB",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "dateofdeath": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "salutation": {
         "casrec_table": "PAT",
         "casrec_column_name": "Title",
         "alias": "Title",
         "requires_transformation": "",
-        "default_value": ""
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "firstname": {
         "casrec_table": "PAT",
         "casrec_column_name": "Forename",
         "alias": "Forename",
         "requires_transformation": "",
-        "default_value": ""
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "middlenames": {
         "casrec_table": "PAT",
         "casrec_column_name": "Forename",
         "alias": "Forename 1",
         "requires_transformation": "",
-        "default_value": ""
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "surname": {
         "casrec_table": "PAT",
         "casrec_column_name": "Surname",
         "alias": "Surname",
         "requires_transformation": "",
-        "default_value": ""
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "othernames": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "correspondencebypost": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "correspondencebyphone": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "correspondencebyemail": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "occupation": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "createddate": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "uid": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
-        "requires_transformation": "unique_number",
-        "default_value": ""
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "YES",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "type": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": "actor_client"
+        "default_value": "actor_client",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "lpa002signaturedate": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "isattorneyapplyingtoregister": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "dxnumber": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "dxexchange": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "lpapartcsignaturedate": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "companyname": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "companynumber": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "systemstatus": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": true
+        "default_value": true,
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "relationshiptodonor": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "isreplacementattorney": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": false
+        "default_value": false,
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "istrustcorporation": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": false
+        "default_value": false,
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "trustcorporationappointedas": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "signatoryone": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "signatorytwo": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "companyseal": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "previousnames": {
         "casrec_table": "PAT",
         "casrec_column_name": "AKA Name",
         "alias": "AKA Name",
         "requires_transformation": "",
-        "default_value": ""
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "cannotsignform": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "applyingforfeeremission": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "receivingbenefits": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "receiveddamageaward": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "haslowincome": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "signaturedate": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "haspreviouslpa": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "notesforpreviouslpa": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "sageid": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "noticegivendate": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "certificateproviderstatementtype": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "statement": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "certificateproviderskills": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "fullname": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "caserecnumber": {
         "casrec_table": "Pat",
         "casrec_column_name": "Case",
         "alias": "Case",
         "requires_transformation": "",
-        "default_value": ""
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "clientaccommodation": {
         "casrec_table": "PAT",
         "casrec_column_name": "Accom Type",
         "alias": "Accom Type",
         "requires_transformation": "",
-        "default_value": ""
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "maritalstatus": {
         "casrec_table": "PAT",
         "casrec_column_name": "Marital Status",
         "alias": "Marital Status",
         "requires_transformation": "",
-        "default_value": ""
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "clientstatus": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": "Active"
+        "default_value": "Active",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "statusdate": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": "Todays date"
+        "default_value": "Todays date",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "deputyreferencenumber": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "deputycompliance": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "relationshiptoclient": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "correspondencebywelsh": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": false
+        "default_value": false,
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "medicalcondition": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "interpreterrequired": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "mobilenumber": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "countryofresidence": {
         "casrec_table": "PAT",
         "casrec_column_name": "Adrs5",
         "alias": "Adrs5",
         "requires_transformation": "",
-        "default_value": ""
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "newsletter": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": false
+        "default_value": false,
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "specialcorrespondencerequirements_audiotape": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": false
+        "default_value": false,
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "specialcorrespondencerequirements_largeprint": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": false
+        "default_value": false,
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "specialcorrespondencerequirements_hearingimpaired": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": false
+        "default_value": false,
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "specialcorrespondencerequirements_spellingofnamerequirescare": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": false
+        "default_value": false,
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "digital": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": false
+        "default_value": false,
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "client_id": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "companyreference": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "feepayer_id": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "isorganisation": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": false
+        "default_value": false,
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "correspondencename": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "deputystatus": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "casesmanagedashybrid": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": false
+        "default_value": false,
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "deputytype": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "supervisioncaseowner_id": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": 10
+        "default_value": 10,
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": "assignees:id"
     },
     "clientsource": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": "Casrec"
+        "default_value": "Casrec",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "memorablephrase": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "risk_score": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "caseactorgroup": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     },
     "updateddate": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": "Todays date"
+        "default_value": "Todays date",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
+    },
+    "executor_id": {
+        "casrec_table": "",
+        "casrec_column_name": "",
+        "alias": "",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": false,
+        "fk_parents": ""
     }
 }
