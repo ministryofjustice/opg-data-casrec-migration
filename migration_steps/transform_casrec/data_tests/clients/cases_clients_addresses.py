@@ -78,3 +78,31 @@ def case_clients_3(get_config):
     """
 
     return (convert_to_bool_fields, source_query, transformed_query, merge_columns)
+
+
+@case(tags="squash_columns")
+def case_clients_4(get_config):
+    squash_columns_fields = {
+        "address_lines": ["Adrs1", "Adrs2"],
+    }
+
+    config = get_config
+    merge_columns = {"source": "Case", "transformed": "c_case"}
+    source_columns = [f'"{y}"' for x in squash_columns_fields.values() for y in x]
+    transformed_columns = [f'"{x}"' for x in squash_columns_fields.keys()]
+
+    source_query = f"""
+        SELECT
+            "{merge_columns['source']}",
+            {', '.join(source_columns)}
+        FROM {config.etl1_schema}.pat
+    """
+
+    transformed_query = f"""
+        SELECT
+            {merge_columns['transformed']},
+            {', '.join(transformed_columns)}
+        FROM {config.etl2_schema}.addresses
+    """
+
+    return (squash_columns_fields, source_query, transformed_query, merge_columns)
