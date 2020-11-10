@@ -1,18 +1,15 @@
 import logging
-import time
 import os
+import time
 
-from sqlalchemy import create_engine
 import click
+from sqlalchemy import create_engine
 
 import custom_logger
-from entities import cases, clients, order_deputy, notes, deputies, person_case
-from entities.person_case import person_caseitem
+from config import get_config
+from entities import clients
 from utilities.clear_database import clear_tables
 from utilities.db_insert import InsertData
-
-from config import get_config
-
 
 # set config
 print(os.environ.get("ENVIRONMENT"))
@@ -73,18 +70,6 @@ def main(clear, entity_list, verbose):
     # Data - each entity can be run independently
     if len(allowed_entities) == 0 or "clients" in allowed_entities:
         clients.runner(config, etl2_db)
-    # if len(allowed_entities) == 0 or "deputies" in allowed_entities:
-    #     deputies.runner(config, etl2_db)
-    # if len(allowed_entities) == 0 or "cases" in allowed_entities:
-    #     cases.runner(config, etl2_db)
-    # if len(allowed_entities) == 0 or "notes" in allowed_entities:
-    #     notes.runner(config, etl2_db)
-
-    # Join tables - rely on other entities to run
-    # if len(allowed_entities) == 0 or "person_case" in allowed_entities:
-    #     person_case.runner(config, etl2_db)
-    # if len(allowed_entities) == 0 or "order_deputy" in allowed_entities:
-    #     order_deputy.runner(config, etl2_db)
 
 
 if __name__ == "__main__":
