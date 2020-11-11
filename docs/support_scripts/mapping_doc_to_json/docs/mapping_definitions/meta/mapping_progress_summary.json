@@ -1,0 +1,28 @@
+{
+    "worksheets": {
+        "client_persons": {
+            "total_rows": 30,
+            "total_unmapped": 6,
+            "total_mapped": 24,
+            "percentage_complete": 80
+        },
+        "client_addresses": {
+            "total_rows": 9,
+            "total_unmapped": 0,
+            "total_mapped": 9,
+            "percentage_complete": 100
+        }
+    },
+    "total": {
+        "worksheets": {
+            "total_sheets": 2,
+            "total_complete": 1
+        },
+        "fields": {
+            "total_fields": 39,
+            "total_unmapped": 6,
+            "total_mapped": 33,
+            "percentage_complete": 85
+        }
+    }
+}
