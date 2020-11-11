@@ -1,7 +1,8 @@
-from datetime import datetime
 import json
-from typing import List, Dict
 import os
+from datetime import datetime
+from typing import List, Dict
+
 import pandas as pd
 from deepdiff import DeepDiff
 
@@ -44,7 +45,7 @@ class Mapping:
             },
         }
 
-    def _apply_column_alias(self, df):
+    def _apply_column_alias(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Some source columns are used multiple times when mapping to the destination.
         This appends a number to the column alias for the duplicates, makes the
@@ -125,7 +126,9 @@ class Mapping:
 
         return mapping_dict
 
-    def _add_single_module_details_to_summary(self, name, mapping_dict):
+    def _add_single_module_details_to_summary(
+        self, module_name: str, mapping_dict: dict
+    ):
 
         module_total_rows = len(mapping_dict)
         module_total_unmapped_rows = len(
@@ -136,11 +139,15 @@ class Mapping:
             module_total_mapped_rows / module_total_rows * 100
         )
 
-        self.summary["worksheets"][name] = {}
-        self.summary["worksheets"][name]["total_rows"] = module_total_rows
-        self.summary["worksheets"][name]["total_unmapped"] = module_total_unmapped_rows
-        self.summary["worksheets"][name]["total_mapped"] = module_total_mapped_rows
-        self.summary["worksheets"][name][
+        self.summary["worksheets"][module_name] = {}
+        self.summary["worksheets"][module_name]["total_rows"] = module_total_rows
+        self.summary["worksheets"][module_name][
+            "total_unmapped"
+        ] = module_total_unmapped_rows
+        self.summary["worksheets"][module_name][
+            "total_mapped"
+        ] = module_total_mapped_rows
+        self.summary["worksheets"][module_name][
             "percentage_complete"
         ] = module_percentage_complete
 
@@ -159,7 +166,7 @@ class Mapping:
             sheets["total_complete"] + 1 if module_percentage_complete == 100 else +0
         )
 
-    def _format_multiple_columns(self, mapping_dict: Dict):
+    def _format_multiple_columns(self, mapping_dict: Dict) -> Dict:
         """
         Some items are across multiple columns in the source data but map to a single
         column in the destination.
@@ -177,7 +184,7 @@ class Mapping:
 
         return mapping_dict
 
-    def _convert_sheet_name_to_module_name(self, sheet_name: str):
+    def _convert_sheet_name_to_module_name(self, sheet_name: str) -> str:
         """
         Excel sheet names are for humans.
         """
@@ -201,7 +208,7 @@ class Mapping:
 
         return all_sheets
 
-    def export_single_module_as_json_file(self, module_name, mapping_dict):
+    def export_single_module_as_json_file(self, module_name: str, mapping_dict: Dict):
 
         if not os.path.exists(self.json_path):
             os.makedirs(self.json_path)
@@ -219,14 +226,14 @@ class Mapping:
         with open(f"{path}/mapping_progress_summary.json", "w") as json_out:
             json.dump(self.summary, json_out, indent=4)
 
-    def generate_diff_for_module(self, module_name, module_dict):
+    def generate_diff_for_module(self, module_name: str, mapping_dict: Dict):
         try:
             with open(
                 f"{self.json_path}/{module_name}_mapping.json", "r"
             ) as original_file:
                 original_data = original_file.read()
                 original_dict = json.loads(original_data)
-                diff = DeepDiff(original_dict, module_dict)
+                diff = DeepDiff(original_dict, mapping_dict)
 
                 self.diff[module_name] = diff
         except Exception:
@@ -262,7 +269,7 @@ class Mapping:
                     module_dict = self._clean_up_and_convert_to_dict(df=df)
 
                     self._add_single_module_details_to_summary(
-                        name=name, mapping_dict=module_dict
+                        module_name=name, mapping_dict=module_dict
                     )
                     if len(module_dict) > 0:
                         module_dict = self._format_multiple_columns(
@@ -270,7 +277,7 @@ class Mapping:
                         )
 
                         self.generate_diff_for_module(
-                            module_name=name, module_dict=module_dict
+                            module_name=name, mapping_dict=module_dict
                         )
 
                         self.export_single_module_as_json_file(
