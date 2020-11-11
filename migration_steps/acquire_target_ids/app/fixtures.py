@@ -46,17 +46,19 @@ if environment in ("local", "development"):
 
     # To be reworked for LIVE!!
 
-    sql = "SELECT MAX(id) FROM persons WHERE coalesce(clientsource, '') <> 'SKELETON'"
+    sql = "SELECT MAX(id) FROM persons WHERE coalesce(clientsource, '') NOT IN ('SKELETON', 'CASRECMIGRATION')"
     max_orig_person_id = get_single_sql_value(sirius_db_engine, sql)
     sql = "SELECT MAX(uid) FROM persons"
     max_person_uid = get_single_sql_value(sirius_db_engine, sql)
 
     sql = f"DELETE FROM addresses WHERE person_id > {max_orig_person_id}; "
+    sql += f"DELETE FROM addresses_migrated WHERE person_id > {max_orig_person_id}; "
     # sql += f"DELETE FROM person_note WHERE person_id > {max_orig_person_id}; "
     # sql += f"DELETE FROM person_caseitem WHERE person_id > {max_orig_person_id}; "
     # sql += f"DELETE FROM notes WHERE id in (SELECT note_id FROM person_note WHERE person_id > {max_orig_person_id}); "
     # sql += f"DELETE FROM cases WHERE client_id > {max_orig_person_id}; "
     sql += f"DELETE FROM persons WHERE id > {max_orig_person_id}; "
+    sql += f"DELETE FROM persons_migrated WHERE CAST(id AS int) > {max_orig_person_id}; "
     sirius_db_engine.execute(sql)
 
     sql = "UPDATE etl3.persons SET sirius_id = null WHERE sirius_id IS NOT NULL; "

@@ -15,6 +15,12 @@ from sqlalchemy.types import (
     JSON,
 )
 
+def get_single_sql_value(engine, sql):
+    results = engine.execute(sql)
+    for r in results:
+        return_value = r.values()[0]
+        return return_value
+
 load_env_vars()
 
 environment = os.environ.get("ENVIRONMENT")
@@ -25,26 +31,19 @@ if environment in ("local", "development"):
     sirius_db_engine = create_engine(SiriusConfig.connection_string)
 
     print("Updating the skeleton clients")
-    print("- People")
+    print("- Clients")
     sql = (
         "SELECT "
-        "sirius_id, firstname, surname, createddate, type, caserecnumber, "
-        "correspondencebypost, correspondencebyphone, correspondencebyemail, uid "
+        "sirius_id, firstname, surname, createddate, type, caserecnumber "
         "FROM etl3.persons "
         "WHERE sirius_id IS NOT NULL "
         "ORDER BY sirius_id DESC LIMIT 10"
     )
     persons_df = pd.read_sql_query(sql, con=migration_db_engine, index_col=None)
-    persons_df["correspondencebypost"] = persons_df["correspondencebypost"].replace(
-        {"True": 1, "False": 0}
-    )
-    persons_df["correspondencebyphone"] = persons_df["correspondencebyphone"].replace(
-        {"True": 1, "False": 0}
-    )
-    persons_df["correspondencebyemail"] = persons_df["correspondencebyemail"].replace(
-        {"True": 1, "False": 0}
-    )
     persons_df = persons_df.rename(columns={"sirius_id": "id"})
+    persons_df["clientsource"] = "CASRECMIGRATION"
+
+    print(persons_df)
 
     persons_df.to_sql(
         "persons_migrated",
@@ -58,20 +57,16 @@ if environment in ("local", "development"):
             "createddate": TIMESTAMP(),
             "type": String(255),
             "caserecnumber": String(255),
-            "correspondencebypost": Boolean,
-            "correspondencebyphone": Boolean,
-            "correspondencebyemail": Boolean,
-            "uid": BigInteger,
             "clientsource": String(255),
             "supervisioncaseowner_id": Integer,
         },
     )
-    print(persons_df)
 
     updatesql = (
         "UPDATE persons "
         "SET firstname = migrated.firstname, "
-        "surname = migrated.surname "
+        "surname = migrated.surname, "
+        "clientsource = migrated.clientsource "
         "FROM persons_migrated migrated "
         "WHERE migrated.id = persons.id"
     )
@@ -123,55 +118,57 @@ if environment in ("local", "development"):
 
     sirius_db_engine.execute(updatesql)
 
-    print("- Cases")
-    sql = "SELECT *" "FROM etl3.cases " "WHERE sirius_id IS NOT NULL "
-    cases_df = pd.read_sql_query(sql, con=migration_db_engine, index_col=None)
-    cases_df = cases_df.drop(["id", "c_order_no"], axis=1)
-    cases_df = cases_df.rename(columns={"sirius_id": "id"})
-    cases_df = cases_df.rename(columns={"sirius_client_id": "client_id"})
-    cases_df = cases_df.rename(columns={"ordersubtype": "casesubtype"})
-    cases_df["casetype"] = cases_df["type"].str.upper()
-    print(cases_df)
-    cases_df.to_sql(
-        "cases_migrated",
-        sirius_db_engine,
-        if_exists="replace",
-        index=False,
-        chunksize=500,
-        dtype={
-            "id": Integer(),
-            "client_id": Integer(),
-            "uid": BigInteger,
-            "type": String(255),
-            "casetype": String(255),
-            "casesubtype": String(255),
-            "caserecnumber": String(255),
-            "orderdate": Date,
-            "orderissuedate": Date,
-            "orderexpirydate": Date,
-            "statusdate": Date,
-        },
-    )
+    # print("- Cases")
+    # sql = "SELECT *" "FROM etl3.cases " "WHERE sirius_id IS NOT NULL "
+    # cases_df = pd.read_sql_query(sql, con=migration_db_engine, index_col=None)
+    # cases_df = cases_df.drop(["id", "c_order_no"], axis=1)
+    # cases_df = cases_df.rename(columns={"sirius_id": "id"})
+    # cases_df = cases_df.rename(columns={"sirius_client_id": "client_id"})
+    # cases_df = cases_df.rename(columns={"ordersubtype": "casesubtype"})
+    # cases_df["casetype"] = cases_df["type"].str.upper()
+    # print(cases_df)
+    # cases_df.to_sql(
+    #     "cases_migrated",
+    #     sirius_db_engine,
+    #     if_exists="replace",
+    #     index=False,
+    #     chunksize=500,
+    #     dtype={
+    #         "id": Integer(),
+    #         "client_id": Integer(),
+    #         "uid": BigInteger,
+    #         "type": String(255),
+    #         "casetype": String(255),
+    #         "casesubtype": String(255),
+    #         "caserecnumber": String(255),
+    #         "orderdate": Date,
+    #         "orderissuedate": Date,
+    #         "orderexpirydate": Date,
+    #         "statusdate": Date,
+    #     },
+    # )
 
     print("Adding new clients")
-    print("- People")
+    print("- Clients")
+
+    sql = "SELECT MAX(uid) FROM persons"
+    max_person_uid = get_single_sql_value(sirius_db_engine, sql)
+
     sql = (
         "SELECT "
-        "firstname, surname, createddate, type, caserecnumber, correspondencebypost, correspondencebyphone, correspondencebyemail, uid "
+        "firstname, surname, createddate, type, caserecnumber "
         "FROM etl3.persons "
         "WHERE sirius_id IS NULL "
         "ORDER BY id ASC"
     )
     persons_df = pd.read_sql_query(sql, con=migration_db_engine, index_col=None)
-    persons_df["correspondencebypost"] = persons_df["correspondencebypost"].replace(
-        {"True": 1, "False": 0}
-    )
-    persons_df["correspondencebyphone"] = persons_df["correspondencebyphone"].replace(
-        {"True": 1, "False": 0}
-    )
-    persons_df["correspondencebyemail"] = persons_df["correspondencebyemail"].replace(
-        {"True": 1, "False": 0}
-    )
+    persons_df["correspondencebypost"] = 0
+    persons_df["correspondencebyphone"] = 0
+    persons_df["correspondencebyemail"] = 0
+    persons_df["clientsource"] = "CASRECMIGRATION"
+    persons_df["uid"] = list(range(max_person_uid+1,max_person_uid+991,1))
+
+    print(persons_df)
 
     persons_df.to_sql(
         "persons",
@@ -224,6 +221,7 @@ if environment in ("local", "development"):
         {"True": 1, "False": 0}
     )
     addresses_df = addresses_df.rename(columns={"sirius_person_id": "person_id"})
+
     addresses_df.to_sql(
         "addresses",
         sirius_db_engine,
@@ -243,51 +241,51 @@ if environment in ("local", "development"):
     sql = "UPDATE addresses SET address_lines = (address_lines #>> '{}')::jsonb;"
     sirius_db_engine.execute(sql)
 
-    print("- Cases")
-    # needs an index
-    sql = """UPDATE etl3.cases
-            SET sirius_client_id = map.id
-            FROM etl3.sirius_map_persons map
-            WHERE map.caserecnumber = cases.caserecnumber"""
-    migration_db_engine.execute(sql)
-
-    sql = (
-        "SELECT *"
-        "FROM etl3.cases "
-        "WHERE sirius_id IS NULL "
-        "AND orderdate IS NOT NULL "
-        "AND orderissuedate IS NOT NULL "
-        "AND orderexpirydate IS NOT NULL "
-        "AND statusdate IS NOT NULL "
-        "AND orderdate != '' "
-        "AND orderissuedate != '' "
-        "AND orderexpirydate != '' "
-        "AND statusdate != '' "
-    )  # There are nulls in the data for dates, but the DB is not null. Something's screwy somewhere
-    # but for now, just select data with no nulls
-    cases_df = pd.read_sql_query(sql, con=migration_db_engine, index_col=None)
-    cases_df = cases_df.drop(["id", "sirius_id", "c_order_no"], axis=1)
-    cases_df = cases_df.rename(columns={"sirius_client_id": "client_id"})
-    cases_df = cases_df.rename(columns={"ordersubtype": "casesubtype"})
-    cases_df["casetype"] = cases_df["type"].str.upper()
-    cases_df.to_sql(
-        "cases",
-        sirius_db_engine,
-        if_exists="append",
-        index=False,
-        chunksize=500,
-        dtype={
-            "client_id": Integer,
-            "uid": BigInteger,
-            "type": String(255),
-            "casetype": String(255),
-            "casesubtype": String(255),
-            "caserecnumber": String(255),
-            "orderdate": Date,
-            "orderissuedate": Date,
-            "orderexpirydate": Date,
-            "statusdate": Date,
-        },
-    )
+    # print("- Cases")
+    # # needs an index
+    # sql = """UPDATE etl3.cases
+    #         SET sirius_client_id = map.id
+    #         FROM etl3.sirius_map_persons map
+    #         WHERE map.caserecnumber = cases.caserecnumber"""
+    # migration_db_engine.execute(sql)
+    #
+    # sql = (
+    #     "SELECT *"
+    #     "FROM etl3.cases "
+    #     "WHERE sirius_id IS NULL "
+    #     "AND orderdate IS NOT NULL "
+    #     "AND orderissuedate IS NOT NULL "
+    #     "AND orderexpirydate IS NOT NULL "
+    #     "AND statusdate IS NOT NULL "
+    #     "AND orderdate != '' "
+    #     "AND orderissuedate != '' "
+    #     "AND orderexpirydate != '' "
+    #     "AND statusdate != '' "
+    # )  # There are nulls in the data for dates, but the DB is not null. Something's screwy somewhere
+    # # but for now, just select data with no nulls
+    # cases_df = pd.read_sql_query(sql, con=migration_db_engine, index_col=None)
+    # cases_df = cases_df.drop(["id", "sirius_id", "c_order_no"], axis=1)
+    # cases_df = cases_df.rename(columns={"sirius_client_id": "client_id"})
+    # cases_df = cases_df.rename(columns={"ordersubtype": "casesubtype"})
+    # cases_df["casetype"] = cases_df["type"].str.upper()
+    # cases_df.to_sql(
+    #     "cases",
+    #     sirius_db_engine,
+    #     if_exists="append",
+    #     index=False,
+    #     chunksize=500,
+    #     dtype={
+    #         "client_id": Integer,
+    #         "uid": BigInteger,
+    #         "type": String(255),
+    #         "casetype": String(255),
+    #         "casesubtype": String(255),
+    #         "caserecnumber": String(255),
+    #         "orderdate": Date,
+    #         "orderissuedate": Date,
+    #         "orderexpirydate": Date,
+    #         "statusdate": Date,
+    #     },
+    # )
 else:
     print(f"Environment '{environment}'not ready to run this stage yet")
