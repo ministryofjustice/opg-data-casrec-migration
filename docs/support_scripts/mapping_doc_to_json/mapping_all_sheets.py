@@ -284,4 +284,5 @@ class Mapping:
                             module_name=name, mapping_dict=module_dict
                         )
         self.export_summary_as_json_file()
+        print(self.diff)
         self.export_diff_as_json_file()

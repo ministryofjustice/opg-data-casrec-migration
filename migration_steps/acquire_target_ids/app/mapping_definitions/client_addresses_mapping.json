@@ -8,7 +8,7 @@
         "calculated": "",
         "is_pk": true,
         "fk_parents": "",
-        "is_complete": true
+        "is_complete": ""
     },
     "person_id": {
         "casrec_table": "",
@@ -19,7 +19,7 @@
         "calculated": "",
         "is_pk": "",
         "fk_parents": "persons:id",
-        "is_complete": true
+        "is_complete": ""
     },
     "address_lines": {
         "casrec_table": "PAT",

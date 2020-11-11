@@ -8,7 +8,7 @@
         "calculated": "",
         "is_pk": true,
         "fk_parents": "",
-        "is_complete": false
+        "is_complete": ""
     },
     "dob": {
         "casrec_table": "PAT",
@@ -58,6 +58,17 @@
         "casrec_table": "PAT",
         "casrec_column_name": "Surname",
         "alias": "Surname",
+        "requires_transformation": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": "",
+        "fk_parents": "",
+        "is_complete": true
+    },
+    "createddate": {
+        "casrec_table": "PAT",
+        "casrec_column_name": "Create",
+        "alias": "Create",
         "requires_transformation": "",
         "default_value": "",
         "calculated": "",
