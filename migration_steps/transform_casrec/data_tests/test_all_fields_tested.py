@@ -19,7 +19,10 @@ def test_all_fields(complete_status):
         fields_dict = {}
 
     expected_fields = {}
-    definitions_dir = os.path.join(dirname, f"mapping_definitions")
+    definitions_dir = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "app/mapping_definitions")
+    )
+
     for json_file in os.listdir(definitions_dir):
         json_file_path = os.path.join(definitions_dir, json_file)
         if os.path.isfile(json_file_path):
