@@ -1,5 +1,7 @@
 from pytest_cases import case
 
+module_name = "client_persons"
+
 
 @case(tags="simple")
 def case_clients_1(get_config):
@@ -17,6 +19,7 @@ def case_clients_1(get_config):
     merge_columns = {"source": "Case", "transformed": "caserecnumber"}
 
     config = get_config
+
     source_columns = [f'"{x}"' for x in simple_matches.keys()]
     transformed_columns = [f'"{y}"' for x in simple_matches.values() for y in x]
 
@@ -35,7 +38,7 @@ def case_clients_1(get_config):
         WHERE "type" = 'actor_client'
     """
 
-    return (simple_matches, merge_columns, source_query, transformed_query)
+    return (simple_matches, merge_columns, source_query, transformed_query, module_name)
 
 
 @case(tags="default")
@@ -70,4 +73,4 @@ def case_clients_2(get_config):
         FROM {config.etl2_schema}.persons
     """
 
-    return (defaults, source_query)
+    return (defaults, source_query, module_name)

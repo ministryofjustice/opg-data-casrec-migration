@@ -1,17 +1,27 @@
 from pytest_cases import parametrize_with_cases
 
-from data_tests.conftest import list_of_test_cases, SAMPLE_PERCENTAGE
+from data_tests.conftest import (
+    list_of_test_cases,
+    SAMPLE_PERCENTAGE,
+    add_to_tested_list,
+)
 from data_tests.helpers import get_data_from_query
 
 
 @parametrize_with_cases(
-    ("defaults", "source_query"), cases=list_of_test_cases, has_tag="default",
+    ("defaults", "source_query", "module_name"),
+    cases=list_of_test_cases,
+    has_tag="default",
 )
-def test_default_values(get_config, defaults, source_query):
+def test_default_values(get_config, defaults, source_query, module_name):
 
     # print(f"source_query: {source_query}")
 
     config = get_config
+
+    add_to_tested_list(
+        module_name=module_name, tested_fields=[x for x in defaults.keys()]
+    )
 
     source_sample_df = get_data_from_query(
         query=source_query, config=config, sample=True

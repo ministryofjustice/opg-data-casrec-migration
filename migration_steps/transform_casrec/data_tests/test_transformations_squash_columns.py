@@ -2,7 +2,11 @@ from ast import literal_eval
 
 from pytest_cases import parametrize_with_cases
 
-from data_tests.conftest import list_of_test_cases, SAMPLE_PERCENTAGE
+from data_tests.conftest import (
+    list_of_test_cases,
+    SAMPLE_PERCENTAGE,
+    add_to_tested_list,
+)
 from data_tests.helpers import (
     get_data_from_query,
     get_merge_col_data_as_list,
@@ -12,18 +16,32 @@ import pandas as pd
 
 
 @parametrize_with_cases(
-    ("squash_columns_fields", "source_query", "transformed_query", "merge_columns"),
+    (
+        "squash_columns_fields",
+        "source_query",
+        "transformed_query",
+        "merge_columns",
+        "module_name",
+    ),
     cases=list_of_test_cases,
     has_tag="squash_columns",
 )
 def test_squash_columns(
-    get_config, squash_columns_fields, source_query, transformed_query, merge_columns
+    get_config,
+    squash_columns_fields,
+    source_query,
+    transformed_query,
+    merge_columns,
+    module_name,
 ):
 
     # print(source_query)
     # print(transformed_query)
 
     config = get_config
+    add_to_tested_list(
+        module_name=module_name, tested_fields=[x for x in squash_columns_fields.keys()]
+    )
 
     source_sample_df = get_data_from_query(
         query=source_query, config=config, sort_col=merge_columns["source"], sample=True

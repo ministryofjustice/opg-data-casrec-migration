@@ -1,5 +1,7 @@
 from pytest_cases import case
 
+module_name = "client_addresses"
+
 
 @case(tags="simple")
 def case_clients_1(get_config):
@@ -29,7 +31,7 @@ def case_clients_1(get_config):
         FROM {config.etl2_schema}.addresses
     """
 
-    return (simple_matches, merge_columns, source_query, transformed_query)
+    return (simple_matches, merge_columns, source_query, transformed_query, module_name)
 
 
 #
@@ -49,7 +51,7 @@ def case_clients_2(get_config):
         FROM {config.etl2_schema}.addresses
     """
 
-    return (defaults, source_query)
+    return (defaults, source_query, module_name)
 
 
 @case(tags="convert_to_bool")
@@ -77,7 +79,13 @@ def case_clients_3(get_config):
         FROM {config.etl2_schema}.addresses
     """
 
-    return (convert_to_bool_fields, source_query, transformed_query, merge_columns)
+    return (
+        convert_to_bool_fields,
+        source_query,
+        transformed_query,
+        merge_columns,
+        module_name,
+    )
 
 
 @case(tags="squash_columns")
@@ -105,4 +113,10 @@ def case_clients_4(get_config):
         FROM {config.etl2_schema}.addresses
     """
 
-    return (squash_columns_fields, source_query, transformed_query, merge_columns)
+    return (
+        squash_columns_fields,
+        source_query,
+        transformed_query,
+        merge_columns,
+        module_name,
+    )

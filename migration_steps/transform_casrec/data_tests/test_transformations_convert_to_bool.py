@@ -1,6 +1,10 @@
 from pytest_cases import parametrize_with_cases
 
-from data_tests.conftest import list_of_test_cases, SAMPLE_PERCENTAGE
+from data_tests.conftest import (
+    list_of_test_cases,
+    SAMPLE_PERCENTAGE,
+    add_to_tested_list,
+)
 from data_tests.helpers import (
     get_data_from_query,
     get_merge_col_data_as_list,
@@ -9,15 +13,30 @@ from data_tests.helpers import (
 
 
 @parametrize_with_cases(
-    ("convert_to_bool_fields", "source_query", "transformed_query", "merge_columns"),
+    (
+        "convert_to_bool_fields",
+        "source_query",
+        "transformed_query",
+        "merge_columns",
+        "module_name",
+    ),
     cases=list_of_test_cases,
     has_tag="convert_to_bool",
 )
 def test_convert_to_bool(
-    get_config, convert_to_bool_fields, source_query, transformed_query, merge_columns
+    get_config,
+    convert_to_bool_fields,
+    source_query,
+    transformed_query,
+    merge_columns,
+    module_name,
 ):
 
     config = get_config
+    add_to_tested_list(
+        module_name=module_name,
+        tested_fields=[y for x in convert_to_bool_fields.values() for y in x],
+    )
 
     source_sample_df = get_data_from_query(
         query=source_query, config=config, sort_col=merge_columns["source"], sample=True

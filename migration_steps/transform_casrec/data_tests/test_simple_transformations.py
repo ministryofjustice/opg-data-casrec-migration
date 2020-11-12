@@ -1,6 +1,10 @@
 from pytest_cases import parametrize_with_cases
 
-from data_tests.conftest import list_of_test_cases, SAMPLE_PERCENTAGE
+from data_tests.conftest import (
+    list_of_test_cases,
+    SAMPLE_PERCENTAGE,
+    add_to_tested_list,
+)
 from data_tests.helpers import (
     get_data_from_query,
     get_merge_col_data_as_list,
@@ -9,16 +13,31 @@ from data_tests.helpers import (
 
 
 @parametrize_with_cases(
-    ("simple_matches", "merge_columns", "source_query", "transformed_query"),
+    (
+        "simple_matches",
+        "merge_columns",
+        "source_query",
+        "transformed_query",
+        "module_name",
+    ),
     cases=list_of_test_cases,
     has_tag="simple",
 )
 def test_simple_transformations(
-    get_config, simple_matches, merge_columns, source_query, transformed_query
+    get_config,
+    simple_matches,
+    merge_columns,
+    source_query,
+    transformed_query,
+    module_name,
 ):
-
     # print(f"source_query: {source_query}")
     # print(f"transformed_query: {transformed_query}")
+
+    add_to_tested_list(
+        module_name=module_name,
+        tested_fields=[y for x in simple_matches.values() for y in x],
+    )
 
     config = get_config
 
