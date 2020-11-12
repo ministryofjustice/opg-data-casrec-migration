@@ -36,7 +36,8 @@ def test_simple_transformations(
 
     add_to_tested_list(
         module_name=module_name,
-        tested_fields=[y for x in simple_matches.values() for y in x],
+        tested_fields=[y for x in simple_matches.values() for y in x]
+        + [merge_columns["transformed"]],
     )
 
     config = get_config

@@ -41,3 +41,12 @@ def add_to_tested_list(module_name, tested_fields):
 
     with open(f"{file_path}/{file_name}", "w") as json_out:
         json.dump(fields_dict, json_out, indent=4)
+
+
+def pytest_sessionfinish(session):
+    print("Session finish, deleting field tracker files")
+
+    dirname = os.path.dirname(__file__)
+    file_path = os.path.join(dirname, f"./field_list")
+    file_name = "tested_fields.json"
+    os.remove(f"{file_path}/{file_name}")

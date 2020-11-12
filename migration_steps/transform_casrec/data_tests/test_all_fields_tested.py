@@ -4,9 +4,10 @@ import os
 import json
 
 
+@pytest.mark.parametrize("complete_status", [True, False])
 @pytest.mark.xfail(reason="not all fields implemented yet")
 @pytest.mark.last
-def test_all_fields():
+def test_all_fields(complete_status):
     dirname = os.path.dirname(__file__)
     file_path = os.path.join(dirname, f"./field_list")
     file_name = "tested_fields.json"
@@ -27,7 +28,9 @@ def test_all_fields():
 
                 key_name = json_file.replace("_mapping.json", "")
                 expected_fields[key_name] = [
-                    k for k, v in def_dict.items() if v["is_complete"] is True
+                    k
+                    for k, v in def_dict.items()
+                    if v["is_complete"] is complete_status
                 ]
 
     errors = {}
@@ -44,5 +47,4 @@ def test_all_fields():
         )
     )
 
-    os.remove(f"{file_path}/{file_name}")
     assert sum([len(x) for x in errors.values()]) == 0
