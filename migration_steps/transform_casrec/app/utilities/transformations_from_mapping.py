@@ -83,19 +83,16 @@ def add_required_columns(
 def map_lookup_tables(
     lookup_tables: dict, source_data_df: pd.DataFrame
 ) -> pd.DataFrame:
-    log.log(config.VERBOSE, f"starting to map lookups")
-    # log.log(config.VERBOSE, f"lookup tables dict: {lookup_tables}")
 
     for col, details in lookup_tables.items():
         with open(get_lookup_file(file_name=details["lookup_table"])) as lookup_json:
             lookup_dict = json.load(lookup_json)
-            source_data_df = source_data_df.replace({col: lookup_dict})
-        log.log(
-            config.DATA,
-            f"\n"
-            f""
-            f"{source_data_df[[col]].sample(n=config.row_limit).to_markdown()}",
-        )
+
+            better_lookup_dict = {
+                k: v["sirius_mapping"] for k, v in lookup_dict.items()
+            }
+
+            source_data_df = source_data_df.replace({col: better_lookup_dict})
 
     return source_data_df
 
