@@ -21,6 +21,7 @@ class Mapping:
             "casrec_column_name",
             "alias",
             "requires_transformation",
+            "lookup_table",
             "default_value",
             "calculated",
             "is_pk",
