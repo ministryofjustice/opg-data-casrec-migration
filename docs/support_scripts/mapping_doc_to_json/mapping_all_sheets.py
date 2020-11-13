@@ -15,6 +15,7 @@ class Mapping:
         self.index_column = "column_name"
         self.source_column_name = "casrec_column_name"
         self.json_path = output_folder
+        self.lookup_table_name = "lookup"
         self.default_columns = [
             "casrec_table",
             "casrec_column_name",
@@ -258,35 +259,51 @@ class Mapping:
         with open(f"{path}/diff.json", "w") as json_out:
             json.dump(self.diff, json_out, indent=4)
 
+    def _convert_lookup_to_dict(self, name, df):
+        df = df[["casrec_code", "sirius_mapping"]]
+        df = df.dropna()
+        df = df.set_index("casrec_code")
+        lookup_dict = df.to_dict("index")
+
+        path = f"{self.json_path}/lookups"
+
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+        with open(f"{path}/{name}.json", "w") as json_out:
+            json.dump(lookup_dict, json_out, indent=4)
+
     def generate_json_files(self):
 
         all_modules = self.get_sheets_as_dataframes()
 
         for module in all_modules:
             for name, df in module.items():
-                # if "_lookup" not in name:
-                if name in [
-                    "client_persons",
-                    "client_addresses",
-                    "client_phonenumbers",
-                ]:
-                    module_dict = self._clean_up_and_convert_to_dict(df=df)
+                if self.lookup_table_name in name:
+                    self._convert_lookup_to_dict(name, df)
+                else:
+                    if name in [
+                        "client_persons",
+                        "client_addresses",
+                        "client_phonenumbers",
+                    ]:
+                        module_dict = self._clean_up_and_convert_to_dict(df=df)
 
-                    self._add_single_module_details_to_summary(
-                        module_name=name, mapping_dict=module_dict
-                    )
-                    if len(module_dict) > 0:
-                        module_dict = self._format_multiple_columns(
-                            mapping_dict=module_dict
-                        )
-
-                        self.generate_diff_for_module(
+                        self._add_single_module_details_to_summary(
                             module_name=name, mapping_dict=module_dict
                         )
+                        if len(module_dict) > 0:
+                            module_dict = self._format_multiple_columns(
+                                mapping_dict=module_dict
+                            )
 
-                        self.export_single_module_as_json_file(
-                            module_name=name, mapping_dict=module_dict
-                        )
+                            self.generate_diff_for_module(
+                                module_name=name, mapping_dict=module_dict
+                            )
+
+                            self.export_single_module_as_json_file(
+                                module_name=name, mapping_dict=module_dict
+                            )
         self.export_summary_as_json_file()
         print(self.diff)
         self.export_diff_as_json_file()
