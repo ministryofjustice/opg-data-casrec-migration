@@ -57,6 +57,10 @@ def mock_transformation_steps(monkeypatch):
         logger.info("mock add_required_columns")
         return df
 
+    def mock_map_lookup_tables(mapping, df):
+        logger.info("mock map_lookup_tables")
+        return df
+
     def mock_add_unique_id(db_conn_string, db_schema, table_definition, df):
         logger.info("mock add_unique_id")
         return df
@@ -71,6 +75,9 @@ def mock_transformation_steps(monkeypatch):
     )
     monkeypatch.setattr(
         transformations_from_mapping, "add_required_columns", mock_add_required_columns
+    )
+    monkeypatch.setattr(
+        transformations_from_mapping, "map_lookup_tables", mock_map_lookup_tables
     )
     monkeypatch.setattr(
         transformations_from_mapping, "add_unique_id", mock_add_unique_id

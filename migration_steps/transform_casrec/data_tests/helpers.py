@@ -1,3 +1,6 @@
+import json
+import os
+
 import pandas as pd
 
 from data_tests.conftest import SAMPLE_PERCENTAGE
@@ -30,3 +33,21 @@ def merge_source_and_transformed_df(source_df, transformed_df, merge_columns):
         left_on=merge_columns["source"],
         right_on=merge_columns["transformed"],
     )
+
+
+def get_lookup_dict(file_name: str) -> str:
+
+    file_path = os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__),
+            "..",
+            f"app/mapping_definitions/" f"lookups/{file_name}.json",
+        )
+    )
+
+    with open(file_path) as lookup_json:
+        lookup_dict = json.load(lookup_json)
+
+        better_lookup_dict = {k: v["sirius_mapping"] for k, v in lookup_dict.items()}
+
+    return better_lookup_dict
