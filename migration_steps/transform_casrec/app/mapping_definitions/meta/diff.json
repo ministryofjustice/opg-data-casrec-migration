@@ -1,18 +1,7 @@
 {
-    "generated_date": "13/11/2020 12:07:18",
-    "previous_generate_date": "12/11/2020 16:47:37",
+    "generated_date": "13/11/2020 13:59:03",
+    "previous_generate_date": "",
     "client_persons": {},
     "client_addresses": {},
-    "client_phonenumbers": {
-        "values_changed": {
-            "root['person_id']['default_value']": {
-                "new_value": "",
-                "old_value": "client_persons.id"
-            },
-            "root['id']['default_value']": {
-                "new_value": "",
-                "old_value": "unique_number"
-            }
-        }
-    }
+    "client_phonenumbers": {}
 }

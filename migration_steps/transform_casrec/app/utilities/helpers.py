@@ -8,6 +8,15 @@ def get_mapping_file(file_name: str) -> str:
     return file_path
 
 
+def get_lookup_file(file_name: str) -> str:
+    dirname = os.path.dirname(__file__)
+    file_path = os.path.join(
+        dirname, f"../mapping_definitions/lookups" f"/{file_name}.json"
+    )
+
+    return file_path
+
+
 def log_title(message: str) -> str:
     total_length = 100
     longest_word = 12
