@@ -265,7 +265,11 @@ class Mapping:
         for module in all_modules:
             for name, df in module.items():
                 # if "_lookup" not in name:
-                if name in ["client_persons", "client_addresses"]:
+                if name in [
+                    "client_persons",
+                    "client_addresses",
+                    "client_phonenumbers",
+                ]:
                     module_dict = self._clean_up_and_convert_to_dict(df=df)
 
                     self._add_single_module_details_to_summary(

@@ -4,12 +4,20 @@ import os
 import pytest
 
 from config import LocalConfig
-from data_tests.clients import cases_clients_persons, cases_clients_addresses
+from data_tests.clients import (
+    cases_clients_persons,
+    cases_clients_addresses,
+    cases_clients_phonenumbers,
+)
 
 SAMPLE_PERCENTAGE = 1
 
 
-list_of_test_cases = [cases_clients_persons, cases_clients_addresses]
+list_of_test_cases = [
+    cases_clients_persons,
+    cases_clients_addresses,
+    cases_clients_phonenumbers,
+]
 
 
 @pytest.fixture

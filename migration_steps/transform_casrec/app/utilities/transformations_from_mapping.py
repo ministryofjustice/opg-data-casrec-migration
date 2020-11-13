@@ -23,6 +23,7 @@ def do_simple_mapping(
     simple_mapping: dict, table_definition: dict, source_data_df: pd.DataFrame
 ) -> pd.DataFrame:
 
+    log.log(config.VERBOSE, "starting to apply simple mapping")
     log.log(config.VERBOSE, f"simple mapping dict: {simple_mapping}")
 
     source_table_name = table_definition["source_table_name"]
@@ -41,6 +42,7 @@ def do_simple_mapping(
 def do_simple_transformations(
     transformations: dict, source_data_df: pd.DataFrame
 ) -> pd.DataFrame:
+    log.log(config.VERBOSE, "starting to apply transformations")
     transformed_df = source_data_df
 
     if "squash_columns" in transformations:
@@ -68,6 +70,7 @@ def do_simple_transformations(
 def add_required_columns(
     required_columns: dict, source_data_df: pd.DataFrame
 ) -> pd.DataFrame:
+    log.log(config.VERBOSE, "starting to apply required columns")
     for col, details in required_columns.items():
         source_data_df[col] = details["default_value"]
 
@@ -80,6 +83,7 @@ def add_unique_id(
     table_definition: dict,
     source_data_df: pd.DataFrame,
 ) -> pd.DataFrame:
+    log.log(config.VERBOSE, f"starting to add unique id")
     db_conn = db_conn_string
     db_schema = db_schema
     destination_table_name = table_definition["destination_table_name"]
@@ -152,8 +156,6 @@ def perform_transformations(
     if len(simple_mapping) > 0:
         final_df = do_simple_mapping(simple_mapping, table_definition, final_df)
 
-        log.log(config.DATA, f"\n{final_df.sample(n=config.row_limit).to_markdown()}")
-
     if len(transformations) > 0:
         final_df = do_simple_transformations(transformations, final_df)
 
@@ -161,5 +163,7 @@ def perform_transformations(
         final_df = add_required_columns(required_columns, final_df)
 
     final_df = add_unique_id(db_conn_string, db_schema, table_definition, final_df)
+
+    log.log(config.DATA, f"\n{final_df.sample(n=config.row_limit).to_markdown()}")
 
     return final_df

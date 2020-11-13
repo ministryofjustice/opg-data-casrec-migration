@@ -1,4 +1,3 @@
-import deepdiff
 import pytest
 import os
 import json
@@ -35,7 +34,6 @@ def test_all_fields(complete_status):
                     for k, v in def_dict.items()
                     if v["is_complete"] is complete_status
                 ]
-
     errors = {}
     for k in expected_fields.keys():
         assert k in fields_dict

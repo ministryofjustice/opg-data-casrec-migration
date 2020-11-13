@@ -11,18 +11,24 @@
             "total_unmapped": 0,
             "total_mapped": 9,
             "percentage_complete": 100
+        },
+        "client_phonenumbers": {
+            "total_rows": 6,
+            "total_unmapped": 0,
+            "total_mapped": 6,
+            "percentage_complete": 100
         }
     },
     "total": {
         "worksheets": {
-            "total_sheets": 2,
-            "total_complete": 1
+            "total_sheets": 3,
+            "total_complete": 2
         },
         "fields": {
-            "total_fields": 40,
+            "total_fields": 46,
             "total_unmapped": 5,
-            "total_mapped": 35,
-            "percentage_complete": 88
+            "total_mapped": 41,
+            "percentage_complete": 89
         }
     }
 }
