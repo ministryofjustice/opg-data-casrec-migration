@@ -8,18 +8,18 @@
         "calculated": "",
         "is_pk": true,
         "fk_parents": "",
-        "is_complete": ""
+        "is_complete": true
     },
     "person_id": {
         "casrec_table": "",
         "casrec_column_name": "",
         "alias": "",
         "requires_transformation": "",
-        "default_value": "client_persons.id",
+        "default_value": "",
         "calculated": "",
         "is_pk": "",
         "fk_parents": "persons:id",
-        "is_complete": ""
+        "is_complete": true
     },
     "phone_number": {
         "casrec_table": "PAT",

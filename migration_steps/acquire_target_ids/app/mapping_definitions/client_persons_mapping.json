@@ -8,7 +8,7 @@
         "calculated": "",
         "is_pk": true,
         "fk_parents": "",
-        "is_complete": ""
+        "is_complete": true
     },
     "dob": {
         "casrec_table": "PAT",

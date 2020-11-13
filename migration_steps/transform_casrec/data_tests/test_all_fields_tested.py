@@ -33,6 +33,8 @@ def test_all_fields(complete_status):
                     k
                     for k, v in def_dict.items()
                     if v["is_complete"] is complete_status
+                    and v["is_pk"] is not True
+                    and len(v["fk_parents"]) == 0
                 ]
     errors = {}
     for k in expected_fields.keys():
