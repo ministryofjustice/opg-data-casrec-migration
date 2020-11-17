@@ -1,74 +1,110 @@
 {
     "id": {
-        "casrec_table": "",
-        "casrec_column_name": "",
-        "alias": "",
-        "requires_transformation": "",
-        "lookup_table": "",
-        "default_value": "",
-        "calculated": "",
-        "is_pk": true,
-        "fk_parents": "",
-        "is_complete": true
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": true,
+            "fk_parents": ""
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": ""
+        }
     },
     "person_id": {
-        "casrec_table": "",
-        "casrec_column_name": "",
-        "alias": "",
-        "requires_transformation": "",
-        "lookup_table": "",
-        "default_value": "",
-        "calculated": "",
-        "is_pk": "",
-        "fk_parents": "persons:id",
-        "is_complete": true
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "persons:id"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": ""
+        }
     },
     "phone_number": {
-        "casrec_table": "PAT",
-        "casrec_column_name": "Client Phone",
-        "alias": "Client Phone",
-        "requires_transformation": "",
-        "lookup_table": "",
-        "default_value": "",
-        "calculated": "",
-        "is_pk": "",
-        "fk_parents": "",
-        "is_complete": true
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": ""
+        },
+        "transform_casrec": {
+            "casrec_table": "PAT",
+            "casrec_column_name": "Client Phone",
+            "alias": "Client Phone",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": ""
+        }
     },
     "type": {
-        "casrec_table": "",
-        "casrec_column_name": "",
-        "alias": "",
-        "requires_transformation": "",
-        "lookup_table": "",
-        "default_value": "Home",
-        "calculated": "",
-        "is_pk": "",
-        "fk_parents": "",
-        "is_complete": true
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": ""
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "Home",
+            "calculated": ""
+        }
     },
     "is_default": {
-        "casrec_table": "",
-        "casrec_column_name": "",
-        "alias": "",
-        "requires_transformation": "",
-        "lookup_table": "",
-        "default_value": false,
-        "calculated": "",
-        "is_pk": "",
-        "fk_parents": "",
-        "is_complete": true
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": ""
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": false,
+            "calculated": ""
+        }
     },
     "updateddate": {
-        "casrec_table": "",
-        "casrec_column_name": "",
-        "alias": "",
-        "requires_transformation": "",
-        "lookup_table": "",
-        "default_value": "Todays Date",
-        "calculated": "",
-        "is_pk": "",
-        "fk_parents": "",
-        "is_complete": true
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": ""
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "Todays Date",
+            "calculated": ""
+        }
     }
 }
