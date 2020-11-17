@@ -4,7 +4,7 @@ import pandas as pd
 
 from utilities import transformations_from_mapping
 from utilities.generate_source_query import generate_select_string_from_mapping
-from utilities.helpers import get_mapping_file
+from utilities.helpers import get_mapping_file, get_mapping_dict
 
 definition = {
     "sheet_name": "persons (Client)",
@@ -15,8 +15,7 @@ definition = {
 
 def insert_persons_clients(config, etl2_db):
 
-    with open(get_mapping_file(file_name="client_persons_mapping")) as mapping_json:
-        mapping_dict = json.load(mapping_json)
+    mapping_dict = get_mapping_dict(file_name="client_persons_mapping")
 
     source_data_query = generate_select_string_from_mapping(
         mapping=mapping_dict,
