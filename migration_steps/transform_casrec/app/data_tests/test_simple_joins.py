@@ -23,7 +23,7 @@ from data_tests.helpers import (
     has_tag="one_to_one_joins",
 )
 def test_one_to_one_joins(
-    get_config,
+    test_config,
     join_columns,
     merge_columns,
     fk_child_query,
@@ -36,7 +36,7 @@ def test_one_to_one_joins(
         module_name=module_name, tested_fields=[x for x in join_columns.keys()]
     )
 
-    config = get_config
+    config = test_config
 
     fk_child_df = get_data_from_query(query=fk_child_query, config=config, sample=True,)
 

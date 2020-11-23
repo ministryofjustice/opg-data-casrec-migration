@@ -1,0 +1,65 @@
+import json
+import os
+import sys
+from pathlib import Path
+import get_shared_utilities
+from data_tests.cases import (
+    cases_supervision_level_log,
+    cases_cases,
+    cases_person_caseitem,
+)
+from data_tests.clients import cases_clients_persons
+from data_tests.clients import cases_clients_addresses, cases_clients_phonenumbers
+import pytest
+
+from run_data_tests import config
+
+SAMPLE_PERCENTAGE = config.SAMPLE_PERCENTAGE
+
+
+list_of_test_cases = [
+    cases_clients_persons,
+    cases_clients_addresses,
+    cases_clients_phonenumbers,
+    cases_cases,
+    cases_supervision_level_log,
+    cases_person_caseitem,
+]
+
+
+@pytest.fixture
+def test_config():
+    return config
+
+
+def add_to_tested_list(module_name, tested_fields):
+    pass
+    # dirname = os.path.dirname(__file__)
+    # file_name = "tested_fields.json"
+    # file_path = os.path.join(dirname, file_name)
+    #
+    # if not os.path.exists(file_path):
+    #     os.makedirs(file_path)
+    #
+    # try:
+    #     with open(file_path, "r") as fields_json:
+    #         fields_dict = json.load(fields_json)
+    # except IOError:
+    #     fields_dict = {}
+    # try:
+    #     field_list = list(set(fields_dict[module_name]) | set(tested_fields))
+    #     fields_dict[module_name] = field_list
+    # except KeyError:
+    #     fields_dict[module_name] = tested_fields
+    #
+    # with open(file_path, "w") as json_out:
+    #     json.dump(fields_dict, json_out, indent=4)
+
+
+# def pytest_sessionfinish(session):
+#     print("Session finish, deleting field tracker files")
+#
+#     dirname = os.path.dirname(__file__)
+#     file_path = os.path.join(dirname, f"./field_list")
+#     file_name = "tested_fields.json"
+#     os.remove(f"{file_path}/{file_name}")

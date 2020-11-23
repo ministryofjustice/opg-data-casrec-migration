@@ -13,11 +13,11 @@ destination_tables = {
 
 
 @case(tags="many_to_one_join")
-def case_person_caseitem(get_config):
+def case_person_caseitem(test_config):
 
     merge_columns = {"source": "Case", "transformed": "caserecnumber"}
 
-    config = get_config
+    config = test_config
 
     source_query = f"""
         SELECT

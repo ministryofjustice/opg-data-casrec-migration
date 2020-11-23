@@ -10,7 +10,7 @@ destination_table = "persons"
 
 
 @case(tags="simple")
-def case_clients_1(get_config):
+def case_clients_1(test_config):
     simple_matches = {
         # "Title": ["salutation"],
         "DOB": ["dob"],
@@ -23,7 +23,7 @@ def case_clients_1(get_config):
     }
     merge_columns = {"source": "Case", "transformed": "caserecnumber"}
 
-    config = get_config
+    config = test_config
 
     source_columns = [f'"{x}"' for x in simple_matches.keys()]
     transformed_columns = [f'"{y}"' for x in simple_matches.values() for y in x]
@@ -47,7 +47,7 @@ def case_clients_1(get_config):
 
 
 @case(tags="default")
-def case_clients_2(get_config):
+def case_clients_2(test_config):
     defaults = {
         "type": "actor_client",
         "systemstatus": True,
@@ -69,7 +69,7 @@ def case_clients_2(get_config):
         # "updateddate": "Todays date",
     }
 
-    config = get_config
+    config = test_config
     source_columns = [f'"{x}"' for x in defaults.keys()]
 
     source_query = f"""
@@ -83,7 +83,7 @@ def case_clients_2(get_config):
 
 @case(tags="lookups")
 # title is commented out because the anon data is wrong so it will never pass
-def case_clients_3(get_config):
+def case_clients_3(test_config):
 
     lookup_fields = {
         "maritalstatus": {"Marital Status": "marital_status_lookup"},
@@ -92,7 +92,7 @@ def case_clients_3(get_config):
     }
     merge_columns = {"source": "Case", "transformed": "caserecnumber"}
 
-    config = get_config
+    config = test_config
 
     source_columns = [f'"{y}"' for x in lookup_fields.values() for y in x]
     transformed_columns = [f'"{x}"' for x in lookup_fields.keys()]
@@ -116,7 +116,7 @@ def case_clients_3(get_config):
 
 
 @case(tags="calculated")
-def case_clients_4(get_config):
+def case_clients_4(test_config):
 
     today = datetime.today().strftime("%Y-%m-%d")
 
@@ -124,8 +124,8 @@ def case_clients_4(get_config):
         "statusdate": today,
         "updateddate": today,
     }
+    config = test_config
 
-    config = get_config
     source_columns = [f'"{x}"' for x in calculated_fields.keys()]
 
     source_query = f"""

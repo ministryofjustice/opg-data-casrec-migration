@@ -1,3 +1,5 @@
+from ast import literal_eval
+
 from pytest_cases import parametrize_with_cases
 
 from data_tests.conftest import (
@@ -9,37 +11,37 @@ from data_tests.helpers import (
     get_data_from_query,
     get_merge_col_data_as_list,
     merge_source_and_transformed_df,
-    get_lookup_dict,
 )
+import pandas as pd
 
 
 @parametrize_with_cases(
     (
-        "lookup_fields",
-        "merge_columns",
+        "squash_columns_fields",
         "source_query",
         "transformed_query",
+        "merge_columns",
         "module_name",
     ),
     cases=list_of_test_cases,
-    has_tag="lookups",
+    has_tag="squash_columns",
 )
-def test_map_lookup_tables(
-    get_config,
-    lookup_fields,
-    merge_columns,
+def test_squash_columns(
+    test_config,
+    squash_columns_fields,
     source_query,
     transformed_query,
+    merge_columns,
     module_name,
 ):
     print(f"module_name: {module_name}")
-    add_to_tested_list(
-        module_name=module_name,
-        tested_fields=[x for x in lookup_fields.keys()]
-        + [merge_columns["transformed"]],
-    )
+    # print(source_query)
+    # print(transformed_query)
 
-    config = get_config
+    config = test_config
+    add_to_tested_list(
+        module_name=module_name, tested_fields=[x for x in squash_columns_fields.keys()]
+    )
 
     source_sample_df = get_data_from_query(
         query=source_query, config=config, sort_col=merge_columns["source"], sample=True
@@ -71,16 +73,14 @@ def test_map_lookup_tables(
     )
 
     print(f"Checking {result_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) ")
+
     assert result_df.shape[0] > 0
-    for k, v in lookup_fields.items():
-        for i, j in v.items():
 
-            lookup_dict = get_lookup_dict(file_name=j)
+    for k, v in squash_columns_fields.items():
+        for i, j in enumerate(v):
+            split_result = result_df[k].map(literal_eval).apply(pd.Series)
+            match = result_df[j].equals(split_result[i])
 
-            match = (
-                result_df[i].map(lookup_dict).fillna("").equals(result_df[k].fillna(""))
-            )
-
-            print(f"checking {k} == {i}...." f" {'OK' if match is True else 'oh no'} ")
+            print(f"checking {j} == {k}:{i}.... {'OK' if match is True else 'oh no'} ")
 
             assert match is True

@@ -1,21 +1,21 @@
+from datetime import datetime
+
 from pytest_cases import case
 
-module_name = "client_addresses"
+module_name = "client_phonenumbers"
 source_table = "pat"
-destination_table = "addresses"
+destination_table = "phonenumbers"
 
 
 @case(tags="simple")
-def case_clients_1(get_config):
+def case_clients_phonenos_1(test_config):
     simple_matches = {
-        "Adrs3": ["town"],
-        "Adrs4": ["county"],
-        "Postcode": ["postcode"],
-        "Adrs5": ["country"],
+        "Client Phone": ["phone_number"],
     }
     merge_columns = {"source": "Case", "transformed": "caserecnumber"}
 
-    config = get_config
+    config = test_config
+
     source_columns = [f'"{x}"' for x in simple_matches.keys()]
     transformed_columns = [f'"{y}"' for x in simple_matches.values() for y in x]
 
@@ -36,15 +36,15 @@ def case_clients_1(get_config):
     return (simple_matches, merge_columns, source_query, transformed_query, module_name)
 
 
-#
-#
 @case(tags="default")
-def case_clients_2(get_config):
+def case_clients_phonenos_2(test_config):
     defaults = {
-        "type": "Primary",
+        "type": "Home",
+        "is_default": False,
+        # "updateddate": "Todays Date",
     }
 
-    config = get_config
+    config = test_config
     source_columns = [f'"{x}"' for x in defaults.keys()]
 
     source_query = f"""
@@ -56,82 +56,34 @@ def case_clients_2(get_config):
     return (defaults, source_query, module_name)
 
 
-@case(tags="convert_to_bool")
-def case_clients_3(get_config):
-    convert_to_bool_fields = {
-        "Foreign": ["isairmailrequired"],
+@case(tags="calculated")
+def case_clients_phonenos_3(test_config):
+    today = datetime.today().strftime("%Y-%m-%d")
+
+    calculated_fields = {
+        "updateddate": today,
     }
 
-    config = get_config
-    merge_columns = {"source": "Case", "transformed": "c_case"}
-    source_columns = [f'"{x}"' for x in convert_to_bool_fields.keys()]
-    transformed_columns = [f'"{y}"' for x in convert_to_bool_fields.values() for y in x]
+    config = test_config
+    source_columns = [f'"{x}"' for x in calculated_fields.keys()]
 
     source_query = f"""
         SELECT
-            "{merge_columns['source']}",
             {', '.join(source_columns)}
-        FROM {config.etl1_schema}.{source_table}
-    """
-
-    transformed_query = f"""
-        SELECT
-            {merge_columns['transformed']},
-            {', '.join(transformed_columns)}
         FROM {config.etl2_schema}.{destination_table}
     """
 
-    return (
-        convert_to_bool_fields,
-        source_query,
-        transformed_query,
-        merge_columns,
-        module_name,
-    )
-
-
-@case(tags="squash_columns")
-def case_clients_4(get_config):
-    squash_columns_fields = {
-        "address_lines": ["Adrs1", "Adrs2"],
-    }
-
-    config = get_config
-    merge_columns = {"source": "Case", "transformed": "c_case"}
-    source_columns = [f'"{y}"' for x in squash_columns_fields.values() for y in x]
-    transformed_columns = [f'"{x}"' for x in squash_columns_fields.keys()]
-
-    source_query = f"""
-        SELECT
-            "{merge_columns['source']}",
-            {', '.join(source_columns)}
-        FROM {config.etl1_schema}.{source_table}
-    """
-
-    transformed_query = f"""
-        SELECT
-            {merge_columns['transformed']},
-            {', '.join(transformed_columns)}
-        FROM {config.etl2_schema}.{destination_table}
-    """
-
-    return (
-        squash_columns_fields,
-        source_query,
-        transformed_query,
-        merge_columns,
-        module_name,
-    )
+    return (calculated_fields, source_query, module_name)
 
 
 @case(tags="one_to_one_joins")
-def case_clients_5(get_config):
+def case_clients_phonenos_joins(test_config):
     join_columns = {
         "person_id": {"persons": "id"},
     }
     merge_columns = {"fk_child": "c_case", "fk_parent": "caserecnumber"}
 
-    config = get_config
+    config = test_config
 
     fk_child_col = [f'"{k}"' for k in join_columns.keys()]
 

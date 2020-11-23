@@ -14,32 +14,30 @@ from data_tests.helpers import (
 
 @parametrize_with_cases(
     (
-        "simple_matches",
-        "merge_columns",
+        "convert_to_bool_fields",
         "source_query",
         "transformed_query",
+        "merge_columns",
         "module_name",
     ),
     cases=list_of_test_cases,
-    has_tag="simple",
+    has_tag="convert_to_bool",
 )
-def test_simple_transformations(
-    get_config,
-    simple_matches,
-    merge_columns,
+def test_convert_to_bool(
+    test_config,
+    convert_to_bool_fields,
     source_query,
     transformed_query,
+    merge_columns,
     module_name,
 ):
     print(f"module_name: {module_name}")
 
+    config = test_config
     add_to_tested_list(
         module_name=module_name,
-        tested_fields=[y for x in simple_matches.values() for y in x]
-        + [merge_columns["transformed"]],
+        tested_fields=[y for x in convert_to_bool_fields.values() for y in x],
     )
-
-    config = get_config
 
     source_sample_df = get_data_from_query(
         query=source_query, config=config, sort_col=merge_columns["source"], sample=True
@@ -72,9 +70,33 @@ def test_simple_transformations(
 
     print(f"Checking {result_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) ")
     assert result_df.shape[0] > 0
-    for k, v in simple_matches.items():
+    for k, v in convert_to_bool_fields.items():
         for i in v:
-            match = result_df[k].equals(result_df[i])
-            print(f"checking {k} == {i}.... {'OK' if match is True else 'oh no'} ")
+            true_values = ["true", "True", "t", "T", "1", "1.0"]
 
-            assert match is True
+            true_rows = result_df[result_df[k].isin(true_values)]
+            total_true_rows = true_rows.shape[0]
+            true_matches = true_rows[i]
+            total_true_matches = true_matches.shape[0]
+
+            t_match = total_true_rows == total_true_matches
+            print(
+                f"checking True: {total_true_rows} {k} =="
+                f" {total_true_matches} "
+                f"{i}.... {'OK' if t_match is True else 'oh no'} "
+            )
+            assert t_match
+
+            false_rows = result_df[~result_df[k].isin(true_values)]
+            total_false_rows = false_rows.shape[0]
+            false_matches = false_rows[i]
+            total_false_matches = false_matches.shape[0]
+
+            f_match = total_false_rows == total_false_matches
+
+            print(
+                f"checking False: {total_false_rows} {k} =="
+                f" {total_false_matches} "
+                f"{i}.... {'OK' if f_match is True else 'oh no'} "
+            )
+            assert f_match

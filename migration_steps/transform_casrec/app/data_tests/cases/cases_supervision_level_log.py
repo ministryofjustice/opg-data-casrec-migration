@@ -9,14 +9,14 @@ destination_table = "supervision_level_log"
 
 
 @case(tags="lookups")
-def case_supervision_log_lookups(get_config):
+def case_supervision_log_lookups(test_config):
     lookup_fields = {
         "supervisionlevel": {"Ord Risk Lvl": "supervision_level_lookup"},
         "assetlevel": {"Ord Risk Lvl": "asset_level_lookup"},
     }
     merge_columns = {"source": "Case", "transformed": "c_case"}
 
-    config = get_config
+    config = test_config
 
     source_columns = list(set([f'"{y}"' for x in lookup_fields.values() for y in x]))
     transformed_columns = [f'"{x}"' for x in lookup_fields.keys()]
@@ -39,7 +39,7 @@ def case_supervision_log_lookups(get_config):
 
 
 @case(tags="calculated")
-def case_supervision_log_calcs(get_config):
+def case_supervision_log_calcs(test_config):
 
     today = datetime.today().strftime("%Y-%m-%d")
 
@@ -48,7 +48,7 @@ def case_supervision_log_calcs(get_config):
         "createddate": today,
     }
 
-    config = get_config
+    config = test_config
     source_columns = [f'"{x}"' for x in calculated_fields.keys()]
 
     source_query = f"""

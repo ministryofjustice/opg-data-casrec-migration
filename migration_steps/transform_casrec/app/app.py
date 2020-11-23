@@ -12,6 +12,8 @@ import custom_logger
 from helpers import log_title
 from config import get_config
 from dotenv import load_dotenv
+
+from run_data_tests import run_data_tests
 from entities import clients, cases
 from utilities.clear_database import clear_tables
 from utilities.db_insert import InsertData
@@ -51,8 +53,13 @@ etl2_db = InsertData(db_engine=etl2_db_engine, schema=config.etl2_schema)
     prompt=False,
     help="List of entities you want to transform, eg 'clients,deputies,cases'.",
 )
+@click.option(
+    "--include_tests",
+    help="Run data tests after performing the transformations",
+    default=False,
+)
 @click.option("-v", "--verbose", count=True)
-def main(clear, entity_list, verbose):
+def main(clear, entity_list, include_tests, verbose):
     try:
         log.setLevel(verbosity_levels[verbose])
         log.info(f"{verbosity_levels[verbose]} logging enabled")
@@ -81,6 +88,9 @@ def main(clear, entity_list, verbose):
 
     if len(allowed_entities) == 0 or "cases" in allowed_entities:
         cases.runner(config, etl2_db)
+
+    if include_tests:
+        run_data_tests(verbosity=verbose)
 
 
 if __name__ == "__main__":

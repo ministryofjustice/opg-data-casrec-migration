@@ -9,37 +9,41 @@ from data_tests.helpers import (
     get_data_from_query,
     get_merge_col_data_as_list,
     merge_source_and_transformed_df,
+    get_lookup_dict,
 )
 
 
 @parametrize_with_cases(
     (
-        "module_name",
+        "lookup_fields",
+        "merge_columns",
         "source_query",
         "transformed_query",
-        "merge_columns",
-        "match_columns",
+        "module_name",
     ),
     cases=list_of_test_cases,
-    has_tag="many_to_one_join",
+    has_tag="lookups",
 )
-def test_complex_joins(
-    get_config,
-    module_name,
+def test_map_lookup_tables(
+    test_config,
+    lookup_fields,
+    merge_columns,
     source_query,
     transformed_query,
-    merge_columns,
-    match_columns,
+    module_name,
 ):
     print(f"module_name: {module_name}")
+    add_to_tested_list(
+        module_name=module_name,
+        tested_fields=[x for x in lookup_fields.keys()]
+        + [merge_columns["transformed"]],
+    )
 
-    config = get_config
+    config = test_config
 
     source_sample_df = get_data_from_query(
         query=source_query, config=config, sort_col=merge_columns["source"], sample=True
     )
-
-    # print(source_sample_df.to_markdown())
 
     assert source_sample_df.shape[0] > 0
 
@@ -60,19 +64,23 @@ def test_complex_joins(
         transformed_df[merge_columns["transformed"]].isin(sample_caserefs)
     ]
 
-    # print(transformed_sample_df.to_markdown())
-
     result_df = merge_source_and_transformed_df(
         source_df=source_sample_df,
         transformed_df=transformed_sample_df,
         merge_columns=merge_columns,
     )
 
-    # print(result_df.to_markdown())
     print(f"Checking {result_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) ")
     assert result_df.shape[0] > 0
-    for k, v in match_columns.items():
-        match = result_df[k].equals(result_df[v])
-        print(f"checking {k} == {v}.... {'OK' if match is True else 'oh no'} ")
+    for k, v in lookup_fields.items():
+        for i, j in v.items():
 
-        assert match is True
+            lookup_dict = get_lookup_dict(file_name=j)
+
+            match = (
+                result_df[i].map(lookup_dict).fillna("").equals(result_df[k].fillna(""))
+            )
+
+            print(f"checking {k} == {i}...." f" {'OK' if match is True else 'oh no'} ")
+
+            assert match is True

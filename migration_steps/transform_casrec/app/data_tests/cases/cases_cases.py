@@ -9,7 +9,7 @@ destination_table = "cases"
 
 
 @case(tags="simple")
-def case_cases_1(get_config):
+def case_cases_1(test_config):
     simple_matches = {
         # "Ord Type": ["casesubtype"],  # actually a lookup
         "Made Date": ["orderdate"],
@@ -23,7 +23,7 @@ def case_cases_1(get_config):
     }
     merge_columns = {"source": "Order No", "transformed": "c_order_no"}
 
-    config = get_config
+    config = test_config
 
     source_columns = [f'"{x}"' for x in simple_matches.keys()]
     transformed_columns = [f'"{y}"' for x in simple_matches.values() for y in x]
@@ -46,7 +46,7 @@ def case_cases_1(get_config):
 
 
 @case(tags="default")
-def case_cases_2(get_config):
+def case_cases_2(test_config):
     defaults = {
         "applicationtype": 0,
         "casetype": "ORDER",
@@ -86,7 +86,7 @@ def case_cases_2(get_config):
         "applicationhascharges": 0,
     }
 
-    config = get_config
+    config = test_config
     source_columns = [f'"{x}"' for x in defaults.keys()]
 
     source_query = f"""
@@ -99,14 +99,14 @@ def case_cases_2(get_config):
 
 
 @case(tags="lookups")
-def case_cases_3(get_config):
+def case_cases_3(test_config):
     lookup_fields = {
         "casesubtype": {"Ord Type": "order_type_lookup"},
         "ordersubtype": {"Ord Type": "order_subtype_lookup"},
     }
     merge_columns = {"source": "Order No", "transformed": "c_order_no"}
 
-    config = get_config
+    config = test_config
 
     source_columns = list(set([f'"{y}"' for x in lookup_fields.values() for y in x]))
     transformed_columns = [f'"{x}"' for x in lookup_fields.keys()]
@@ -129,7 +129,7 @@ def case_cases_3(get_config):
 
 
 @case(tags="calculated")
-def case_clients_4(get_config):
+def case_clients_4(test_config):
 
     today = datetime.today().strftime("%Y-%m-%d")
 
@@ -138,7 +138,7 @@ def case_clients_4(get_config):
         "updateddate": today,
     }
 
-    config = get_config
+    config = test_config
     source_columns = [f'"{x}"' for x in calculated_fields.keys()]
 
     source_query = f"""

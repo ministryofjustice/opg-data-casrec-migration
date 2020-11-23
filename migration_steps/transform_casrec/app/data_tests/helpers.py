@@ -41,7 +41,7 @@ def get_lookup_dict(file_name: str) -> str:
         os.path.join(
             os.path.dirname(__file__),
             "..",
-            f"app/mapping_definitions/" f"lookups/{file_name}.json",
+            f"mapping_definitions/" f"lookups/{file_name}.json",
         )
     )
 
