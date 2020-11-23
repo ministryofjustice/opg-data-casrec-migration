@@ -72,8 +72,6 @@ def test_map_lookup_tables(
         merge_columns=merge_columns,
     )
 
-    print(result_df.to_markdown())
-
     print(f"Checking {result_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) ")
     assert result_df.shape[0] > 0
     for k, v in lookup_fields.items():

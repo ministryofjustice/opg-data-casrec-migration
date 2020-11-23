@@ -1,14 +1,19 @@
-import logging
 import os
-import time
+import sys
 from pathlib import Path
-import get_shared_utilities
+
+current_path = Path(os.path.dirname(os.path.realpath(__file__)))
+sys.path.insert(0, str(current_path) + "/../../shared")
+
+
 import pytest
+import logging
+import time
 from config import get_config
 from dotenv import load_dotenv
-from pytest import ExitCode
 
 
+# set config
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 env_path = current_path / "../.env"
 load_dotenv(dotenv_path=env_path)
@@ -16,11 +21,8 @@ load_dotenv(dotenv_path=env_path)
 environment = os.environ.get("ENVIRONMENT")
 config = get_config(env=environment)
 
+# logging
 log = logging.getLogger("root")
-
-
-def pytest_addoption(parser):
-    parser.addoption("--additional_arguments", action="store", help="some helptext")
 
 
 def run_data_tests(verbosity=0):

@@ -1,8 +1,6 @@
 import json
 import os
-import sys
-from pathlib import Path
-import get_shared_utilities
+
 from data_tests.cases import (
     cases_supervision_level_log,
     cases_cases,
@@ -36,10 +34,6 @@ def add_to_tested_list(module_name, tested_fields):
 
     dirname = os.path.dirname(__file__)
     file_name = "tested_fields.json"
-    # file_path = os.path.join(dirname, file_name)
-
-    # if not os.path.exists(file_path):
-    #     os.makedirs(file_path)
 
     try:
         with open(f"{dirname}/{file_name}", "r") as fields_json:

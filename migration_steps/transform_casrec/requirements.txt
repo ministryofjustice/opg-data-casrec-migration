@@ -4,3 +4,6 @@ sqlalchemy
 tabulate
 config
 colorlog
+pytest
+pytest-cases
+pytest-ordering
