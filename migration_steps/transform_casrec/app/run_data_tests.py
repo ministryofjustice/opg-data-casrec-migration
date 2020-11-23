@@ -35,12 +35,10 @@ def run_data_tests(verbosity=0):
         pytest_args.insert(0, "-v")
         pytest_args.insert(1, "-s")
 
-    print(f"pytest_args: {pytest_args}")
-
     log.info(f"Running data tests on {config.SAMPLE_PERCENTAGE}% of data")
-    pytest.main(pytest_args)
+    exit_code = pytest.main(pytest_args)
 
-    if ExitCode == 0:
+    if exit_code == 0:
         log.info("all tests passed")
     else:
         log.info("tests failed")

@@ -33,33 +33,31 @@ def test_config():
 
 
 def add_to_tested_list(module_name, tested_fields):
-    pass
-    # dirname = os.path.dirname(__file__)
-    # file_name = "tested_fields.json"
+
+    dirname = os.path.dirname(__file__)
+    file_name = "tested_fields.json"
     # file_path = os.path.join(dirname, file_name)
-    #
+
     # if not os.path.exists(file_path):
     #     os.makedirs(file_path)
-    #
-    # try:
-    #     with open(file_path, "r") as fields_json:
-    #         fields_dict = json.load(fields_json)
-    # except IOError:
-    #     fields_dict = {}
-    # try:
-    #     field_list = list(set(fields_dict[module_name]) | set(tested_fields))
-    #     fields_dict[module_name] = field_list
-    # except KeyError:
-    #     fields_dict[module_name] = tested_fields
-    #
-    # with open(file_path, "w") as json_out:
-    #     json.dump(fields_dict, json_out, indent=4)
+
+    try:
+        with open(f"{dirname}/{file_name}", "r") as fields_json:
+            fields_dict = json.load(fields_json)
+    except IOError:
+        fields_dict = {}
+    try:
+        field_list = list(set(fields_dict[module_name]) | set(tested_fields))
+        fields_dict[module_name] = field_list
+    except KeyError:
+        fields_dict[module_name] = tested_fields
+
+    with open(f"{dirname}/{file_name}", "w") as json_out:
+        json.dump(fields_dict, json_out, indent=4)
 
 
-# def pytest_sessionfinish(session):
-#     print("Session finish, deleting field tracker files")
-#
-#     dirname = os.path.dirname(__file__)
-#     file_path = os.path.join(dirname, f"./field_list")
-#     file_name = "tested_fields.json"
-#     os.remove(f"{file_path}/{file_name}")
+def pytest_sessionfinish():
+    dirname = os.path.dirname(__file__)
+
+    file_name = "tested_fields.json"
+    os.remove(f"{dirname}/{file_name}")

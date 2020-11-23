@@ -12,6 +12,8 @@ from data_tests.helpers import (
     get_lookup_dict,
 )
 
+import numpy as np
+
 
 @parametrize_with_cases(
     (
@@ -69,6 +71,8 @@ def test_map_lookup_tables(
         transformed_df=transformed_sample_df,
         merge_columns=merge_columns,
     )
+
+    print(result_df.to_markdown())
 
     print(f"Checking {result_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) ")
     assert result_df.shape[0] > 0

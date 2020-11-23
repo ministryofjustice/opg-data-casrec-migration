@@ -6,7 +6,7 @@ from utilities.helpers import get_mapping_dict
 
 definition = {
     "source_table_name": "order",
-    "source_table_additional_columns": ["Case"],
+    "source_table_additional_columns": ["Case", "Order No"],
     "destination_table_name": "supervision_level_log",
 }
 

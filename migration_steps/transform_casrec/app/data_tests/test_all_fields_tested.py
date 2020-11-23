@@ -4,7 +4,7 @@ import json
 
 
 @pytest.mark.parametrize("complete_status", [True, False])
-@pytest.mark.xfail(reason="not all fields implemented yet")
+# @pytest.mark.xfail(reason="not all fields implemented yet")
 @pytest.mark.last
 def test_all_fields(complete_status):
     dirname = os.path.dirname(__file__)
@@ -19,7 +19,7 @@ def test_all_fields(complete_status):
 
     expected_fields = {}
     definitions_dir = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..", "app/mapping_definitions")
+        os.path.join(os.path.dirname(__file__), "..", "mapping_definitions")
     )
 
     for json_file in os.listdir(definitions_dir):
