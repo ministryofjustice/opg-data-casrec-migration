@@ -54,13 +54,13 @@ def test_all_fields(test_config, complete_status):
             if len(diff) > 0:
                 errors[k] = diff
 
-                log.debug(f"module_name: {k} field(s) {diff} not tested")
-                print(f"module_name: {k} field(s) {diff} not tested")
-
     log.log(
         config.VERBOSE,
         ("\n").join(
-            [f"{len(v)} errors in {k}: {(', ').join(v)}" for k, v in errors.items()]
+            [
+                f"{len(v)} untested fields in table {k}: {(', ').join(v)}"
+                for k, v in errors.items()
+            ]
         ),
     )
 
