@@ -6,6 +6,9 @@ from data_tests.conftest import (
     add_to_tested_list,
 )
 from data_tests.helpers import get_data_from_query
+import logging
+
+log = logging.getLogger("root")
 
 
 @parametrize_with_cases(
@@ -14,8 +17,7 @@ from data_tests.helpers import get_data_from_query
     has_tag="default",
 )
 def test_default_values(test_config, defaults, source_query, module_name):
-    print(f"module_name: {module_name}")
-    # print(f"source_query: {source_query}")
+    log.debug(f"module_name: {module_name}")
 
     config = test_config
 
@@ -29,11 +31,16 @@ def test_default_values(test_config, defaults, source_query, module_name):
 
     assert source_sample_df.shape[0] > 0
 
-    print(f"Checking {source_sample_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) ")
+    log.debug(
+        f"Checking {source_sample_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) from table: {module_name} "
+    )
     assert source_sample_df.shape[0] > 0
     for k, v in defaults.items():
         matches = source_sample_df[k].str.contains(str(v))
         total_matches = matches.sum()
         success = total_matches == source_sample_df.shape[0]
-        print(f"checking {k} == {v}.... {'OK' if success else 'oh no'} ")
+        log.log(
+            config.VERBOSE,
+            f"checking {k} == {v}...." f" {'OK' if success else 'oh no'} ",
+        )
         assert success

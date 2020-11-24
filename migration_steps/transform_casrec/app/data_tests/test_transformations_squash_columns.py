@@ -13,6 +13,9 @@ from data_tests.helpers import (
     merge_source_and_transformed_df,
 )
 import pandas as pd
+import logging
+
+log = logging.getLogger("root")
 
 
 @parametrize_with_cases(
@@ -34,9 +37,7 @@ def test_squash_columns(
     merge_columns,
     module_name,
 ):
-    print(f"module_name: {module_name}")
-    # print(source_query)
-    # print(transformed_query)
+    log.debug(f"module_name: {module_name}")
 
     config = test_config
     add_to_tested_list(
@@ -72,7 +73,9 @@ def test_squash_columns(
         merge_columns=merge_columns,
     )
 
-    print(f"Checking {result_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) ")
+    log.debug(
+        f"Checking {result_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) from table: {module_name} "
+    )
 
     assert result_df.shape[0] > 0
 
@@ -81,6 +84,10 @@ def test_squash_columns(
             split_result = result_df[k].map(literal_eval).apply(pd.Series)
             match = result_df[j].equals(split_result[i])
 
-            print(f"checking {j} == {k}:{i}.... {'OK' if match is True else 'oh no'} ")
+            log.log(
+                config.VERBOSE,
+                f"checking {j} == {k}:{i}...."
+                f" {'OK' if match is True else 'oh no'} ",
+            )
 
             assert match is True

@@ -9,6 +9,9 @@ from data_tests.helpers import (
     get_merge_col_data_as_list,
     merge_source_and_transformed_df,
 )
+import logging
+
+log = logging.getLogger("root")
 
 
 @parametrize_with_cases(
@@ -30,7 +33,7 @@ def test_complex_joins(
     merge_columns,
     match_columns,
 ):
-    print(f"module_name: {module_name}")
+    log.debug(f"module_name: {module_name}")
 
     config = test_config
 
@@ -63,10 +66,15 @@ def test_complex_joins(
         merge_columns=merge_columns,
     )
 
-    print(f"Checking {result_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) ")
+    log.debug(
+        f"Checking {result_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) from table: {module_name}"
+    )
     assert result_df.shape[0] > 0
     for k, v in match_columns.items():
         match = result_df[k].equals(result_df[v])
-        print(f"checking {k} == {v}.... {'OK' if match is True else 'oh no'} ")
+        log.log(
+            config.VERBOSE,
+            f"checking {k} == {v}...." " {'OK' if match is True else 'oh no'} ",
+        )
 
         assert match is True

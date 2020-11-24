@@ -10,6 +10,9 @@ from data_tests.helpers import (
     get_merge_col_data_as_list,
     merge_source_and_transformed_df,
 )
+import logging
+
+log = logging.getLogger("root")
 
 
 @parametrize_with_cases(
@@ -31,7 +34,7 @@ def test_simple_transformations(
     transformed_query,
     module_name,
 ):
-    print(f"module_name: {module_name}")
+    log.debug(f"module_name: {module_name}")
 
     add_to_tested_list(
         module_name=module_name,
@@ -70,11 +73,16 @@ def test_simple_transformations(
         merge_columns=merge_columns,
     )
 
-    print(f"Checking {result_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) ")
+    log.debug(
+        f"Checking {result_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) from table: {module_name} "
+    )
     assert result_df.shape[0] > 0
     for k, v in simple_matches.items():
         for i in v:
             match = result_df[k].equals(result_df[i])
-            print(f"checking {k} == {i}.... {'OK' if match is True else 'oh no'} ")
+            log.log(
+                config.VERBOSE,
+                f"checking {k} == {i}.... " f"{'OK' if match is True else 'oh no'} ",
+            )
 
             assert match is True

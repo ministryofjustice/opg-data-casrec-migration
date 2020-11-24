@@ -1,6 +1,7 @@
 import sys
 import os
 from pathlib import Path
+
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../shared")
 
@@ -90,7 +91,7 @@ def main(clear, entity_list, include_tests, verbose):
         cases.runner(config, etl2_db)
 
     if include_tests:
-        run_data_tests(verbosity=verbose)
+        run_data_tests(verbosity_level=verbosity_levels[verbose])
 
 
 if __name__ == "__main__":

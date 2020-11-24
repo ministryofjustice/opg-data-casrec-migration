@@ -1,18 +1,25 @@
 import pytest
 import os
 import json
+import logging
+
+log = logging.getLogger("root")
 
 
-@pytest.mark.parametrize("complete_status", [True, False])
-# @pytest.mark.xfail(reason="not all fields implemented yet")
+@pytest.mark.parametrize(
+    "complete_status",
+    [True, pytest.param(False, marks=pytest.mark.xfail(reason="fields not mapped"))],
+)
 @pytest.mark.last
-def test_all_fields(complete_status):
+def test_all_fields(test_config, complete_status):
+
+    config = test_config
     dirname = os.path.dirname(__file__)
-    file_path = os.path.join(dirname, f"./field_list")
+
     file_name = "tested_fields.json"
 
     try:
-        with open(f"{file_path}/{file_name}", "r") as fields_json:
+        with open(f"{dirname}/{file_name}", "r") as fields_json:
             fields_dict = json.load(fields_json)
     except IOError:
         fields_dict = {}
@@ -41,15 +48,20 @@ def test_all_fields(complete_status):
     for k in expected_fields.keys():
 
         if k in fields_dict:
+
             diff = list(set(expected_fields[k]) - set(fields_dict[k]))
+
             if len(diff) > 0:
                 errors[k] = diff
-            print(f"module_name: {k} with {len(diff)} errors")
 
-    print(
+                log.debug(f"module_name: {k} field(s) {diff} not tested")
+                print(f"module_name: {k} field(s) {diff} not tested")
+
+    log.log(
+        config.VERBOSE,
         ("\n").join(
             [f"{len(v)} errors in {k}: {(', ').join(v)}" for k, v in errors.items()]
-        )
+        ),
     )
 
     assert sum([len(x) for x in errors.values()]) == 0

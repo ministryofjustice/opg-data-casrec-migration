@@ -11,7 +11,9 @@ from data_tests.helpers import (
     merge_source_and_transformed_df,
     get_lookup_dict,
 )
+import logging
 
+log = logging.getLogger("root")
 import numpy as np
 
 
@@ -34,7 +36,7 @@ def test_map_lookup_tables(
     transformed_query,
     module_name,
 ):
-    print(f"module_name: {module_name}")
+    log.debug(f"module_name: {module_name}")
     add_to_tested_list(
         module_name=module_name,
         tested_fields=[x for x in lookup_fields.keys()]
@@ -72,7 +74,9 @@ def test_map_lookup_tables(
         merge_columns=merge_columns,
     )
 
-    print(f"Checking {result_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) ")
+    log.debug(
+        f"Checking {result_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) from table: {module_name} "
+    )
     assert result_df.shape[0] > 0
     for k, v in lookup_fields.items():
         for i, j in v.items():
@@ -83,6 +87,11 @@ def test_map_lookup_tables(
                 result_df[i].map(lookup_dict).fillna("").equals(result_df[k].fillna(""))
             )
 
-            print(f"checking {k} == {i}...." f" {'OK' if match is True else 'oh no'} ")
+            log.log(
+                config.VERBOSE,
+                f"checking {k} == {i}...."
+                f""
+                f" {'OK' if match is True else 'oh no'} ",
+            )
 
             assert match is True

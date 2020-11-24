@@ -10,6 +10,9 @@ from data_tests.helpers import (
     get_merge_col_data_as_list,
     merge_source_and_transformed_df,
 )
+import logging
+
+log = logging.getLogger("root")
 
 
 @parametrize_with_cases(
@@ -31,7 +34,7 @@ def test_convert_to_bool(
     merge_columns,
     module_name,
 ):
-    print(f"module_name: {module_name}")
+    log.debug(f"module_name: {module_name}")
 
     config = test_config
     add_to_tested_list(
@@ -68,7 +71,9 @@ def test_convert_to_bool(
         merge_columns=merge_columns,
     )
 
-    print(f"Checking {result_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) ")
+    log.debug(
+        f"Checking {result_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%)  from table: {module_name}"
+    )
     assert result_df.shape[0] > 0
     for k, v in convert_to_bool_fields.items():
         for i in v:
@@ -80,10 +85,11 @@ def test_convert_to_bool(
             total_true_matches = true_matches.shape[0]
 
             t_match = total_true_rows == total_true_matches
-            print(
+            log.log(
+                config.VERBOSE,
                 f"checking True: {total_true_rows} {k} =="
                 f" {total_true_matches} "
-                f"{i}.... {'OK' if t_match is True else 'oh no'} "
+                f"{i}.... {'OK' if t_match is True else 'oh no'} ",
             )
             assert t_match
 
@@ -94,9 +100,10 @@ def test_convert_to_bool(
 
             f_match = total_false_rows == total_false_matches
 
-            print(
+            log.log(
+                config.VERBOSE,
                 f"checking False: {total_false_rows} {k} =="
                 f" {total_false_matches} "
-                f"{i}.... {'OK' if f_match is True else 'oh no'} "
+                f"{i}.... {'OK' if f_match is True else 'oh no'} ",
             )
             assert f_match

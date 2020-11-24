@@ -9,6 +9,9 @@ from data_tests.helpers import (
     get_data_from_query,
     get_merge_col_data_as_list,
 )
+import logging
+
+log = logging.getLogger("root")
 
 
 @parametrize_with_cases(
@@ -30,7 +33,7 @@ def test_one_to_one_joins(
     fk_parent_query,
     module_name,
 ):
-    print(f"module_name: {module_name}")
+    log.debug(f"module_name: {module_name}")
 
     add_to_tested_list(
         module_name=module_name, tested_fields=[x for x in join_columns.keys()]
@@ -62,11 +65,14 @@ def test_one_to_one_joins(
     ].tolist()
     fk_parent_id_list = [int(x) for x in fk_parent_id_list]
 
-    print(f"Checking {fk_parent_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) ")
+    log.debug(
+        f"Checking {fk_parent_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) from table: {module_name} "
+    )
     success = set(fk_child_id_list) == set(fk_parent_id_list)
-    print(
+    log.log(
+        config.VERBOSE,
         f"checking {[k for k in join_columns][0]} == "
         f"{[y for x in join_columns.values() for y in x.values()][0]}.... "
-        f"{'OK' if success is True else 'oh no'} "
+        f"{'OK' if success is True else 'oh no'} ",
     )
     assert success is True
