@@ -9,12 +9,13 @@ from data_tests.helpers import (
     get_data_from_query,
     get_merge_col_data_as_list,
     merge_source_and_transformed_df,
-    get_lookup_dict,
 )
 import logging
 
+
+from helpers import get_lookup_dict
 log = logging.getLogger("root")
-import numpy as np
+
 
 
 @parametrize_with_cases(
