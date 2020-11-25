@@ -164,3 +164,37 @@ def case_cases_count(test_config):
     """
 
     return (source_query, transformed_query, module_name)
+
+
+@case(tags="capitalise")
+def case_cases_capitalise(test_config):
+    capitalised_fields = {
+        "Ord Stat": ["orderstatus"],
+    }
+
+    config = test_config
+    merge_columns = {"source": "Order No", "transformed": "c_order_no"}
+    source_columns = [f'"{x}"' for x in capitalised_fields.keys()]
+    transformed_columns = [f'"{y}"' for x in capitalised_fields.values() for y in x]
+
+    source_query = f"""
+        SELECT
+            "{merge_columns['source']}",
+            {', '.join(source_columns)}
+        FROM {config.etl1_schema}.{source_table}
+    """
+
+    transformed_query = f"""
+        SELECT
+            {merge_columns['transformed']},
+            {', '.join(transformed_columns)}
+        FROM {config.etl2_schema}.{destination_table}
+    """
+
+    return (
+        capitalised_fields,
+        source_query,
+        transformed_query,
+        merge_columns,
+        module_name,
+    )
