@@ -4,7 +4,7 @@ import os
 import pandas as pd
 
 from config import get_config
-from helpers import get_lookup_dict
+import helpers
 from utilities.calculated_fields import current_date
 from utilities.standard_transformations import (
     unique_number,
@@ -95,7 +95,7 @@ def map_lookup_tables(
 ) -> pd.DataFrame:
 
     for col, details in lookup_tables.items():
-        lookup_dict = get_lookup_dict(file_name=details["lookup_table"])
+        lookup_dict = helpers.get_lookup_dict(file_name=details["lookup_table"])
 
         source_data_df[col] = source_data_df[col].map(lookup_dict)
 
