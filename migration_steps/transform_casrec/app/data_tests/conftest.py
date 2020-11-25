@@ -50,8 +50,8 @@ def add_to_tested_list(module_name, tested_fields):
         json.dump(fields_dict, json_out, indent=4)
 
 
-# def pytest_sessionfinish():
-#     dirname = os.path.dirname(__file__)
-#
-#     file_name = "tested_fields.json"
-#     os.remove(f"{dirname}/{file_name}")
+def pytest_sessionfinish():
+    dirname = os.path.dirname(__file__)
+
+    file_name = "tested_fields.json"
+    os.remove(f"{dirname}/{file_name}")
