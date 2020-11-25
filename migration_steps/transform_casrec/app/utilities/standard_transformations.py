@@ -1,6 +1,7 @@
 import sys
 import os
 from pathlib import Path
+
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
 
@@ -59,5 +60,12 @@ def date_format_standard(
 
     df = df.drop(columns=original_col)
     df = df.rename(columns={"new": aggregate_col})
+
+    return df
+
+
+def capitalise(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+    df[result_col] = df[original_col].apply(lambda x: x.title())
+    df = df.drop(columns=[original_col])
 
     return df
