@@ -29,7 +29,7 @@ log = logging.getLogger("root")
 def run_data_tests(verbosity_level="INFO"):
     t = time.process_time()
 
-    log.info(log_title(message="Migration Step: Transform Casrec Data"))
+    log.info(log_title(message="Migration Step: Test Transformed Casrec Data"))
     log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
     current_path = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -42,12 +42,15 @@ def run_data_tests(verbosity_level="INFO"):
     else:
         pytest_args += ["--tb=long", "-v", "-s"]
 
-    log.info(f"Running data tests on {config.SAMPLE_PERCENTAGE}% of data")
+    log.info(
+        f"Running data tests on {config.SAMPLE_PERCENTAGE}% of data with at "
+        f"least {config.MIN_PERCENTAGE_FIELDS_TESTED}% of fields tested"
+    )
     exit_code = pytest.main(pytest_args)
 
     if exit_code == 0:
-        log.info("all tests passed")
+        log.info("All tests passed")
     else:
-        log.error("tests failed")
+        log.error("Tests failed")
 
     log.info(f"Total test time: {round(time.process_time() - t, 2)}")
