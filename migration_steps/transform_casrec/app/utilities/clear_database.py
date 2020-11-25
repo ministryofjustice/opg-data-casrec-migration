@@ -12,17 +12,15 @@ def clear_tables(config):
 
     cursor = conn.cursor()
 
-    tables = [
-        "persons",
-        "addresses",
-        "cases",
-        "notes",
-        "person_caseitem",
-        "person_note",
-        "order_deputy",
-        "phonenumbers",
-        "supervision_level_log",
-    ]
+    cursor.execute(
+        f"""
+        SELECT
+            table_name
+        FROM information_schema.tables
+        WHERE table_schema = '{config.etl2_schema}'"""
+    )
+
+    tables = [x[0] for x in cursor.fetchall()]
 
     for t in tables:
         log.log(config.VERBOSE, (f"drop table if exists {config.etl2_schema}.{t};"))
