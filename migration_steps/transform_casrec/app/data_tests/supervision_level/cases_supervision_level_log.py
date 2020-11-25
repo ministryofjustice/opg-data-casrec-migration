@@ -11,7 +11,7 @@ destination_table = "supervision_level_log"
 @case(tags="lookups")
 def case_supervision_log_lookups(test_config):
     lookup_fields = {
-        # "supervisionlevel": {"Ord Risk Lvl": "supervision_level_lookup"},
+        "supervisionlevel": {"Ord Risk Lvl": "supervision_level_lookup"},
         "assetlevel": {"Ord Risk Lvl": "asset_level_lookup"},
     }
     merge_columns = {"source": "Order No", "transformed": "c_order_no"}

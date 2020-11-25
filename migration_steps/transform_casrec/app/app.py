@@ -15,7 +15,7 @@ from config import get_config
 from dotenv import load_dotenv
 
 from run_data_tests import run_data_tests
-from entities import clients, cases
+from entities import clients, cases, supervision_level
 from utilities.clear_database import clear_tables
 from utilities.db_insert import InsertData
 
@@ -89,6 +89,9 @@ def main(clear, entity_list, include_tests, verbose):
 
     if len(allowed_entities) == 0 or "cases" in allowed_entities:
         cases.runner(config, etl2_db)
+
+    if len(allowed_entities) == 0 or "supervision_level" in allowed_entities:
+        supervision_level.runner(config, etl2_db)
 
     if include_tests:
         run_data_tests(verbosity_level=verbosity_levels[verbose])

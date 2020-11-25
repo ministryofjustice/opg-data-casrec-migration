@@ -4,6 +4,7 @@ import json
 import logging
 
 from helpers import get_all_mapped_fields
+
 log = logging.getLogger("root")
 
 
@@ -38,14 +39,15 @@ def test_all_fields(test_config, complete_status):
             if len(diff) > 0:
                 errors[k] = diff
 
+    untested_fields = ("\n").join(
+        [
+            f"{len(v)} untested fields in table {k}: {(', ').join(v)}"
+            for k, v in errors.items()
+        ]
+    )
+    print(untested_fields)
     log.log(
-        config.VERBOSE,
-        ("\n").join(
-            [
-                f"{len(v)} untested fields in table {k}: {(', ').join(v)}"
-                for k, v in errors.items()
-            ]
-        ),
+        config.VERBOSE, untested_fields,
     )
 
     total_expected = sum([len(x) for x in expected_fields.values()])
@@ -54,11 +56,13 @@ def test_all_fields(test_config, complete_status):
         (total_expected - total_errors) / total_expected * 100, 2
     )
 
-    log.log(config.VERBOSE,
+    log.log(
+        config.VERBOSE,
         f"Acceptable percentage of fields tests: "
-        f"{config.MIN_PERCENTAGE_FIELDS_TESTED}%"
+        f"{config.MIN_PERCENTAGE_FIELDS_TESTED}%",
     )
-    log.log(config.VERBOSE,
-            f"Actual percentage of fields tested: {percentage_complete}%")
+    log.log(
+        config.VERBOSE, f"Actual percentage of fields tested: {percentage_complete}%"
+    )
 
     assert percentage_complete > config.MIN_PERCENTAGE_FIELDS_TESTED

@@ -2,10 +2,10 @@ import json
 import os
 
 from data_tests.cases import (
-    cases_supervision_level_log,
     cases_cases,
     cases_person_caseitem,
 )
+from data_tests.supervision_level import cases_supervision_level_log
 from data_tests.clients import cases_clients_persons
 from data_tests.clients import cases_clients_addresses, cases_clients_phonenumbers
 import pytest

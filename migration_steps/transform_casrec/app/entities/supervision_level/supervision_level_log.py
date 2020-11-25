@@ -36,8 +36,19 @@ def insert_supervision_level_log(config, etl2_db):
         config.etl2_schema,
     )
 
-    supervision_level_df["order_id"] = supervision_level_df["id"]
+    cases_query = f'select "id", "caserecnumber", "c_order_no" from etl2.cases;'
+    cases_df = pd.read_sql_query(cases_query, config.connection_string)
+
+    supervision_level_joined_df = supervision_level_df.merge(
+        cases_df, how="left", left_on="c_order_no", right_on="c_order_no"
+    )
+
+    supervision_level_joined_df["order_id"] = supervision_level_joined_df["id_y"]
+    supervision_level_joined_df = supervision_level_joined_df.drop(columns=["id_y"])
+    supervision_level_joined_df = supervision_level_joined_df.rename(
+        columns={"id_x": "id"}
+    )
 
     etl2_db.insert_data(
-        table_name=definition["destination_table_name"], df=supervision_level_df
+        table_name=definition["destination_table_name"], df=supervision_level_joined_df
     )
