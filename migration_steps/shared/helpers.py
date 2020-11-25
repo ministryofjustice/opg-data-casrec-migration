@@ -1,5 +1,6 @@
 import os
 import json
+from typing import Dict, List
 
 
 def log_title(message: str) -> str:
@@ -16,17 +17,17 @@ def log_title(message: str) -> str:
     return log_string
 
 
-def get_mapping_dict(file_name: str) -> str:
+def get_mapping_dict(file_name: str, stage_name: str) -> Dict:
     dirname = os.path.dirname(__file__)
     file_path = os.path.join(dirname, f"mapping_definitions/{file_name}.json")
 
     with open(file_path) as mapping_json:
         mapping_dict = json.load(mapping_json)
 
-    return {k: v["transform_casrec"] for k, v in mapping_dict.items()}
+    return {k: v[stage_name] for k, v in mapping_dict.items()}
 
 
-def get_lookup_dict(file_name: str) -> str:
+def get_lookup_dict(file_name: str) -> Dict:
     dirname = os.path.dirname(__file__)
     file_path = os.path.join(
         dirname, f"mapping_definitions/lookups" f"/{file_name}.json"
@@ -38,7 +39,9 @@ def get_lookup_dict(file_name: str) -> str:
         return {k: v["sirius_mapping"] for k, v in lookup_dict.items()}
 
 
-def get_all_mapped_fields(complete=True):
+def get_all_mapped_fields(
+    complete: bool = True, include_keys: bool = False
+) -> Dict[str, List[str]]:
     dirname = os.path.dirname(__file__)
     file_path = os.path.join(dirname, f"mapping_definitions")
 
@@ -51,12 +54,19 @@ def get_all_mapped_fields(complete=True):
                 def_dict = json.load(definition_json)
 
                 key_name = json_file.replace("_mapping.json", "")
-                all_mapping_dicts[key_name] = [
-                    k
-                    for k, v in def_dict.items()
-                    if v["mapping_status"]["is_complete"] is complete
-                    and v["sirius_details"]["is_pk"] is not True
-                    and len(v["sirius_details"]["fk_parents"]) == 0
-                ]
+                if include_keys:
+                    all_mapping_dicts[key_name] = [
+                        k
+                        for k, v in def_dict.items()
+                        if v["mapping_status"]["is_complete"] is complete
+                    ]
+                else:
+                    all_mapping_dicts[key_name] = [
+                        k
+                        for k, v in def_dict.items()
+                        if v["mapping_status"]["is_complete"] is complete
+                        and v["sirius_details"]["is_pk"] is not True
+                        and len(v["sirius_details"]["fk_parents"]) == 0
+                    ]
 
     return all_mapping_dicts
