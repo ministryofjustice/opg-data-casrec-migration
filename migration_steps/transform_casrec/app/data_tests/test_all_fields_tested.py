@@ -17,7 +17,8 @@ log = logging.getLogger("root")
     ],
 )
 @pytest.mark.last
-def test_all_fields(complete_status):
+def test_all_fields(test_config, complete_status):
+    config = test_config
     dirname = os.path.dirname(__file__)
     file_name = "tested_fields.json"
 
@@ -47,4 +48,17 @@ def test_all_fields(complete_status):
         ),
     )
 
-    assert sum([len(x) for x in errors.values()]) == 0
+    total_expected = sum([len(x) for x in expected_fields.values()])
+    total_errors = sum([len(x) for x in errors.values()])
+    percentage_complete = round(
+        (total_expected - total_errors) / total_expected * 100, 2
+    )
+
+    log.log(config.VERBOSE,
+        f"Acceptable percentage of fields tests: "
+        f"{config.MIN_PERCENTAGE_FIELDS_TESTED}%"
+    )
+    log.log(config.VERBOSE,
+            f"Actual percentage of fields tested: {percentage_complete}%")
+
+    assert percentage_complete > config.MIN_PERCENTAGE_FIELDS_TESTED
