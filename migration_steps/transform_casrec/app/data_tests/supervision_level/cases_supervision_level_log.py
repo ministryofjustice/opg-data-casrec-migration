@@ -58,3 +58,54 @@ def case_supervision_log_calcs(test_config):
     """
 
     return (calculated_fields, source_query, module_name)
+
+
+@case(tags="one_to_one_joins")
+def case_supervision_level_join(test_config):
+    join_columns = {
+        "order_id": {"cases": "id"},
+    }
+    merge_columns = {"fk_child": "c_order_no", "fk_parent": "c_order_no"}
+
+    config = test_config
+
+    fk_child_col = [f'"{k}"' for k in join_columns.keys()]
+
+    parent_table = [y for x in join_columns.values() for y in x]
+
+    fk_parent_col = [f'"{y}"' for x in join_columns.values() for y in x.values()]
+
+    fk_child_query = f"""
+        SELECT
+            "{merge_columns['fk_child']}",
+            {', '.join(fk_child_col)}
+        FROM {config.etl2_schema}.{destination_table}
+    """
+
+    fk_parent_query = f"""
+            SELECT
+                "{merge_columns['fk_parent']}",
+                {', '.join(fk_parent_col)}
+            FROM {config.etl2_schema}.{parent_table[0]}
+        """
+
+    return (join_columns, merge_columns, fk_child_query, fk_parent_query, module_name)
+
+
+@case(tags="row_count")
+def case_supervision_level_count(test_config):
+
+    config = test_config
+    source_query = f"""
+        SELECT
+            *
+        FROM {config.etl1_schema}.{source_table}
+    """
+
+    transformed_query = f"""
+        SELECT
+            *
+        FROM {config.etl2_schema}.{destination_table}
+    """
+
+    return (source_query, transformed_query, module_name)

@@ -154,3 +154,22 @@ def case_clients_5(test_config):
         """
 
     return (join_columns, merge_columns, fk_child_query, fk_parent_query, module_name)
+
+
+@case(tags="row_count")
+def case_addresses_count(test_config):
+
+    config = test_config
+    source_query = f"""
+        SELECT
+            *
+        FROM {config.etl1_schema}.{source_table}
+    """
+
+    transformed_query = f"""
+        SELECT
+            *
+        FROM {config.etl2_schema}.{destination_table}
+    """
+
+    return (source_query, transformed_query, module_name)

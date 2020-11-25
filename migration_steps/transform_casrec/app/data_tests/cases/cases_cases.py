@@ -145,3 +145,22 @@ def case_clients_4(test_config):
     """
 
     return (calculated_fields, source_query, module_name)
+
+
+@case(tags="row_count")
+def case_cases_count(test_config):
+
+    config = test_config
+    source_query = f"""
+        SELECT
+            *
+        FROM {config.etl1_schema}.{source_table}
+    """
+
+    transformed_query = f"""
+        SELECT
+            *
+        FROM {config.etl2_schema}.{destination_table}
+    """
+
+    return (source_query, transformed_query, module_name)
