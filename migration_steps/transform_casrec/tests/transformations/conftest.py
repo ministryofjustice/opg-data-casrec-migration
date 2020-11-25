@@ -35,6 +35,10 @@ def mock_standard_transformations(monkeypatch):
         logger.info("mock unique_number")
         return df
 
+    def mock_capitalise(original_col, final_col, df):
+        logger.info("mock capitalise")
+        return df
+
     monkeypatch.setattr(
         transformations_from_mapping, "squash_columns", mock_squash_columns
     )
@@ -47,6 +51,7 @@ def mock_standard_transformations(monkeypatch):
     monkeypatch.setattr(
         transformations_from_mapping, "unique_number", mock_unique_number
     )
+    monkeypatch.setattr(transformations_from_mapping, "capitalise", mock_capitalise)
 
 
 @pytest.fixture()

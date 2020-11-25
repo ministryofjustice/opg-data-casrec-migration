@@ -11,6 +11,7 @@ from utilities.standard_transformations import (
     squash_columns,
     convert_to_bool,
     date_format_standard,
+    capitalise,
 )
 
 log = logging.getLogger("root")
@@ -63,6 +64,12 @@ def do_simple_transformations(
     if "unique_number" in transformations:
         for t in transformations["unique_number"]:
             transformed_df = unique_number(t["aggregate_col"], transformed_df)
+
+    if "capitalise" in transformations:
+        for t in transformations["capitalise"]:
+            transformed_df = capitalise(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
 
     return transformed_df
 
