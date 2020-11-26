@@ -10,9 +10,9 @@ def test_capitalise():
             "I AM ALL CAPS",
         ],
         "expected_result": [
-            "I Am Lower Case",
-            "I Have Some Capital Letters",
-            "I Am All Caps",
+            "I AM LOWER CASE",
+            "I HAVE SOME CAPITAL LETTERS",
+            "I AM ALL CAPS",
         ],
     }
     test_data_df = pd.DataFrame(test_data, columns=[x for x in test_data])

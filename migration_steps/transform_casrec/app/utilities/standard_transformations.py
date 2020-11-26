@@ -65,7 +65,7 @@ def date_format_standard(
 
 
 def capitalise(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
-    df[result_col] = df[original_col].apply(lambda x: x.title())
+    df[result_col] = df[original_col].apply(lambda x: x.upper())
     df = df.drop(columns=[original_col])
 
     return df

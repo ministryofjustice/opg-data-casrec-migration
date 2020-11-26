@@ -74,9 +74,11 @@ def test_capitalise(
     log.debug(
         f"Checking {result_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%)  from table: {module_name}"
     )
+
     assert result_df.shape[0] > 0
     for k, v in capitalised_fields.items():
+
         for i in v:
-            print(f"k: {k}")
-            print(f"v: {v}")
-            print(f"i: {i}")
+            result_df["caps"] = result_df[i].apply(lambda x: x.isupper())
+
+            assert (result_df["caps"].astype(bool) == True).all()
