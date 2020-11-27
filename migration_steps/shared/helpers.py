@@ -2,6 +2,8 @@ import os
 import json
 from typing import Dict, List
 
+from config import LocalConfig, AWSConfig
+
 
 def log_title(message: str) -> str:
     total_length = 100
@@ -70,3 +72,11 @@ def get_all_mapped_fields(
                     ]
 
     return all_mapping_dicts
+
+
+def get_config(env="local"):
+    if env == "local":
+        config = LocalConfig()
+    else:
+        config = AWSConfig()
+    return config

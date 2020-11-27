@@ -3,7 +3,7 @@ import json
 import pandas as pd
 
 from helpers import get_mapping_dict
-from utilities import transformations_from_mapping
+from transform_data import transform
 from utilities.generate_source_query import generate_select_string_from_mapping
 
 
@@ -32,7 +32,7 @@ def insert_cases(config, etl2_db):
         sql=source_data_query, con=config.connection_string
     )
 
-    final_df = transformations_from_mapping.perform_transformations(
+    final_df = transform.perform_transformations(
         mapping_dict,
         definition,
         source_data_df,

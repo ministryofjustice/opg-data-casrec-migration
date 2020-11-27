@@ -11,7 +11,7 @@ import click
 from sqlalchemy import create_engine
 import custom_logger
 from helpers import log_title
-from config import get_config
+import helpers
 from dotenv import load_dotenv
 
 from run_data_tests import run_data_tests
@@ -25,7 +25,7 @@ env_path = current_path / "../../.env"
 load_dotenv(dotenv_path=env_path)
 
 environment = os.environ.get("ENVIRONMENT")
-config = get_config(env=environment)
+config = helpers.get_config(env=environment)
 
 # logging
 log = logging.getLogger("root")

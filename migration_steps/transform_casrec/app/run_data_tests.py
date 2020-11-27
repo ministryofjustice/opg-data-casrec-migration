@@ -9,7 +9,7 @@ sys.path.insert(0, str(current_path) + "/../../shared")
 import pytest
 import logging
 import time
-from config import get_config
+import helpers
 from dotenv import load_dotenv
 from helpers import log_title
 
@@ -20,7 +20,7 @@ env_path = current_path / "../.env"
 load_dotenv(dotenv_path=env_path)
 
 environment = os.environ.get("ENVIRONMENT")
-config = get_config(env=environment)
+config = helpers.get_config(env=environment)
 
 # logging
 log = logging.getLogger("root")

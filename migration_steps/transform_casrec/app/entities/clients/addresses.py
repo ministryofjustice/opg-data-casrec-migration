@@ -1,5 +1,5 @@
 import pandas as pd
-from utilities import transformations_from_mapping
+from transform_data import transform
 from utilities.generate_source_query import generate_select_string_from_mapping
 from helpers import get_mapping_dict
 
@@ -28,7 +28,7 @@ def insert_addresses_clients(config, etl2_db):
         sql=source_data_query, con=config.connection_string
     )
 
-    addresses_df = transformations_from_mapping.perform_transformations(
+    addresses_df = transform.perform_transformations(
         mapping_dict,
         definition,
         source_data_df,

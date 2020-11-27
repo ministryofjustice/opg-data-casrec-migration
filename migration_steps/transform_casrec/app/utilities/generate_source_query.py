@@ -1,16 +1,17 @@
 import sys
 import os
 from pathlib import Path
+
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
 
 import logging
-from config import get_config
+import helpers
 
 log = logging.getLogger("root")
 environment = os.environ.get("ENVIRONMENT")
 
-config = get_config(env=environment)
+config = helpers.get_config(env=environment)
 
 
 def additional_cols(additional_columns: list) -> list:

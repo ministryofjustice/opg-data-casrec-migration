@@ -48,9 +48,9 @@ class AWSConfig(BaseConfig):
     connection_string = f"postgresql://casrec:{password}@{db_host}:{port}/{name}"  # pragma: allowlist secret
 
 
-def get_config(env="local"):
-    if env == "local":
-        config = LocalConfig()
-    else:
-        config = AWSConfig()
-    return config
+# def get_config(env="local"):
+#     if env == "local":
+#         config = LocalConfig()
+#     else:
+#         config = AWSConfig()
+#     return config
