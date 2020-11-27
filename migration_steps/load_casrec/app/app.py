@@ -200,7 +200,7 @@ def main():
     chunk_size = int(args.chunk)
 
     current_path = Path(os.path.dirname(os.path.realpath(__file__)))
-    env_path = current_path / "../.env"
+    env_path = current_path / "../../.env"
     load_dotenv(dotenv_path=env_path)
 
     password = os.environ["DB_PASSWORD"]

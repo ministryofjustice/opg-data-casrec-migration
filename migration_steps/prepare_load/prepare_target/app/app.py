@@ -15,12 +15,14 @@ import logging
 import custom_logger
 import click
 
-env_path = current_path / "../.env"
+env_path = current_path / "../../../../.env"
 sql_path = current_path / "sql"
 load_dotenv(dotenv_path=env_path)
 
 environment = os.environ.get("ENVIRONMENT")
 config = get_config(environment)
+
+print(config.get_db_connection_string("target"))
 
 # logging
 log = logging.getLogger("root")

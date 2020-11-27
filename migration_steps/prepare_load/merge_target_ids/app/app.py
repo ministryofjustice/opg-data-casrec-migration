@@ -18,7 +18,7 @@ import custom_logger
 import click
 
 sql_path = current_path / "sql"
-env_path = current_path / "../.env"
+env_path = current_path / "../../../../.env"
 load_dotenv(dotenv_path=env_path)
 
 environment = os.environ.get("ENVIRONMENT")

@@ -10,14 +10,25 @@ workflows:
       - build:
           name: build and unit tests
           filters: {branches:{ignore:[master]}}
-      - cleanup:
-          name: destroy branch environment
-          filters: {branches:{ignore:[master]}}
       - infrastructure:
           name: plan infra development
           requires: [build and unit tests]
           tf_workspace: development
           tf_command: plan
+          filters: {branches:{ignore:[master]}}
+      - infrastructure:
+          name: build infra development
+          requires: [plan infra development]
+          tf_workspace: development
+          tf_command: apply
+          filters: {branches:{ignore:[master]}}
+      - run_step_function:
+          name: run the step function
+          requires: [build infra development]
+          filters: {branches:{ignore:[master]}}
+      - cleanup:
+          name: destroy branch environment
+          requires: [run the step function]
           filters: {branches:{ignore:[master]}}
   master:
     jobs:
@@ -30,7 +41,7 @@ workflows:
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: build infra development
-          requires: [build and unit tests master]
+          requires: [reset the sirius fixtures master]
           tf_workspace: development
           tf_command: apply
           filters: {branches:{only:[master]}}
@@ -134,6 +145,20 @@ jobs:
       - checkout
       - migration/login_codeartifact
       - migration/cancel_redundant_builds
+  run_step_function:
+    executor: migration/python
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: install requirements
+          command: pip3 install -r requirements-rsf.txt
+          working_directory: ~/project/docs/ci_scripts
+      - run:
+          name: run the function
+          command: python3 run_step_function.py --role sirius-ci
+          working_directory: ~/project/docs/ci_scripts
+
   reset_sirius:
     executor: terraform/terraform
     resource_class: small

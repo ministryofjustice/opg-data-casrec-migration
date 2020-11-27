@@ -90,9 +90,13 @@ def list_bucket_contents(bucket_name, s3):
 
 bucket_name = "casrec-migration-local"
 region = "eu-west-1"
-
 s3_session = boto3.session.Session()
+current_path = Path(os.path.dirname(os.path.realpath(__file__)))
+env_path = current_path / "../.env"
+load_dotenv(dotenv_path=env_path)
+
 localstack_url = os.getenv("LOCALSTACK_URL")
+
 s3_client = s3_session.client(
     "s3",
     endpoint_url=f"http://{localstack_url}:4572",
@@ -116,10 +120,6 @@ if bucket_exists:
 
 print("Creating bucket")
 create_bucket(bucket_name, s3_client, region)
-
-current_path = Path(os.path.dirname(os.path.realpath(__file__)))
-env_path = current_path / ".env"
-load_dotenv(dotenv_path=env_path)
 
 csv_dir_suffix = os.getenv("CSV_DIR_SUFFIX")
 

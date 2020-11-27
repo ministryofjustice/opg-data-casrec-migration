@@ -1,6 +1,7 @@
 import sys
 import os
 from pathlib import Path
+
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../shared")
 
@@ -16,8 +17,8 @@ import logging
 import custom_logger
 import click
 
-sql_path = current_path / 'sql'
-env_path = current_path / "../.env"
+sql_path = current_path / "sql"
+env_path = current_path / "../../.env"
 load_dotenv(dotenv_path=env_path)
 
 environment = os.environ.get("ENVIRONMENT")
@@ -28,6 +29,7 @@ log = logging.getLogger("root")
 log.addHandler(custom_logger.MyHandler())
 config.custom_log_level()
 verbosity_levels = config.verbosity_levels
+
 
 def set_logging_level(verbose):
     try:
