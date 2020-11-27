@@ -106,5 +106,23 @@
             "default_value": "",
             "calculated": "current_date"
         }
+    },
+    "dateofdeath": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": ""
+        },
+        "transform_casrec": {
+            "casrec_table": "PAT",
+            "casrec_column_name": ["Term Type", "Term Date"],
+            "alias": ["Term Type", "Term Date"],
+            "requires_transformation": "",
+            "lookup_table": "death_lookup",
+            "default_value": "",
+            "calculated": "conditional_lookup"
+        }
     }
 }
