@@ -4,7 +4,6 @@ from pytest_cases import parametrize_with_cases
 
 from data_tests.conftest import (
     list_of_test_cases,
-    SAMPLE_PERCENTAGE,
     add_to_tested_list,
 )
 from data_tests.helpers import (
@@ -74,7 +73,7 @@ def test_squash_columns(
     )
 
     log.debug(
-        f"Checking {result_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) from table: {module_name} "
+        f"Checking {result_df.shape[0]} rows of data ({config.SAMPLE_PERCENTAGE}%) from table: {module_name} "
     )
 
     assert result_df.shape[0] > 0

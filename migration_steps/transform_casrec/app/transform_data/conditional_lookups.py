@@ -5,6 +5,7 @@ import pandas as pd
 import helpers
 
 from transform_data.lookup_tables import map_lookup_tables
+from utilities.generate_source_query import additional_cols, format_additional_col_alias
 
 log = logging.getLogger("root")
 environment = os.environ.get("ENVIRONMENT")
@@ -13,16 +14,33 @@ config = helpers.get_config(env=environment)
 
 
 def conditional_lookup(
-    column_name: str, original_columns: str, lookup_file_name: str, df: pd.DataFrame
+    final_col: str,
+    lookup_col: str,
+    data_col: str,
+    lookup_file_name: dict,
+    df: pd.DataFrame,
 ) -> pd.DataFrame:
     log.info("I AM DOING A CONDITIONAL LOOKUP")
     log.log(
-        config.DATA, f"conditional\n{df.sample(n=config.row_limit).to_markdown()}",
+        config.DATA, f"before\n{df.sample(n=config.row_limit).to_markdown()}",
     )
-    conditional_lookup_tables = {column_name: {"lookup_table": lookup_file_name}}
 
-    df = map_lookup_tables(lookup_tables=conditional_lookup_tables, source_data_df=df)
+    temp_col = "mapping_col"
+    lookup_col = format_additional_col_alias(lookup_col)
 
-    df[column_name] = df[column_name].apply(lambda x: df[x] if x != "" else "")
+    lookup_dict = helpers.get_lookup_dict(lookup_file_name)
+
+    df[temp_col] = df[lookup_col].map(lookup_dict)
+    df[temp_col] = df[temp_col].fillna("")
+
+    df[final_col] = df.apply(
+        lambda x: x[data_col] if x[temp_col] == data_col else "", axis=1
+    )
+
+    df = df.drop(columns=[lookup_col])
+
+    log.log(
+        config.DATA, f"after\n{df.sample(n=config.row_limit).to_markdown()}",
+    )
 
     return df

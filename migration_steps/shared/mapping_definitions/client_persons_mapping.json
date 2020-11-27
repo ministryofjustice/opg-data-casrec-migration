@@ -80,11 +80,11 @@
             "fk_parents": ""
         },
         "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": "",
+            "casrec_table": "PAT",
+            "casrec_column_name": "Term Date",
+            "alias": "Term Date",
+            "requires_transformation": "conditional_lookup",
+            "lookup_table": ["death_lookup", "Term Type"],
             "default_value": "",
             "calculated": ""
         }

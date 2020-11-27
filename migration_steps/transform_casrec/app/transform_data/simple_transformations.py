@@ -4,6 +4,7 @@ import os
 import pandas as pd
 import helpers
 
+from transform_data.conditional_lookups import conditional_lookup
 from utilities import standard_transformations
 
 log = logging.getLogger("root")
@@ -43,6 +44,16 @@ def do_simple_transformations(
         for t in transformations["capitalise"]:
             transformed_df = standard_transformations.capitalise(
                 t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
+    if "conditional_lookup" in transformations:
+        for t in transformations["conditional_lookup"]:
+            transformed_df = conditional_lookup(
+                final_col=t["aggregate_col"],
+                data_col=t["original_columns"],
+                lookup_col=t["lookup_table"][1],
+                lookup_file_name=t["lookup_table"][0],
+                df=transformed_df,
             )
 
     return transformed_df

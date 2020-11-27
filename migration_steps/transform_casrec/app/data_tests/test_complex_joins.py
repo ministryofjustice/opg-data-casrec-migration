@@ -1,9 +1,6 @@
 from pytest_cases import parametrize_with_cases
 
-from data_tests.conftest import (
-    list_of_test_cases,
-    SAMPLE_PERCENTAGE,
-)
+from data_tests.conftest import list_of_test_cases
 from data_tests.helpers import (
     get_data_from_query,
     get_merge_col_data_as_list,
@@ -67,7 +64,7 @@ def test_complex_joins(
     )
 
     log.debug(
-        f"Checking {result_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) from table: {module_name}"
+        f"Checking {result_df.shape[0]} rows of data ({config.SAMPLE_PERCENTAGE}%) from table: {module_name}"
     )
     assert result_df.shape[0] > 0
     for k, v in match_columns.items():

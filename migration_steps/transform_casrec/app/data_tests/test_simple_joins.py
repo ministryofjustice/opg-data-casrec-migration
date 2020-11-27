@@ -2,7 +2,6 @@ from pytest_cases import parametrize_with_cases
 
 from data_tests.conftest import (
     list_of_test_cases,
-    SAMPLE_PERCENTAGE,
     add_to_tested_list,
 )
 from data_tests.helpers import (
@@ -66,7 +65,7 @@ def test_one_to_one_joins(
     fk_parent_id_list = [int(x) for x in fk_parent_id_list]
 
     log.debug(
-        f"Checking {fk_parent_df.shape[0]} rows of data ({SAMPLE_PERCENTAGE}%) from table: {module_name} "
+        f"Checking {fk_parent_df.shape[0]} rows of data ({config.SAMPLE_PERCENTAGE}%) from table: {module_name} "
     )
     success = set(fk_child_id_list) == set(fk_parent_id_list)
     log.log(

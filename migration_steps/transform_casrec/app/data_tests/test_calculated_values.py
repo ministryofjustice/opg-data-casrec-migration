@@ -2,7 +2,6 @@ from pytest_cases import parametrize_with_cases
 
 from data_tests.conftest import (
     list_of_test_cases,
-    SAMPLE_PERCENTAGE,
     add_to_tested_list,
 )
 from data_tests.helpers import get_data_from_query
@@ -35,7 +34,7 @@ def test_default_values(test_config, calculated_fields, source_query, module_nam
 
     log.debug(
         f"Checking {source_sample_df.shape[0]} rows of data ("
-        f"{SAMPLE_PERCENTAGE}%) from table: {module_name}"
+        f"{config.SAMPLE_PERCENTAGE}%) from table: {module_name}"
     )
     assert source_sample_df.shape[0] > 0
     for k, v in calculated_fields.items():

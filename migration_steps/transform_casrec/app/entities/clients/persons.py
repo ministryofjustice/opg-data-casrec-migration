@@ -7,6 +7,7 @@ from helpers import get_mapping_dict
 definition = {
     "sheet_name": "persons (Client)",
     "source_table_name": "pat",
+    "source_table_additional_columns": ["Term Type"],
     "destination_table_name": "persons",
 }
 
@@ -20,6 +21,7 @@ def insert_persons_clients(config, etl2_db):
     source_data_query = generate_select_string_from_mapping(
         mapping=mapping_dict,
         source_table_name=definition["source_table_name"],
+        additional_columns=definition["source_table_additional_columns"],
         db_schema=config.etl1_schema,
     )
 

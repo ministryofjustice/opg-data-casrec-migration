@@ -14,9 +14,13 @@ environment = os.environ.get("ENVIRONMENT")
 config = helpers.get_config(env=environment)
 
 
+def format_additional_col_alias(original_column_name: str) -> str:
+    return f"c_{original_column_name.lower().replace(' ', '_')}"
+
+
 def additional_cols(additional_columns: list) -> list:
     return [
-        {"casrec_column_name": x, "alias": f"c_{x.lower().replace(' ', '_')}"}
+        {"casrec_column_name": x, "alias": format_additional_col_alias(x)}
         for x in additional_columns
     ]
 

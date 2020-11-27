@@ -32,10 +32,15 @@ class MappingDefinitions:
         for k, v in requires_transformation.items():
             tr = v["requires_transformation"]
             d = {"original_columns": v["casrec_column_name"], "aggregate_col": k}
+            if v["requires_transformation"] == "conditional_lookup":
+                d["lookup_table"] = v["lookup_table"]
+                d["original_columns"] = v["casrec_column_name"]
             if tr in transformations:
                 transformations[tr].append(d)
             else:
                 transformations[tr] = [d]
+
+        log.log(config.VERBOSE, f"transformations {transformations}")
 
         return transformations
 
@@ -55,9 +60,6 @@ class MappingDefinitions:
         for k, v in requires_calculation.items():
             tr = v["calculated"]
             d = {"column_name": k}
-            if v["calculated"] == "conditional_lookup":
-                d["lookup_table"] = v["lookup_table"]
-                d["original_columns"] = v["casrec_column_name"]
             if tr in calculations:
                 calculations[tr].append(d)
             else:
@@ -69,7 +71,8 @@ class MappingDefinitions:
         return {
             k: v
             for k, v in self.mapping_definitions.items()
-            if v["lookup_table"] != "" and v["calculated"] != "conditional_lookup"
+            if v["lookup_table"] != ""
+            and v["requires_transformation"] != "conditional_lookup"
         }
 
     def generate_mapping_def(self):

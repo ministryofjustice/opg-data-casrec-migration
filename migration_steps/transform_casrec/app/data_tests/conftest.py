@@ -1,18 +1,24 @@
 import json
 import os
+import sys
+from pathlib import Path
+
+import pytest
 
 from data_tests.cases import (
     cases_cases,
     cases_person_caseitem,
 )
-from data_tests.supervision_level import cases_supervision_level_log
-from data_tests.clients import cases_clients_persons
 from data_tests.clients import cases_clients_addresses, cases_clients_phonenumbers
-import pytest
+from data_tests.clients import cases_clients_persons
+from data_tests.supervision_level import cases_supervision_level_log
 
-from run_data_tests import config
+# from run_data_tests import config
 
-SAMPLE_PERCENTAGE = config.SAMPLE_PERCENTAGE
+current_path = Path(os.path.dirname(os.path.realpath(__file__)))
+sys.path.insert(0, str(current_path) + "/../../../shared")
+
+import helpers
 
 
 list_of_test_cases = [
@@ -27,6 +33,7 @@ list_of_test_cases = [
 
 @pytest.fixture
 def test_config():
+    config = helpers.get_config(env="local")
     return config
 
 

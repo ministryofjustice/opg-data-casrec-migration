@@ -20,6 +20,7 @@ env_path = current_path / "../.env"
 load_dotenv(dotenv_path=env_path)
 
 environment = os.environ.get("ENVIRONMENT")
+
 config = helpers.get_config(env=environment)
 
 # logging

@@ -1,13 +1,14 @@
-import json
-import os
-
 import pandas as pd
 
-from data_tests.conftest import SAMPLE_PERCENTAGE
+from config import get_config
+
+config = get_config()
+
+sample_percentage = config.SAMPLE_PERCENTAGE
 
 
 def get_data_from_query(
-    query, config, sort_col=None, sample=False, sample_percentage=SAMPLE_PERCENTAGE
+    query, config, sort_col=None, sample=False, sample_percentage=sample_percentage
 ):
     df = pd.read_sql_query(query, config.connection_string)
 
