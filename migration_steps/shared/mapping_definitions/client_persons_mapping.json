@@ -80,9 +80,9 @@
             "fk_parents": ""
         },
         "transform_casrec": {
-            "casrec_table": "pat",
-            "casrec_column_name": "Term Type",
-            "alias": "Term Type",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
             "lookup_table": "",
             "default_value": "",
