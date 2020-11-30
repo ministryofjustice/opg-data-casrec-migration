@@ -12,7 +12,7 @@
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": "",
+            "lookup_table": [],
             "default_value": "",
             "calculated": ""
         }
@@ -30,7 +30,7 @@
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": "",
+            "lookup_table": [],
             "default_value": "",
             "calculated": ""
         }
@@ -48,7 +48,7 @@
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": "",
+            "lookup_table": [],
             "default_value": "",
             "calculated": "current_date"
         }
@@ -66,7 +66,7 @@
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": "",
+            "lookup_table": [],
             "default_value": "",
             "calculated": "current_date"
         }
@@ -102,7 +102,7 @@
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": "",
+            "lookup_table": [],
             "default_value": "",
             "calculated": ""
         }

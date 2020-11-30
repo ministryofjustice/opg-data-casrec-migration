@@ -12,7 +12,7 @@
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": "",
+            "lookup_table": [],
             "default_value": "",
             "calculated": ""
         }
@@ -30,7 +30,7 @@
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": "",
+            "lookup_table": [],
             "default_value": "",
             "calculated": ""
         }
@@ -54,7 +54,7 @@
                 "Adrs2"
             ],
             "requires_transformation": "squash_columns",
-            "lookup_table": "",
+            "lookup_table": [],
             "default_value": "",
             "calculated": ""
         }
@@ -72,7 +72,7 @@
             "casrec_column_name": "Adrs3",
             "alias": "Adrs3",
             "requires_transformation": "",
-            "lookup_table": "",
+            "lookup_table": [],
             "default_value": "",
             "calculated": ""
         }
@@ -90,7 +90,7 @@
             "casrec_column_name": "Adrs4",
             "alias": "Adrs4",
             "requires_transformation": "",
-            "lookup_table": "",
+            "lookup_table": [],
             "default_value": "",
             "calculated": ""
         }
@@ -108,7 +108,7 @@
             "casrec_column_name": "Postcode",
             "alias": "Postcode",
             "requires_transformation": "",
-            "lookup_table": "",
+            "lookup_table": [],
             "default_value": "",
             "calculated": ""
         }
@@ -126,7 +126,7 @@
             "casrec_column_name": "Adrs5",
             "alias": "Adrs5",
             "requires_transformation": "",
-            "lookup_table": "",
+            "lookup_table": [],
             "default_value": "",
             "calculated": ""
         }
@@ -144,7 +144,7 @@
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": "",
+            "lookup_table": [],
             "default_value": "Primary",
             "calculated": ""
         }
@@ -162,7 +162,7 @@
             "casrec_column_name": "Foreign",
             "alias": "Foreign",
             "requires_transformation": "convert_to_bool",
-            "lookup_table": "",
+            "lookup_table": [],
             "default_value": "",
             "calculated": ""
         }

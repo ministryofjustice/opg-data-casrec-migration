@@ -12,7 +12,7 @@ def case_do_simple_mapping():
             "default_value": "",
             "calculated": "",
             "requires_transformation": "",
-            "lookup_table": "",
+            "lookup_table": [],
         }
     }
 
@@ -32,7 +32,7 @@ def case_do_simple_transformations():
             "default_value": "",
             "calculated": "",
             "requires_transformation": "unique_number",
-            "lookup_table": "",
+            "lookup_table": [],
         },
     }
 
@@ -52,7 +52,7 @@ def case_add_required_columns():
             "default_value": "ORDER",
             "calculated": "",
             "requires_transformation": "",
-            "lookup_table": "",
+            "lookup_table": [],
         },
     }
 

@@ -71,7 +71,7 @@ class MappingDefinitions:
         return {
             k: v
             for k, v in self.mapping_definitions.items()
-            if v["lookup_table"] != ""
+            if len(v["lookup_table"]) > 0
             and v["requires_transformation"] != "conditional_lookup"
         }
 
