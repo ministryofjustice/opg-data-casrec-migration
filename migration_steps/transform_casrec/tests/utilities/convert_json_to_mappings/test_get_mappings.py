@@ -9,7 +9,7 @@ test_mapping = {
         "requires_transformation": "",
         "default_value": "",
         "calculated": "",
-        "lookup_table": [],
+        "lookup_table": "",
         "test_comments": "standard column",
     },
     "uid": {
@@ -19,7 +19,7 @@ test_mapping = {
         "requires_transformation": "unique_number",
         "default_value": "",
         "calculated": "",
-        "lookup_table": [],
+        "lookup_table": "",
         "test_comments": "has 'unique_number' transformation",
     },
     "another_uid": {
@@ -29,7 +29,7 @@ test_mapping = {
         "requires_transformation": "unique_number",
         "default_value": "",
         "calculated": "",
-        "lookup_table": [],
+        "lookup_table": "",
         "test_comments": "repeated 'unique_number' transformation",
     },
     "type": {
@@ -39,7 +39,7 @@ test_mapping = {
         "requires_transformation": "",
         "default_value": "order",
         "calculated": "",
-        "lookup_table": [],
+        "lookup_table": "",
         "test_comments": "has a default value",
     },
     "orderdate": {
@@ -49,7 +49,7 @@ test_mapping = {
         "requires_transformation": "",
         "default_value": "",
         "calculated": "",
-        "lookup_table": [],
+        "lookup_table": "",
         "test_comments": "standard column",
     },
     "orderexpirydate": {
@@ -59,7 +59,7 @@ test_mapping = {
         "requires_transformation": "",
         "default_value": "",
         "calculated": "",
-        "lookup_table": [],
+        "lookup_table": "",
         "test_comments": "repeated column name",
     },
     "dob": {
@@ -69,7 +69,7 @@ test_mapping = {
         "requires_transformation": "date_format_standard",
         "default_value": "",
         "calculated": "",
-        "lookup_table": [],
+        "lookup_table": "",
         "test_comments": "has 'date_format_standard' transformation",
     },
     "todays_date": {
@@ -79,7 +79,7 @@ test_mapping = {
         "requires_transformation": "",
         "default_value": "",
         "calculated": "current_date",
-        "lookup_table": [],
+        "lookup_table": "",
         "test_comments": "has 'current_date' calculation",
     },
     "accomodation_type": {
@@ -113,7 +113,7 @@ expected_simple_mapping_dict = {
         "requires_transformation": "",
         "default_value": "",
         "calculated": "",
-        "lookup_table": [],
+        "lookup_table": "",
         "test_comments": "standard column",
     },
     "orderdate": {
@@ -123,7 +123,7 @@ expected_simple_mapping_dict = {
         "requires_transformation": "",
         "default_value": "",
         "calculated": "",
-        "lookup_table": [],
+        "lookup_table": "",
         "test_comments": "standard column",
     },
     "orderexpirydate": {
@@ -133,7 +133,7 @@ expected_simple_mapping_dict = {
         "requires_transformation": "",
         "default_value": "",
         "calculated": "",
-        "lookup_table": [],
+        "lookup_table": "",
         "test_comments": "repeated column name",
     },
     "dob": {
@@ -143,7 +143,7 @@ expected_simple_mapping_dict = {
         "requires_transformation": "date_format_standard",
         "default_value": "",
         "calculated": "",
-        "lookup_table": [],
+        "lookup_table": "",
         "test_comments": "has 'date_format_standard' transformation",
     },
 }
@@ -156,7 +156,7 @@ expected_default_values_dict = {
         "requires_transformation": "",
         "default_value": "order",
         "calculated": "",
-        "lookup_table": [],
+        "lookup_table": "",
         "test_comments": "has a default value",
     },
 }

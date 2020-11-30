@@ -5,16 +5,18 @@
         },
         "sirius_details": {
             "is_pk": true,
-            "fk_parents": ""
+            "fk_parents": "",
+            "data_type": "int"
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
-            "calculated": ""
+            "calculated": "",
+            "additional_columns": ""
         }
     },
     "order_id": {
@@ -23,16 +25,18 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "cases:id"
+            "fk_parents": "cases:id",
+            "data_type": "int"
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
-            "calculated": ""
+            "calculated": "",
+            "additional_columns": ""
         }
     },
     "appliesfrom": {
@@ -41,16 +45,18 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": ""
+            "fk_parents": "",
+            "data_type": "date"
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
-            "calculated": "current_date"
+            "calculated": "current_date",
+            "additional_columns": ""
         }
     },
     "createddate": {
@@ -59,16 +65,18 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": ""
+            "fk_parents": "",
+            "data_type": "datetime"
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
-            "calculated": "current_date"
+            "calculated": "current_date",
+            "additional_columns": ""
         }
     },
     "supervisionlevel": {
@@ -77,7 +85,8 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": ""
+            "fk_parents": "",
+            "data_type": "str"
         },
         "transform_casrec": {
             "casrec_table": "ORDER",
@@ -86,7 +95,8 @@
             "requires_transformation": "",
             "lookup_table": "supervision_level_lookup",
             "default_value": "",
-            "calculated": ""
+            "calculated": "",
+            "additional_columns": ""
         }
     },
     "notes": {
@@ -95,16 +105,18 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": ""
+            "fk_parents": "",
+            "data_type": "str"
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
-            "calculated": ""
+            "calculated": "",
+            "additional_columns": ""
         }
     },
     "assetlevel": {
@@ -113,7 +125,8 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": ""
+            "fk_parents": "",
+            "data_type": "str"
         },
         "transform_casrec": {
             "casrec_table": "ORDER",
@@ -122,7 +135,8 @@
             "requires_transformation": "",
             "lookup_table": "asset_level_lookup",
             "default_value": "",
-            "calculated": ""
+            "calculated": "",
+            "additional_columns": ""
         }
     }
 }
