@@ -5,15 +5,14 @@
         },
         "sirius_details": {
             "is_pk": true,
-            "fk_parents": "",
-            "data_type": "int"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -24,15 +23,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "assignees:id",
-            "data_type": "int"
+            "fk_parents": "assignees:id"
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -43,15 +41,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "persons:id",
-            "data_type": "int"
+            "fk_parents": "persons:id"
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -62,15 +59,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "persons:id",
-            "data_type": "int"
+            "fk_parents": "persons:id"
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -81,15 +77,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "persons:id",
-            "data_type": "int"
+            "fk_parents": "persons:id"
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -100,15 +95,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -119,15 +113,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -138,15 +131,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -157,15 +149,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "ORDER",
             "calculated": ""
         }
@@ -176,17 +167,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "ORDER",
             "casrec_column_name": "Ord Type",
             "alias": "Ord Type",
             "requires_transformation": "",
-            "lookup_table": [
-                "order_type_lookup"
-            ],
+            "lookup_table": "order_type_lookup",
             "default_value": "",
             "calculated": ""
         }
@@ -197,15 +185,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -216,15 +203,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -235,15 +221,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -254,15 +239,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -273,15 +257,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "datetime"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -292,15 +275,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -311,15 +293,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -330,15 +311,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -349,15 +329,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -368,15 +347,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -387,15 +365,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -406,15 +383,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -425,15 +401,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -444,15 +419,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "order",
             "calculated": ""
         }
@@ -463,15 +437,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 1,
             "calculated": ""
         }
@@ -482,15 +455,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -501,15 +473,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -520,15 +491,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -539,15 +509,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -558,15 +527,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -577,15 +545,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -596,15 +563,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -615,15 +581,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -634,15 +599,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "datetime"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": "current_date"
         }
@@ -653,15 +617,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -672,15 +635,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -691,15 +653,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -710,15 +671,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 1,
             "calculated": ""
         }
@@ -729,15 +689,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -748,15 +707,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -767,15 +725,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -786,15 +743,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -805,15 +761,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -824,15 +779,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -843,15 +797,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -862,15 +815,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -881,15 +833,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 1,
             "calculated": ""
         }
@@ -900,15 +851,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -919,15 +869,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -938,15 +887,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -957,15 +905,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -976,15 +923,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -995,15 +941,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1014,15 +959,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1033,15 +977,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1052,15 +995,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1071,15 +1013,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1090,15 +1031,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1109,15 +1049,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -1128,15 +1067,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -1147,15 +1085,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1166,15 +1103,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1185,15 +1121,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1204,15 +1139,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1223,15 +1157,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -1242,15 +1175,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -1261,15 +1193,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 1,
             "calculated": ""
         }
@@ -1280,15 +1211,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 1,
             "calculated": ""
         }
@@ -1299,15 +1229,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 1,
             "calculated": ""
         }
@@ -1318,15 +1247,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1337,15 +1265,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1356,15 +1283,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -1375,15 +1301,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1394,15 +1319,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 1,
             "calculated": ""
         }
@@ -1413,15 +1337,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1432,15 +1355,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1451,15 +1373,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1470,15 +1391,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1489,15 +1409,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 1,
             "calculated": ""
         }
@@ -1508,15 +1427,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1527,15 +1445,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -1546,15 +1463,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -1565,15 +1481,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": 0,
             "calculated": ""
         }
@@ -1584,15 +1499,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1603,15 +1517,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1622,15 +1535,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1641,15 +1553,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1660,15 +1571,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1679,15 +1589,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1698,15 +1607,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "ORDER",
             "casrec_column_name": "Made Date",
             "alias": "Made Date",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1717,15 +1625,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "ORDER",
             "casrec_column_name": "Issue Date",
             "alias": "Issue Date",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1736,15 +1643,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1755,15 +1661,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1774,15 +1679,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "float"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1793,15 +1697,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "ORDER",
             "casrec_column_name": "Ord Stat",
             "alias": "Ord Stat",
             "requires_transformation": "capitalise",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1812,15 +1715,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1831,15 +1733,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "ORDER",
             "casrec_column_name": "Case",
             "alias": "Case",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1850,15 +1751,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1869,15 +1769,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "persons:id",
-            "data_type": "int"
+            "fk_parents": "persons:id"
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1888,15 +1787,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1907,15 +1805,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1926,15 +1823,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1945,15 +1841,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1964,15 +1859,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "datetime"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "ORDER",
             "casrec_column_name": "Spvn Received",
             "alias": "Spvn Received",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -1983,15 +1877,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -2002,15 +1895,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -2021,15 +1913,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -2040,15 +1931,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -2059,15 +1949,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "ORDER",
             "casrec_column_name": "Expiry Date",
             "alias": "Expiry Date",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -2078,15 +1967,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -2097,17 +1985,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "ORDER",
             "casrec_column_name": "Ord Type",
             "alias": "Ord Type 1",
             "requires_transformation": "",
-            "lookup_table": [
-                "order_subtype_lookup"
-            ],
+            "lookup_table": "order_subtype_lookup",
             "default_value": "",
             "calculated": ""
         }
@@ -2118,15 +2003,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -2137,15 +2021,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "datetime"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": "current_date"
         }
@@ -2156,15 +2039,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "datetime"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "ORDER",
             "casrec_column_name": "Clause Expiry",
             "alias": "Clause Expiry",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
@@ -2175,15 +2057,14 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }

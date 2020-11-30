@@ -18,83 +18,7 @@
             "calculated": ""
         }
     },
-    "assignee_id": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "assignees:id",
-            "data_type": "int"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "donor_id": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "persons:id",
-            "data_type": "int"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "correspondent_id": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "persons:id",
-            "data_type": "int"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "client_id": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "persons:id",
-            "data_type": "int"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "oldcaseid": {
+    "parent_id": {
         "mapping_status": {
             "is_complete": false
         },
@@ -113,26 +37,7 @@
             "calculated": ""
         }
     },
-    "applicationtype": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "title": {
+    "email": {
         "mapping_status": {
             "is_complete": false
         },
@@ -151,47 +56,7 @@
             "calculated": ""
         }
     },
-    "casetype": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "ORDER",
-            "calculated": ""
-        }
-    },
-    "casesubtype": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
-        },
-        "transform_casrec": {
-            "casrec_table": "ORDER",
-            "casrec_column_name": "Ord Type",
-            "alias": "Ord Type",
-            "requires_transformation": "",
-            "lookup_table": [
-                "order_type_lookup"
-            ],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "duedate": {
+    "dob": {
         "mapping_status": {
             "is_complete": false
         },
@@ -210,7 +75,7 @@
             "calculated": ""
         }
     },
-    "registrationdate": {
+    "dateofdeath": {
         "mapping_status": {
             "is_complete": false
         },
@@ -229,26 +94,7 @@
             "calculated": ""
         }
     },
-    "closeddate": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "status": {
+    "salutation": {
         "mapping_status": {
             "is_complete": false
         },
@@ -267,7 +113,159 @@
             "calculated": ""
         }
     },
-    "rejecteddate": {
+    "firstname": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "middlenames": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "surname": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "othernames": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "correspondencebypost": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "bool"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "correspondencebyphone": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "bool"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "correspondencebyemail": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "bool"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "occupation": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "createddate": {
         "mapping_status": {
             "is_complete": false
         },
@@ -275,139 +273,6 @@
             "is_pk": "",
             "fk_parents": "",
             "data_type": "datetime"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "caseattorneysingular": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "caseattorneyjointlyandseverally": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "caseattorneyjointly": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "caseattorneyjointlyandjointlyandseverally": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "caseattorneyactionadditionalinfo": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "repeatapplication": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "repeatapplicationreference": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
         },
         "transform_casrec": {
             "casrec_table": "",
@@ -440,7 +305,7 @@
     },
     "type": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
@@ -453,13 +318,32 @@
             "alias": "",
             "requires_transformation": "",
             "lookup_table": [],
-            "default_value": "order",
+            "default_value": "",
             "calculated": ""
         }
     },
-    "ascertained_by": {
+    "lpa002signaturedate": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "date"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "isattorneyapplyingtoregister": {
+        "mapping_status": {
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
@@ -472,68 +356,11 @@
             "alias": "",
             "requires_transformation": "",
             "lookup_table": [],
-            "default_value": 1,
-            "calculated": ""
-        }
-    },
-    "lpadonorsignaturedate": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
             "default_value": "",
             "calculated": ""
         }
     },
-    "lpadonorsignature": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "donorsignaturewitnessed": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "lpadonorsignatoryfullname": {
+    "dxnumber": {
         "mapping_status": {
             "is_complete": false
         },
@@ -552,26 +379,7 @@
             "calculated": ""
         }
     },
-    "donorhaspreviouslpas": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "previouslpainfo": {
+    "dxexchange": {
         "mapping_status": {
             "is_complete": false
         },
@@ -590,7 +398,7 @@
             "calculated": ""
         }
     },
-    "applicantsignaturedate": {
+    "lpapartcsignaturedate": {
         "mapping_status": {
             "is_complete": false
         },
@@ -609,7 +417,7 @@
             "calculated": ""
         }
     },
-    "applicantsignatoryfullname": {
+    "companyname": {
         "mapping_status": {
             "is_complete": false
         },
@@ -628,26 +436,7 @@
             "calculated": ""
         }
     },
-    "createddate": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "datetime"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": "current_date"
-        }
-    },
-    "lifesustainingtreatment": {
+    "companynumber": {
         "mapping_status": {
             "is_complete": false
         },
@@ -666,672 +455,7 @@
             "calculated": ""
         }
     },
-    "lifesustainingtreatmentsignaturedatea": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "lifesustainingtreatmentsignaturedateb": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "trustcorporationsignedas": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 1,
-            "calculated": ""
-        }
-    },
-    "hasrelativetonotice": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "areallattorneysapplyingtoregister": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "epadonorsignaturedate": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "epadonornoticegivendate": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "donorhasotherepas": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "otherepainfo": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "usesnotifiedpersons": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "nonoticegiven": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "notifiedpersonpermissionby": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 1,
-            "calculated": ""
-        }
-    },
-    "paymentbydebitcreditcard": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "paymentbycheque": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "wouldliketoapplyforfeeremission": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "haveappliedforfeeremission": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "cardpaymentcontact": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "howattorneysact": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "howreplacementattorneysact": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "attorneyactdecisions": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "replacementattorneyactdecisions": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "replacementorder": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "additionalinfo": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "anyotherinfo": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "additionalinfodonorsignature": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "additionalinfodonorsignaturedate": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "paymentid": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "paymentamount": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "paymentdate": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "paymentremission": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "paymentexemption": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "attorneypartydeclaration": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 1,
-            "calculated": ""
-        }
-    },
-    "attorneyapplicationassertion": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 1,
-            "calculated": ""
-        }
-    },
-    "attorneymentalactpermission": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 1,
-            "calculated": ""
-        }
-    },
-    "attorneydeclarationsignaturedate": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "attorneydeclarationsignature": {
+    "systemstatus": {
         "mapping_status": {
             "is_complete": false
         },
@@ -1350,26 +474,7 @@
             "calculated": ""
         }
     },
-    "attorneydeclarationsignaturewitness": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "attorneydeclarationsignatoryfullname": {
+    "relationshiptodonor": {
         "mapping_status": {
             "is_complete": false
         },
@@ -1388,33 +493,14 @@
             "calculated": ""
         }
     },
-    "correspondentcomplianceassertion": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 1,
-            "calculated": ""
-        }
-    },
-    "notificationdate": {
+    "isreplacementattorney": {
         "mapping_status": {
             "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "",
-            "data_type": "date"
+            "data_type": "bool"
         },
         "transform_casrec": {
             "casrec_table": "",
@@ -1426,14 +512,14 @@
             "calculated": ""
         }
     },
-    "dispatchdate": {
+    "istrustcorporation": {
         "mapping_status": {
             "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "",
-            "data_type": "date"
+            "data_type": "bool"
         },
         "transform_casrec": {
             "casrec_table": "",
@@ -1445,7 +531,7 @@
             "calculated": ""
         }
     },
-    "applicanttype": {
+    "trustcorporationappointedas": {
         "mapping_status": {
             "is_complete": false
         },
@@ -1464,14 +550,14 @@
             "calculated": ""
         }
     },
-    "cancellationdate": {
+    "signatoryone": {
         "mapping_status": {
             "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "",
-            "data_type": "date"
+            "data_type": "str"
         },
         "transform_casrec": {
             "casrec_table": "",
@@ -1483,33 +569,14 @@
             "calculated": ""
         }
     },
-    "applicantsdeclaration": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 1,
-            "calculated": ""
-        }
-    },
-    "applicantsdeclarationsignaturedate": {
+    "signatorytwo": {
         "mapping_status": {
             "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "",
-            "data_type": "date"
+            "data_type": "str"
         },
         "transform_casrec": {
             "casrec_table": "",
@@ -1521,71 +588,14 @@
             "calculated": ""
         }
     },
-    "applicationhasrestrictions": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "applicationhasguidance": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "applicationhascharges": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": 0,
-            "calculated": ""
-        }
-    },
-    "certificateprovidersignaturedate": {
+    "companyseal": {
         "mapping_status": {
             "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "",
-            "data_type": "date"
+            "data_type": "str"
         },
         "transform_casrec": {
             "casrec_table": "",
@@ -1597,7 +607,26 @@
             "calculated": ""
         }
     },
-    "certificateprovidersignature": {
+    "previousnames": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "cannotsignform": {
         "mapping_status": {
             "is_complete": false
         },
@@ -1616,7 +645,83 @@
             "calculated": ""
         }
     },
-    "attorneystatementdate": {
+    "applyingforfeeremission": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "bool"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "receivingbenefits": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "bool"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "receiveddamageaward": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "bool"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "haslowincome": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "bool"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "signaturedate": {
         "mapping_status": {
             "is_complete": false
         },
@@ -1635,14 +740,14 @@
             "calculated": ""
         }
     },
-    "signingonbehalfdate": {
+    "haspreviouslpa": {
         "mapping_status": {
             "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "",
-            "data_type": "date"
+            "data_type": "bool"
         },
         "transform_casrec": {
             "casrec_table": "",
@@ -1654,7 +759,26 @@
             "calculated": ""
         }
     },
-    "signingonbehalffullname": {
+    "notesforpreviouslpa": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "sageid": {
         "mapping_status": {
             "is_complete": false
         },
@@ -1692,64 +816,7 @@
             "calculated": ""
         }
     },
-    "orderdate": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
-        },
-        "transform_casrec": {
-            "casrec_table": "ORDER",
-            "casrec_column_name": "Made Date",
-            "alias": "Made Date",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "orderissuedate": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
-        },
-        "transform_casrec": {
-            "casrec_table": "ORDER",
-            "casrec_column_name": "Issue Date",
-            "alias": "Issue Date",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "securitybond": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "bondreferencenumber": {
+    "certificateproviderstatementtype": {
         "mapping_status": {
             "is_complete": false
         },
@@ -1768,14 +835,14 @@
             "calculated": ""
         }
     },
-    "bondvalue": {
+    "statement": {
         "mapping_status": {
             "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "",
-            "data_type": "float"
+            "data_type": "str"
         },
         "transform_casrec": {
             "casrec_table": "",
@@ -1787,9 +854,9 @@
             "calculated": ""
         }
     },
-    "orderstatus": {
+    "certificateproviderskills": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
@@ -1797,10 +864,105 @@
             "data_type": "str"
         },
         "transform_casrec": {
-            "casrec_table": "ORDER",
-            "casrec_column_name": "Ord Stat",
-            "alias": "Ord Stat",
-            "requires_transformation": "capitalise",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "fullname": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "caserecnumber": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "clientaccommodation": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "maritalstatus": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "clientstatus": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
             "lookup_table": [],
             "default_value": "",
             "calculated": ""
@@ -1825,9 +987,9 @@
             "calculated": ""
         }
     },
-    "caserecnumber": {
+    "deputyreferencenumber": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
@@ -1835,16 +997,282 @@
             "data_type": "str"
         },
         "transform_casrec": {
-            "casrec_table": "ORDER",
-            "casrec_column_name": "Case",
-            "alias": "Case",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
             "lookup_table": [],
             "default_value": "",
             "calculated": ""
         }
     },
-    "filelocationdescription": {
+    "deputycompliance": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "relationshiptoclient": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "correspondencebywelsh": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "bool"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "medicalcondition": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "interpreterrequired": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "mobilenumber": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "countryofresidence": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "newsletter": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "bool"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "specialcorrespondencerequirements_audiotape": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "bool"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "specialcorrespondencerequirements_largeprint": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "bool"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "specialcorrespondencerequirements_hearingimpaired": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "bool"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "specialcorrespondencerequirements_spellingofnamerequirescare": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "bool"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "digital": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "bool"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "client_id": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "int"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "companyreference": {
         "mapping_status": {
             "is_complete": false
         },
@@ -1869,25 +1297,6 @@
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "persons:id",
-            "data_type": "int"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "paymentpostponement": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
             "fk_parents": "",
             "data_type": "int"
         },
@@ -1901,14 +1310,14 @@
             "calculated": ""
         }
     },
-    "invaliddate": {
+    "isorganisation": {
         "mapping_status": {
             "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "",
-            "data_type": "date"
+            "data_type": "bool"
         },
         "transform_casrec": {
             "casrec_table": "",
@@ -1920,64 +1329,7 @@
             "calculated": ""
         }
     },
-    "withdrawndate": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "revokeddate": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "receiptdate": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "datetime"
-        },
-        "transform_casrec": {
-            "casrec_table": "ORDER",
-            "casrec_column_name": "Spvn Received",
-            "alias": "Spvn Received",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "batchid": {
+    "correspondencename": {
         "mapping_status": {
             "is_complete": false
         },
@@ -1996,7 +1348,7 @@
             "calculated": ""
         }
     },
-    "howdeputyappointed": {
+    "deputystatus": {
         "mapping_status": {
             "is_complete": false
         },
@@ -2015,7 +1367,26 @@
             "calculated": ""
         }
     },
-    "onlinelpaid": {
+    "casesmanagedashybrid": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "bool"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "deputytype": {
         "mapping_status": {
             "is_complete": false
         },
@@ -2034,7 +1405,26 @@
             "calculated": ""
         }
     },
-    "orderstatusnotes": {
+    "supervisioncaseowner_id": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "assignees:id",
+            "data_type": "int"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "clientsource": {
         "mapping_status": {
             "is_complete": false
         },
@@ -2053,26 +1443,7 @@
             "calculated": ""
         }
     },
-    "orderexpirydate": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
-        },
-        "transform_casrec": {
-            "casrec_table": "ORDER",
-            "casrec_column_name": "Expiry Date",
-            "alias": "Expiry Date",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "orderclosurereason": {
+    "memorablephrase": {
         "mapping_status": {
             "is_complete": false
         },
@@ -2091,28 +1462,26 @@
             "calculated": ""
         }
     },
-    "ordersubtype": {
+    "risk_score": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "",
-            "data_type": "str"
+            "data_type": "int"
         },
         "transform_casrec": {
-            "casrec_table": "ORDER",
-            "casrec_column_name": "Ord Type",
-            "alias": "Ord Type 1",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
-            "lookup_table": [
-                "order_subtype_lookup"
-            ],
+            "lookup_table": [],
             "default_value": "",
             "calculated": ""
         }
     },
-    "ordernotes": {
+    "caseactorgroup": {
         "mapping_status": {
             "is_complete": false
         },
@@ -2133,7 +1502,7 @@
     },
     "updateddate": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
@@ -2147,36 +1516,17 @@
             "requires_transformation": "",
             "lookup_table": [],
             "default_value": "",
-            "calculated": "current_date"
-        }
-    },
-    "clauseexpirydate": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "datetime"
-        },
-        "transform_casrec": {
-            "casrec_table": "ORDER",
-            "casrec_column_name": "Clause Expiry",
-            "alias": "Clause Expiry",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
             "calculated": ""
         }
     },
-    "madeactivedate": {
+    "executor_id": {
         "mapping_status": {
             "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "",
-            "data_type": "date"
+            "data_type": "int"
         },
         "transform_casrec": {
             "casrec_table": "",

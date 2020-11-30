@@ -1,11 +1,11 @@
 {
-    "person_id": {
+    "id": {
         "mapping_status": {
             "is_complete": true
         },
         "sirius_details": {
             "is_pk": true,
-            "fk_parents": "persons:id",
+            "fk_parents": "",
             "data_type": "int"
         },
         "transform_casrec": {
@@ -18,14 +18,14 @@
             "calculated": ""
         }
     },
-    "caseitem_id": {
+    "name": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
-            "is_pk": true,
-            "fk_parents": "cases:id",
-            "data_type": "int"
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str"
         },
         "transform_casrec": {
             "casrec_table": "",

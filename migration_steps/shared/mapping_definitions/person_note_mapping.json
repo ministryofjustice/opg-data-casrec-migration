@@ -18,13 +18,13 @@
             "calculated": ""
         }
     },
-    "caseitem_id": {
+    "note_id": {
         "mapping_status": {
             "is_complete": true
         },
         "sirius_details": {
             "is_pk": true,
-            "fk_parents": "cases:id",
+            "fk_parents": "notes:id",
             "data_type": "int"
         },
         "transform_casrec": {

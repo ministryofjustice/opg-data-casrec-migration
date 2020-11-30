@@ -18,13 +18,13 @@
             "calculated": ""
         }
     },
-    "person_id": {
+    "welfare_information_id": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "persons:id",
+            "fk_parents": "supervision_reporting__welfare_information:id",
             "data_type": "int"
         },
         "transform_casrec": {
@@ -37,28 +37,28 @@
             "calculated": ""
         }
     },
-    "phone_number": {
+    "importid": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "",
-            "data_type": "str"
+            "data_type": "int"
         },
         "transform_casrec": {
-            "casrec_table": "PAT",
-            "casrec_column_name": "Client Phone",
-            "alias": "Client Phone",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
             "lookup_table": [],
             "default_value": "",
             "calculated": ""
         }
     },
-    "type": {
+    "description": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
@@ -71,13 +71,13 @@
             "alias": "",
             "requires_transformation": "",
             "lookup_table": [],
-            "default_value": "Home",
+            "default_value": "",
             "calculated": ""
         }
     },
-    "is_default": {
+    "client_involved_boolean": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
@@ -90,18 +90,18 @@
             "alias": "",
             "requires_transformation": "",
             "lookup_table": [],
-            "default_value": false,
+            "default_value": "",
             "calculated": ""
         }
     },
-    "updateddate": {
+    "client_involved_details": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "",
-            "data_type": "datetime"
+            "data_type": "str"
         },
         "transform_casrec": {
             "casrec_table": "",
@@ -110,7 +110,7 @@
             "requires_transformation": "",
             "lookup_table": [],
             "default_value": "",
-            "calculated": "current_date"
+            "calculated": ""
         }
     }
 }

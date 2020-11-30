@@ -5,112 +5,124 @@
         },
         "sirius_details": {
             "is_pk": true,
-            "fk_parents": "",
-            "data_type": "int"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
     },
-    "person_id": {
+    "order_id": {
         "mapping_status": {
             "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "persons:id",
-            "data_type": "int"
+            "fk_parents": "cases:id"
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": ""
         }
     },
-    "phone_number": {
+    "appliesfrom": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
-        },
-        "transform_casrec": {
-            "casrec_table": "PAT",
-            "casrec_column_name": "Client Phone",
-            "alias": "Client Phone",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "type": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": ""
         },
         "transform_casrec": {
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "Home",
-            "calculated": ""
-        }
-    },
-    "is_default": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": false,
-            "calculated": ""
-        }
-    },
-    "updateddate": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "datetime"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": [],
+            "lookup_table": "",
             "default_value": "",
             "calculated": "current_date"
+        }
+    },
+    "createddate": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": ""
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "current_date"
+        }
+    },
+    "supervisionlevel": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": ""
+        },
+        "transform_casrec": {
+            "casrec_table": "ORDER",
+            "casrec_column_name": "Ord Risk Lvl",
+            "alias": "Ord Risk Lvl",
+            "requires_transformation": "",
+            "lookup_table": "supervision_level_lookup",
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "notes": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": ""
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "assetlevel": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": ""
+        },
+        "transform_casrec": {
+            "casrec_table": "ORDER",
+            "casrec_column_name": "Ord Risk Lvl",
+            "alias": "Ord Risk Lvl 1",
+            "requires_transformation": "",
+            "lookup_table": "asset_level_lookup",
+            "default_value": "",
+            "calculated": ""
         }
     }
 }

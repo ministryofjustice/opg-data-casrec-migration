@@ -18,13 +18,13 @@
             "calculated": ""
         }
     },
-    "person_id": {
+    "ledger_entry_id": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "persons:id",
+            "fk_parents": "finance_ledger:id",
             "data_type": "int"
         },
         "transform_casrec": {
@@ -37,110 +37,66 @@
             "calculated": ""
         }
     },
-    "address_lines": {
+    "invoice_id": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "dict"
+            "fk_parents": "finance_invoice:id",
+            "data_type": "int"
         },
         "transform_casrec": {
-            "casrec_table": "PAT",
-            "casrec_column_name": [
-                "Adrs1",
-                "Adrs2"
-            ],
-            "alias": [
-                "Adrs1",
-                "Adrs2"
-            ],
-            "requires_transformation": "squash_columns",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "town": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
-        },
-        "transform_casrec": {
-            "casrec_table": "PAT",
-            "casrec_column_name": "Adrs3",
-            "alias": "Adrs3",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
             "lookup_table": [],
             "default_value": "",
             "calculated": ""
         }
     },
-    "county": {
+    "datetime": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "",
-            "data_type": "str"
+            "data_type": "datetime"
         },
         "transform_casrec": {
-            "casrec_table": "PAT",
-            "casrec_column_name": "Adrs4",
-            "alias": "Adrs4",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
             "lookup_table": [],
             "default_value": "",
             "calculated": ""
         }
     },
-    "postcode": {
+    "amount": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "",
-            "data_type": "str"
+            "data_type": "Decimal"
         },
         "transform_casrec": {
-            "casrec_table": "PAT",
-            "casrec_column_name": "Postcode",
-            "alias": "Postcode",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
             "lookup_table": [],
             "default_value": "",
             "calculated": ""
         }
     },
-    "country": {
+    "status": {
         "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
-        },
-        "transform_casrec": {
-            "casrec_table": "PAT",
-            "casrec_column_name": "Adrs5",
-            "alias": "Adrs5",
-            "requires_transformation": "",
-            "lookup_table": [],
-            "default_value": "",
-            "calculated": ""
-        }
-    },
-    "type": {
-        "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
@@ -153,24 +109,81 @@
             "alias": "",
             "requires_transformation": "",
             "lookup_table": [],
-            "default_value": "Primary",
+            "default_value": "",
             "calculated": ""
         }
     },
-    "isairmailrequired": {
+    "reference": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "",
-            "data_type": "bool"
+            "data_type": "str"
         },
         "transform_casrec": {
-            "casrec_table": "PAT",
-            "casrec_column_name": "Foreign",
-            "alias": "Foreign",
-            "requires_transformation": "convert_to_bool",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "notes": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "allocateddate": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "date"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": [],
+            "default_value": "",
+            "calculated": ""
+        }
+    },
+    "batchnumber": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "int"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
             "lookup_table": [],
             "default_value": "",
             "calculated": ""
