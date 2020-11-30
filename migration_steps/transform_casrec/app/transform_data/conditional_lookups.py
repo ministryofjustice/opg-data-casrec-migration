@@ -34,7 +34,7 @@ def conditional_lookup(
     df[temp_col] = df[temp_col].fillna("")
 
     df[final_col] = df.apply(
-        lambda x: x[data_col] if x[temp_col] == data_col else "", axis=1
+        lambda x: x[data_col] if x[temp_col] == data_col else None, axis=1
     )
 
     df = df.drop(columns=[data_col, lookup_col, temp_col])
