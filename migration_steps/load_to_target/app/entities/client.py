@@ -22,7 +22,7 @@ def target_update(config, conn_migration, conn_target):
     persons_df = persons_df.rename(columns={"target_id": "id"})
 
     # these columns not implemented upstream yet so drop them for now
-    persons_df = persons_df.drop(["statusdate", "updateddate"], axis=1)
+    persons_df = persons_df.drop(["statusdate", "updateddate", "dateofdeath"], axis=1)
 
     execute_update(conn_target, persons_df, "persons")
 
@@ -38,7 +38,7 @@ def target_add(config, conn_migration, conn_target):
     persons_df["clientsource"] = "CASRECMIGRATION"
 
     # these columns not implemented upstream yet so drop them for now
-    persons_df = persons_df.drop(["statusdate", "updateddate"], axis=1)
+    persons_df = persons_df.drop(["statusdate", "updateddate", "dateofdeath"], axis=1)
 
     # uid not implemented upstream so here's a workaround
     rowcount = len(persons_df.index)
