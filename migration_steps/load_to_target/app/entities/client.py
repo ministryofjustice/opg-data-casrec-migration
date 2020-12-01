@@ -7,8 +7,6 @@ from db_helpers import (
 )
 from pathlib import Path
 
-from helpers import get_mapped_fields_per_file
-
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sql_path = current_path / "../sql"
 
@@ -24,11 +22,9 @@ def target_update(config, conn_migration, conn_target):
     persons_df = persons_df.rename(columns={"target_id": "id"})
 
     # these columns not implemented upstream yet so drop them for now
-    # persons_df = persons_df.drop(["statusdate", "updateddate"], axis=1)
-    columns_to_select = get_mapped_fields_per_file(file_name="client_persons_mapping")
-
-    print(f"columns_to_select: {columns_to_select}")
-    persons_df = persons_df[columns_to_select]
+    persons_df = persons_df.drop(
+        ["statusdate", "updateddate", "dateofdeath", "c_term_type"], axis=1
+    )
 
     execute_update(conn_target, persons_df, "persons")
 
@@ -44,13 +40,9 @@ def target_add(config, conn_migration, conn_target):
     persons_df["clientsource"] = "CASRECMIGRATION"
 
     # these columns not implemented upstream yet so drop them for now
-    # persons_df = persons_df.drop(["statusdate", "updateddate"], axis=1)
-
-    columns_to_select = get_mapped_fields_per_file(file_name="client_persons_mapping")
-
-    columns_to_select.remove("id")
-
-    persons_df = persons_df[columns_to_select]
+    persons_df = persons_df.drop(
+        ["statusdate", "updateddate", "dateofdeath", "c_term_type"], axis=1
+    )
 
     # uid not implemented upstream so here's a workaround
     rowcount = len(persons_df.index)
