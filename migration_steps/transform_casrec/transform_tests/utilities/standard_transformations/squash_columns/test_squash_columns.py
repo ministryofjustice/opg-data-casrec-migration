@@ -1,4 +1,4 @@
-from tests.utilities.standard_transformations.squash_columns import (
+from transform_tests.utilities.standard_transformations.squash_columns import (
     cases_squash_columns_shape,
     cases_squash_columns_data,
 )

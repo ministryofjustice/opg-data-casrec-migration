@@ -1,6 +1,8 @@
 from pytest_cases import parametrize_with_cases
 
-from tests.utilities.generate_source_query import cases_generate_select_statement_2
+from transform_tests.utilities.generate_source_query import (
+    cases_generate_select_statement_2,
+)
 
 from utilities.generate_source_query import (
     generate_select_string_from_mapping as generate_select_string_from_mapping_2,
