@@ -19,13 +19,13 @@
             "additional_columns": ""
         }
     },
-    "order_id": {
+    "from_account_id": {
         "mapping_status": {
             "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "cases:id",
+            "fk_parents": "supervision_reporting__accounts:id",
             "data_type": "int"
         },
         "transform_casrec": {
@@ -39,81 +39,61 @@
             "additional_columns": ""
         }
     },
-    "appliesfrom": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": "",
-            "default_value": "",
-            "calculated": "current_date",
-            "additional_columns": ""
-        }
-    },
-    "createddate": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "datetime"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": "",
-            "default_value": "",
-            "calculated": "current_date",
-            "additional_columns": ""
-        }
-    },
-    "supervisionlevel": {
+    "to_account_id": {
         "mapping_status": {
             "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str"
+            "fk_parents": "supervision_reporting__accounts:id",
+            "data_type": "int"
         },
         "transform_casrec": {
-            "casrec_table": "ORDER",
-            "casrec_column_name": "Ord Risk Lvl",
-            "alias": "Ord Risk Lvl",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
-            "lookup_table": "supervision_level_lookup",
+            "lookup_table": "",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
         }
     },
-    "assetlevel": {
+    "importid": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "",
-            "data_type": "str"
+            "data_type": "int"
         },
         "transform_casrec": {
-            "casrec_table": "ORDER",
-            "casrec_column_name": "Ord Risk Lvl",
-            "alias": "Ord Risk Lvl 1",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
-            "lookup_table": "asset_level_lookup",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": ""
+        }
+    },
+    "amount_amount": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "int"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""

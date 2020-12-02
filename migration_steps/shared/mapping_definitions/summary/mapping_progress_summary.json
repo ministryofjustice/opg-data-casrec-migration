@@ -1,10 +1,10 @@
 {
     "worksheets": {
         "client_persons": {
-            "total_rows": 81,
-            "total_unmapped": 55,
-            "total_mapped": 26,
-            "percentage_complete": 32
+            "total_rows": 32,
+            "total_unmapped": 5,
+            "total_mapped": 27,
+            "percentage_complete": 84
         },
         "client_addresses": {
             "total_rows": 9,
@@ -19,10 +19,10 @@
             "percentage_complete": 100
         },
         "cases": {
-            "total_rows": 115,
-            "total_unmapped": 67,
-            "total_mapped": 48,
-            "percentage_complete": 42
+            "total_rows": 57,
+            "total_unmapped": 5,
+            "total_mapped": 52,
+            "percentage_complete": 91
         },
         "person_caseitem": {
             "total_rows": 2,
@@ -31,16 +31,16 @@
             "percentage_complete": 100
         },
         "supervision_level_log": {
-            "total_rows": 7,
-            "total_unmapped": 3,
+            "total_rows": 6,
+            "total_unmapped": 2,
             "total_mapped": 4,
-            "percentage_complete": 57
+            "percentage_complete": 67
         },
         "bonds": {
             "total_rows": 12,
-            "total_unmapped": 11,
-            "total_mapped": 1,
-            "percentage_complete": 8
+            "total_unmapped": 9,
+            "total_mapped": 3,
+            "percentage_complete": 25
         },
         "caseitem_document": {
             "total_rows": 2,
@@ -68,9 +68,9 @@
         },
         "annual_report_logs": {
             "total_rows": 16,
-            "total_unmapped": 15,
-            "total_mapped": 1,
-            "percentage_complete": 6
+            "total_unmapped": 13,
+            "total_mapped": 3,
+            "percentage_complete": 19
         },
         "caseitem_warning": {
             "total_rows": 2,
@@ -80,9 +80,9 @@
         },
         "annual_report_lodging_details": {
             "total_rows": 9,
-            "total_unmapped": 8,
-            "total_mapped": 1,
-            "percentage_complete": 11
+            "total_unmapped": 7,
+            "total_mapped": 2,
+            "percentage_complete": 22
         },
         "caseitem_paymenttype": {
             "total_rows": 2,
@@ -92,9 +92,9 @@
         },
         "annual_report_type_assignments": {
             "total_rows": 5,
-            "total_unmapped": 4,
-            "total_mapped": 1,
-            "percentage_complete": 20
+            "total_unmapped": 3,
+            "total_mapped": 2,
+            "percentage_complete": 40
         },
         "caseitem_note": {
             "total_rows": 2,
@@ -110,27 +110,27 @@
         },
         "case_timeline": {
             "total_rows": 3,
-            "total_unmapped": 2,
-            "total_mapped": 1,
-            "percentage_complete": 33
+            "total_unmapped": 0,
+            "total_mapped": 3,
+            "percentage_complete": 100
         },
         "complaints": {
             "total_rows": 12,
-            "total_unmapped": 11,
-            "total_mapped": 1,
-            "percentage_complete": 8
+            "total_unmapped": 10,
+            "total_mapped": 2,
+            "percentage_complete": 17
         },
         "document_pages": {
             "total_rows": 4,
-            "total_unmapped": 3,
-            "total_mapped": 1,
-            "percentage_complete": 25
+            "total_unmapped": 2,
+            "total_mapped": 2,
+            "percentage_complete": 50
         },
         "events": {
             "total_rows": 31,
-            "total_unmapped": 30,
-            "total_mapped": 1,
-            "percentage_complete": 3
+            "total_unmapped": 10,
+            "total_mapped": 21,
+            "percentage_complete": 68
         },
         "finance_counter": {
             "total_rows": 3,
@@ -146,9 +146,9 @@
         },
         "finance_invoice": {
             "total_rows": 13,
-            "total_unmapped": 12,
-            "total_mapped": 1,
-            "percentage_complete": 8
+            "total_unmapped": 10,
+            "total_mapped": 3,
+            "percentage_complete": 23
         },
         "fees": {
             "total_rows": 8,
@@ -194,15 +194,15 @@
         },
         "finance_order": {
             "total_rows": 4,
-            "total_unmapped": 3,
-            "total_mapped": 1,
-            "percentage_complete": 25
+            "total_unmapped": 2,
+            "total_mapped": 2,
+            "percentage_complete": 50
         },
         "finance_ledger": {
             "total_rows": 16,
-            "total_unmapped": 15,
-            "total_mapped": 1,
-            "percentage_complete": 6
+            "total_unmapped": 13,
+            "total_mapped": 3,
+            "percentage_complete": 19
         },
         "opgcore_doctrine_migrations": {
             "total_rows": 1,
@@ -212,9 +212,9 @@
         },
         "order_deputy": {
             "total_rows": 11,
-            "total_unmapped": 10,
-            "total_mapped": 1,
-            "percentage_complete": 9
+            "total_unmapped": 8,
+            "total_mapped": 3,
+            "percentage_complete": 27
         },
         "payments": {
             "total_rows": 10,
@@ -224,9 +224,9 @@
         },
         "supervision_reporting__account": {
             "total_rows": 11,
-            "total_unmapped": 10,
-            "total_mapped": 1,
-            "percentage_complete": 9
+            "total_unmapped": 9,
+            "total_mapped": 2,
+            "percentage_complete": 18
         },
         "scheduled_events": {
             "total_rows": 7,
@@ -284,9 +284,9 @@
         },
         "person_timeline": {
             "total_rows": 3,
-            "total_unmapped": 2,
-            "total_mapped": 1,
-            "percentage_complete": 33
+            "total_unmapped": 0,
+            "total_mapped": 3,
+            "percentage_complete": 100
         },
         "person_task": {
             "total_rows": 2,
@@ -302,15 +302,15 @@
         },
         "timeline_event": {
             "total_rows": 5,
-            "total_unmapped": 4,
-            "total_mapped": 1,
-            "percentage_complete": 20
+            "total_unmapped": 3,
+            "total_mapped": 2,
+            "percentage_complete": 40
         },
         "tasks": {
             "total_rows": 14,
-            "total_unmapped": 13,
-            "total_mapped": 1,
-            "percentage_complete": 7
+            "total_unmapped": 11,
+            "total_mapped": 3,
+            "percentage_complete": 21
         },
         "supervision_reporting__reports": {
             "total_rows": 12,
@@ -320,9 +320,9 @@
         },
         "validation_check": {
             "total_rows": 5,
-            "total_unmapped": 4,
-            "total_mapped": 1,
-            "percentage_complete": 20
+            "total_unmapped": 3,
+            "total_mapped": 2,
+            "percentage_complete": 40
         },
         "uploads": {
             "total_rows": 4,
@@ -332,15 +332,15 @@
         },
         "supervision_reporting__assets": {
             "total_rows": 24,
-            "total_unmapped": 23,
-            "total_mapped": 1,
-            "percentage_complete": 4
+            "total_unmapped": 22,
+            "total_mapped": 2,
+            "percentage_complete": 8
         },
         "supervision_reporting__transac": {
             "total_rows": 7,
-            "total_unmapped": 6,
-            "total_mapped": 1,
-            "percentage_complete": 14
+            "total_unmapped": 5,
+            "total_mapped": 2,
+            "percentage_complete": 29
         },
         "visitor": {
             "total_rows": 2,
@@ -350,9 +350,9 @@
         },
         "supervision_reporting__transfe": {
             "total_rows": 5,
-            "total_unmapped": 4,
-            "total_mapped": 1,
-            "percentage_complete": 20
+            "total_unmapped": 2,
+            "total_mapped": 3,
+            "percentage_complete": 60
         },
         "caseitem_task": {
             "total_rows": 2,
@@ -362,9 +362,9 @@
         },
         "supervision_reporting__debts": {
             "total_rows": 5,
-            "total_unmapped": 4,
-            "total_mapped": 1,
-            "percentage_complete": 20
+            "total_unmapped": 3,
+            "total_mapped": 2,
+            "percentage_complete": 40
         },
         "person_personreference": {
             "total_rows": 2,
@@ -374,9 +374,9 @@
         },
         "finance_invoice_fee_range": {
             "total_rows": 6,
-            "total_unmapped": 5,
-            "total_mapped": 1,
-            "percentage_complete": 17
+            "total_unmapped": 4,
+            "total_mapped": 2,
+            "percentage_complete": 33
         },
         "queue_business_rules": {
             "total_rows": 10,
@@ -404,21 +404,21 @@
         },
         "persons": {
             "total_rows": 81,
-            "total_unmapped": 80,
-            "total_mapped": 1,
-            "percentage_complete": 1
+            "total_unmapped": 79,
+            "total_mapped": 2,
+            "percentage_complete": 2
         },
         "investigation": {
             "total_rows": 13,
-            "total_unmapped": 12,
-            "total_mapped": 1,
-            "percentage_complete": 8
+            "total_unmapped": 9,
+            "total_mapped": 4,
+            "percentage_complete": 31
         },
         "death_notifications": {
             "total_rows": 10,
-            "total_unmapped": 9,
-            "total_mapped": 1,
-            "percentage_complete": 10
+            "total_unmapped": 8,
+            "total_mapped": 2,
+            "percentage_complete": 20
         },
         "courtfund": {
             "total_rows": 5,
@@ -428,69 +428,69 @@
         },
         "notes": {
             "total_rows": 12,
-            "total_unmapped": 11,
-            "total_mapped": 1,
-            "percentage_complete": 8
+            "total_unmapped": 8,
+            "total_mapped": 4,
+            "percentage_complete": 33
         },
         "visits": {
             "total_rows": 19,
-            "total_unmapped": 18,
-            "total_mapped": 1,
-            "percentage_complete": 5
+            "total_unmapped": 17,
+            "total_mapped": 2,
+            "percentage_complete": 11
         },
         "supervision_reporting__financi": {
             "total_rows": 3,
-            "total_unmapped": 2,
-            "total_mapped": 1,
-            "percentage_complete": 33
+            "total_unmapped": 1,
+            "total_mapped": 2,
+            "percentage_complete": 67
         },
         "documents": {
             "total_rows": 35,
-            "total_unmapped": 34,
-            "total_mapped": 1,
-            "percentage_complete": 3
+            "total_unmapped": 29,
+            "total_mapped": 6,
+            "percentage_complete": 17
         },
         "hold_period": {
             "total_rows": 7,
-            "total_unmapped": 6,
-            "total_mapped": 1,
-            "percentage_complete": 14
+            "total_unmapped": 5,
+            "total_mapped": 2,
+            "percentage_complete": 29
         },
         "finance_ledger_allocation": {
             "total_rows": 10,
-            "total_unmapped": 9,
-            "total_mapped": 1,
-            "percentage_complete": 10
+            "total_unmapped": 7,
+            "total_mapped": 3,
+            "percentage_complete": 30
         },
         "warnings": {
             "total_rows": 8,
-            "total_unmapped": 7,
-            "total_mapped": 1,
-            "percentage_complete": 12
+            "total_unmapped": 5,
+            "total_mapped": 3,
+            "percentage_complete": 38
         },
         "supervision_reporting__decisio": {
             "total_rows": 6,
-            "total_unmapped": 5,
-            "total_mapped": 1,
-            "percentage_complete": 17
+            "total_unmapped": 4,
+            "total_mapped": 2,
+            "percentage_complete": 33
         },
         "supervision_reporting__welfare": {
             "total_rows": 16,
-            "total_unmapped": 15,
-            "total_mapped": 1,
-            "percentage_complete": 6
+            "total_unmapped": 14,
+            "total_mapped": 2,
+            "percentage_complete": 12
         },
         "finance_remission_exemption": {
             "total_rows": 8,
-            "total_unmapped": 7,
-            "total_mapped": 1,
-            "percentage_complete": 12
+            "total_unmapped": 6,
+            "total_mapped": 2,
+            "percentage_complete": 25
         },
         "lineitem": {
             "total_rows": 4,
-            "total_unmapped": 3,
-            "total_mapped": 1,
-            "percentage_complete": 25
+            "total_unmapped": 2,
+            "total_mapped": 2,
+            "percentage_complete": 50
         },
         "persons_migrated": {
             "total_rows": 10,
@@ -517,10 +517,10 @@
             "total_complete": 0
         },
         "fields": {
-            "total_fields": 854,
-            "total_unmapped": 661,
-            "total_mapped": 193,
-            "percentage_complete": 23
+            "total_fields": 746,
+            "total_unmapped": 474,
+            "total_mapped": 272,
+            "percentage_complete": 36
         }
     }
 }

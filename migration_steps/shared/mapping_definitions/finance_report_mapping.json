@@ -19,13 +19,13 @@
             "additional_columns": ""
         }
     },
-    "order_id": {
+    "batchnumber": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
-            "fk_parents": "cases:id",
+            "fk_parents": "",
             "data_type": "int"
         },
         "transform_casrec": {
@@ -39,14 +39,14 @@
             "additional_columns": ""
         }
     },
-    "appliesfrom": {
+    "type": {
         "mapping_status": {
             "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "",
-            "data_type": "date"
+            "data_type": "str"
         },
         "transform_casrec": {
             "casrec_table": "",
@@ -55,11 +55,11 @@
             "requires_transformation": "",
             "lookup_table": "",
             "default_value": "",
-            "calculated": "current_date",
+            "calculated": "",
             "additional_columns": ""
         }
     },
-    "createddate": {
+    "datetime": {
         "mapping_status": {
             "is_complete": false
         },
@@ -75,45 +75,45 @@
             "requires_transformation": "",
             "lookup_table": "",
             "default_value": "",
-            "calculated": "current_date",
+            "calculated": "",
             "additional_columns": ""
         }
     },
-    "supervisionlevel": {
+    "count": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "",
-            "data_type": "str"
+            "data_type": "int"
         },
         "transform_casrec": {
-            "casrec_table": "ORDER",
-            "casrec_column_name": "Ord Risk Lvl",
-            "alias": "Ord Risk Lvl",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
-            "lookup_table": "supervision_level_lookup",
+            "lookup_table": "",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
         }
     },
-    "assetlevel": {
+    "invoicedate": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "",
-            "data_type": "str"
+            "data_type": "datetime"
         },
         "transform_casrec": {
-            "casrec_table": "ORDER",
-            "casrec_column_name": "Ord Risk Lvl",
-            "alias": "Ord Risk Lvl 1",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
-            "lookup_table": "asset_level_lookup",
+            "lookup_table": "",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
