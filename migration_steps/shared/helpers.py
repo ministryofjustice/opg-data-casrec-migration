@@ -19,8 +19,13 @@ def log_title(message: str) -> str:
     return log_string
 
 
-def get_mapping_dict(file_name: str, stage_name: str) -> Dict:
+def get_current_directory():
     dirname = os.path.dirname(__file__)
+    return dirname
+
+
+def get_mapping_dict(file_name: str, stage_name: str) -> Dict:
+    dirname = get_current_directory()
     file_path = os.path.join(dirname, f"mapping_definitions/{file_name}.json")
 
     with open(file_path) as mapping_json:
@@ -31,7 +36,7 @@ def get_mapping_dict(file_name: str, stage_name: str) -> Dict:
 
 def get_lookup_dict(file_name: str) -> Dict:
 
-    dirname = os.path.dirname(__file__)
+    dirname = get_current_directory()
     file_path = os.path.join(
         dirname, f"mapping_definitions/lookups" f"/{file_name}.json"
     )
@@ -42,22 +47,10 @@ def get_lookup_dict(file_name: str) -> Dict:
         return {k: v["sirius_mapping"] for k, v in lookup_dict.items()}
 
 
-def get_mapped_fields_per_file(file_name: str, complete: bool = True) -> List:
-    dirname = os.path.dirname(__file__)
-    file_path = os.path.join(dirname, f"mapping_definitions/{file_name}.json")
-
-    with open(file_path) as mapping_json:
-        mapping_dict = json.load(mapping_json)
-
-    return [
-        k for k, v in mapping_dict.items() if v["mapping_status"]["is_complete"] is True
-    ]
-
-
 def get_all_mapped_fields(
     complete: bool = True, include_keys: bool = False
 ) -> Dict[str, List[str]]:
-    dirname = os.path.dirname(__file__)
+    dirname = get_current_directory()
     file_path = os.path.join(dirname, f"mapping_definitions")
 
     all_mapping_dicts = {}

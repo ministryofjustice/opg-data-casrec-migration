@@ -1,36 +1,20 @@
-from shared.helpers import get_mapped_fields_per_file
+import json
+import os
+from helpers import get_mapping_dict
 
 
-def test_get_mapped_fields_per_file():
-    result = get_mapped_fields_per_file(file_name="client_persons_mapping")
+def test_get_mapping_dict():
 
-    expected_result = [
-        "id",
-        "dob",
-        "firstname",
-        "surname",
-        "createddate",
-        "type",
-        "systemstatus",
-        "isreplacementattorney",
-        "istrustcorporation",
-        "previousnames",
-        "caserecnumber",
-        "clientaccommodation",
-        "maritalstatus",
-        "clientstatus",
-        "statusdate",
-        "correspondencebywelsh",
-        "countryofresidence",
-        "newsletter",
-        "specialcorrespondencerequirements_audiotape",
-        "specialcorrespondencerequirements_largeprint",
-        "specialcorrespondencerequirements_hearingimpaired",
-        "specialcorrespondencerequirements_spellingofnamerequirescare",
-        "digital",
-        "isorganisation",
-        "clientsource",
-        "updateddate",
-    ]
+    result = get_mapping_dict(
+        file_name="test_client_persons_mapping", stage_name="transform_casrec"
+    )
 
-    assert result == expected_result
+    dirname = os.path.dirname(__file__)
+    file_path = os.path.join(
+        dirname, f"expected_results/test_client_persons_expected.json"
+    )
+
+    with open(file_path) as expected_json:
+        expected_result = json.load(expected_json)
+
+        assert result == expected_result
