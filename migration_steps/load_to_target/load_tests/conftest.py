@@ -29,8 +29,8 @@ def test_config():
 
 
 @pytest.fixture()
-def mock_df_from_sql_file(monkeypatch):
-    def mock_persons_df(*args, **kwargs):
+def mock_persons_df(monkeypatch, request):
+    def mock_persons(*args, **kwargs):
         print("using mock_df_from_sql_file")
 
         dirname = os.path.dirname(__file__)
@@ -45,24 +45,40 @@ def mock_df_from_sql_file(monkeypatch):
 
         return test_source_data_df
 
-    monkeypatch.setattr(db_helpers, "df_from_sql_file", mock_persons_df)
+    monkeypatch.setattr(db_helpers, "df_from_sql_file", mock_persons)
 
 
 @pytest.fixture()
-def mock_execute_update(monkeypatch):
+def mock_execute_update_with_logs(monkeypatch):
     def execute_update(conn, df, table):
         print("using mock_execute_update")
 
         cols = list(df.columns)
         pk_col = cols.pop(0)
-        colstring = "=%s,".join(cols)
-        colstring += "=%s"
-        update_template = f"UPDATE {table} SET {colstring} WHERE {pk_col}="
 
         logger.info(f"cols: {cols}")
         logger.info(f"pk_col: {pk_col}")
-        logger.info(f"colstring: {colstring}")
-        logger.info(f"colstring: {colstring}")
-        logger.info(f"update_template: {update_template}")
 
     monkeypatch.setattr(db_helpers, "execute_update", execute_update)
+
+
+@pytest.fixture()
+def mock_execute_insert_with_logs(monkeypatch):
+    def execute_insert(conn, df, table):
+        print("using mock_execute_insert")
+
+        tuples = [tuple(x) for x in df.to_numpy()]
+        cols = ",".join(list(df.columns))
+
+        logger.info(f"cols: {cols}")
+        logger.info(f"tuples: {tuples}")
+
+    monkeypatch.setattr(db_helpers, "execute_insert", execute_insert)
+
+
+@pytest.fixture()
+def mock_result_from_sql_file(monkeypatch):
+    def result_from_sql_file(*args, **kwargs):
+        return 1
+
+    monkeypatch.setattr(db_helpers, "result_from_sql_file", result_from_sql_file)

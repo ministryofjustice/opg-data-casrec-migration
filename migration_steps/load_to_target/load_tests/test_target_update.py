@@ -1,19 +1,45 @@
-import os
-import sys
-from pathlib import Path
-
-current_path = Path(os.path.dirname(os.path.realpath(__file__)))
-sys.path.insert(0, str(current_path) + "/../migration_steps/shared")
-
-from migration_steps.load_to_target.app.entities.client import target_update
+from migration_steps.load_to_target.app.entities.client import target_update, target_add
 
 
-def test_target_update(caplog, test_config, mock_df_from_sql_file, mock_execute_update):
+def test_target_update(
+    caplog, test_config, mock_persons_df, mock_execute_update_with_logs
+):
 
     config = test_config
 
     target_update(config=config, conn_migration="fake_db_1", conn_target="fake_db_2")
 
-    print(f"caplog.text: {caplog.text}")
-    assert "cols: ['firstname', 'surname']" in caplog.text
-    assert "pk_col: id" in caplog.text
+    expected_cols = ["firstname", "surname"]
+    expected_pk = "id"
+
+    log_message_cols = f"cols: {expected_cols}"
+    log_message_pk_col = f"pk_col: {expected_pk}"
+
+    assert log_message_cols in caplog.text
+    assert log_message_pk_col in caplog.text
+
+
+def test_target_add(
+    caplog,
+    test_config,
+    mock_persons_df,
+    mock_execute_insert_with_logs,
+    mock_result_from_sql_file,
+):
+
+    config = test_config
+
+    target_add(config=config, conn_migration="fake_db_1", conn_target="fake_db_2")
+
+    expected_cols = ["target_id", "firstname", "surname", "clientsource", "uid"]
+    expected_tuples = [
+        (0, "name1", "surname1", "CASRECMIGRATION", 2),
+        (1, "name2", "surname2", "CASRECMIGRATION", 3),
+        (2, "name3", "surname3", "CASRECMIGRATION", 4),
+    ]
+
+    log_message_cols = f"cols: {','.join(expected_cols)}"
+    log_message_tuples = f"tuples: {expected_tuples}"
+
+    assert log_message_cols in caplog.text
+    assert log_message_tuples in caplog.text
