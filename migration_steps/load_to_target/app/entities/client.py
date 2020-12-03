@@ -1,15 +1,10 @@
 import os
 
-# import shared
+from pathlib import Path
+
 import db_helpers
 
-# from db_helpers import (
-#     df_from_sql_file,
-#     execute_update,
-#     result_from_sql_file,
-#     execute_insert,
-# )
-from pathlib import Path
+import helpers
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sql_path = current_path / "../sql"
@@ -24,6 +19,8 @@ def target_update(config, conn_migration, conn_target):
     # transpose id column
     persons_df = persons_df.drop(["id", "sirius_id"], axis=1)
     persons_df = persons_df.rename(columns={"target_id": "id"})
+
+    print(persons_df.to_markdown())
 
     # these columns not implemented upstream yet so drop them for now
     persons_df = persons_df.drop(

@@ -9,7 +9,31 @@ def test_target_update(
 
     target_update(config=config, conn_migration="fake_db_1", conn_target="fake_db_2")
 
-    expected_cols = ["firstname", "surname"]
+    expected_cols = [
+        "dob",
+        "firstname",
+        "surname",
+        "createddate",
+        "type",
+        "systemstatus",
+        "isreplacementattorney",
+        "istrustcorporation",
+        "previousnames",
+        "caserecnumber",
+        "clientaccommodation",
+        "maritalstatus",
+        "clientstatus",
+        "correspondencebywelsh",
+        "countryofresidence",
+        "newsletter",
+        "specialcorrespondencerequirements_audiotape",
+        "specialcorrespondencerequirements_largeprint",
+        "specialcorrespondencerequirements_hearingimpaired",
+        "specialcorrespondencerequirements_spellingofnamerequirescare",
+        "digital",
+        "isorganisation",
+        "clientsource",
+    ]
     expected_pk = "id"
 
     log_message_cols = f"cols: {expected_cols}"
