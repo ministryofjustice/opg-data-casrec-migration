@@ -10,7 +10,8 @@ import psycopg2
 from config2 import get_config
 from dotenv import load_dotenv
 from helpers import log_title
-from db_helpers import *
+
+# from db_helpers import *
 from entities import client
 from entities import address
 import logging
