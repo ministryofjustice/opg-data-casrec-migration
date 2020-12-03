@@ -1,0 +1,132 @@
+{
+	"id": {
+		"is_pk": true,
+		"fk_parents": "",
+		"data_type": "int"
+	},
+	"dob": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "date"
+	},
+	"firstname": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "str"
+	},
+	"surname": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "str"
+	},
+	"createddate": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "datetime"
+	},
+	"type": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "str"
+	},
+	"systemstatus": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "bool"
+	},
+	"isreplacementattorney": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "bool"
+	},
+	"istrustcorporation": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "bool"
+	},
+	"previousnames": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "str"
+	},
+	"caserecnumber": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "str"
+	},
+	"clientaccommodation": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "str"
+	},
+	"maritalstatus": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "str"
+	},
+	"clientstatus": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "str"
+	},
+	"statusdate": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "date"
+	},
+	"correspondencebywelsh": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "bool"
+	},
+	"countryofresidence": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "str"
+	},
+	"newsletter": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "bool"
+	},
+	"specialcorrespondencerequirements_audiotape": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "bool"
+	},
+	"specialcorrespondencerequirements_largeprint": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "bool"
+	},
+	"specialcorrespondencerequirements_hearingimpaired": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "bool"
+	},
+	"specialcorrespondencerequirements_spellingofnamerequirescare": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "bool"
+	},
+	"digital": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "bool"
+	},
+	"isorganisation": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "bool"
+	},
+	"clientsource": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "str"
+	},
+	"updateddate": {
+		"is_pk": "",
+		"fk_parents": "",
+		"data_type": "datetime"
+	}
+}

@@ -28,5 +28,7 @@
 	"clientsource": ["clientsource_1", "clientsource_2", "clientsource_3", "clientsource_4", "clientsource_5"],
 	"updateddate": ["updateddate_1", "updateddate_2", "updateddate_3", "updateddate_4", "updateddate_5"],
 	"c_term_type": ["c_term_type_1", "c_term_type_2", "c_term_type_3", "c_term_type_4", "c_term_type_5"],
-	"dateofdeath": ["dateofdeath_1", "dateofdeath_2", "dateofdeath_3", "dateofdeath_4", "dateofdeath_5"]
+	"dateofdeath": ["dateofdeath_1", "dateofdeath_2", "dateofdeath_3", "dateofdeath_4", "dateofdeath_5"],
+	"statusdate": ["statusdate_1", "statusdate_2", "statusdate_3", "statusdate_4", "statusdate_5"],
+	"updateddate": ["updateddate_1", "updateddate_2", "updateddate_3", "updateddate_4", "updateddate_5"]
 }

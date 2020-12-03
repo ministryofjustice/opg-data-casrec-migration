@@ -6,74 +6,89 @@ import sh
 import fileinput
 
 from psycopg2.extensions import register_adapter, AsIs
+
 psycopg2.extensions.register_adapter(np.int64, psycopg2._psycopg.AsIs)
 
 
 def copy_schema(
-        log,
-        sql_path,
-        from_config,
-        from_schema,
-        to_config,
-        to_schema,
-        structure_only=False
+    log, sql_path, from_config, from_schema, to_config, to_schema, structure_only=False
 ):
-    log.info(f'Copying {from_config["name"]}.{from_schema} to {to_config["name"]}.{to_schema}')
+    log.info(
+        f'Copying {from_config["name"]}.{from_schema} to {to_config["name"]}.{to_schema}'
+    )
 
-    log.info('Dump')
+    log.info("Dump")
     os.environ["PGPASSWORD"] = from_config["password"]
     if structure_only:
-        schema_dump = sql_path / 'schemas' / f'{from_config["name"]}_{from_schema}_structure_only.sql'
+        schema_dump = (
+            sql_path
+            / "schemas"
+            / f'{from_config["name"]}_{from_schema}_structure_only.sql'
+        )
         sh.pg_dump(
-            '-U', from_config["user"],
-            '-n', from_schema,
-            '-h', from_config["host"],
-            '-p', from_config["port"],
-            '-s',
+            "-U",
+            from_config["user"],
+            "-n",
+            from_schema,
+            "-h",
+            from_config["host"],
+            "-p",
+            from_config["port"],
+            "-s",
             from_config["name"],
-            _out=str(schema_dump)
+            _out=str(schema_dump),
         )
     else:
-        schema_dump = sql_path / 'schemas' / f'{from_config["name"]}_{from_schema}.sql'
+        schema_dump = sql_path / "schemas" / f'{from_config["name"]}_{from_schema}.sql'
         sh.pg_dump(
-            '-U', from_config["user"],
-            '-n', from_schema,
-            '-h', from_config["host"],
-            '-p', from_config["port"],
+            "-U",
+            from_config["user"],
+            "-n",
+            from_schema,
+            "-h",
+            from_config["host"],
+            "-p",
+            from_config["port"],
             from_config["name"],
-            _out=str(schema_dump)
+            _out=str(schema_dump),
         )
 
-    log.info('Modify')
+    log.info("Modify")
     with fileinput.FileInput(str(schema_dump), inplace=True) as file:
         for line in file:
-            print(line.replace(from_schema, to_schema), end='')
+            print(line.replace(from_schema, to_schema), end="")
 
     with fileinput.FileInput(schema_dump, inplace=True) as file:
         for line in file:
-            print(line.replace(
-                'CREATE SCHEMA ' + to_schema,
-                f'DROP SCHEMA IF EXISTS {to_schema} CASCADE; CREATE SCHEMA {to_schema}'),
-                end='')
+            print(
+                line.replace(
+                    "CREATE SCHEMA " + to_schema,
+                    f"DROP SCHEMA IF EXISTS {to_schema} CASCADE; CREATE SCHEMA {to_schema}",
+                ),
+                end="",
+            )
 
-    log.info('Import')
+    log.info("Import")
     os.environ["PGPASSWORD"] = to_config["password"]
-    schemafile = open(schema_dump, 'r')
+    schemafile = open(schema_dump, "r")
     sh.psql(
-        '-U', to_config["user"],
-        '-h', to_config["host"],
-        '-p', to_config["port"],
+        "-U",
+        to_config["user"],
+        "-h",
+        to_config["host"],
+        "-p",
+        to_config["port"],
         to_config["name"],
-        _in=schemafile
+        _in=schemafile,
     )
 
 
-def execute_sql_file(sql_path, filename, conn, schema='public'):
+def execute_sql_file(sql_path, filename, conn, schema="public"):
     cursor = conn.cursor()
-    sql_file = open(sql_path / filename, 'r')
+    sql_file = open(sql_path / filename, "r")
 
     try:
-        cursor.execute(sql_file.read().replace('{schema}', str(schema)))
+        cursor.execute(sql_file.read().replace("{schema}", str(schema)))
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print("Error: %s" % error)
@@ -102,7 +117,7 @@ def execute_generated_sql(sql_path, template_filename, search, replace, conn):
 
 def result_from_sql_file(sql_path, filename, conn):
     cursor = conn.cursor()
-    sql_file = open(sql_path / filename, 'r')
+    sql_file = open(sql_path / filename, "r")
     cursor.execute(sql_file.read())
     result = cursor.fetchone()[0]
     cursor.close()
@@ -110,18 +125,21 @@ def result_from_sql_file(sql_path, filename, conn):
 
 
 def df_from_sql_file(sql_path, filename, conn, schema="public"):
-    sql_file = open(sql_path / filename, 'r')
-    sql = sql_file.read().replace('{schema}', str(schema))
+    sql_file = open(sql_path / filename, "r")
+    sql = sql_file.read().replace("{schema}", str(schema))
     return pd.read_sql_query(sql, con=conn, index_col=None)
 
 
 def execute_insert(conn, df, table):
     tuples = [tuple(x) for x in df.to_numpy()]
-    cols = ','.join(list(df.columns))
+    cols = ",".join(list(df.columns))
 
     cursor = conn.cursor()
-    row_str_template = ','.join(['%s']*len(df.columns))
-    values = [cursor.mogrify('('+row_str_template+')', tup).decode('utf8') for tup in tuples]
+    row_str_template = ",".join(["%s"] * len(df.columns))
+    values = [
+        cursor.mogrify("(" + row_str_template + ")", tup).decode("utf8")
+        for tup in tuples
+    ]
     query = "INSERT INTO %s(%s) VALUES " % (table, cols) + ",".join(values)
 
     try:
@@ -139,15 +157,16 @@ def execute_update(conn, df, table):
     # Just ensure that the primary key is the first column of the dataframe
 
     cols = list(df.columns)
-    pk_col = cols.pop(0)
-    colstring = '=%s,'.join(cols)
-    colstring += '=%s'
-    update_template = f'UPDATE {table} SET {colstring} WHERE {pk_col}='
+    # pk_col = cols.pop(0)
+    pk_col = df.index.name
+    colstring = "=%s,".join(cols)
+    colstring += "=%s"
+    update_template = f"UPDATE {table} SET {colstring} WHERE {pk_col}="
 
     cursor = conn.cursor()
 
     for vals in df.to_numpy():
-        query = cursor.mogrify(update_template+str(vals[0]), vals[1:]).decode('utf8')
+        query = cursor.mogrify(update_template + str(vals[0]), vals[1:]).decode("utf8")
         cursor.execute(query)
 
     conn.commit()

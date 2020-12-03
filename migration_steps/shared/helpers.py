@@ -19,19 +19,30 @@ def log_title(message: str) -> str:
     return log_string
 
 
+
 def get_current_directory():
     dirname = os.path.dirname(__file__)
     return dirname
 
 
-def get_mapping_dict(file_name: str, stage_name: str) -> Dict:
+def get_mapping_dict(
+    file_name: str, stage_name: str, only_complete_fields: bool = False
+) -> Dict:
     dirname = get_current_directory()
     file_path = os.path.join(dirname, f"mapping_definitions/{file_name}.json")
 
     with open(file_path) as mapping_json:
         mapping_dict = json.load(mapping_json)
 
-    return {k: v[stage_name] for k, v in mapping_dict.items()}
+    if only_complete_fields:
+        return {
+            k: v[stage_name]
+            for k, v in mapping_dict.items()
+            if v["mapping_status"]["is_complete"] is True
+        }
+    else:
+        return {k: v[stage_name] for k, v in mapping_dict.items()}
+    # return {k: v[stage_name] for k, v in mapping_dict.items()}
 
 
 def get_lookup_dict(file_name: str) -> Dict:
