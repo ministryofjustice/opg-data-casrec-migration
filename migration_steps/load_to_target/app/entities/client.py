@@ -4,33 +4,10 @@ from pathlib import Path
 
 import db_helpers
 
-import helpers
+from load_to_target_helpers import get_cols_from_mapping
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sql_path = current_path / "../sql"
-
-
-def get_cols_from_mapping(df, file_name, first_column=None):
-
-    sirius_data = helpers.get_mapping_dict(
-        file_name=file_name, stage_name="sirius_details", only_complete_fields=True,
-    )
-    cols_from_mapping = list(sirius_data.keys())
-    include_columns = ["target_id"]
-    exclude_columns = ["id", "sirius_id"]
-
-    columns_to_select = [
-        x for x in cols_from_mapping if x not in exclude_columns
-    ] + include_columns
-
-    if first_column:
-        columns_to_select.insert(
-            0, columns_to_select.pop(columns_to_select.index(first_column))
-        )
-
-    df = df[columns_to_select]
-
-    return df
 
 
 def target_update(config, conn_migration, conn_target):
@@ -39,7 +16,10 @@ def target_update(config, conn_migration, conn_target):
         sql_path, "get_skeleton_clients.sql", conn_migration, schema
     )
     persons_df = get_cols_from_mapping(
-        df=persons_df, file_name="client_persons_mapping"
+        df=persons_df,
+        file_name="client_persons_mapping",
+        include_columns=["target_id"],
+        exclude_columns=["id", "sirius_id"],
     )
 
     persons_df = persons_df.rename(columns={"target_id": "id"})
@@ -54,10 +34,14 @@ def target_add(config, conn_migration, conn_target):
     persons_df = db_helpers.df_from_sql_file(
         sql_path, "get_new_clients.sql", conn_migration, schema
     )
-    persons_df = get_cols_from_mapping(
-        df=persons_df, file_name="client_persons_mapping", first_column="target_id"
-    )
 
+    persons_df = get_cols_from_mapping(
+        df=persons_df,
+        file_name="client_persons_mapping",
+        include_columns=["target_id"],
+        exclude_columns=["id", "sirius_id"],
+        reorder_cols={"target_id": 0},
+    )
     # uid not implemented upstream so here's a workaround
     rowcount = len(persons_df.index)
     max_person_uid = db_helpers.result_from_sql_file(
