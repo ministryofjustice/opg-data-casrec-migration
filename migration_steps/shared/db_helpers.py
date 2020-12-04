@@ -166,6 +166,7 @@ def execute_update(conn, df, table, pk_col):
 
     for vals in df.to_numpy():
         query = cursor.mogrify(update_template + str(vals[0]), vals[1:]).decode("utf8")
+        print(f"query: {query}")
         cursor.execute(query)
 
     conn.commit()
