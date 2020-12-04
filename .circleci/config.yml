@@ -264,6 +264,12 @@ jobs:
             pip3 install -r migration_steps/shared/shared_tests/requirements.txt
             python3 -m pytest migration_steps/shared/shared_tests
       - run:
+          name: Run load_to_casrec unit tests
+          command: |
+            export PYTHONPATH=~/project/migration_steps/load_to_target:~/project/migration_steps/load_to_target/app
+            pip3 install -r migration_steps/load_to_target/load_tests/requirements.txt
+            python3 -m pytest migration_steps/load_to_target/load_tests
+      - run:
           name: Docker login
           command: aws ecr get-login-password --region $AWS_REGION --profile sirius-ci | docker login --username AWS --password-stdin $AWS_REGISTRY
       - run:

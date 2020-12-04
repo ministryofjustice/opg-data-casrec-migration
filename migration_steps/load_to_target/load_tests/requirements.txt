@@ -1,0 +1,9 @@
+click
+beeprint
+sqlalchemy
+tabulate
+config
+colorlog
+pytest
+pytest-cases
+pytest-ordering
