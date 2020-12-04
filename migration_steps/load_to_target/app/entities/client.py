@@ -17,12 +17,7 @@ def target_update(config, conn_migration, conn_target):
     )
     columns = get_cols_from_mapping(
         file_name="client_persons_mapping",
-        include_columns=[
-            "target_id",
-            "salutation",
-            "casesmanagedashybrid",
-            "supervisioncaseowner_id",
-        ],
+        include_columns=["target_id", "salutation", "casesmanagedashybrid",],
         exclude_columns=["id", "sirius_id", "statusdate"],
         reorder_cols={"target_id": 0},
     )

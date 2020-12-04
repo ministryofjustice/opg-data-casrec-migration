@@ -41,7 +41,6 @@ def test_target_update(
         "updateddate",
         "salutation",
         "casesmanagedashybrid",
-        "supervisioncaseowner_id",
     ]
 
     log_message_cols = f"cols: {expected_cols}"
