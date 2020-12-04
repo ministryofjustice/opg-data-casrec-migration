@@ -2,7 +2,7 @@ import helpers
 
 
 def get_cols_from_mapping(
-    df, file_name, include_columns=None, exclude_columns=None, reorder_cols=None
+    file_name, include_columns=None, exclude_columns=None, reorder_cols=None
 ):
 
     sirius_data = helpers.get_mapping_dict(
@@ -20,6 +20,4 @@ def get_cols_from_mapping(
                 position, columns_to_select.pop(columns_to_select.index(column_name))
             )
 
-    df = df[columns_to_select]
-
-    return df
+    return columns_to_select

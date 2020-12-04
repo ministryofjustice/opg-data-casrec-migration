@@ -15,12 +15,13 @@ def target_update(config, conn_migration, conn_target):
     persons_df = db_helpers.df_from_sql_file(
         sql_path, "get_skeleton_clients.sql", conn_migration, schema
     )
-    persons_df = get_cols_from_mapping(
-        df=persons_df,
+    columns = get_cols_from_mapping(
         file_name="client_persons_mapping",
         include_columns=["target_id"],
         exclude_columns=["id", "sirius_id"],
     )
+
+    persons_df = persons_df[columns]
 
     persons_df = persons_df.rename(columns={"target_id": "id"})
 
@@ -35,13 +36,14 @@ def target_add(config, conn_migration, conn_target):
         sql_path, "get_new_clients.sql", conn_migration, schema
     )
 
-    persons_df = get_cols_from_mapping(
-        df=persons_df,
+    columns = get_cols_from_mapping(
         file_name="client_persons_mapping",
         include_columns=["target_id"],
         exclude_columns=["id", "sirius_id"],
         reorder_cols={"target_id": 0},
     )
+
+    persons_df = persons_df[columns]
     # uid not implemented upstream so here's a workaround
     rowcount = len(persons_df.index)
     max_person_uid = db_helpers.result_from_sql_file(
