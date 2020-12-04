@@ -14,6 +14,7 @@ def test_target_update(
     target_update(config=config, conn_migration="fake_db_1", conn_target="fake_db_2")
 
     expected_cols = [
+        "id",
         "dob",
         "firstname",
         "surname",
@@ -27,7 +28,6 @@ def test_target_update(
         "clientaccommodation",
         "maritalstatus",
         "clientstatus",
-        "statusdate",
         "correspondencebywelsh",
         "countryofresidence",
         "newsletter",
@@ -39,15 +39,14 @@ def test_target_update(
         "isorganisation",
         "clientsource",
         "updateddate",
+        "salutation",
+        "casesmanagedashybrid",
+        "supervisioncaseowner_id",
     ]
 
-    expected_pk = "id"
-
     log_message_cols = f"cols: {expected_cols}"
-    log_message_pk_col = f"pk_col: {expected_pk}"
 
     assert log_message_cols in caplog.text
-    assert log_message_pk_col in caplog.text
 
 
 def test_target_add(
@@ -64,7 +63,6 @@ def test_target_add(
     target_add(config=config, conn_migration="fake_db_1", conn_target="fake_db_2")
 
     expected_cols = [
-        "target_id",
         "dob",
         "firstname",
         "surname",

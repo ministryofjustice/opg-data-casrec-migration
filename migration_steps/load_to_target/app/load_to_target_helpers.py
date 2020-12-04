@@ -2,7 +2,7 @@ import helpers
 
 
 def get_cols_from_mapping(
-    file_name, include_columns=None, exclude_columns=None, reorder_cols=None
+    file_name, include_columns=[], exclude_columns=[], reorder_cols={}
 ):
 
     sirius_data = helpers.get_mapping_dict(

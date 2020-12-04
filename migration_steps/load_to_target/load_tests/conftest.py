@@ -51,11 +51,10 @@ def mock_persons_df(monkeypatch, request):
 
 @pytest.fixture()
 def mock_execute_update_with_logs(monkeypatch):
-    def execute_update(conn, df, table):
+    def execute_update(conn, df, table, pk_col):
         print("using mock_execute_update")
 
         cols = list(df.columns)
-        pk_col = df.index.name
 
         logger.info(f"cols: {cols}")
         logger.info(f"pk_col: {pk_col}")

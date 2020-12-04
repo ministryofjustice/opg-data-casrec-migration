@@ -30,5 +30,8 @@
 	"c_term_type": ["c_term_type_1", "c_term_type_2", "c_term_type_3", "c_term_type_4", "c_term_type_5"],
 	"dateofdeath": ["dateofdeath_1", "dateofdeath_2", "dateofdeath_3", "dateofdeath_4", "dateofdeath_5"],
 	"statusdate": ["statusdate_1", "statusdate_2", "statusdate_3", "statusdate_4", "statusdate_5"],
-	"updateddate": ["updateddate_1", "updateddate_2", "updateddate_3", "updateddate_4", "updateddate_5"]
+	"updateddate": ["updateddate_1", "updateddate_2", "updateddate_3", "updateddate_4", "updateddate_5"],
+	"salutation": ["salutation_1", "salutation_2", "salutation_3", "salutation_4", "salutation_5"],
+	"casesmanagedashybrid": ["casesmanagedashybrid_1", "casesmanagedashybrid_2", "casesmanagedashybrid_3", "casesmanagedashybrid_4", "casesmanagedashybrid_5"],
+	"supervisioncaseowner_id": ["supervisioncaseowner_id_1", "supervisioncaseowner_id_2", "supervisioncaseowner_id_3", "supervisioncaseowner_id_4", "supervisioncaseowner_id_5"]
 }

@@ -153,12 +153,11 @@ def execute_insert(conn, df, table):
     cursor.close()
 
 
-def execute_update(conn, df, table):
+def execute_update(conn, df, table, pk_col):
     # Just ensure that the primary key is the first column of the dataframe
 
     cols = list(df.columns)
-    # pk_col = cols.pop(0)
-    pk_col = df.index.name
+    cols.remove(pk_col)
     colstring = "=%s,".join(cols)
     colstring += "=%s"
     update_template = f"UPDATE {table} SET {colstring} WHERE {pk_col}="

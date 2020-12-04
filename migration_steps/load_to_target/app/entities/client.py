@@ -17,17 +17,23 @@ def target_update(config, conn_migration, conn_target):
     )
     columns = get_cols_from_mapping(
         file_name="client_persons_mapping",
-        include_columns=["target_id"],
-        exclude_columns=["id", "sirius_id"],
+        include_columns=[
+            "target_id",
+            "salutation",
+            "casesmanagedashybrid",
+            "supervisioncaseowner_id",
+        ],
+        exclude_columns=["id", "sirius_id", "statusdate"],
+        reorder_cols={"target_id": 0},
     )
 
     persons_df = persons_df[columns]
 
     persons_df = persons_df.rename(columns={"target_id": "id"})
 
-    persons_df = persons_df.set_index("id")
-
-    db_helpers.execute_update(conn_target, persons_df, "persons")
+    db_helpers.execute_update(
+        conn=conn_target, df=persons_df, table="persons", pk_col="id"
+    )
 
 
 def target_add(config, conn_migration, conn_target):
@@ -37,10 +43,7 @@ def target_add(config, conn_migration, conn_target):
     )
 
     columns = get_cols_from_mapping(
-        file_name="client_persons_mapping",
-        include_columns=["target_id"],
-        exclude_columns=["id", "sirius_id"],
-        reorder_cols={"target_id": 0},
+        file_name="client_persons_mapping", exclude_columns=["id", "sirius_id"],
     )
 
     persons_df = persons_df[columns]
