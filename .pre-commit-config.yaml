@@ -18,6 +18,12 @@ repos:
       - id: flake8
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
+      - id: pretty-format-json
+        args: [
+          '--no-sort-keys',
+          '--autofix',
+          '--indent', '4'
+        ]
   - repo: https://github.com/ambv/black
     rev: stable
     hooks:

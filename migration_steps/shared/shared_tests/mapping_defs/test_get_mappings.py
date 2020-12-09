@@ -2,6 +2,8 @@ import json
 import os
 from helpers import get_mapping_dict
 
+from shared.helpers import get_all_mapped_fields
+
 
 def test_get_mapping_dict():
 
@@ -18,3 +20,13 @@ def test_get_mapping_dict():
         expected_result = json.load(expected_json)
 
         assert result == expected_result
+
+
+def test_get_all_mapped_fields():
+    # result = list(get_all_mapped_fields().keys())
+
+    result = get_mapping_dict(
+        file_name="test_client_persons_mapping", stage_name="sirius_details"
+    )
+
+    print(f"result: {json.dumps(result, indent=4)}")

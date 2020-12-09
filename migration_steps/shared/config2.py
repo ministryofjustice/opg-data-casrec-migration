@@ -3,6 +3,11 @@ import logging
 from pathlib import Path
 from dotenv import load_dotenv
 
+import custom_logger
+
+log = logging.getLogger("root")
+log.addHandler(custom_logger.MyHandler())
+
 
 def load_env_vars():
     current_path = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -49,6 +54,15 @@ class BaseConfig:
     def custom_log_level(self):
         logging.addLevelName(self.VERBOSE, "VERBOSE")
         logging.Logger.verbose = self.verbose
+
+    def set_logging_level(self, verbose):
+        try:
+            log.setLevel(self.verbosity_levels[verbose])
+            log.info(f"{self.verbosity_levels[verbose]} logging enabled")
+        except KeyError:
+            log.setLevel("INFO")
+            log.info(f"{verbose} is not a valid verbosity level")
+            log.info(f"INFO logging enabled")
 
     def get_db_connection_string(self, db):
         return (
