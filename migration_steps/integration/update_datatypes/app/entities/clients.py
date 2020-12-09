@@ -11,10 +11,10 @@ from utilities.database import (
     generate_mapping_table_create,
 )
 
-from db_helpers import execute_insert
-
 log = logging.getLogger("root")
 
+
+# temp - these could easily be in a shared json def
 entity_name = "client"
 entity_def = [
     {"mapping_defs": "client_persons", "sirius_table": "persons"},
@@ -39,6 +39,23 @@ def update_client_data_types(config, source_schema, target_schema):
 
         log.log(config.VERBOSE, f"sirius_data: {json.dumps(sirius_data, indent=4) }")
 
+        # create the main sirius-like table
+        create_statement = generate_create_statement(
+            mapping_details=sirius_data, schema=source_schema, table_name=table_name
+        )
+
+        # create the mapping table
+        mapping_table_create = generate_mapping_table_create(
+            mapping_details=sirius_data,
+            schema=source_schema,
+            table_name=table_name,
+            entity_name=entity_name,
+        )
+
+        log.info(f"create_statement: {create_statement}")
+        log.info(f"mapping_table_create: {mapping_table_create}")
+
+        # get the data from the 'transform' schema
         select_statement = generate_select_string(
             mapping_details=sirius_data, schema=source_schema, table_name=table_name
         )
@@ -50,17 +67,3 @@ def update_client_data_types(config, source_schema, target_schema):
         table_df = apply_datatypes(mapping_details=sirius_data, df=table_df)
 
         log.log(config.VERBOSE, f"\n{table_df.info()}")
-
-        create_statement = generate_create_statement(
-            mapping_details=sirius_data, schema=source_schema, table_name=table_name
-        )
-
-        mapping_table_create = generate_mapping_table_create(
-            mapping_details=sirius_data,
-            schema=source_schema,
-            table_name=table_name,
-            entity_name=entity_name,
-        )
-
-        log.info(f"create_statement: {create_statement}")
-        log.info(f"mapping_table_create: {mapping_table_create}")
