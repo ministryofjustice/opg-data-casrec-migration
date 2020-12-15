@@ -4,5 +4,6 @@ COPY prepare/requirements.txt prepare/requirements.txt
 RUN pip3 install -r prepare/requirements.txt
 COPY prepare/load_casrec/app/app.py /prepare/load_casrec/app/app.py
 COPY prepare/prepare_target /prepare/prepare_target
+COPY prepare/create_stage_schema /prepare/create_stage_schema
 COPY shared /shared
 CMD ["echo", "NO_OP"]

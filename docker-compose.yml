@@ -31,6 +31,7 @@ services:
       context: ./migration_steps
       dockerfile: prepare-dockerfile
     environment:
+      DB_USER: casrec
       DB_PASSWORD: casrec # pragma: allowlist secret
       DB_NAME: casrecmigration
       DB_HOST: casrec_db

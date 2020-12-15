@@ -3,6 +3,7 @@ set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 python3 "${DIR}/prepare_target/app/app.py"
+python3 "${DIR}/create_stage_schema/app/app.py"
 
 docker rm prepare_1 &>/dev/null || echo "prepare_1 does not exist. This is OK"
 docker rm prepare_2 &>/dev/null || echo "prepare_2 does not exist. This is OK"
