@@ -5,10 +5,9 @@ import pandas as pd
 
 from utilities.datatypes import apply_datatypes
 
-from utilities.database import (
-    generate_select_string,
-    generate_create_statement,
+from utilities.database_helpers import (
     generate_mapping_table_create,
+    generate_select_string,
 )
 
 log = logging.getLogger("root")
@@ -23,7 +22,7 @@ entity_def = [
 ]
 
 
-def update_client_data_types(config, source_schema, target_schema):
+def update_client_data_types(config, source_schema, target_schema, db):
 
     for table in entity_def:
 
@@ -39,23 +38,6 @@ def update_client_data_types(config, source_schema, target_schema):
 
         log.log(config.VERBOSE, f"sirius_data: {json.dumps(sirius_data, indent=4) }")
 
-        # create the main sirius-like table
-        create_statement = generate_create_statement(
-            mapping_details=sirius_data, schema=source_schema, table_name=table_name
-        )
-
-        # create the mapping table
-        mapping_table_create = generate_mapping_table_create(
-            mapping_details=sirius_data,
-            schema=source_schema,
-            table_name=table_name,
-            entity_name=entity_name,
-        )
-
-        log.info(f"create_statement: {create_statement}")
-        log.info(f"mapping_table_create: {mapping_table_create}")
-
-        # get the data from the 'transform' schema
         select_statement = generate_select_string(
             mapping_details=sirius_data, schema=source_schema, table_name=table_name
         )
@@ -67,3 +49,18 @@ def update_client_data_types(config, source_schema, target_schema):
         table_df = apply_datatypes(mapping_details=sirius_data, df=table_df)
 
         log.log(config.VERBOSE, f"\n{table_df.info()}")
+
+        # insert data into table
+        db.insert_data(table_name=table_name, df=table_df, mapping_details=sirius_data)
+
+        # create the mapping table
+        mapping_table_create = generate_mapping_table_create(
+            mapping_details=sirius_data,
+            schema=target_schema,
+            table_name=table_name,
+            entity_name=entity_name,
+        )
+        log.log(config.VERBOSE, f"mapping_table_create: {mapping_table_create}")
+        db.run_create_table_statement(
+            table_name=table_name, statement=mapping_table_create
+        )
