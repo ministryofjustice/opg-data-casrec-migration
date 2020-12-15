@@ -67,6 +67,7 @@ Or, you can run each step individually:
 
 ```bash
 docker-compose run --rm load_s3 python3 load_s3_local.py
+docker-compose run --rm prepare prepare/prepare.sh
 docker-compose run --rm load_casrec python3 app.py
 docker-compose run --rm transform_casrec python3 app.py --clear=True
 docker-compose run --rm integration integration/integration.sh
@@ -81,6 +82,7 @@ Several of the steps you can increase the log debugging level with -vv, -vvv etc
 
 ```bash
 python3 migration_steps/load_s3_local.py
+./migration_steps/prepare/prepare.sh -vv
 python3 migration_steps/load_casrec/app/app.py
 python3 migration_steps/transform_casrec/app/app.py -vv
 ./migration_steps/integration/integration.sh -vv
@@ -176,6 +178,7 @@ Migrations are typically described as 'ETL' (Extract, Transform, Load) but we ar
 The Migration steps, in order, are:
 
 - load_s3
+- prepare
 - load_casrec
 - transform_casrec
 - integration
@@ -185,6 +188,11 @@ The Migration steps, in order, are:
 ### load_s3
 
 - Runs in local dev only. Takes the anonymised dev data and loads it into an S3 bucket on localdev, so that the next step will find the files in S3 as it does in AWS proper
+
+### prepare
+
+- Runs some modifications on our local copy of sirius (dev only)
+- Makes a copy of Sirius `api.public` schema called `pre_migration`. This will be used to hold our migration data before it is ready for loading, providing a final level of assurance that the data will 'fit' Sirius
 
 ### load_casrec
 
@@ -200,7 +208,6 @@ The Migration steps, in order, are:
 
 ### integration
 
-- Makes a copy of Sirius `api.public` schema called `pre_migration`. This will be used to hold our migration data before it is ready for loading, providing a final level of assurance that the data will 'fit' Sirius
 - Copies `etl2` to `integration`, which has added id columns to hold associated ids from Sirius
 - Generates ID lookup tables from the Sirius DB
 - Uses the lookup tables to transpose the corresponding Sirius ids into the integration schema
