@@ -5,6 +5,7 @@ docker-compose -f docker-compose.sirius.yml -f docker-compose.override.yml up --
 sleep 10
 docker-compose -f docker-compose.sirius.yml run --rm wait-for-it -address casrec_db:5432 --timeout=30 -debug
 docker-compose -f docker-compose.sirius.yml -f docker-compose.override.yml run --rm load_s3 python3 load_s3_local.py
+docker-compose -f docker-compose.sirius.yml run --rm prepare prepare/prepare.sh
 docker rm casrec_load_1 &>/dev/null || echo "casrec_load_1 does not exist. This is OK"
 docker rm casrec_load_2 &>/dev/null || echo "casrec_load_2 does not exist. This is OK"
 docker rm casrec_load_3 &>/dev/null || echo "casrec_load_3 does not exist. This is OK"
