@@ -14,6 +14,7 @@ else
   docker cp db-snapshots/api.backup ${RESTORE_DOCKER_ID}:/db-snapshots/api.backup
   docker-compose up --no-deps -d postgres-sirius-restore
 fi
+docker-compose run --rm prepare prepare/prepare.sh
 docker rm casrec_load_1 &>/dev/null || echo "casrec_load_1 does not exist. This is OK"
 docker rm casrec_load_2 &>/dev/null || echo "casrec_load_2 does not exist. This is OK"
 docker rm casrec_load_3 &>/dev/null || echo "casrec_load_3 does not exist. This is OK"

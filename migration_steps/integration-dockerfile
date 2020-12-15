@@ -6,6 +6,5 @@ COPY integration/integration.sh /integration/integration.sh
 COPY integration/fixtures /integration/fixtures
 COPY integration/merge_target_ids /integration/merge_target_ids
 COPY integration/schema_setup /integration/schema_setup
-COPY integration/prepare_target /integration/prepare_target
 COPY shared /shared
 CMD ["echo", "NO_OP"]
