@@ -12,6 +12,7 @@ services:
     volumes:
       - ./migration_steps/prepare/prepare.sh:/prepare/prepare.sh
       - ./migration_steps/prepare/prepare_target:/prepare/prepare_target
+      - ./migration_steps/prepare/create_stage_schema:/prepare/create_stage_schema
       - ./migration_steps/shared:/shared
 
   load_casrec:

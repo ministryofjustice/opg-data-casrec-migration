@@ -4,5 +4,6 @@ COPY prepare/requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
 COPY prepare/prepare.sh /prepare/prepare.sh
 COPY prepare/prepare_target /prepare/prepare_target
+COPY prepare/create_stage_schema /prepare/create_stage_schema
 COPY shared /shared
 CMD ["echo", "NO_OP"]
