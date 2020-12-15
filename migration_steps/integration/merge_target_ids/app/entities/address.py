@@ -16,7 +16,7 @@ def fetch_target_ids(config, conn_migration, conn_target):
         sql_path, "select_sirius_addresses.sql", conn_target
     )
     execute_insert(
-        conn_migration, sirius_addresses_df, f"{schema}.sirius_map_addresses"
+        conn_migration, sirius_addresses_df, f"{schema}.sirius_map_client_addresses"
     )
 
 

@@ -28,7 +28,9 @@ def fetch_target_ids(config, conn_migration, conn_target):
     sirius_persons_df = df_from_sql_file(
         sql_path, "select_sirius_clients.sql", conn_target
     )
-    execute_insert(conn_migration, sirius_persons_df, f"{schema}.sirius_map_clients")
+    execute_insert(
+        conn_migration, sirius_persons_df, f"{schema}.sirius_map_client_persons"
+    )
 
 
 def merge_target_ids(config, conn_migration, conn_target):

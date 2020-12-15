@@ -1,1 +1,1 @@
-SELECT caserecnumber, id as sirius_persons_id FROM persons WHERE type = 'actor_client';
+SELECT caserecnumber, id as sirius_id FROM persons WHERE type = 'actor_client';
