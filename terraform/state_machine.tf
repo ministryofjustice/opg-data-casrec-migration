@@ -106,7 +106,7 @@ resource "aws_sfn_state_machine" "casrec_migration" {
                                 "Overrides": {
                                     "ContainerOverrides": [{
                                         "Name": "etl1",
-                                        "Command": ["python3", "app.py"]
+                                        "Command": ["prepare/prepare.sh"]
                                     }]
                                 }
                             },
@@ -134,7 +134,7 @@ resource "aws_sfn_state_machine" "casrec_migration" {
                                 "Overrides": {
                                     "ContainerOverrides": [{
                                         "Name": "etl1",
-                                        "Command": ["python3", "app.py"]
+                                        "Command": ["prepare/prepare.sh"]
                                     }]
                                 }
                             },
@@ -162,7 +162,7 @@ resource "aws_sfn_state_machine" "casrec_migration" {
                                 "Overrides": {
                                     "ContainerOverrides": [{
                                         "Name": "etl1",
-                                        "Command": ["python3", "app.py"]
+                                        "Command": ["prepare/prepare.sh"]
                                     }]
                                 }
                             },

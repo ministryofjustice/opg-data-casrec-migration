@@ -1,0 +1,6 @@
+FROM opg_casrec_migration_base_image:latest
+COPY prepare/requirements.txt prepare/requirements.txt
+RUN pip3 install -r prepare/requirements.txt
+COPY prepare/load_casrec/app/app.py prepare/load_casrec/app/app.py
+COPY shared /shared
+CMD ["echo", "NO_OP"]

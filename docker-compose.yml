@@ -29,7 +29,7 @@ services:
   load_casrec:
     build:
       context: ./migration_steps
-      dockerfile: load_casrec-dockerfile
+      dockerfile: prepare-dockerfile
     environment:
       DB_PASSWORD: casrec # pragma: allowlist secret
       DB_NAME: casrecmigration

@@ -10,7 +10,9 @@ services:
 
   load_casrec:
     volumes:
-      - ./migration_steps/load_casrec/app:/app
+      - ./migration_steps/prepare/prepare.sh:/prepare/prepare.sh
+      - ./migration_steps/prepare/load_casrec:/prepare/load_casrec
+      - ./migration_steps/shared:/shared
 
   transform_casrec:
     volumes:
