@@ -64,17 +64,17 @@ def main(verbose):
         structure_only=True,
     )
 
-    log.info("Roll back previous migration")
-    max_orig_person_id = result_from_sql_file(
-        sql_path, "get_max_orig_person_id.sql", conn_target
-    )
-    execute_generated_sql(
-        sql_path,
-        "rollback_fixtures.template.sql",
-        "{max_orig_person_id}",
-        max_orig_person_id,
-        conn_target,
-    )
+    # log.info("Roll back previous migration")
+    # max_orig_person_id = result_from_sql_file(
+    #     sql_path, "get_max_orig_person_id.sql", conn_target
+    # )
+    # execute_generated_sql(
+    #     sql_path,
+    #     "rollback_fixtures.template.sql",
+    #     "{max_orig_person_id}",
+    #     max_orig_person_id,
+    #     conn_target,
+    # )
 
     conn_target.close()
 

@@ -8,9 +8,10 @@ services:
     volumes:
       - ./migration_steps/load_s3/load_s3_local.py:/load_s3_local.py
 
-  load_casrec:
+  prepare:
     volumes:
       - ./migration_steps/prepare/prepare.sh:/prepare/prepare.sh
+      - ./migration_steps/prepare/prepare_target:/prepare/prepare_target
       - ./migration_steps/prepare/load_casrec:/prepare/load_casrec
       - ./migration_steps/shared:/shared
 
@@ -24,7 +25,6 @@ services:
       - ./migration_steps/integration/fixtures:/integration/fixtures
       - ./migration_steps/integration/merge_target_ids:/integration/merge_target_ids
       - ./migration_steps/integration/schema_setup:/integration/schema_setup
-      - ./migration_steps/integration/prepare_target:/integration/prepare_target
       - ./migration_steps/integration/integration.sh:/integration/integration.sh
       - ./migration_steps/shared:/shared
 

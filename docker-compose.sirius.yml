@@ -35,6 +35,11 @@ services:
       DB_NAME: casrecmigration
       DB_HOST: casrec_db
       DB_PORT: 5432
+      SIRIUS_DB_USER: api
+      SIRIUS_DB_PASSWORD: api # pragma: allowlist secret
+      SIRIUS_DB_NAME: api
+      SIRIUS_DB_HOST: docker.for.mac.localhost
+      SIRIUS_DB_PORT: 5432
       ENVIRONMENT: local
       S3_PATH: anon
     depends_on: [localstack, casrec_db]

@@ -63,7 +63,19 @@ def copy_schema(
             print(
                 line.replace(
                     "CREATE SCHEMA " + to_schema,
-                    f"DROP SCHEMA IF EXISTS {to_schema} CASCADE; CREATE SCHEMA {to_schema}",
+                    f"DROP SCHEMA IF EXISTS {to_schema} CASCADE; CREATE SCHEMA {to_schema}; "
+                    f"set search_path to {to_schema},public; CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"",
+                ),
+                end="",
+            )
+
+    # change role name
+    with fileinput.FileInput(str(schema_dump), inplace=True) as file:
+        for line in file:
+            print(
+                line.replace(
+                    f'OWNER TO {from_config["user"]};',
+                    f'OWNER TO {to_config["user"]};',
                 ),
                 end="",
             )
@@ -71,7 +83,7 @@ def copy_schema(
     log.info("Import")
     os.environ["PGPASSWORD"] = to_config["password"]
     schemafile = open(schema_dump, "r")
-    sh.psql(
+    print(sh.psql(
         "-U",
         to_config["user"],
         "-h",
@@ -79,8 +91,9 @@ def copy_schema(
         "-p",
         to_config["port"],
         to_config["name"],
+        _err_to_out=True,
         _in=schemafile,
-    )
+    ))
 
 
 def execute_sql_file(sql_path, filename, conn, schema="public"):

@@ -4,7 +4,7 @@ version: "3.6"
 #This file won't be merged when using docker-compose -f docker-compose.yml up (or using any other compose file).
 services:
 
-  load_casrec:
+  prepare:
     environment:
       AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
