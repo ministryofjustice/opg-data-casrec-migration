@@ -25,35 +25,39 @@ def copy_schema(
             / "schemas"
             / f'{from_config["name"]}_{from_schema}_structure_only.sql'
         )
-        print(sh.pg_dump(
-            "-U",
-            from_config["user"],
-            "-n",
-            from_schema,
-            "-h",
-            from_config["host"],
-            "-p",
-            from_config["port"],
-            "-s",
-            from_config["name"],
-            _err_to_out=True,
-            _out=str(schema_dump),
-        ))
+        print(
+            sh.pg_dump(
+                "-U",
+                from_config["user"],
+                "-n",
+                from_schema,
+                "-h",
+                from_config["host"],
+                "-p",
+                from_config["port"],
+                "-s",
+                from_config["name"],
+                _err_to_out=True,
+                _out=str(schema_dump),
+            )
+        )
     else:
         schema_dump = sql_path / "schemas" / f'{from_config["name"]}_{from_schema}.sql'
-        print(sh.pg_dump(
-            "-U",
-            from_config["user"],
-            "-n",
-            from_schema,
-            "-h",
-            from_config["host"],
-            "-p",
-            from_config["port"],
-            from_config["name"],
-            _err_to_out=True,
-            _out=str(schema_dump),
-        ))
+        print(
+            sh.pg_dump(
+                "-U",
+                from_config["user"],
+                "-n",
+                from_schema,
+                "-h",
+                from_config["host"],
+                "-p",
+                from_config["port"],
+                from_config["name"],
+                _err_to_out=True,
+                _out=str(schema_dump),
+            )
+        )
 
     log.info("Modify")
     with fileinput.FileInput(str(schema_dump), inplace=True) as file:
@@ -66,7 +70,7 @@ def copy_schema(
                 line.replace(
                     "CREATE SCHEMA " + to_schema,
                     f"DROP SCHEMA IF EXISTS {to_schema} CASCADE; CREATE SCHEMA {to_schema}; "
-                    f"set search_path to {to_schema},public; CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"",
+                    f'set search_path to {to_schema},public; CREATE EXTENSION IF NOT EXISTS "uuid-ossp"',
                 ),
                 end="",
             )
@@ -85,17 +89,19 @@ def copy_schema(
     log.info("Import")
     os.environ["PGPASSWORD"] = to_config["password"]
     schemafile = open(schema_dump, "r")
-    print(sh.psql(
-        "-U",
-        to_config["user"],
-        "-h",
-        to_config["host"],
-        "-p",
-        to_config["port"],
-        to_config["name"],
-        _err_to_out=True,
-        _in=schemafile,
-    ))
+    print(
+        sh.psql(
+            "-U",
+            to_config["user"],
+            "-h",
+            to_config["host"],
+            "-p",
+            to_config["port"],
+            to_config["name"],
+            _err_to_out=True,
+            _in=schemafile,
+        )
+    )
 
 
 def execute_sql_file(sql_path, filename, conn, schema="public"):
