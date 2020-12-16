@@ -2,8 +2,6 @@ import json
 import os
 from helpers import get_mapping_dict
 
-from shared.helpers import get_all_mapped_fields
-
 
 def test_get_mapping_dict():
 
