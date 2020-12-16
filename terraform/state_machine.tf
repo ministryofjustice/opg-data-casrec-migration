@@ -28,6 +28,7 @@ data "aws_iam_policy_document" "state_machine" {
   statement {
     effect = "Allow"
     resources = [
+      "arn:aws:ecs:eu-west-1:${local.account.account_id}:task-definition/etl0-${terraform.workspace}*",
       "arn:aws:ecs:eu-west-1:${local.account.account_id}:task-definition/etl1-${terraform.workspace}*",
       "arn:aws:ecs:eu-west-1:${local.account.account_id}:task-definition/etl2-${terraform.workspace}*",
       "arn:aws:ecs:eu-west-1:${local.account.account_id}:task-definition/etl3-${terraform.workspace}*",
@@ -80,8 +81,32 @@ resource "aws_sfn_state_machine" "casrec_migration" {
 
   definition = <<EOF
 {
-    "StartAt": "Parrallel Load Casrec",
+    "StartAt": "Prepare For Migration",
     "States": {
+        "Prepare For Migration": {
+            "Type": "Task",
+            "Next": "Parrallel Load Casrec",
+            "Resource": "arn:aws:states:::ecs:runTask.sync",
+            "Parameters": {
+                "LaunchType": "FARGATE",
+                "PlatformVersion": "1.4.0",
+                "Cluster": "${aws_ecs_cluster.migration.arn}",
+                "TaskDefinition": "${aws_ecs_task_definition.etl0.arn}",
+                "NetworkConfiguration": {
+                    "AwsvpcConfiguration": {
+                        "Subnets": [${local.subnets_string}],
+                        "SecurityGroups": ["${aws_security_group.etl.id}"],
+                        "AssignPublicIp": "DISABLED"
+                    }
+                },
+                "Overrides": {
+                    "ContainerOverrides": [{
+                        "Name": "etl0",
+                        "Command": ["prepare/prepare.sh"]
+                    }]
+                }
+            }
+        },
         "Parrallel Load Casrec": {
             "Type": "Parallel",
             "Next": "Run Transform Casrec",
