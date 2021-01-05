@@ -11,12 +11,23 @@ definition = {
     "destination_table_name": "persons",
 }
 
+mapping_def_filename = "client_persons_mapping"
+
 
 def insert_persons_clients(config, etl2_db):
 
     mapping_dict = get_mapping_dict(
-        file_name="client_persons_mapping", stage_name="transform_casrec"
+        file_name=mapping_def_filename, stage_name="transform_casrec"
     )
+
+    # sirius_details = get_mapping_dict(
+    #     file_name=mapping_def_filename,
+    #     stage_name="sirius_details",
+    #     only_complete_fields=False,
+    # )
+    #
+    # date_fields = [k for k, v in sirius_details.items() if v['data_type'] in ['date',
+    #                                                                          'datetime']]
 
     source_data_query = generate_select_string_from_mapping(
         mapping=mapping_dict,
@@ -29,7 +40,7 @@ def insert_persons_clients(config, etl2_db):
         sql=source_data_query, con=config.connection_string
     )
 
-    addresses_df = transform.perform_transformations(
+    persons_df = transform.perform_transformations(
         mapping_dict,
         definition,
         source_data_df,
@@ -37,6 +48,4 @@ def insert_persons_clients(config, etl2_db):
         config.etl2_schema,
     )
 
-    etl2_db.insert_data(
-        table_name=definition["destination_table_name"], df=addresses_df
-    )
+    etl2_db.insert_data(table_name=definition["destination_table_name"], df=persons_df)

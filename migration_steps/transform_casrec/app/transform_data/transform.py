@@ -5,6 +5,7 @@ import pandas as pd
 
 import helpers
 
+from transform_data.apply_datatypes import apply_datatypes
 from utilities.convert_json_to_mappings import MappingDefinitions
 
 from transform_data import calculations as process_calculations
@@ -26,6 +27,7 @@ def perform_transformations(
     source_data_df: pd.DataFrame,
     db_conn_string: str,
     db_schema: str,
+    sirius_details: dict = None,
 ) -> pd.DataFrame:
 
     mapping_defs = MappingDefinitions(mapping_definitions=mapping_definitions)
@@ -69,6 +71,9 @@ def perform_transformations(
         final_df = process_unique_id.add_unique_id(
             db_conn_string, db_schema, table_definition, final_df
         )
+
+    if sirius_details:
+        final_df = apply_datatypes(mapping_details=sirius_details, df=final_df)
 
     log.log(
         config.DATA,
