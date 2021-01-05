@@ -29,7 +29,6 @@ def apply_datatypes(mapping_details: Dict, df: pd.DataFrame) -> pd.DataFrame:
     log.log(config.VERBOSE, f"cols_with_datatype: {cols_with_datatype}")
 
     result_df = df.astype({k: v for k, v in cols_with_datatype.items()})
-    log.log(config.VERBOSE, f"table info: {result_df.info()}")
 
     log.log(
         config.DATA,

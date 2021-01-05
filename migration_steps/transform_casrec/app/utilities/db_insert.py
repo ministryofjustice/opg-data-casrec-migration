@@ -5,9 +5,11 @@ import sys
 import os
 from pathlib import Path
 
+
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
 
+from decorators import timer
 import logging
 import time
 import helpers
@@ -37,6 +39,7 @@ class InsertData:
         statement = f"CREATE SCHEMA IF NOT EXISTS {self.schema};"
         return statement
 
+    @timer
     def _create_table_statement_with_datatype(
         self, df: pd.DataFrame, mapping_details: Dict, table_name: str
     ) -> str:
@@ -182,9 +185,8 @@ class InsertData:
 
         return statement
 
+    @timer
     def insert_data(self, table_name, df, sirius_details=None):
-
-        t = time.process_time()
 
         log.debug(f"inserting {table_name} into " f"database....")
         log.log(config.DATA, f"\n{df.sample(n=config.row_limit).to_markdown()}")
@@ -225,7 +227,4 @@ class InsertData:
 
         inserted_count = len(df)
 
-        log.info(
-            f"Inserted {inserted_count} records into '{table_name}' "
-            f"table in {round(time.process_time() - t, 2)} seconds"
-        )
+        log.info(f"Inserted {inserted_count} records into '{table_name}' table")
