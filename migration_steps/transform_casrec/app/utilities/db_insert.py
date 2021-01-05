@@ -5,11 +5,9 @@ import sys
 import os
 from pathlib import Path
 
-
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
 
-from decorators import timer
 import logging
 import time
 import helpers
@@ -39,7 +37,6 @@ class InsertData:
         statement = f"CREATE SCHEMA IF NOT EXISTS {self.schema};"
         return statement
 
-    @timer
     def _create_table_statement_with_datatype(
         self, df: pd.DataFrame, mapping_details: Dict, table_name: str
     ) -> str:
@@ -162,19 +159,6 @@ class InsertData:
 
         return col_diff
 
-    def _add_missing_columns_with_datatypes(
-        self, table_name, col_diff, mapping_details
-    ):
-        statement = f"ALTER TABLE {self.schema}.{table_name} "
-        for i, col in enumerate(col_diff):
-            data_type = mapping_details[col]["data_type"]
-            statement += f'ADD COLUMN "{col}" {data_type}'
-            if i + 1 < len(col_diff):
-                statement += ","
-        statement += ";"
-
-        return statement
-
     def _add_missing_columns(self, table_name, col_diff):
         statement = f"ALTER TABLE {self.schema}.{table_name} "
         for i, col in enumerate(col_diff):
@@ -185,9 +169,12 @@ class InsertData:
 
         return statement
 
-    @timer
     def insert_data(self, table_name, df, sirius_details=None):
 
+        t = time.process_time()
+
+        # self.log.info(f"inserting {table_name} into " f"database....")
+        # self.log.debug(df.sample(n=5).to_markdown())
         log.debug(f"inserting {table_name} into " f"database....")
         log.log(config.DATA, f"\n{df.sample(n=config.row_limit).to_markdown()}")
 
@@ -197,15 +184,9 @@ class InsertData:
         if self._check_table_exists(table_name=table_name):
             col_diff = self._check_columns_exist(table_name, df)
             if len(col_diff) > 0:
-
-                if sirius_details:
-                    add_missing_colums_statement = self._add_missing_columns_with_datatypes(
-                        table_name, col_diff, mapping_details=sirius_details
-                    )
-                else:
-                    add_missing_colums_statement = self._add_missing_columns(
-                        table_name, col_diff
-                    )
+                add_missing_colums_statement = self._add_missing_columns(
+                    table_name, col_diff
+                )
                 self.db_engine.execute(add_missing_colums_statement)
         else:
 
@@ -225,6 +206,15 @@ class InsertData:
         except Exception as e:
             log.error(e)
 
+        # inserted_count_statement = self._inserted_count_statement(table_name=table_name)
+        #
+        # inserted_count = self.db_engine.execute(inserted_count_statement).fetchall()[0][
+        #     0
+        # ]
+
         inserted_count = len(df)
 
-        log.info(f"Inserted {inserted_count} records into '{table_name}' table")
+        log.info(
+            f"Inserted {inserted_count} records into '{table_name}' "
+            f"table in {round(time.process_time() - t, 2)} seconds"
+        )
