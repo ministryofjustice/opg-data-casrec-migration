@@ -28,7 +28,9 @@ def apply_datatypes(mapping_details: Dict, df: pd.DataFrame) -> pd.DataFrame:
 
     log.log(config.VERBOSE, f"cols_with_datatype: {cols_with_datatype}")
 
-    result_df = df.astype({k: v for k, v in cols_with_datatype.items()})
+    result_df = df
+    # result_df = df.astype({k: v for k, v in cols_with_datatype.items()})
+    # result_df = result_df.replace({'NaT': None})
 
     log.log(
         config.DATA,
