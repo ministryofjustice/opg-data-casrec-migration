@@ -20,6 +20,15 @@ def insert_persons_clients(config, etl2_db):
         file_name=mapping_def_filename, stage_name="transform_casrec"
     )
 
+    # sirius_details = get_mapping_dict(
+    #     file_name=mapping_def_filename,
+    #     stage_name="sirius_details",
+    #     only_complete_fields=False,
+    # )
+    #
+    # date_fields = [k for k, v in sirius_details.items() if v['data_type'] in ['date',
+    #                                                                          'datetime']]
+
     source_data_query = generate_select_string_from_mapping(
         mapping=mapping_dict,
         source_table_name=definition["source_table_name"],
