@@ -1,6 +1,3 @@
-from typing import Dict
-
-import psycopg2
 import sys
 import os
 from pathlib import Path
@@ -11,7 +8,6 @@ sys.path.insert(0, str(current_path) + "/../../../shared")
 import logging
 import time
 import helpers
-import pandas as pd
 
 log = logging.getLogger("root")
 environment = os.environ.get("ENVIRONMENT")
@@ -23,45 +19,12 @@ class InsertData:
     def __init__(self, db_engine, schema):
         self.db_engine = db_engine
         self.schema = schema
-        self.datatype_remap = {
-            "str": "text",
-            "date": "date",
-            "datetime": "date",
-            "dict": "json",
-        }
 
     def _list_table_columns(self, df):
         return [x for x in df.columns.values]
 
     def _create_schema_statement(self):
         statement = f"CREATE SCHEMA IF NOT EXISTS {self.schema};"
-        return statement
-
-    def _create_table_statement_with_datatype(
-        self, df: pd.DataFrame, mapping_details: Dict, table_name: str
-    ) -> str:
-        log.debug(f"Generating table create statement for {table_name}")
-        statement = f"CREATE TABLE IF NOT EXISTS {self.schema}.{table_name} (\n"
-
-        columns = []
-        for col, details in mapping_details.items():
-            details["data_type"] = (
-                self.datatype_remap[details["data_type"]]
-                if details["data_type"] in self.datatype_remap
-                else details["data_type"]
-            )
-            columns.append(f"{col} {details['data_type']}")
-
-        columns_from_df = self._list_table_columns(df=df)
-        columns_from_mapping = mapping_details.keys()
-        temp_colums = list(set(columns_from_df) - set(columns_from_mapping))
-        for col in temp_colums:
-            columns.append(f"{col} text")
-
-        statement += ", ".join(columns)
-
-        statement += ");"
-        log.log(config.VERBOSE, f"Table create statement: {statement}")
         return statement
 
     def _create_table_statement(self, table_name, df):
@@ -114,12 +77,10 @@ class InsertData:
         insert_statement += ") \n VALUES \n"
 
         for i, row in enumerate(df.values.tolist()):
-
             row = [str(x) for x in row]
             row = [
                 str(
                     x.replace("'", "''")
-                    .replace("NaT", "")
                     .replace("nan", "")
                     .replace("&", "and")
                     .replace(";", "-")
@@ -169,7 +130,7 @@ class InsertData:
 
         return statement
 
-    def insert_data(self, table_name, df, sirius_details=None):
+    def insert_data(self, table_name, df):
 
         t = time.process_time()
 
@@ -189,15 +150,9 @@ class InsertData:
                 )
                 self.db_engine.execute(add_missing_colums_statement)
         else:
-
-            if sirius_details:
-                create_table_statement = self._create_table_statement_with_datatype(
-                    table_name=table_name, mapping_details=sirius_details, df=df
-                )
-            else:
-                create_table_statement = self._create_table_statement(
-                    table_name=table_name, df=df
-                )
+            create_table_statement = self._create_table_statement(
+                table_name=table_name, df=df
+            )
             self.db_engine.execute(create_table_statement)
 
         insert_statement = self._create_insert_statement(table_name=table_name, df=df)
