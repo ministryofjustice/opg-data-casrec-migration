@@ -4,6 +4,7 @@ import os
 import pandas as pd
 
 import helpers
+from decorators import timer
 
 from transform_data.apply_datatypes import apply_datatypes
 from utilities.convert_json_to_mappings import MappingDefinitions
@@ -21,6 +22,7 @@ environment = os.environ.get("ENVIRONMENT")
 config = helpers.get_config(env=environment)
 
 
+@timer
 def perform_transformations(
     mapping_definitions: dict,
     table_definition: dict,
