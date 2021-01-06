@@ -1,20 +1,19 @@
-from datetime import datetime
-
-from pytest_cases import case
 import pandas as pd
+import pytest
+from pytest_cases import case
 
-# from data_tests.conftest import get_lookup_dict
 
 module_name = "client_persons"
 source_table = "pat"
 destination_table = "persons"
 
 
+@pytest.mark.xfail(reason="dates need formatting properly")
 @case(tags="simple")
 def case_clients_1(test_config):
     simple_matches = {
-        # "DOB": ["dob"],
-        # "Create": ["createddate"],
+        "DOB": ["dob"],
+        "Create": ["createddate"],
         "Forename": ["firstname", "middlenames"],
         "Surname": ["surname"],
         "AKA Name": ["previousnames"],
@@ -115,7 +114,6 @@ def case_clients_3(test_config):
 @case(tags="calculated")
 def case_clients_4(test_config):
 
-    # today = datetime.today().strftime("%Y-%m-%d")
     today = pd.Timestamp(2021, 1, 6)
 
     calculated_fields = {

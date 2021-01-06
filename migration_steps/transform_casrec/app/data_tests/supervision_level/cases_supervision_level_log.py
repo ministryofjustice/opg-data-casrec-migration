@@ -42,7 +42,6 @@ def case_supervision_log_lookups(test_config):
 @case(tags="calculated")
 def case_supervision_log_calcs(test_config):
 
-    # today = datetime.today().strftime("%Y-%m-%d")
     today = pd.Timestamp(2021, 1, 6)
     calculated_fields = {
         "appliesfrom": today,

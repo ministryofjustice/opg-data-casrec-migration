@@ -1,6 +1,7 @@
 import pandas as pd
-
-from utilities.basic_data_table import get_basic_data_table
+from transform_data import transform
+from utilities.generate_source_query import generate_select_string_from_mapping
+from helpers import get_mapping_dict
 
 definition = {
     "sheet_name": "addresses (Client)",
@@ -8,13 +9,31 @@ definition = {
     "source_table_additional_columns": ["Case"],
     "destination_table_name": "addresses",
 }
-mapping_file_name = "client_addresses_mapping"
 
 
 def insert_addresses_clients(config, etl2_db):
 
-    sirius_details, addresses_df = get_basic_data_table(
-        config=config, mapping_file_name=mapping_file_name, table_definition=definition
+    mapping_dict = get_mapping_dict(
+        file_name="client_addresses_mapping", stage_name="transform_casrec"
+    )
+
+    source_data_query = generate_select_string_from_mapping(
+        mapping=mapping_dict,
+        source_table_name=definition["source_table_name"],
+        additional_columns=definition["source_table_additional_columns"],
+        db_schema=config.etl1_schema,
+    )
+
+    source_data_df = pd.read_sql_query(
+        sql=source_data_query, con=config.connection_string
+    )
+
+    addresses_df = transform.perform_transformations(
+        mapping_dict,
+        definition,
+        source_data_df,
+        config.connection_string,
+        config.etl2_schema,
     )
 
     persons_query = (
@@ -34,7 +53,5 @@ def insert_addresses_clients(config, etl2_db):
     addresses_joined_df = addresses_joined_df.rename(columns={"id_x": "id"})
 
     etl2_db.insert_data(
-        table_name=definition["destination_table_name"],
-        df=addresses_joined_df,
-        sirius_details=sirius_details,
+        table_name=definition["destination_table_name"], df=addresses_joined_df
     )

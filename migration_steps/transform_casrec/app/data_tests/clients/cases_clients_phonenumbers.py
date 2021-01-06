@@ -59,7 +59,6 @@ def case_clients_phonenos_2(test_config):
 
 @case(tags="calculated")
 def case_clients_phonenos_3(test_config):
-    # today = datetime.today().strftime("%Y-%m-%d")
     today = pd.Timestamp(2021, 1, 6)
 
     calculated_fields = {
