@@ -38,7 +38,9 @@ def test_default_values(test_config, calculated_fields, source_query, module_nam
     )
     assert source_sample_df.shape[0] > 0
     for k, v in calculated_fields.items():
-        matches = source_sample_df[k].str.contains(str(v))
+        source_sample_df["compare_col"] = v
+        # matches = source_sample_df[k].str.contains(str(v))
+        matches = source_sample_df[k] == source_sample_df["compare_col"]
         total_matches = matches.sum()
         success = total_matches == source_sample_df.shape[0]
         log.log(

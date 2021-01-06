@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from pytest_cases import case
+import pandas as pd
 
 
 module_name = "supervision_level_log"
@@ -41,8 +42,8 @@ def case_supervision_log_lookups(test_config):
 @case(tags="calculated")
 def case_supervision_log_calcs(test_config):
 
-    today = datetime.today().strftime("%Y-%m-%d")
-
+    # today = datetime.today().strftime("%Y-%m-%d")
+    today = pd.Timestamp(2021, 1, 6)
     calculated_fields = {
         "appliesfrom": today,
         "createddate": today,
