@@ -1,6 +1,7 @@
 import pandas as pd
 
 from config import get_config
+import numpy as np
 
 config = get_config()
 
@@ -10,7 +11,10 @@ sample_percentage = config.SAMPLE_PERCENTAGE
 def get_data_from_query(
     query, config, sort_col=None, sample=False, sample_percentage=sample_percentage
 ):
+
     df = pd.read_sql_query(query, config.connection_string)
+
+    df.replace([None, ""], "", inplace=True)
 
     if sample:
         df = df.sample(frac=sample_percentage / 100, replace=False, random_state=1)

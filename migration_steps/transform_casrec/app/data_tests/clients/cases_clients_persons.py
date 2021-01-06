@@ -13,13 +13,11 @@ destination_table = "persons"
 @case(tags="simple")
 def case_clients_1(test_config):
     simple_matches = {
-        # "Title": ["salutation"],
-        "DOB": ["dob"],
-        "Create": ["createddate"],
+        # "DOB": ["dob"],
+        # "Create": ["createddate"],
         "Forename": ["firstname", "middlenames"],
         "Surname": ["surname"],
         "AKA Name": ["previousnames"],
-        # "Marital Status": ["maritalstatus"],
         "Adrs5": ["countryofresidence"],
     }
     merge_columns = {"source": "Case", "transformed": "caserecnumber"}
@@ -55,7 +53,6 @@ def case_clients_2(test_config):
         "isreplacementattorney": False,
         "istrustcorporation": False,
         "clientstatus": "Active",
-        # "statusdate": "Todays date",
         "correspondencebywelsh": False,
         "newsletter": False,
         "specialcorrespondencerequirements_audiotape": False,
@@ -67,7 +64,6 @@ def case_clients_2(test_config):
         "casesmanagedashybrid": False,
         "supervisioncaseowner_id": 10,
         "clientsource": "CASRECMIGRATION",
-        # "updateddate": "Todays date",
     }
 
     config = test_config

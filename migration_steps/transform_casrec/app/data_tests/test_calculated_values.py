@@ -41,6 +41,7 @@ def test_default_values(test_config, calculated_fields, source_query, module_nam
         source_sample_df["compare_col"] = v
         # matches = source_sample_df[k].str.contains(str(v))
         matches = source_sample_df[k] == source_sample_df["compare_col"]
+
         total_matches = matches.sum()
         success = total_matches == source_sample_df.shape[0]
         log.log(
