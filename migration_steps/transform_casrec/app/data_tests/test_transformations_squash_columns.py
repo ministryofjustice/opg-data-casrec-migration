@@ -12,6 +12,7 @@ from data_tests.helpers import (
     merge_source_and_transformed_df,
 )
 import pandas as pd
+import json
 import logging
 import pytest
 
@@ -81,8 +82,11 @@ def test_squash_columns(
 
     for k, v in squash_columns_fields.items():
         for i, j in enumerate(v):
-            split_result = result_df[k].map(literal_eval).apply(pd.Series)
-            match = result_df[j].equals(split_result[i])
+
+            unsquashed = result_df[k].apply(pd.Series)
+            unsquashed = unsquashed.rename(columns=lambda x: "unsq_" + str(x))
+
+            match = result_df[j].equals(unsquashed[f"unsq_{i}"])
 
             log.log(
                 config.VERBOSE,
