@@ -9,7 +9,6 @@ source_table = "order"
 destination_table = "cases"
 
 
-@pytest.mark.xfail(reason="dates need formatting properly")
 @case(tags="simple")
 def case_cases_1(test_config):
     simple_matches = {

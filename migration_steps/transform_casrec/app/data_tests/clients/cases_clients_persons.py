@@ -8,7 +8,6 @@ source_table = "pat"
 destination_table = "persons"
 
 
-@pytest.mark.xfail(reason="dates need formatting properly")
 @case(tags="simple")
 def case_clients_1(test_config):
     simple_matches = {

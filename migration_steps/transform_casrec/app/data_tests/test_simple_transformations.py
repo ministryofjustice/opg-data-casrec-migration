@@ -11,12 +11,12 @@ from data_tests.helpers import (
 )
 import logging
 import numpy as np
+import pandas as pd
 import pytest
 
 log = logging.getLogger("root")
 
 
-@pytest.mark.xfail(reason="dates need formatting properly")
 @parametrize_with_cases(
     (
         "simple_matches",
@@ -82,7 +82,15 @@ def test_simple_transformations(
     assert result_df.shape[0] > 0
     for k, v in simple_matches.items():
         for i in v:
+
+            try:
+                result_df[k] = pd.to_datetime(result_df[k], format="%Y-%m-%d")
+                result_df[i] = pd.to_datetime(result_df[i], format="%Y-%m-%d")
+            except Exception:
+                pass
+
             match = result_df[k].equals(result_df[i])
+
             log.log(
                 config.VERBOSE,
                 f"checking {k} == {i}.... " f"{'OK' if match is True else 'oh no'} ",
