@@ -28,11 +28,6 @@ def target_update(config, conn_migration, conn_target):
         columns={"target_id": "id", "sirius_person_id": "person_id"}
     )
 
-    # This will not be needed once the datatype fix is complete
-    # addresses_df["isairmailrequired"] = addresses_df["isairmailrequired"].replace(
-    #     {"True": True, "False": False}
-    # )
-
     addresses_df["address_lines"] = addresses_df["address_lines"].apply(json.dumps)
 
     db_helpers.execute_update(
@@ -56,11 +51,6 @@ def target_add(config, conn_migration, conn_target):
     addresses_df = addresses_df.rename(columns={"sirius_person_id": "person_id"})
 
     addresses_df["address_lines"] = addresses_df["address_lines"].apply(json.dumps)
-
-    # This will not be needed once the datatype fix is complete
-    # addresses_df["isairmailrequired"] = addresses_df["isairmailrequired"].replace(
-    #     {"True": True, "False": False}
-    # )
 
     db_helpers.execute_insert(conn_target, addresses_df, "addresses")
 
