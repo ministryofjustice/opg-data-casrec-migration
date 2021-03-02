@@ -20,7 +20,7 @@ def conditional_lookup(
     lookup_file_name: str,
     df: pd.DataFrame,
 ) -> pd.DataFrame:
-    log.info(f"Doing condiction lookup on {lookup_col} in file {lookup_file_name}")
+    log.info(f"Doing conditional lookup on {lookup_col} in file {lookup_file_name}")
     log.log(
         config.DATA,
         f"before\n{df.sample(n=config.row_limit).to_markdown()}",
