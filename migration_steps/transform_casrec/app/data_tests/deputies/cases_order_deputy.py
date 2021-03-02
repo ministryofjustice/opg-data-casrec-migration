@@ -51,7 +51,7 @@ def case_order_deputies_con_lookups(test_config):
                 "result": "Disch Death",
                 "reference": "Stat",
             },
-            "lookup_def": "discharge_lookup",
+            "lookup_def": "discharge_date_lookup",
         }
     }
     merge_columns = {"source": "Deputy No", "transformed": "c_deputy_no"}

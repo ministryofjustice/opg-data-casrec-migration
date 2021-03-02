@@ -202,8 +202,8 @@
             "casrec_table": "deputy",
             "casrec_column_name": "Disch Death",
             "alias": "Disch Death",
-            "requires_transformation": "",
-            "lookup_table": "",
+            "requires_transformation": "conditional_lookup",
+            "lookup_table": "discharge_date_lookup",
             "default_value": "",
             "calculated": "",
             "additional_columns": "Stat"
