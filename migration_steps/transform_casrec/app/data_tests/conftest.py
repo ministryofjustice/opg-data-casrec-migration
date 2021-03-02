@@ -18,6 +18,7 @@ from data_tests.deputies import (
     cases_deputies_persons,
     cases_deputy_phonenumbers_daytime,
     cases_deputy_phonenumbers_evening,
+    cases_order_deputy,
 )
 from data_tests.supervision_level import cases_supervision_level_log
 
@@ -37,6 +38,7 @@ list_of_test_cases = [
     cases_person_caseitem,
     cases_supervision_level_log,
     cases_deputies_persons,
+    cases_order_deputy,
     cases_deputy_phonenumbers_daytime,
     cases_deputy_phonenumbers_evening,
 ]
