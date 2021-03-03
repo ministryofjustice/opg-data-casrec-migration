@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+from data_tests.bonds import cases_bonds
 from data_tests.cases import (
     cases_cases,
     cases_person_caseitem,
@@ -41,6 +42,7 @@ list_of_test_cases = [
     cases_order_deputy,
     cases_deputy_phonenumbers_daytime,
     cases_deputy_phonenumbers_evening,
+    cases_bonds,
 ]
 
 

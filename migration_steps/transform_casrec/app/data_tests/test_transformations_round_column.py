@@ -10,41 +10,36 @@ from data_tests.helpers import (
     merge_source_and_transformed_df,
 )
 import logging
-import numpy as np
-import pandas as pd
-import pytest
 
 log = logging.getLogger("root")
 
 
 @parametrize_with_cases(
     (
-        "simple_matches",
-        "merge_columns",
+        "round_columns",
         "source_query",
         "transformed_query",
+        "merge_columns",
         "module_name",
     ),
     cases=list_of_test_cases,
-    has_tag="simple",
+    has_tag="round",
 )
-def test_simple_transformations(
+def test_round_column(
     test_config,
-    simple_matches,
-    merge_columns,
+    round_columns,
     source_query,
     transformed_query,
+    merge_columns,
     module_name,
 ):
-    log.debug(f"module_name: {module_name}")
-
-    add_to_tested_list(
-        module_name=module_name,
-        tested_fields=[y for x in simple_matches.values() for y in x]
-        + [merge_columns["transformed"]],
-    )
+    print(f"module_name: {module_name}")
 
     config = test_config
+    add_to_tested_list(
+        module_name=module_name,
+        tested_fields=[y for x in round_columns.values() for y in x],
+    )
 
     source_sample_df = get_data_from_query(
         query=source_query, config=config, sort_col=merge_columns["source"], sample=True
@@ -76,24 +71,13 @@ def test_simple_transformations(
     )
 
     log.debug(
-        f"Checking {result_df.shape[0]} rows of data ({config.SAMPLE_PERCENTAGE}%) from table: {module_name} "
+        f"Checking {result_df.shape[0]} rows of data ({config.SAMPLE_PERCENTAGE}%)  from table: {module_name}"
     )
 
     assert result_df.shape[0] > 0
-    for k, v in simple_matches.items():
+    for k, v in round_columns.items():
+
         for i in v:
+            result_df["round2dp"] = result_df[i].apply(lambda x: round(x, 2))
 
-            try:
-                result_df[k] = pd.to_datetime(result_df[k], format="%Y-%m-%d")
-                result_df[i] = pd.to_datetime(result_df[i], format="%Y-%m-%d")
-            except Exception:
-                result_df[k] = result_df[k].apply(lambda x: f"{x}")
-                result_df[i] = result_df[i].apply(lambda x: f"{x}")
-
-            match = result_df[k].equals(result_df[i])
-
-            print(
-                f"checking {k} == {i}.... " f"{'OK' if match is True else 'oh no'} ",
-            )
-
-            assert match is True
+            assert (result_df["round2dp"].astype(bool) == True).all()

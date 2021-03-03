@@ -34,7 +34,7 @@ def test_one_to_one_joins(
     fk_parent_query,
     module_name,
 ):
-    log.debug(f"module_name: {module_name}")
+    print(f"module_name: {module_name}")
 
     add_to_tested_list(
         module_name=module_name, tested_fields=[x for x in join_columns.keys()]

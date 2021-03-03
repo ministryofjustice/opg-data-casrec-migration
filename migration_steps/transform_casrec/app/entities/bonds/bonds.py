@@ -4,7 +4,7 @@ import pandas as pd
 
 definition = {
     "source_table_name": "order",
-    "source_table_additional_columns": [],
+    "source_table_additional_columns": ["CoP Case"],
     "destination_table_name": "bonds",
 }
 
@@ -21,7 +21,7 @@ def insert_bonds(target_db, db_config):
     bonds_df = bonds_df.loc[bonds_df["bondreferencenumber"] != ""]
 
     existing_cases_query = f"""
-        SELECT c_bond_no, id from {db_config['target_schema']}.cases;
+        SELECT c_cop_case, c_bond_no, id from {db_config['target_schema']}.cases;
     """
 
     existing_cases_df = pd.read_sql_query(
@@ -32,14 +32,14 @@ def insert_bonds(target_db, db_config):
     bonds_cases_joined_df = bonds_df.merge(
         existing_cases_df,
         how="left",
-        left_on="bondreferencenumber",
-        right_on="c_bond_no",
+        left_on="c_cop_case",
+        right_on="c_cop_case",
     )
 
     bonds_cases_joined_df = bonds_cases_joined_df.rename(
         columns={"id_x": "id", "id_y": "order_id"}
     )
-    bonds_cases_joined_df = bonds_cases_joined_df.drop(columns=["c_bond_no"])
+    # bonds_cases_joined_df = bonds_cases_joined_df.drop(columns=["c_cop_case"])
 
     bonds_cases_joined_df = reapply_datatypes_to_fk_cols(
         columns=["order_id"], df=bonds_cases_joined_df
