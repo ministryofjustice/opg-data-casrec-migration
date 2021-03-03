@@ -78,11 +78,16 @@ def main(verbose, audit):
         log.info(f"Finished Pre-Audit - Table Copies")
 
     for i, table in enumerate(tables_list):
+
         log.debug(f"This is table number {i + 1} of {len(tables_list)}")
 
         pk = table_helpers.get_pk(target_db_engine, db_config["target_schema"], table)
         insert_data_into_target(
-            db_config=db_config, source_db_engine=source_db_engine, table=table, pk=pk
+            db_config=db_config,
+            source_db_engine=source_db_engine,
+            target_db_engine=target_db_engine,
+            table=table,
+            pk=pk,
         )
         update_data_in_target(
             db_config=db_config, source_db_engine=source_db_engine, table=table, pk=pk
