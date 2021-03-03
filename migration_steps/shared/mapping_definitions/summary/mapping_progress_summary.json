@@ -13,10 +13,10 @@
             "percentage_complete": 41
         },
         "order_deputy": {
-            "total_rows": 11,
-            "total_unmapped": 8,
+            "total_rows": 7,
+            "total_unmapped": 4,
             "total_mapped": 3,
-            "percentage_complete": 27
+            "percentage_complete": 43
         },
         "client_addresses": {
             "total_rows": 9,
@@ -541,8 +541,8 @@
             "total_complete": 0
         },
         "fields": {
-            "total_fields": 802,
-            "total_unmapped": 487,
+            "total_fields": 798,
+            "total_unmapped": 483,
             "total_mapped": 315,
             "percentage_complete": 39
         }
