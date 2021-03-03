@@ -10,7 +10,12 @@ environment = os.environ.get("ENVIRONMENT")
 
 config = helpers.get_config(env=environment)
 
-datatype_remap = {"date": "datetime64", "datetime": "datetime64", "dict": "str"}
+datatype_remap = {
+    "date": "datetime64",
+    "datetime": "datetime64",
+    "dict": "str",
+    "Decimal": "float",
+}
 
 
 def apply_datatypes(mapping_details: Dict, df: pd.DataFrame) -> pd.DataFrame:
@@ -36,3 +41,10 @@ def apply_datatypes(mapping_details: Dict, df: pd.DataFrame) -> pd.DataFrame:
     )
 
     return result_df
+
+
+def reapply_datatypes_to_fk_cols(columns, df):
+    for col in columns:
+        df[col] = df[col].astype("Int64")
+
+    return df

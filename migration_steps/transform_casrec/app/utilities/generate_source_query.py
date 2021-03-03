@@ -15,7 +15,7 @@ config = helpers.get_config(env=environment)
 
 
 def format_additional_col_alias(original_column_name: str) -> str:
-    return f"c_{original_column_name.lower().replace(' ', '_')}"
+    return f"c_{original_column_name.lower().replace(' ', '_').replace('.','')}"
 
 
 def additional_cols(additional_columns: list) -> list:

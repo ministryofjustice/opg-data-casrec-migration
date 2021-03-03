@@ -49,7 +49,7 @@ class InsertData:
         columns = []
         for col, details in mapping_details.items():
             details["data_type"] = (
-                self.datatype_remap[details["data_type"]]
+                self.datatype_remap[details["data_type"].lower()]
                 if details["data_type"] in self.datatype_remap
                 else details["data_type"]
             )
@@ -124,6 +124,7 @@ class InsertData:
                     x.replace("'", "''")
                     .replace("NaT", "")
                     .replace("nan", "")
+                    .replace("<NA>", "")
                     .replace("&", "and")
                     .replace(";", "-")
                     .replace("%", "percent")

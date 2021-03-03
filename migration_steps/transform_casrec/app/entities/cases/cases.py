@@ -4,7 +4,7 @@ from utilities.basic_data_table import get_basic_data_table
 definition = {
     "sheet_name": "cases",
     "source_table_name": "order",
-    "source_table_additional_columns": ["Order No", "CoP Case"],
+    "source_table_additional_columns": ["Order No", "CoP Case", "Bond No."],
     "destination_table_name": "cases",
 }
 mapping_file_name = "cases_mapping"

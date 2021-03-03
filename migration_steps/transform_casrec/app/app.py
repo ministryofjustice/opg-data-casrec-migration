@@ -17,7 +17,7 @@ import helpers
 from dotenv import load_dotenv
 
 from run_data_tests import run_data_tests
-from entities import clients, cases, supervision_level, deputies
+from entities import clients, cases, supervision_level, deputies, bonds
 from utilities.clear_database import clear_tables
 from utilities.db_insert import InsertData
 
@@ -57,18 +57,12 @@ target_db = InsertData(db_engine=target_db_engine, schema=db_config["target_sche
     help="Clear existing database tables: True or False",
 )
 @click.option(
-    "--entity_list",
-    multiple=True,
-    prompt=False,
-    help="List of entities you want to transform, eg 'clients,deputies,cases'.",
-)
-@click.option(
     "--include_tests",
     help="Run data tests after performing the transformations",
     default=False,
 )
 @click.option("-v", "--verbose", count=True)
-def main(clear, entity_list, include_tests, verbose):
+def main(clear, include_tests, verbose):
     try:
         log.setLevel(verbosity_levels[verbose])
         log.info(f"{verbosity_levels[verbose]} logging enabled")
@@ -92,26 +86,11 @@ def main(clear, entity_list, include_tests, verbose):
     if clear:
         clear_tables(db_config=db_config)
 
-    if entity_list:
-        allowed_entities = (entity_list)[0].split(",")
-        log.info(f"Processing list of entities: {(', ').join(entity_list)}")
-
-    else:
-        allowed_entities = []
-        log.info("Processing all entities")
-
-    # Data - each entity can be run independently
-    if len(allowed_entities) == 0 or "clients" in allowed_entities:
-        clients.runner(config, target_db=target_db, db_config=db_config)
-
-    if len(allowed_entities) == 0 or "cases" in allowed_entities:
-        cases.runner(target_db=target_db, db_config=db_config)
-
-    if len(allowed_entities) == 0 or "supervision_level" in allowed_entities:
-        supervision_level.runner(target_db=target_db, db_config=db_config)
-
-    if len(allowed_entities) == 0 or "deputies" in allowed_entities:
-        deputies.runner(target_db=target_db, db_config=db_config)
+    clients.runner(config, target_db=target_db, db_config=db_config)
+    cases.runner(target_db=target_db, db_config=db_config)
+    bonds.runner(target_db=target_db, db_config=db_config)
+    supervision_level.runner(target_db=target_db, db_config=db_config)
+    deputies.runner(target_db=target_db, db_config=db_config)
 
     if include_tests:
         run_data_tests(verbosity_level=verbosity_levels[verbose])

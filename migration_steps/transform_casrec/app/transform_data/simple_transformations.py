@@ -56,4 +56,10 @@ def do_simple_transformations(
                 df=transformed_df,
             )
 
+    if "money_poundPence" in transformations:
+        for t in transformations["money_poundPence"]:
+            transformed_df = standard_transformations.money(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
     return transformed_df
