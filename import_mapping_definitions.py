@@ -1,3 +1,5 @@
+import json
+from datetime import datetime
 import logging
 import shutil
 import zipfile
@@ -48,28 +50,48 @@ def pull_zip_file(bucket, client, source, file_name, version):
     Download latest version of file from s3 staged
     """
 
+    version_details = {"version_id": None, "last_modified": None}
+
     try:
         if version is None:
 
             response = client.list_object_versions(
                 Bucket=bucket, Prefix=f"{source}/{file_name}"
             )
-            version = [x["VersionId"] for x in response["Versions"] if x["IsLatest"]][0]
+            version_details["version_id"] = [
+                x["VersionId"] for x in response["Versions"] if x["IsLatest"]
+            ][0]
+            last_modified = [
+                x["LastModified"] for x in response["Versions"] if x["IsLatest"]
+            ][0]
+            version_details["last_modified"] = datetime.strftime(
+                last_modified, "%Y-%m-%d %H:%M:%s"
+            )
 
             client.download_file(bucket, f"{source}/{file_name}", file_name)
+
         else:
+            head = client.head_object(Bucket=bucket, Key=f"{source}/{file_name}")
+            version_details["version_id"] = version
+            version_details["last_modified"] = datetime.strftime(
+                head["LastModified"], "%Y-%m-%d %H:%M:%s"
+            )
             client.download_file(
                 bucket,
                 f"{source}/{file_name}",
                 file_name,
                 ExtraArgs={"VersionId": version},
             )
+
     except ClientError as e:
         logging.error(e)
-        return False
-    print(f"Downloaded {file_name.split('/')[-1]} version {version}")
 
-    return True
+        return (False, version_details)
+    print(
+        f"Downloaded {file_name.split('/')[-1]} version {version_details['version_id']} last modified {version_details['last_modified']}"
+    )
+
+    return (True, version_details)
 
 
 def extract_zip(file, extract_location):
@@ -94,13 +116,16 @@ def main(s3_source, version):
     zip_file = "mappings.zip"
     folder_prefix = os.path.join(dirname, "migration_steps", "shared")
     bucket_name = "casrec-migration-mappings-development"
-    if os.path.isdir(f"{folder_prefix}/mapping_definitions_old"):
-        shutil.rmtree(f"{folder_prefix}/mapping_definitions")
-        shutil.rmtree(f"{folder_prefix}/mapping_spreadsheet")
-        rename_folder(
-            f"{folder_prefix}/mapping_definitions_old",
-            f"{folder_prefix}/mapping_definitions",
-        )
+    try:
+        if os.path.isdir(f"{folder_prefix}/mapping_definitions_old"):
+            shutil.rmtree(f"{folder_prefix}/mapping_definitions")
+            shutil.rmtree(f"{folder_prefix}/mapping_spreadsheet")
+            rename_folder(
+                f"{folder_prefix}/mapping_definitions_old",
+                f"{folder_prefix}/mapping_definitions",
+            )
+    except FileNotFoundError:
+        pass
 
     rename_folder(
         f"{folder_prefix}/mapping_definitions",
@@ -108,9 +133,20 @@ def main(s3_source, version):
     )
     s3_session = assume_aws_session(account, role)
     client = s3_session.client("s3")
-    pull_zip_file(bucket_name, client, s3_source, zip_file, version)
-    extract_zip(zip_file, f"{folder_prefix}")
-    os.remove(zip_file)
+
+    success, version_details = pull_zip_file(
+        bucket_name, client, s3_source, zip_file, version
+    )
+    if success:
+        extract_zip(zip_file, f"{folder_prefix}")
+        os.remove(zip_file)
+
+        with open(
+            f"{folder_prefix}/mapping_definitions/summary/version.json", "w+"
+        ) as version_file:
+            version_file.write(json.dumps(version_details))
+    else:
+        print("Something failed while getting the zip file")
 
 
 if __name__ == "__main__":
