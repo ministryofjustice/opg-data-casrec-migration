@@ -2,6 +2,7 @@ import os
 import sys
 from pathlib import Path
 
+
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../shared")
 
@@ -83,6 +84,10 @@ def main(clear, entity_list, include_tests, verbose):
         )
     )
     log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
+    version_details = helpers.get_json_version()
+    log.info(
+        f"Using JSON def version '{version_details['version_id']}' last updated {version_details['last_modified']}"
+    )
 
     if clear:
         clear_tables(db_config=db_config)

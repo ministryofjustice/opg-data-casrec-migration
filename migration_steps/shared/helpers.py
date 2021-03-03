@@ -120,6 +120,14 @@ def get_all_mapped_fields(
     return all_mapping_dicts
 
 
+def get_json_version():
+    dirname = get_current_directory()
+    file_path = os.path.join(dirname, f"mapping_definitions/summary/version.json")
+    with open(file_path, "r") as version_file:
+
+        return json.load(version_file)
+
+
 def get_config(env="local"):
     if env == "local":
         config = LocalConfig()

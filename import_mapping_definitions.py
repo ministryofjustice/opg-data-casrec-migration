@@ -65,7 +65,7 @@ def pull_zip_file(bucket, client, source, file_name, version):
                 x["LastModified"] for x in response["Versions"] if x["IsLatest"]
             ][0]
             version_details["last_modified"] = datetime.strftime(
-                last_modified, "%Y-%m-%d %H:%M:%s"
+                last_modified, "%Y-%m-%d %H:%M:%S"
             )
 
             client.download_file(bucket, f"{source}/{file_name}", file_name)
