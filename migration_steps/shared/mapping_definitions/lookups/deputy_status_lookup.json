@@ -1,17 +1,17 @@
 {
     "89": {
-        "sirius_mapping": "CLOSED"
-    },
-    "1": {
         "sirius_mapping": "ACTIVE"
     },
+    "1": {
+        "sirius_mapping": "DISCHARGED"
+    },
     "88": {
-        "sirius_mapping": "SUSPENDED"
+        "sirius_mapping": "ACTIVE"
     },
     "99": {
-        "sirius_mapping": "DECEASED"
+        "sirius_mapping": "ACTIVE"
     },
     "91": {
-        "sirius_mapping": "DISCHARGED"
+        "sirius_mapping": "ACTIVE"
     }
 }

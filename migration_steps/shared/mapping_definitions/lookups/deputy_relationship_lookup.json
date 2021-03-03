@@ -1,6 +1,6 @@
 {
     "5": {
-        "sirius_mapping": "OTHERRELATION"
+        "sirius_mapping": "SPOUSE"
     },
     "10": {
         "sirius_mapping": "SPOUSE"
@@ -27,7 +27,7 @@
         "sirius_mapping": "ACCOUNTANT"
     },
     "90": {
-        "sirius_mapping": "OTHERRELATION"
+        "sirius_mapping": "SPOUSE"
     },
     "29": {
         "sirius_mapping": "OTHERPROFESSIONAL"
