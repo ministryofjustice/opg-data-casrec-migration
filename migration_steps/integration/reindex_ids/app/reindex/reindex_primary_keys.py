@@ -36,7 +36,7 @@ def get_max_pk_dict(db_connection_string, max_val_query):
         max_vals = cursor.fetchall()
 
         for i in max_vals:
-            result_dict[i[0]] = {i[1]: i[2]}
+            result_dict[i[0]] = {i[1]: i[2] if i[2] else 0}
 
     except Exception as e:
         print(e)

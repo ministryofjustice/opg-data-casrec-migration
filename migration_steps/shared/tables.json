@@ -91,6 +91,21 @@
 			"type": "pk"
 		}]
 	},
+	"bonds": {
+		"table_type": "data",
+		"pk": "id",
+		"fks": [
+			{
+				"column":"order_id",
+				"parent_table" : "cases",
+				"parent_column": "id"
+			}],
+		"sequences": [{
+			"name": "bonds_id_seq",
+			"column": "id",
+			"type": "pk"
+		}]
+	},
 	"order_deputy": {
 		"pk": "id",
 		"fks": [
