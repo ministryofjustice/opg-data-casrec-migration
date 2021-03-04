@@ -16,6 +16,7 @@ def insert_bonds(target_db, db_config):
         db_config=db_config,
         mapping_file_name=mapping_file_name,
         table_definition=definition,
+        condition={"Bond No.": ""},
     )
 
     bonds_df = bonds_df.loc[bonds_df["bondreferencenumber"] != ""]
@@ -39,7 +40,6 @@ def insert_bonds(target_db, db_config):
     bonds_cases_joined_df = bonds_cases_joined_df.rename(
         columns={"id_x": "id", "id_y": "order_id"}
     )
-    # bonds_cases_joined_df = bonds_cases_joined_df.drop(columns=["c_cop_case"])
 
     bonds_cases_joined_df = reapply_datatypes_to_fk_cols(
         columns=["order_id"], df=bonds_cases_joined_df
