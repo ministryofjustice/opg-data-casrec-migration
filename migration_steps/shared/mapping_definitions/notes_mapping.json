@@ -73,11 +73,11 @@
             "table_name": "notes"
         },
         "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
+            "casrec_table": "REMARKS",
+            "casrec_column_name": "Log Type",
+            "alias": "Log Type",
             "requires_transformation": "",
-            "lookup_table": "",
+            "lookup_table": "note_type_lookup",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
@@ -115,9 +115,9 @@
             "table_name": "notes"
         },
         "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
+            "casrec_table": "REMARKS",
+            "casrec_column_name": "Remarks",
+            "alias": "Remarks",
             "requires_transformation": "",
             "lookup_table": "",
             "default_value": "",
@@ -157,9 +157,9 @@
             "table_name": "notes"
         },
         "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
+            "casrec_table": "REMARKS",
+            "casrec_column_name": "Keydate",
+            "alias": "Keydate",
             "requires_transformation": "",
             "lookup_table": "",
             "default_value": "",
@@ -183,7 +183,7 @@
             "alias": "",
             "requires_transformation": "",
             "lookup_table": "",
-            "default_value": "",
+            "default_value": 1.0,
             "calculated": "",
             "additional_columns": ""
         }
@@ -241,11 +241,11 @@
             "table_name": "notes"
         },
         "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
+            "casrec_table": "REMARKS",
+            "casrec_column_name": "Log Type",
+            "alias": "Log Type 1",
             "requires_transformation": "",
-            "lookup_table": "",
+            "lookup_table": "note_dir_lookup",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""

@@ -1,104 +1,131 @@
+Difference in file notes_mapping.json found in mapping_definitions_previous/mapping_definitions and mapping_definitions
+-            "casrec_table": "",
+-            "casrec_column_name": "",
+-            "alias": "",
+-            "requires_transformation": "",
+-            "lookup_table": "",
++            "casrec_table": "REMARKS",
++            "casrec_column_name": "Log Type",
++            "alias": "Log Type",
++            "requires_transformation": "",
++            "lookup_table": "note_type_lookup",
+-            "casrec_table": "",
+-            "casrec_column_name": "",
+-            "alias": "",
++            "casrec_table": "REMARKS",
++            "casrec_column_name": "Remarks",
++            "alias": "Remarks",
+-            "casrec_table": "",
+-            "casrec_column_name": "",
+-            "alias": "",
++            "casrec_table": "REMARKS",
++            "casrec_column_name": "Keydate",
++            "alias": "Keydate",
+-            "default_value": "",
++            "default_value": 1.0,
+-            "casrec_table": "",
+-            "casrec_column_name": "",
+-            "alias": "",
+-            "requires_transformation": "",
+-            "lookup_table": "",
++            "casrec_table": "REMARKS",
++            "casrec_column_name": "Log Type",
++            "alias": "Log Type 1",
++            "requires_transformation": "",
++            "lookup_table": "note_dir_lookup",
 Difference in file order_deputy_mapping.json found in mapping_definitions_previous/mapping_definitions and mapping_definitions
-+            "table_name": "order_deputy"
-+        },
-+        "transform_casrec": {
-+            "casrec_table": "",
-+            "casrec_column_name": "",
-+            "alias": "",
-+            "requires_transformation": "",
-+            "lookup_table": "",
-+            "default_value": "",
-+            "calculated": "",
-+            "additional_columns": ""
-+        }
-+    },
-+    "deputytype": {
-+        "mapping_status": {
-+            "is_complete": false
-+        },
-+        "sirius_details": {
-+            "is_pk": "",
-+            "fk_parents": "",
-+            "data_type": "str",
-+            "default_value": "",
-+            "calculated": "",
-+            "additional_columns": ""
-+        }
-+    },
-+    "relationshipother": {
-+        "mapping_status": {
-+            "is_complete": false
-+        },
-+        "sirius_details": {
-+            "is_pk": "",
-+            "fk_parents": "",
-+            "data_type": "str",
-+            "table_name": "order_deputy"
-+        },
-+        "transform_casrec": {
-+            "casrec_table": "",
-+            "casrec_column_name": "",
-+            "alias": "",
-+            "requires_transformation": "",
-+            "lookup_table": "",
-+            "default_value": "",
-+            "calculated": "",
-+            "additional_columns": ""
-+        }
-+    },
-+    "maincorrespondent": {
-+        "mapping_status": {
-+            "is_complete": false
-+        },
-+        "sirius_details": {
-+            "is_pk": "",
-+            "fk_parents": "",
-+            "data_type": "bool",
-+            "table_name": "order_deputy"
-+        },
-+        "transform_casrec": {
-+            "casrec_table": "",
-+            "casrec_column_name": "",
-+            "alias": "",
-+            "requires_transformation": "",
-+            "lookup_table": "",
-+            "default_value": "",
-+            "calculated": "",
-+            "additional_columns": ""
-+        }
-+    },
-+    "statusoncaseoverride": {
-+        "mapping_status": {
-+            "is_complete": false
-+        },
-+        "sirius_details": {
-+            "is_pk": "",
-+            "fk_parents": "",
-+            "data_type": "str",
-+            "table_name": "order_deputy"
-+        },
-+        "transform_casrec": {
-+            "casrec_table": "",
-+            "casrec_column_name": "",
-+            "alias": "",
-+            "requires_transformation": "",
-+            "lookup_table": "",
--            "lookup_table": "discharge_date_lookup",
-+            "lookup_table": "death_discharge_lookup",
-,
---            "alias": "",
---            "requires_transformation": "",
---            "lookup_table": "",
-Difference in file mapping_progress_summary.json found in mapping_definitions_previous/mapping_definitions/summary and mapping_definitions/summary
--            "total_rows": 7,
--            "total_unmapped": 4,
--            "total_mapped": 3,
--            "percentage_complete": 43
-+            "total_rows": 11,
-+            "total_unmapped": 8,
-+            "total_mapped": 3,
-+            "percentage_complete": 27
--            "total_fields": 798,
--            "total_unmapped": 483,
-+            "total_fields": 802,
-+            "total_unmapped": 487,
+-    "deputytype": {
+-        "mapping_status": {
+-            "is_complete": false
+-        },
+-        "sirius_details": {
+-            "is_pk": "",
+-            "fk_parents": "",
+-            "data_type": "str",
+-            "table_name": "order_deputy"
+-        },
+-        "transform_casrec": {
+-            "casrec_table": "",
+-            "casrec_column_name": "",
+-            "alias": "",
+-            "requires_transformation": "",
+-            "lookup_table": "",
+-            "default_value": "",
+-            "calculated": "",
+-            "additional_columns": ""
+-        }
+-    },
+-    "relationshipother": {
+-        "mapping_status": {
+-            "is_complete": false
+-        },
+-        "sirius_details": {
+-            "is_pk": "",
+-            "fk_parents": "",
+-            "data_type": "str",
+-            "table_name": "order_deputy"
+-        },
+-        "transform_casrec": {
+-            "casrec_table": "",
+-            "casrec_column_name": "",
+-            "alias": "",
+-            "requires_transformation": "",
+-            "lookup_table": "",
+-            "default_value": "",
+-            "calculated": "",
+-            "additional_columns": ""
+-        }
+-    },
+-    "maincorrespondent": {
+-        "mapping_status": {
+-            "is_complete": false
+-        },
+-        "sirius_details": {
+-            "is_pk": "",
+-            "fk_parents": "",
+-            "data_type": "bool",
+-            "table_name": "order_deputy"
+-        },
+-        "transform_casrec": {
+-            "casrec_table": "",
+-            "casrec_column_name": "",
+-            "alias": "",
+-            "requires_transformation": "",
+-            "lookup_table": "",
+-            "default_value": "",
+-            "calculated": "",
+-            "additional_columns": ""
+-        }
+-    },
+-    "statusoncaseoverride": {
+-        "mapping_status": {
+-            "is_complete": false
+-        },
+-        "sirius_details": {
+-            "is_pk": "",
+-            "fk_parents": "",
+-            "data_type": "str",
+-            "table_name": "order_deputy"
+-        },
+-        "transform_casrec": {
+-            "casrec_table": "",
+-            "casrec_column_name": "",
+-            "alias": "",
+-            "requires_transformation": "",
+-            "lookup_table": "",
+-            "default_value": "",
+-            "calculated": "",
+-            "additional_columns": ""
+-        }
+-    },
+-            "lookup_table": "death_discharge_lookup",
++            "lookup_table": "discharge_date_lookup",
+otes": {
+-            "total_rows": 12,
+-            "total_unmapped": 8,
+-            "total_mapped": 4,
+-            "percentage_complete": 33
+-            "total_fields": 802,
+-            "total_unmapped": 487,
++            "total_fields": 798,
++            "total_unmapped": 483,
