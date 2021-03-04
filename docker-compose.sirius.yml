@@ -39,8 +39,8 @@ services:
       SIRIUS_DB_USER: api
       SIRIUS_DB_PASSWORD: api # pragma: allowlist secret
       SIRIUS_DB_NAME: api
-      SIRIUS_DB_HOST: postgres-sirius
-      SIRIUS_DB_PORT: 5432
+      SIRIUS_DB_HOST: docker.for.mac.localhost
+      SIRIUS_DB_PORT: 7777
       ENVIRONMENT: local
       SIRIUS_ACCOUNT: NA
     depends_on: [casrec_db]
@@ -49,6 +49,7 @@ services:
       context: ./migration_steps
       dockerfile: load_casrec-dockerfile
     environment:
+      DB_USER: casrec
       DB_PASSWORD: casrec # pragma: allowlist secret
       DB_NAME: casrecmigration
       DB_HOST: casrec_db
@@ -62,6 +63,7 @@ services:
       context: ./migration_steps
       dockerfile: transform_casrec-dockerfile
     environment:
+      DB_USER: casrec
       DB_PASSWORD: casrec # pragma: allowlist secret
       DB_NAME: casrecmigration
       DB_HOST: casrec_db
@@ -82,7 +84,7 @@ services:
       SIRIUS_DB_PASSWORD: api # pragma: allowlist secret
       SIRIUS_DB_NAME: api
       SIRIUS_DB_HOST: docker.for.mac.localhost
-      SIRIUS_DB_PORT: 5432
+      SIRIUS_DB_PORT: 7777
       ENVIRONMENT: local
     depends_on: [casrec_db]
   validation:
@@ -98,9 +100,13 @@ services:
       SIRIUS_DB_USER: api
       SIRIUS_DB_PASSWORD: api # pragma: allowlist secret
       SIRIUS_DB_NAME: api
-      SIRIUS_DB_HOST: postgres-sirius
-      SIRIUS_DB_PORT: 5432
+      SIRIUS_DB_HOST: docker.for.mac.localhost
+      SIRIUS_DB_PORT: 7777
       ENVIRONMENT: local
+      SIRIUS_ACCOUNT: NA
+      RUN_API_TESTS: "True"
+      API_TEST_PASSWORD: "Password1" # pragma: allowlist secret
+      SIRIUS_FRONT_URL: http://host.docker.internal:8080
     depends_on: [casrec_db]
   wait-for-it:
     build: ./wait-for-it
@@ -118,6 +124,6 @@ services:
       SIRIUS_DB_PASSWORD: api # pragma: allowlist secret
       SIRIUS_DB_NAME: api
       SIRIUS_DB_HOST: docker.for.mac.localhost
-      SIRIUS_DB_PORT: 5432
+      SIRIUS_DB_PORT: 7777
       ENVIRONMENT: local
     depends_on: [casrec_db]

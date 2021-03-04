@@ -160,6 +160,16 @@ make dev-up
 
 You can now bring up our side using a different migrate script. You should bring everything down first. Run these commands in this repo:
 
+You need to make one further change. You need to expose port 7777 on the sirius DB so that we can connect to it with our setup.
+Add the following in the docker-compose file on the sirius side directly under postgres-api:
+
+```
+ports:
+  - 7777:5432
+```
+
+Then run this from the root of this repo:
+
 ```
 docker-compose down
 ./migrate_to_sirius.sh

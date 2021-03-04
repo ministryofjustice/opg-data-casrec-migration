@@ -1,0 +1,1 @@
+endpoint,path_var,full_check,"[""uId""]","[""firstname""]","[""clientAccommodation""][""handle""]"/api/v1/clients/{id},75,false,7000-0000-2415,Louis,FAMILY MEMBER/FRIEND'S HOME

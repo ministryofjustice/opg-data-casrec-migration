@@ -1,5 +1,6 @@
 import json
 import os
+import boto3
 from typing import Dict
 from typing import List
 
@@ -125,3 +126,85 @@ def get_config(env="local"):
     else:
         config = BaseConfig()
     return config
+
+
+def get_s3_session(session, environment, host, ci="false", account=None):
+    s3_session = session
+    if environment == "local":
+        if host == "localhost":
+            stack_host = "localhost"
+        else:
+            stack_host = "localstack"
+        s3 = s3_session.client(
+            "s3",
+            endpoint_url=f"http://{stack_host}:4572",
+            aws_access_key_id="fake",
+            aws_secret_access_key="fake",
+        )
+    elif ci == "true":
+        s3_session = sirius_session(account)
+        s3 = s3_session.client("s3")
+    else:
+        s3 = s3_session.client("s3")
+
+    return s3
+
+
+def upload_file(bucket, file_name, s3, log, object_name=None):
+    """Upload a file to an S3 bucket
+
+    :param file_name: File to upload
+    :param bucket: Bucket to upload to
+    :param object_name: S3 object name. If not specified then file_name is used
+    :return: True if file was uploaded, else False
+    """
+
+    # If S3 object_name was not specified, use file_name
+    if object_name is None:
+        object_name = file_name
+
+    # Upload the file, needs this encryption to work!
+    s3.put_object(
+        Body=open(file_name, "rb"),
+        Bucket=bucket,
+        Key=object_name,
+        ServerSideEncryption="AES256",
+        StorageClass="STANDARD",
+    )
+
+    log.info(f"Uploaded {file_name.split('/')[-1]}")
+
+
+def sirius_session(account):
+    client = boto3.client("sts")
+    role_to_assume = f"arn:aws:iam::{account}:role/sirius-ci"
+    response = client.assume_role(
+        RoleArn=role_to_assume, RoleSessionName="assumed_role"
+    )
+
+    session = boto3.Session(
+        aws_access_key_id=response["Credentials"]["AccessKeyId"],
+        aws_secret_access_key=response["Credentials"]["SecretAccessKey"],
+        aws_session_token=response["Credentials"]["SessionToken"],
+    )
+
+    return session
+
+
+def get_list_of_s3_files(bucket_name, s3, paths):
+    resp = s3.list_objects_v2(Bucket=bucket_name)
+    files_in_bucket = []
+
+    for obj in resp["Contents"]:
+        file_folder = obj["Key"]
+        fo = file_folder.split("/")[:-1]
+        folder = "/".join(fo)
+        fi = file_folder.split("/")[-1:]
+        file = "/".join(fi)
+
+        for path in paths:
+            print(f"{file}, {folder}, {path}")
+            if str(folder) == str(path):
+                files_in_bucket.append(file)
+
+    return files_in_bucket

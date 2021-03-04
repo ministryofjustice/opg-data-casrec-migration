@@ -1,0 +1,1 @@
+endpoint,search_entity,search_field,entity_ref,full_check,"[""surname""]","[""firstname""]","[""salutation""]"/api/v1/clients/{id},persons,surname,Dauphin,false,Dauphin,WrongName,King

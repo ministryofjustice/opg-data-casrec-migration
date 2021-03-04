@@ -11,6 +11,7 @@ from helpers import get_config
 from dotenv import load_dotenv
 import helpers
 from db_helpers import *
+from helpers import *
 import logging
 import custom_logger
 import click
@@ -59,32 +60,7 @@ host = os.environ.get("DB_HOST")
 ci = os.getenv("CI")
 bucket_name = f"casrec-migration-{environment.lower()}"
 account = os.environ["SIRIUS_ACCOUNT"]
-
-
-def upload_file(bucket, file_name, s3, object_name=None):
-    """Upload a file to an S3 bucket
-
-    :param file_name: File to upload
-    :param bucket: Bucket to upload to
-    :param object_name: S3 object name. If not specified then file_name is used
-    :return: True if file was uploaded, else False
-    """
-
-    # If S3 object_name was not specified, use file_name
-    if object_name is None:
-        object_name = file_name
-
-    # Upload the file
-    s3.put_object(
-        Body=open(file_name, "rb"),
-        Bucket=bucket,
-        Key=object_name,
-        ServerSideEncryption="AES256",
-        StorageClass="STANDARD",
-    )
-
-    log.info(f"Uploaded {file_name.split('/')[-1]}")
-    return True
+session = boto3.session.Session()
 
 
 def set_logging_level(verbose):
@@ -510,27 +486,6 @@ def get_exception_count():
     return result_from_sql_file(shared_sql_path, total_exceptions_sqlfile, conn_target)
 
 
-def get_s3_session():
-    s3_session = boto3.session.Session()
-
-    if environment == "local":
-
-        if host == "localhost":
-            stack_host = "localhost"
-        else:
-            stack_host = "localstack"
-        s3 = s3_session.client(
-            "s3",
-            endpoint_url=f"http://{stack_host}:4572",
-            aws_access_key_id="fake",
-            aws_secret_access_key="fake",
-        )
-    else:
-        s3 = s3_session.client("s3")
-
-    return s3
-
-
 @click.command()
 @click.option("-v", "--verbose", count=True)
 @click.option("--staging", is_flag=True, default=False)
@@ -558,13 +513,14 @@ def main(verbose, staging):
 
     log.info("No exceptions found: continue...\n")
     log.info("Adding sql files to bucket...\n")
-    s3 = get_s3_session()
+
+    s3 = get_s3_session(session, environment, host)
     if ci != "true":
         for file in os.listdir(shared_sql_path):
             file_path = f"{shared_sql_path}/{file}"
             s3_file_path = f"validation/sql/{file}"
             if file.endswith(".sql"):
-                upload_file(bucket_name, file_path, s3, s3_file_path)
+                upload_file(bucket_name, file_path, s3, log, s3_file_path)
 
 
 if __name__ == "__main__":

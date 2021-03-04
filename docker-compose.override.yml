@@ -27,9 +27,11 @@ services:
   integration:
     volumes:
       - ./migration_steps/integration/fixtures:/integration/fixtures
-      - ./migration_steps/integration/merge_target_ids:/integration/merge_target_ids
       - ./migration_steps/integration/schema_setup:/integration/schema_setup
+      - ./migration_steps/integration/load_to_staging:/integration/load_to_staging
       - ./migration_steps/integration/integration.sh:/integration/integration.sh
+      - ./migration_steps/integration/reindex_ids:/integration/reindex_ids
+      - ./migration_steps/integration/business_rules:/integration/business_rules
       - ./migration_steps/shared:/shared
 
   load_to_target:
@@ -39,6 +41,8 @@ services:
 
   validation:
     volumes:
+      - ./migration_steps/validation/api_tests:/validation/api_tests
+      - ./migration_steps/validation/api_test_data_s3_upload:/validation/api_test_data_s3_upload
       - ./migration_steps/validation/validate_db:/validation/validate_db
       - ./migration_steps/validation/validate.sh:/validation/validate.sh
       - ./migration_steps/shared:/shared

@@ -1,1 +1,0 @@
-endpoint,path_var,full_check,"[""uId""]","[""firstname""]","[""clientAccommodation""][""handle""]"/api/v1/clients/{id},200,true,7000-0000-3892,Robin,OWN HOME/api/v1/clients/{id},201,false,7000-0000-3900,Howard,OWN HOME/api/v1/clients/{id},202,false,7000-0000-3918,Roger,SUPPORTED LIVING
