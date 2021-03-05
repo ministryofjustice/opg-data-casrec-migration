@@ -1,0 +1,124 @@
+<html>
+<head>
+    <title>Migration</title>
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300&display=swap" rel="stylesheet">
+    <style>
+        body {
+  margin: 40px;
+    background-color: #F0F0F0;
+            font-family: 'IBM Plex Sans', sans-serif;
+}
+
+
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(4, 22%);
+  grid-gap: 10px;
+  color: #444;
+    height: calc(90vh - 10px);
+}
+
+.box {
+  background-color: #444;
+  color: #fff;
+  border-radius: 5px;
+    background-color: #F0F0F0;
+  font-size: 150%;
+    border: 2px solid #444444;
+    position: relative;
+    color: #444444;
+}
+
+.mapped .bar {
+    background-color: #cf1578;
+}
+.transformed .bar {
+    background-color: #e8d21d;
+}
+
+.integrated .bar {
+    background-color:#039fbe;
+}
+
+.migrated .bar {
+    background-color:#b20238;
+}
+
+.bar {
+    background-color: purple;
+    width: 100%;
+    border-radius: 2px;
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    color: #F0F0F0;
+}
+.title {
+    text-align: center;
+}
+
+
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <div class="box mapped">
+        <div class="title">
+             mapped
+        </div>
+
+
+
+        <div class="bar" style="height: 39%">
+            39%
+        </div>
+    </div>
+
+
+    <div class="box transformed">
+        <div class="title">
+             transformed
+        </div>
+
+
+
+        <div class="bar" style="height: 20%">
+            20%
+        </div>
+    </div>
+
+
+    <div class="box integrated">
+        <div class="title">
+             integrated
+        </div>
+
+
+
+        <div class="bar" style="height: 18%">
+            18%
+        </div>
+    </div>
+
+
+    <div class="box migrated">
+        <div class="title">
+             migrated
+        </div>
+
+
+
+        <div class="bar" style="height: 4%">
+            4%
+        </div>
+    </div>
+
+
+
+</div>
+
+</body>
+</html>
