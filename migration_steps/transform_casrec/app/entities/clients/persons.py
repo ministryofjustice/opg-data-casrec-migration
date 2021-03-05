@@ -6,10 +6,8 @@ definition = {
     "destination_table_name": "persons",
 }
 
-mapping_file_name = "client_persons_mapping"
 
-
-def insert_persons_clients(db_config, target_db):
+def insert_persons_clients(db_config, target_db, mapping_file_name):
 
     chunk_size = db_config["chunk_size"]
     offset = 0

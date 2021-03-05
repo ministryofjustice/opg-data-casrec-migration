@@ -9,10 +9,8 @@ definition = {
     "destination_table_name": "order_deputy",
 }
 
-mapping_file_name = "order_deputy_mapping"
 
-
-def insert_order_deputies(db_config, target_db):
+def insert_order_deputies(db_config, target_db, mapping_file_name):
 
     # Get the standard data from casrec 'deputy' table
     sirius_details, person_df = get_basic_data_table(

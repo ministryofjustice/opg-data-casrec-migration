@@ -20,7 +20,9 @@ def runner(db_config, target_db):
     log.info(log_title(message="supervision level"))
 
     log.debug("insert_supervision_level_log")
-    insert_supervision_level_log(db_config, target_db)
+    insert_supervision_level_log(
+        db_config, target_db, mapping_file_name="supervision_level_log_mapping"
+    )
 
 
 if __name__ == "__main__":

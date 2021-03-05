@@ -20,10 +20,16 @@ def runner(db_config, target_db):
     log.info(log_title(message="cases"))
 
     log.debug("insert_cases")
-    insert_cases(target_db=target_db, db_config=db_config)
+    insert_cases(
+        target_db=target_db, db_config=db_config, mapping_file_name="cases_mapping"
+    )
 
     log.debug("insert_person_caseitem")
-    insert_person_caseitem(target_db=target_db, db_config=db_config)
+    insert_person_caseitem(
+        target_db=target_db,
+        db_config=db_config,
+        mapping_file_name="person_caseitem_mapping",
+    )
 
 
 if __name__ == "__main__":

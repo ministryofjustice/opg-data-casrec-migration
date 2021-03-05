@@ -7,10 +7,8 @@ definition = {
     "destination_table_name": "phonenumbers",
 }
 
-mapping_file_name = "deputy_evening_phonenumbers_mapping"
 
-
-def insert_phonenumbers_deputies_evening(db_config, target_db):
+def insert_phonenumbers_deputies_evening(db_config, target_db, mapping_file_name):
 
     chunk_size = db_config["chunk_size"]
     offset = 0

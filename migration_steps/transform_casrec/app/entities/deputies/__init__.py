@@ -25,17 +25,37 @@ def runner(target_db, db_config):
     log.info(log_title(message="deputies"))
 
     log.debug("insert_persons_deputies")
-    insert_persons_deputies(target_db=target_db, db_config=db_config)
+    insert_persons_deputies(
+        target_db=target_db,
+        db_config=db_config,
+        mapping_file_name="deputy_persons_mapping",
+    )
 
     log.debug("insert_phonenumbers_deputies")
-    insert_phonenumbers_deputies_daytime(target_db=target_db, db_config=db_config)
-    insert_phonenumbers_deputies_evening(target_db=target_db, db_config=db_config)
+    insert_phonenumbers_deputies_daytime(
+        target_db=target_db,
+        db_config=db_config,
+        mapping_file_name="deputy_daytime_phonenumbers_mapping",
+    )
+    insert_phonenumbers_deputies_evening(
+        target_db=target_db,
+        db_config=db_config,
+        mapping_file_name="deputy_evening_phonenumbers_mapping",
+    )
 
     log.debug("insert_addresses_deputies")
-    insert_addresses_deputies(target_db=target_db, db_config=db_config)
+    insert_addresses_deputies(
+        target_db=target_db,
+        db_config=db_config,
+        mapping_file_name="deputy_addresses_mapping",
+    )
 
     log.debug("insert_order_deputies")
-    insert_order_deputies(target_db=target_db, db_config=db_config)
+    insert_order_deputies(
+        target_db=target_db,
+        db_config=db_config,
+        mapping_file_name="order_deputy_mapping",
+    )
 
 
 if __name__ == "__main__":
