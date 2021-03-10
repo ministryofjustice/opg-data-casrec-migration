@@ -40,13 +40,15 @@ def insert_caseitem_note(db_config, target_db):
             how="left",
             left_on="c_case",
             right_on="caserecnumber",
-            suffixes=["_case", "_notes"],
+            suffixes=["_notes", "_case"],
         )
 
         notes_caseitem_df = notes_caseitem_df.drop(columns=["caserecnumber"])
         notes_caseitem_df = notes_caseitem_df.rename(
             columns={"id_case": "caseitem_id", "id_notes": "note_id"}
         )
+
+        notes_caseitem_df = notes_caseitem_df[notes_caseitem_df["caseitem_id"].notna()]
 
         notes_caseitem_df = reapply_datatypes_to_fk_cols(
             columns=["note_id", "caseitem_id"], df=notes_caseitem_df
