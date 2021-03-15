@@ -81,6 +81,7 @@ def generate_inserts(db_config, db_engine, tables):
 
         try:
             db_engine.execute(query)
+            global completed_tables
             completed_tables.append(table)
             log.info(
                 f"{len(completed_tables)}/{len(tables_list)} tables have been completed"

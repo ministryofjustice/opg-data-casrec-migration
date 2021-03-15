@@ -2,12 +2,13 @@ import os
 import sys
 from pathlib import Path
 
-from utilities.progress import update_progress
+# from utilities.progress import update_progress
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../shared")
 
 from decorators import files_used
+from progress import update_progress
 import logging
 import time
 import click
@@ -135,8 +136,9 @@ def main(clear, include_tests, verbose, chunk_size):
     if include_tests:
         run_data_tests(verbosity_level=verbosity_levels[verbose])
 
-    if environment == "local":
-        update_progress(mapping_files_used=files_used)
+    if environment in ["local", "docker"]:
+        # update_progress(mapping_files_used=files_used)
+        update_progress(module_name="transform", completed_items=files_used)
         log.debug(f"Number of mapping docs used: {len(files_used)}")
 
 

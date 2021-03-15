@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 from clear_database import empty_target_tables
-from move import generate_inserts
+from move import generate_inserts, completed_tables
 from setup import insert_base_data
 
 
@@ -17,6 +17,7 @@ import click
 from sqlalchemy import create_engine
 import custom_logger
 from helpers import log_title
+from progress import update_progress
 import table_helpers
 
 from dotenv import load_dotenv
@@ -84,6 +85,9 @@ def main(verbose, clear):
     generate_inserts(
         db_config=db_config, db_engine=target_db_engine, tables=tables_list
     )
+
+    if environment in ["local", "docker"]:
+        update_progress(module_name="load_to_staging", completed_items=completed_tables)
 
 
 if __name__ == "__main__":

@@ -17,6 +17,7 @@ import click
 from sqlalchemy import create_engine
 import custom_logger
 from helpers import log_title
+from progress import update_progress
 import table_helpers
 
 from dotenv import load_dotenv
@@ -48,6 +49,8 @@ db_config = {
 }
 source_db_engine = create_engine(db_config["source_db_connection_string"])
 target_db_engine = create_engine(db_config["target_db_connection_string"])
+
+completed_tables = []
 
 
 @click.command()
@@ -95,6 +98,11 @@ def main(verbose, audit):
             table=table,
             table_details=tables_dict[table],
         )
+
+        completed_tables.append(table)
+
+    if environment in ["local", "docker"]:
+        update_progress(module_name="load_to_sirius", completed_items=completed_tables)
 
     if audit == "True":
         log.info(f"Running Post-Audit - Table Copies and Comparisons")
