@@ -7,6 +7,8 @@ from typing import List
 from config import BaseConfig
 from config import LocalConfig
 
+from decorators import track_file_use
+
 
 def log_title(message: str) -> str:
     total_length = 100
@@ -27,6 +29,7 @@ def get_current_directory():
     return dirname
 
 
+@track_file_use
 def get_mapping_dict(
     file_name: str,
     stage_name: str = "",

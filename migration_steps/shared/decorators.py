@@ -9,6 +9,7 @@ import time
 
 log = logging.getLogger("root")
 environment = os.environ.get("ENVIRONMENT")
+files_used = set([])
 
 
 def timer(func):
@@ -31,5 +32,18 @@ def timer(func):
                 f"Function '{function_name}' from '{filename}' ran in "
                 f"{time_to_run} secs "
             )
+
+    return wrapper
+
+
+def track_file_use(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+
+        global files_used
+
+        files_used.add(kwargs["file_name"])
+
+        return func(*args, **kwargs)
 
     return wrapper
