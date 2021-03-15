@@ -105,7 +105,7 @@ workflows:
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra preproduction
-          requires: [build and unit tests]
+          requires: [get latest tag]
           tf_workspace: preproduction
           tf_command: plan
           filters: {branches:{only:[master]}}
