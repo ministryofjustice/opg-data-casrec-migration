@@ -65,7 +65,9 @@ def main(verbose, clear):
         log.info(f"{verbose} is not a valid verbosity level")
         log.info(f"INFO logging enabled")
 
-    log.info(log_title(message="Integration Step: Merge Casrec data with Sirius data"))
+    log.info(
+        log_title(message="Integration Step: Apply Sirius business rules to Staging DB")
+    )
     log.info(
         log_title(
             message=f"Source: {db_config['source_schema']} Target: {db_config['target_schema']}"
