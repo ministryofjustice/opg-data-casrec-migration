@@ -1,3 +1,5 @@
+from collections import OrderedDict
+from operator import getitem
 from jinja2 import Environment, FileSystemLoader
 import os
 import json
@@ -10,12 +12,17 @@ env = Environment(loader=FileSystemLoader(templates_dir))
 template = env.get_template("index.html")
 
 
-progress_details = [
-    {"stage": "mapped", "percentage": f"{get_total_progress()}%"},
-    {"stage": "transformed", "percentage": "20%"},
-    {"stage": "integrated", "percentage": "18%"},
-    {"stage": "migrated", "percentage": "4%"},
-]
+# progress_details = [
+#     {"stage": "mapped", "percentage": f"{get_total_progress()}%"},
+#     {"stage": "transformed", "percentage": "20%"},
+#     {"stage": "integrated", "percentage": "18%"},
+#     {"stage": "migrated", "percentage": "4%"},
+# ]
+
+
+with open("entity_progress.json", "r") as progress_json:
+    data = progress_json.read()
+    progress_details = json.loads(data)
 
 
 filename = os.path.join(root, "index.html")

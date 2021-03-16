@@ -1,85 +1,175 @@
 <html>
 <head>
-    <title>Migration</title>
-<link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300&display=swap" rel="stylesheet">
+    <title>Progress</title>
+
     <style>
         body {
-  margin: 40px;
-    background-color: #F0F0F0;
+            margin: 40px;
+            background-color: #F0F0F0;
             font-family: 'IBM Plex Sans', sans-serif;
-}
+        }
+
+        .wrapper {
+            display: grid;
+            grid-template-columns: 20% repeat(5, 12%);
+            grid-gap: 10px;
+            color: #444;
+        }
+
+        .box {
+            background-color: #F0F0F0;
+            border-radius: 5px;
+            padding: 20px;
+            font-size: 150%;
+            color: #444444;
+
+        }
+
+        .progress {
+            position: relative;
+            padding: 0;
+        }
+
+        div.mapping {
+            background-color: rgba(209, 21, 121, 0.1);
+            box-shadow: inset 0px 0px 0px 1px rgba(209, 21, 121, 0.1);
+        }
+
+        div.mapping > div {
+            background-color: #cf1578;
+        }
+
+        div.transform {
+            background-color: rgba(233, 209, 28, 0.1);
+            box-shadow: inset 0px 0px 0px 1px rgba(233, 209, 28, 0.1);
+        }
+
+        div.transform > div {
+            background-color: #e8d21d;
+        }
+
+        div.staging {
+            background-color: rgba(3, 159, 190, 0.1);
+            box-shadow: inset 0px 0px 0px 1px rgba(3, 159, 190, 0.1);
+        }
+
+        div.staging > div {
+            background-color: #039fbe;
+        }
+
+        div.sirius {
+            background-color: rgba(178, 2, 56, 0.1);
+            box-shadow: inset 0px 0px 0px 1px rgba(178, 2, 56, 0.1);
+        }
+
+        div.sirius > div {
+            background-color: #b20238;
+        }
+
+        div.validation {
+            background-color: rgba(55, 178, 2, 0.1);
+            box-shadow: inset 0px 0px 0px 1px rgba(55, 178, 2, 0.1);
+        }
+
+        div.validation > div {
+            background-color: #37b202;
+        }
+
+        .header {
+            text-align: center;
+        }
 
 
-.wrapper {
-  display: grid;
-  grid-template-columns: repeat(4, 22%);
-  grid-gap: 10px;
-  color: #444;
-    height: calc(90vh - 10px);
-}
+        .complete {
+            background-color: purple;
+            height: 100%;
+            border-radius: 2px;
+            position: absolute;
+            bottom: 0;
+            text-align: center;
+            border-radius: 5px;
+            color: #F0F0F0;
+        }
 
-.box {
-  background-color: #444;
-  color: #fff;
-  border-radius: 5px;
-    background-color: #F0F0F0;
-  font-size: 150%;
-    border: 2px solid #444444;
-    position: relative;
-    color: #444444;
-}
+        div.complete > div {
+            transform: rotate(-90deg);
+            font-size: 60%;
+            position: absolute;
+            bottom: 50%;
+        }
 
-.mapped .bar {
-    background-color: #cf1578;
-}
-.transformed .bar {
-    background-color: #e8d21d;
-}
+        .details {
+            text-align: center;
+            font-size: 70%;
+            position: relative;
+            top: -10px;
+        }
 
-.integrated .bar {
-    background-color:#039fbe;
-}
+        .title {
+            text-align: right;
+        }
 
-.migrated .bar {
-    background-color:#b20238;
-}
+        h1 {
+            width: 100%;
+            text-align: center;
+        }
 
-.bar {
-    background-color: purple;
-    width: 100%;
-    border-radius: 2px;
-    position: absolute;
-    bottom: 0;
-    text-align: center;
-    color: #F0F0F0;
-}
-.title {
-    text-align: center;
-}
+        h5 {
+            padding: 1% 10% 1% 10%;
+            font-weight: lighter;
+        }
 
+        .note {
+            font-size: 50%;
+        }
 
     </style>
 </head>
 <body>
 
+<h1>Entity Migration Progress</h1>
+
 <div class="wrapper">
-{% for item in progress %}
-    <div class="box {{ item.stage }}">
-        <div class="title">
-             {{ item.stage }}
-        </div>
+    <div class="box header"></div>
+    <div class="box header">mapping</div>
+    <div class="box header">transform</div>
+    <div class="box header">staging</div>
+    <div class="box header">sirius</div>
+    <div class="box header">validation<p class="note">(not yet tracked)</p></div>
 
-
-
-        <div class="bar" style="height: {{ item.percentage }}">
-            {{ item.percentage }}
+    {% for item, details in progress.items()|sort %}
+    <div class="box title">{{ item }}</div>
+    <div class="box progress mapping">
+        <div class="complete" style="width: {{ details.progress.mapping }}%;">
         </div>
     </div>
+    <div class="box progress transform">
+        <div class="complete" style="width: {{ details.progress.transform }}%;">
+        </div>
+    </div>
+    <div class="box progress staging">
+        <div class="complete" style="width: {{ details.progress.staging }}%;">
+        </div>
+    </div>
+    <div class="box progress sirius">
+        <div class="complete" style="width: {{ details.progress.sirius }}%;"></div>
+    </div>
+    <div class="box progress validation">
+        <div class="complete" style="width: {{ details.progress.validation }}%;"></div>
+    </div>
+    <div class="details"></div>
+    <div class="details">{{ details.progress.mapping }}%</div>
+    <div class="details">{{ details.progress.transform }}%</div>
+    <div class="details">{{ details.progress.staging }}%</div>
+    <div class="details">{{ details.progress.sirius }}%</div>
+    <div class="details">{{ details.progress.validation }}</div>
+    {% endfor %}
 
-{% endfor %}
 
 </div>
-
+<!--<h5>-->
+<!--    These percentages are relative to each other, eg we can only transform what has been mapped, so if 30% of an entity-->
+<!--    has been mapped and 100% transformed, that means 100% of the mapped fields have been transformed, and so on.-->
+<!--</h5>-->
 </body>
 </html>
