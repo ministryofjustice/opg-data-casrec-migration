@@ -20,9 +20,7 @@ def runner(target_db, db_config):
     log.info(log_title(message="bonds"))
 
     log.debug("insert_bonds")
-    insert_bonds(
-        target_db=target_db, db_config=db_config, mapping_file_name="bonds_mapping"
-    )
+    insert_bonds(target_db=target_db, db_config=db_config)
 
 
 if __name__ == "__main__":

@@ -21,7 +21,8 @@ def runner(db_config, target_db):
 
     log.debug("insert_supervision_level_log")
     insert_supervision_level_log(
-        db_config, target_db, mapping_file_name="supervision_level_log_mapping"
+        db_config,
+        target_db,
     )
 
 

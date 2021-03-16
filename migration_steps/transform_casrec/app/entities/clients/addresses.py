@@ -6,9 +6,10 @@ definition = {
     "source_table_additional_columns": ["Case"],
     "destination_table_name": "addresses",
 }
+mapping_file_name = "client_addresses_mapping"
 
 
-def insert_addresses_clients(db_config, target_db, mapping_file_name):
+def insert_addresses_clients(db_config, target_db):
 
     chunk_size = db_config["chunk_size"]
     offset = 0

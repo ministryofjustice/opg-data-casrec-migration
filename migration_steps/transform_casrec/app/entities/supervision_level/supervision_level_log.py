@@ -7,8 +7,10 @@ definition = {
     "destination_table_name": "supervision_level_log",
 }
 
+mapping_file_name = "supervision_level_log_mapping"
 
-def insert_supervision_level_log(db_config, target_db, mapping_file_name):
+
+def insert_supervision_level_log(db_config, target_db):
 
     chunk_size = db_config["chunk_size"]
     offset = 0

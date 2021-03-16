@@ -9,8 +9,10 @@ definition = {
     "source_table_additional_columns": [],
 }
 
+mapping_file_name = "person_caseitem_mapping"
 
-def insert_person_caseitem(db_config, target_db, mapping_file_name):
+
+def insert_person_caseitem(db_config, target_db):
 
     sirius_details = get_mapping_dict(
         file_name=mapping_file_name,

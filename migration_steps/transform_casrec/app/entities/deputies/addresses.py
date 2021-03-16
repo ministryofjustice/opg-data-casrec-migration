@@ -9,8 +9,10 @@ definition = {
     "destination_table_name": "addresses",
 }
 
+mapping_file_name = "deputy_addresses_mapping"
 
-def insert_addresses_deputies(db_config, target_db, mapping_file_name):
+
+def insert_addresses_deputies(db_config, target_db):
 
     deputyship_query = f"""
         select "Dep Addr No", "Deputy No"
