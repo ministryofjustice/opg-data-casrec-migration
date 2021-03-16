@@ -121,4 +121,13 @@ def get_entity_progress(entity_list):
 
         entity_list_with_progress[entity_name]["progress"] = progress
 
-    return entity_list_with_progress
+    # return entity_list_with_progress
+    create_progress_json(entity_list_with_progress)
+
+
+def create_progress_json(progress_dict):
+    dirname = get_current_directory()
+    file_path = os.path.join(dirname, f"progress")
+
+    with open(f"{file_path}/entity_progress.json", "w+") as progress_file:
+        progress_file.write(json.dumps(progress_dict, indent=4))

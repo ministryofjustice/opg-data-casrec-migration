@@ -1,0 +1,203 @@
+{
+    "remarks": {
+        "details": {
+            "mapping_files": [
+                "person_note_mapping",
+                "notes_mapping",
+                "caseitem_note_mapping"
+            ],
+            "sirius_tables": [
+                "person_note",
+                "notes",
+                "caseitem_note"
+            ]
+        },
+        "progress": {
+            "mapping": 50,
+            "transform": 67,
+            "staging": 67,
+            "sirius": 67
+        }
+    },
+    "reporting": {
+        "details": {
+            "mapping_files": [
+                "annual_report_lodging_details_mapping",
+                "annual_report_type_assignments_mapping"
+            ],
+            "sirius_tables": [
+                "annual_report_lodging_details",
+                "annual_report_type_assignments"
+            ]
+        },
+        "progress": {
+            "mapping": 28,
+            "transform": 0,
+            "staging": 0,
+            "sirius": 0
+        }
+    },
+    "finance": {
+        "details": {
+            "mapping_files": [
+                "finance_invoice_fee_range_mapping",
+                "fees_mapping",
+                "finance_ledger_mapping",
+                "finance_counter_mapping",
+                "finance_fee_mapping",
+                "payments_mapping",
+                "finance_person_mapping",
+                "finance_property_mapping",
+                "finance_invoice_mapping",
+                "finance_report_mapping",
+                "finance_order_mapping"
+            ],
+            "sirius_tables": [
+                "finance_invoice_fee_range",
+                "fees",
+                "finance_ledger",
+                "finance_counter",
+                "finance_fee",
+                "payments",
+                "finance_person",
+                "finance_property",
+                "finance_invoice",
+                "finance_report",
+                "finance_order"
+            ]
+        },
+        "progress": {
+            "mapping": 21,
+            "transform": 0,
+            "staging": 0,
+            "sirius": 0
+        }
+    },
+    "client": {
+        "details": {
+            "mapping_files": [
+                "client_phonenumbers_mapping",
+                "client_persons_mapping",
+                "client_addresses_mapping"
+            ],
+            "sirius_tables": [
+                "phonenumbers",
+                "persons",
+                "addresses"
+            ]
+        },
+        "progress": {
+            "mapping": 90,
+            "transform": 100,
+            "staging": 100,
+            "sirius": 100
+        }
+    },
+    "supervision_level": {
+        "details": {
+            "mapping_files": [
+                "supervision_level_log_mapping"
+            ],
+            "sirius_tables": [
+                "supervision_level_log"
+            ]
+        },
+        "progress": {
+            "mapping": 56,
+            "transform": 100,
+            "staging": 100,
+            "sirius": 100
+        }
+    },
+    "warnings": {
+        "details": {
+            "mapping_files": [
+                "caseitem_warning_mapping"
+            ],
+            "sirius_tables": [
+                "caseitem_warning"
+            ]
+        },
+        "progress": {
+            "mapping": 100,
+            "transform": 0,
+            "staging": 0,
+            "sirius": 0
+        }
+    },
+    "events": {
+        "details": {
+            "mapping_files": [
+                "events_mapping"
+            ],
+            "sirius_tables": [
+                "events"
+            ]
+        },
+        "progress": {
+            "mapping": 68,
+            "transform": 0,
+            "staging": 0,
+            "sirius": 0
+        }
+    },
+    "deputy": {
+        "details": {
+            "mapping_files": [
+                "order_deputy_mapping",
+                "deputy_addresses_mapping",
+                "deputy_daytime_phonenumbers_mapping",
+                "deputy_evening_phonenumbers_mapping",
+                "deputy_persons_mapping"
+            ],
+            "sirius_tables": [
+                "order_deputy",
+                "addresses",
+                "phonenumbers",
+                "persons"
+            ]
+        },
+        "progress": {
+            "mapping": 61,
+            "transform": 100,
+            "staging": 100,
+            "sirius": 100
+        }
+    },
+    "cases": {
+        "details": {
+            "mapping_files": [
+                "cases_mapping",
+                "person_caseitem_mapping"
+            ],
+            "sirius_tables": [
+                "cases",
+                "person_caseitem"
+            ]
+        },
+        "progress": {
+            "mapping": 90,
+            "transform": 100,
+            "staging": 100,
+            "sirius": 100
+        }
+    },
+    "bonds": {
+        "details": {
+            "mapping_files": [
+                "bonds_mapping",
+                "bond_providers_mapping"
+            ],
+            "sirius_tables": [
+                "bonds",
+                "bond_providers"
+            ]
+        },
+        "progress": {
+            "mapping": 60,
+            "transform": 50,
+            "staging": 50,
+            "sirius": 50
+        }
+    }
+}
