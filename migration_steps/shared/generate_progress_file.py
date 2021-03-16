@@ -121,8 +121,8 @@ def get_entity_progress(entity_list):
 
         entity_list_with_progress[entity_name]["progress"] = progress
 
-    # return entity_list_with_progress
     create_progress_json(entity_list_with_progress)
+    return entity_list_with_progress
 
 
 def create_progress_json(progress_dict):

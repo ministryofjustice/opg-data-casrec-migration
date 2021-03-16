@@ -101,7 +101,7 @@ def main(verbose, audit):
 
         completed_tables.append(table)
 
-    if environment in ["local", "docker"]:
+    if environment == "local":
         update_progress(module_name="load_to_sirius", completed_items=completed_tables)
 
     if audit == "True":

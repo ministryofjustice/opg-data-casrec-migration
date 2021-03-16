@@ -3,13 +3,14 @@ set -e
 # Whether to skip all the casrec loading.
 # Change to true to reload (only do this if sure the data in casrec_csv schema is correct)
 NO_RELOAD=false
+GENERATE_DOCS=false
 if [ "${NO_RELOAD}" == "true" ]
   then
   echo "=== Setting no reload settings ==="
   SKIP_SCHEMAS="casrec_csv"
   SKIP_LOAD="true"
 fi
-# Docker compose file for circle build
+ Docker compose file for circle build
 docker build base_image -t opg_casrec_migration_base_image:latest
 docker-compose up --no-deps -d casrec_db localstack postgres-sirius
 docker-compose run --rm wait-for-it -address postgres-sirius:5432 --timeout=30 -debug
@@ -46,3 +47,8 @@ docker-compose run --rm transform_casrec python3 app.py --clear=True -v
 docker-compose run --rm integration integration/integration.sh
 docker-compose run --rm load_to_target python3 app.py -vv --audit=False
 docker-compose run --rm validation validation/validate.sh "$@"
+if [ "${GENERATE_DOCS}" == "true" ]
+  then
+  echo "=== Generating new docs for Github Pages ==="
+  python3 docs/create_report/run.py
+fi
