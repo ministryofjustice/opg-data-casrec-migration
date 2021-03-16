@@ -10,7 +10,7 @@ if [ "${NO_RELOAD}" == "true" ]
   SKIP_SCHEMAS="casrec_csv"
   SKIP_LOAD="true"
 fi
- Docker compose file for circle build
+# Docker compose file for circle build
 docker build base_image -t opg_casrec_migration_base_image:latest
 docker-compose up --no-deps -d casrec_db localstack postgres-sirius
 docker-compose run --rm wait-for-it -address postgres-sirius:5432 --timeout=30 -debug
