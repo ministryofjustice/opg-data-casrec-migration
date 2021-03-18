@@ -11,7 +11,8 @@
 			"name": "global_uid_seq",
 			"column": "uid",
 			"type": "uid"
-		}]
+		}],
+		"order_by": ["id"]
 	},
 	"addresses": {
 		"pk": "id",
@@ -26,7 +27,8 @@
 			"name": "addresses_id_seq",
 			"column": "id",
 			"type": "pk"
-		}]
+		}],
+		"order_by": ["id"]
 	},
 	"phonenumbers": {
 		"table_type": "data",
@@ -41,7 +43,8 @@
 			"name": "phonenumbers_id_seq",
 			"column": "id",
 			"type": "pk"
-		}]
+		}],
+		"order_by": ["id"]
 	},
 	"cases": {
 		"table_type": "data",
@@ -59,7 +62,8 @@
 			"name": "global_uid_seq",
 			"column": "uid",
 			"type": "uid"
-		}]
+		}],
+		"order_by": ["id"]
 	},
 	"person_caseitem": {
 		"pk": "",
@@ -74,7 +78,8 @@
 				"parent_column": "id"
 			}],
 		"table_type": "join",
-		"sequences": []
+		"sequences": [],
+		"order_by": ["person_id", "caseitem_id"]
 	},
 	"supervision_level_log": {
 		"table_type": "data",
@@ -89,7 +94,8 @@
 			"name": "supervision_level_log_id_seq",
 			"column": "id",
 			"type": "pk"
-		}]
+		}],
+		"order_by": ["id"]
 	},
 	"bonds": {
 		"table_type": "data",
@@ -104,7 +110,8 @@
 			"name": "bonds_id_seq",
 			"column": "id",
 			"type": "pk"
-		}]
+		}],
+		"order_by": ["id"]
 	},
 	"order_deputy": {
 		"pk": "id",
@@ -119,7 +126,8 @@
 				"parent_column": "id"
 			}],
 		"table_type": "join",
-		"sequences": []
+		"sequences": [],
+		"order_by": ["id"]
 	},
 	"notes": {
 		"table_type": "data",
@@ -129,7 +137,8 @@
 			"name": "notes_id_seq",
 			"column": "id",
 			"type": "pk"
-		}]
+		}],
+		"order_by": ["id"]
 	},
 	"caseitem_note": {
 		"pk": "",
@@ -144,6 +153,7 @@
 				"parent_column": "id"
 			}],
 		"table_type": "join",
-		"sequences": []
+		"sequences": [],
+		"order_by": ["note_id", "caseitem_id"]
 	}
 }

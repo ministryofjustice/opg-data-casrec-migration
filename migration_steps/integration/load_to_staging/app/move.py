@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 import logging
 
 import psycopg2
@@ -93,4 +94,4 @@ def generate_inserts(db_config, db_engine, tables):
                 f"There was an error inserting {table} into {db_config['target_schema']}"
             )
             log.debug(e)
-            break
+            sys.exit(1)

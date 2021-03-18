@@ -89,23 +89,35 @@ def create_insert_statement(schema, table_name, columns, df):
     return insert_statement
 
 
-def insert_data_into_target(db_config, source_db_engine, target_db_engine, table, pk):
+def insert_data_into_target(
+    db_config, source_db_engine, target_db_engine, table_name, table_details
+):
 
-    log.info(f"Inserting new data from {db_config['source_schema']} '{table}' table")
-    get_cols_query = get_columns_query(table=table, schema=db_config["source_schema"])
+    log.info(
+        f"Inserting new data from {db_config['source_schema']} '{table_name}' table"
+    )
+    get_cols_query = get_columns_query(
+        table=table_name, schema=db_config["source_schema"]
+    )
 
     columns = [x[0] for x in source_db_engine.execute(get_cols_query).fetchall()]
 
     columns = remove_unecessary_columns(columns=columns)
+
+    order_by = (
+        ", ".join(table_details["order_by"])
+        if len(table_details["order_by"]) > 0
+        else table_details["pk"]
+    )
 
     chunk_size = 10000
     offset = 0
     while True:
         query = f"""
             SELECT {', '.join(columns)}
-            FROM {db_config["source_schema"]}.{table}
+            FROM {db_config["source_schema"]}.{table_name}
             WHERE method = 'INSERT'
-            ORDER BY {pk}
+            ORDER BY {order_by}
             LIMIT {chunk_size} OFFSET {offset};;
         """
 
@@ -115,7 +127,7 @@ def insert_data_into_target(db_config, source_db_engine, target_db_engine, table
 
         insert_statement = create_insert_statement(
             schema=db_config["target_schema"],
-            table_name=table,
+            table_name=table_name,
             columns=columns,
             df=data_to_insert,
         )
@@ -124,16 +136,19 @@ def insert_data_into_target(db_config, source_db_engine, target_db_engine, table
 
         try:
             target_db_engine.execute(insert_statement)
-        except Exception as e:
-            log.error(e)
+        except Exception:
+            log.error(
+                f"There was an error inserting data into {len(data_to_insert)} rows into {db_config['source_schema']}.{table_name}"
+            )
+            sys.exit(1)
 
         offset += chunk_size
-        log.debug(f"doing offset {offset} for table {table}")
+        log.debug(f"doing offset {offset} for table {table_name}")
         if len(data_to_insert) < chunk_size:
             break
 
 
-def update_data_in_target(db_config, source_db_engine, table, pk):
+def update_data_in_target(db_config, source_db_engine, table, table_details):
 
     log.info(
         f"Updating existing data from {db_config['source_schema']} '{table}' table"
@@ -143,6 +158,11 @@ def update_data_in_target(db_config, source_db_engine, table, pk):
     columns = [x[0] for x in source_db_engine.execute(get_cols_query).fetchall()]
 
     columns = remove_unecessary_columns(columns=columns)
+    order_by = (
+        ", ".join(table_details["order_by"])
+        if len(table_details["order_by"]) > 0
+        else table_details["pk"]
+    )
 
     chunk_size = 10000
     offset = 0
@@ -150,7 +170,7 @@ def update_data_in_target(db_config, source_db_engine, table, pk):
         query = f"""
             SELECT {', '.join(columns)} FROM {db_config["source_schema"]}.{table}
             WHERE method = 'UPDATE'
-            ORDER BY {pk}
+            ORDER BY {order_by}
             LIMIT {chunk_size} OFFSET {offset};
         """
 

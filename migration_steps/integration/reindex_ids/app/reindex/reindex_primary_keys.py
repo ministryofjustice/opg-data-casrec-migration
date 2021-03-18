@@ -1,4 +1,6 @@
 import logging
+import sys
+
 import psycopg2
 
 from decorators import timer
@@ -39,7 +41,8 @@ def get_max_pk_dict(db_connection_string, max_val_query):
             result_dict[i[0]] = {i[1]: i[2] if i[2] else 0}
 
     except Exception as e:
-        print(e)
+        log.debug(e)
+        sys.exit(1)
     finally:
         cursor.close()
         conn.commit()
@@ -80,7 +83,8 @@ def update_pks(db_config, table_details):
     try:
         cursor.execute(update_query)
     except Exception as e:
-        print(e)
+        log.debug(e)
+        sys.exit(1)
     finally:
         cursor.close()
         conn.commit()

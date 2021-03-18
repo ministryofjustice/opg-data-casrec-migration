@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 import logging
 
 import psycopg2
@@ -35,3 +36,4 @@ def insert_base_data(db_config, db_engine):
                 f"There was an error inserting the {name} data into {db_config['target_schema']}"
             )
             log.debug(e)
+            sys.exit(1)

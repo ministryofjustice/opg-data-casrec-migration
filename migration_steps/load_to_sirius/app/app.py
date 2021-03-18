@@ -70,7 +70,8 @@ def main(verbose, audit):
     )
     log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
-    tables_list = table_helpers.get_table_list(table_helpers.get_table_file())
+    tables_dict = table_helpers.get_table_file()
+    tables_list = table_helpers.get_table_list(tables_dict)
 
     if audit == "True":
         log.info(f"Running Pre-Audit - Table Copies")
@@ -81,16 +82,18 @@ def main(verbose, audit):
 
         log.debug(f"This is table number {i + 1} of {len(tables_list)}")
 
-        pk = table_helpers.get_pk(target_db_engine, db_config["target_schema"], table)
         insert_data_into_target(
             db_config=db_config,
             source_db_engine=source_db_engine,
             target_db_engine=target_db_engine,
-            table=table,
-            pk=pk,
+            table_name=table,
+            table_details=tables_dict[table],
         )
         update_data_in_target(
-            db_config=db_config, source_db_engine=source_db_engine, table=table, pk=pk
+            db_config=db_config,
+            source_db_engine=source_db_engine,
+            table=table,
+            table_details=tables_dict[table],
         )
 
     if audit == "True":

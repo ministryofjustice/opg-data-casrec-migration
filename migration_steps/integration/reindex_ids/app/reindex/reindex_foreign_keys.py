@@ -1,4 +1,6 @@
 import logging
+import sys
+
 import psycopg2
 
 from decorators import timer
@@ -42,7 +44,8 @@ def update_fks(db_config, table_details):
     try:
         cursor.execute(query)
     except Exception as e:
-        print(e)
+        log.debug(e)
+        sys.exit(1)
     finally:
         cursor.close()
         conn.commit()

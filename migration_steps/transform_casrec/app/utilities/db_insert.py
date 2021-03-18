@@ -238,6 +238,7 @@ class InsertData:
             self.db_engine.execute(insert_statement)
         except Exception as e:
             log.error(e)
+            sys.exit(1)
 
         inserted_count = len(df)
 

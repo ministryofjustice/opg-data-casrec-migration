@@ -1,3 +1,4 @@
+import sys
 from typing import List, Dict
 import logging
 
@@ -29,6 +30,7 @@ def reset_sequence(sequence_details, db_config):
         log.error("Error: %s" % error)
         conn.rollback()
         cursor.close()
+        sys.exit(1)
 
 
 def reset_all_uid_sequences(uid_sequence_list, db_config):
@@ -83,3 +85,4 @@ def reset_uid_sequence(sequence_details, db_config):
         log.error("Error: %s" % error)
         conn.rollback()
         cursor.close()
+        sys.exit(1)

@@ -27,6 +27,7 @@ def create_schema(target_db_connection, schema_name):
         cursor.execute(statement)
     except Exception as e:
         log.error(e)
+        sys.exit(1)
     finally:
         cursor.close()
         conn.commit()
@@ -44,6 +45,7 @@ def move_all_tables(db_config, table_list):
         cursor.execute(query)
     except Exception as e:
         log.error(e)
+        sys.exit(1)
     finally:
         cursor.close()
         conn.commit()

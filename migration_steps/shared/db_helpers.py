@@ -1,4 +1,6 @@
 import os
+import sys
+
 import psycopg2
 import pandas as pd
 import numpy as np
@@ -141,14 +143,18 @@ def copy_schema(
     with fileinput.FileInput(str(schema_dump), inplace=True) as file:
         for line in file:
             print(
-                line.replace(f'TO {from_config["user"]}', f'TO {to_config["user"]}',),
+                line.replace(
+                    f'TO {from_config["user"]}',
+                    f'TO {to_config["user"]}',
+                ),
                 end="",
             )
     with fileinput.FileInput(str(schema_dump), inplace=True) as file:
         for line in file:
             print(
                 line.replace(
-                    f'Owner: {from_config["user"]}', f'Owner: {to_config["user"]}',
+                    f'Owner: {from_config["user"]}',
+                    f'Owner: {to_config["user"]}',
                 ),
                 end="",
             )
@@ -187,7 +193,7 @@ def execute_sql_file(sql_path, filename, conn, schema="public"):
         print("Error: %s" % error)
         conn.rollback()
         cursor.close()
-        return 1
+        sys.exit(1)
     cursor.close()
 
 
@@ -242,7 +248,7 @@ def execute_insert(conn, df, table):
         print("Error: %s" % error)
         conn.rollback()
         cursor.close()
-        return 1
+        sys.exit(1)
     cursor.close()
 
 
