@@ -137,7 +137,6 @@ def main(clear, include_tests, verbose, chunk_size):
         run_data_tests(verbosity_level=verbosity_levels[verbose])
 
     if environment == "local":
-        # update_progress(mapping_files_used=files_used)
         update_progress(module_name="transform", completed_items=files_used)
         log.debug(f"Number of mapping docs used: {len(files_used)}")
 
