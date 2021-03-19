@@ -1,6 +1,7 @@
 from transform_data.unique_id import add_unique_id
 from utilities.basic_data_table import get_basic_data_table
 import pandas as pd
+from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 
 definition = {
     "source_table_name": "deputy",
@@ -22,7 +23,8 @@ def insert_order_deputies(db_config, target_db):
 
     # Get ids of deputies that have already been transformed
     existing_deputies_query = f"""
-        select c_deputy_no, id from {db_config['target_schema']}.persons where casrec_mapping_file_name = 'deputy_persons_mapping';
+        select c_deputy_no, id from {db_config['target_schema']}.persons
+        where casrec_mapping_file_name = 'deputy_persons_mapping';
     """
     existing_deputies_df = pd.read_sql_query(
         existing_deputies_query, db_config["db_connection_string"]
@@ -75,6 +77,10 @@ def insert_order_deputies(db_config, target_db):
         db_schema=db_config["target_schema"],
         table_definition=definition,
         source_data_df=deputyship_persons_order_df,
+    )
+
+    deputyship_persons_order_df = reapply_datatypes_to_fk_cols(
+        columns=["order_id", "deputy_id"], df=deputyship_persons_order_df
     )
 
     target_db.insert_data(
