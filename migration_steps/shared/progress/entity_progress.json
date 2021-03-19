@@ -112,14 +112,16 @@
     "warnings": {
         "details": {
             "mapping_files": [
-                "caseitem_warning_mapping"
+                "caseitem_warning_mapping",
+                "warnings_mapping"
             ],
             "sirius_tables": [
-                "caseitem_warning"
+                "caseitem_warning",
+                "warnings"
             ]
         },
         "progress": {
-            "mapping": 100,
+            "mapping": 50,
             "transform": 0,
             "staging": 0,
             "sirius": 0
@@ -185,19 +187,17 @@
     "bonds": {
         "details": {
             "mapping_files": [
-                "bonds_mapping",
-                "bond_providers_mapping"
+                "bonds_mapping"
             ],
             "sirius_tables": [
-                "bonds",
-                "bond_providers"
+                "bonds"
             ]
         },
         "progress": {
-            "mapping": 60,
-            "transform": 50,
-            "staging": 50,
-            "sirius": 50
+            "mapping": 100,
+            "transform": 100,
+            "staging": 100,
+            "sirius": 100
         }
     }
 }
