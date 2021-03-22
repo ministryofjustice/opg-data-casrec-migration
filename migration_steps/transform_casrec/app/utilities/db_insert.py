@@ -195,37 +195,44 @@ class InsertData:
         return statement
 
     def _check_datatypes(self, mapping_details, df):
-
+        log.debug("Checking df datatypes against mapping dict")
         pandas_to_db_map = {
             "text": ["object"],
-            "int": ["Int64", "Int32"],
+            "int": ["Int64", "Int32", "int64"],
             "numeric": ["float64"],
         }
 
+        non_matching_count = 0
         for column_name, df_datatype in df.dtypes.items():
 
             try:
                 expected_datatype = mapping_details[column_name]["data_type"]
-                if df_datatype in pandas_to_db_map[expected_datatype]:
-                    match = True
-                else:
-                    log.debug(
-                        f"column '{column_name}' should be '{expected_datatype}' but is actually '{df_datatype}'"
-                    )
-                    match = False
-            except KeyError:
+
+                if df_datatype not in pandas_to_db_map[expected_datatype]:
+                    non_matching_count += 1
+            except Exception:
                 pass
 
-        return match
+        datatypes_match = True if non_matching_count == 0 else False
+        log.debug(f"datatypes_match: {datatypes_match}")
+
+        return datatypes_match
 
     @timer
     def insert_data(self, table_name, df, sirius_details=None, chunk_no=None):
+
+        if not self._check_datatypes(mapping_details=sirius_details, df=df):
+            log.error("Datatypes do not match")
+            os._exit(1)
+
+        if len(df) == 0:
+            log.error("No data in dataframe, there is a problem!")
+            os._exit(1)
 
         if chunk_no:
             log.debug(f"inserting {table_name} - chunk {chunk_no} into database....")
         else:
             log.debug(f"inserting {table_name} into database....")
-        log.log(config.DATA, f"\n{df.sample(n=config.row_limit).to_markdown()}")
 
         create_schema_statement = self._create_schema_statement()
         self.db_engine.execute(create_schema_statement)
@@ -247,16 +254,13 @@ class InsertData:
             self.db_engine.execute(create_table_statement)
 
         insert_statement = self._create_insert_statement(table_name=table_name, df=df)
-        if self._check_datatypes(mapping_details=sirius_details, df=df):
-            try:
-                self.db_engine.execute(insert_statement)
-            except Exception:
-                log.error(f"There was a problem inserting into {table_name}")
-                os._exit(1)
-            inserted_count = len(df)
 
-            log.info(f"Inserted {inserted_count} records into '{table_name}' table")
+        try:
 
-        else:
-            log.error(f"Datatypes do not match for table {table_name}")
+            self.db_engine.execute(insert_statement)
+        except Exception:
+
+            log.error(f"There was a problem inserting into {table_name}")
             os._exit(1)
+        inserted_count = len(df)
+        log.info(f"Inserted {inserted_count} records into '{table_name}' table")

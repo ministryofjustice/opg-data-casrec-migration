@@ -24,6 +24,7 @@ def get_source_table(mapping_dict):
 def get_basic_data_table(
     mapping_file_name, table_definition, db_config, chunk_details=None
 ):
+    log.debug(f"Getting basic data using {mapping_file_name}")
 
     mapping_dict = get_mapping_dict(
         file_name=mapping_file_name, stage_name="transform_casrec"
@@ -59,5 +60,7 @@ def get_basic_data_table(
     )
 
     result_df["casrec_mapping_file_name"] = mapping_file_name
+
+    log.debug(f"Basic data for {mapping_file_name} has {len(result_df)} rows")
 
     return sirius_details, result_df
