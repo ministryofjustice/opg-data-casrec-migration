@@ -1,3 +1,4 @@
+from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 from utilities.basic_data_table import get_basic_data_table
 import pandas as pd
 from transform_data import unique_id as process_unique_id
@@ -90,6 +91,10 @@ def insert_addresses_deputies(db_config, target_db):
             address_persons_joined_df = address_persons_joined_df[
                 address_persons_joined_df["person_id"].notna()
             ]
+
+            address_persons_joined_df = reapply_datatypes_to_fk_cols(
+                columns=["person_id"], df=address_persons_joined_df
+            )
 
             target_db.insert_data(
                 table_name=definition["destination_table_name"],

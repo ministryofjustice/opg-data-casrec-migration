@@ -193,7 +193,7 @@ def execute_sql_file(sql_path, filename, conn, schema="public"):
         print("Error: %s" % error)
         conn.rollback()
         cursor.close()
-        sys.exit(1)
+        os._exit(1)
     cursor.close()
 
 
@@ -248,7 +248,7 @@ def execute_insert(conn, df, table):
         print("Error: %s" % error)
         conn.rollback()
         cursor.close()
-        sys.exit(1)
+        os._exit(1)
     cursor.close()
 
 

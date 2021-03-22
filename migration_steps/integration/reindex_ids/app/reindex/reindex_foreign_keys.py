@@ -1,5 +1,5 @@
 import logging
-import sys
+import os
 
 import psycopg2
 
@@ -45,7 +45,7 @@ def update_fks(db_config, table_details):
         cursor.execute(query)
     except Exception as e:
         log.debug(e)
-        sys.exit(1)
+        os._exit(1)
     finally:
         cursor.close()
         conn.commit()

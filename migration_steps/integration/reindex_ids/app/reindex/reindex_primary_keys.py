@@ -4,6 +4,7 @@ import sys
 import psycopg2
 
 from decorators import timer
+import os
 
 log = logging.getLogger("root")
 
@@ -42,7 +43,7 @@ def get_max_pk_dict(db_connection_string, max_val_query):
 
     except Exception as e:
         log.debug(e)
-        sys.exit(1)
+        os._exit(1)
     finally:
         cursor.close()
         conn.commit()
@@ -84,7 +85,7 @@ def update_pks(db_config, table_details):
         cursor.execute(update_query)
     except Exception as e:
         log.debug(e)
-        sys.exit(1)
+        os._exit(1)
     finally:
         cursor.close()
         conn.commit()

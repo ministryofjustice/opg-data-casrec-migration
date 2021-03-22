@@ -35,7 +35,7 @@ def step_function_arn(client, step_function_name):
             return machine["stateMachineArn"]
         else:
             print("No state machine of given name exists")
-            sys.exit(1)
+            os._exit(1)
 
 
 def step_function_running_wait_for(client, step_function_arn, wait_for, wait_time=0):
@@ -52,7 +52,7 @@ def step_function_running_wait_for(client, step_function_arn, wait_for, wait_tim
         )
     elif wait_time > 1800:
         print("Timeout.. something is wrong. Check the step function")
-        sys.exit()
+        os._exit()
     else:
         print("Ready to run step function")
 
@@ -125,7 +125,7 @@ def main(role, account, wait_for, no_reload):
         print("Last step successful")
     else:
         print("Step function did not execute successfully. Go check!")
-        sys.exit(1)
+        os._exit(1)
 
 
 if __name__ == "__main__":

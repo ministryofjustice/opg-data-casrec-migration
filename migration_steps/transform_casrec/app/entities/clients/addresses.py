@@ -1,4 +1,6 @@
 import pandas as pd
+
+from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 from utilities.basic_data_table import get_basic_data_table
 
 definition = {
@@ -38,6 +40,10 @@ def insert_addresses_clients(db_config, target_db):
             addresses_joined_df["person_id"] = addresses_joined_df["id_y"]
             addresses_joined_df = addresses_joined_df.drop(columns=["id_y"])
             addresses_joined_df = addresses_joined_df.rename(columns={"id_x": "id"})
+
+            addresses_joined_df = reapply_datatypes_to_fk_cols(
+                columns=["person_id"], df=addresses_joined_df
+            )
 
             target_db.insert_data(
                 table_name=definition["destination_table_name"],

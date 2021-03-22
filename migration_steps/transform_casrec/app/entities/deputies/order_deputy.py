@@ -79,6 +79,8 @@ def insert_order_deputies(db_config, target_db):
         source_data_df=deputyship_persons_order_df,
     )
 
+    deputyship_persons_order_df["order_id"] = 2.0
+
     deputyship_persons_order_df = reapply_datatypes_to_fk_cols(
         columns=["order_id", "deputy_id"], df=deputyship_persons_order_df
     )

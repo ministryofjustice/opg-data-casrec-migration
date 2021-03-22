@@ -194,6 +194,30 @@ class InsertData:
 
         return statement
 
+    def _check_datatypes(self, mapping_details, df):
+
+        pandas_to_db_map = {
+            "text": ["object"],
+            "int": ["Int64", "Int32"],
+            "numeric": ["float64"],
+        }
+
+        for column_name, df_datatype in df.dtypes.items():
+
+            try:
+                expected_datatype = mapping_details[column_name]["data_type"]
+                if df_datatype in pandas_to_db_map[expected_datatype]:
+                    match = True
+                else:
+                    log.debug(
+                        f"column '{column_name}' should be '{expected_datatype}' but is actually '{df_datatype}'"
+                    )
+                    match = False
+            except KeyError:
+                pass
+
+        return match
+
     @timer
     def insert_data(self, table_name, df, sirius_details=None, chunk_no=None):
 
@@ -210,36 +234,29 @@ class InsertData:
             col_diff = self._check_columns_exist(table_name, df)
             if len(col_diff) > 0:
 
-                if sirius_details:
-                    add_missing_colums_statement = (
-                        self._add_missing_columns_with_datatypes(
-                            table_name, col_diff, mapping_details=sirius_details
-                        )
-                    )
-                else:
-                    add_missing_colums_statement = self._add_missing_columns(
-                        table_name, col_diff
-                    )
+                add_missing_colums_statement = self._add_missing_columns_with_datatypes(
+                    table_name, col_diff, mapping_details=sirius_details
+                )
+
                 self.db_engine.execute(add_missing_colums_statement)
         else:
 
-            if sirius_details:
-                create_table_statement = self._create_table_statement_with_datatype(
-                    table_name=table_name, mapping_details=sirius_details, df=df
-                )
-            else:
-                create_table_statement = self._create_table_statement(
-                    table_name=table_name, df=df
-                )
+            create_table_statement = self._create_table_statement_with_datatype(
+                table_name=table_name, mapping_details=sirius_details, df=df
+            )
             self.db_engine.execute(create_table_statement)
 
         insert_statement = self._create_insert_statement(table_name=table_name, df=df)
-        try:
-            self.db_engine.execute(insert_statement)
-        except Exception as e:
-            log.error(e)
-            sys.exit(1)
+        if self._check_datatypes(mapping_details=sirius_details, df=df):
+            try:
+                self.db_engine.execute(insert_statement)
+            except Exception:
+                log.error(f"There was a problem inserting into {table_name}")
+                os._exit(1)
+            inserted_count = len(df)
 
-        inserted_count = len(df)
+            log.info(f"Inserted {inserted_count} records into '{table_name}' table")
 
-        log.info(f"Inserted {inserted_count} records into '{table_name}' table")
+        else:
+            log.error(f"Datatypes do not match for table {table_name}")
+            os._exit(1)

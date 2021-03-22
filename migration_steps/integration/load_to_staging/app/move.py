@@ -95,4 +95,4 @@ def generate_inserts(db_config, db_engine, tables):
                 f"There was an error inserting {table} into {db_config['target_schema']}"
             )
             log.debug(e)
-            sys.exit(1)
+            os._exit(1)

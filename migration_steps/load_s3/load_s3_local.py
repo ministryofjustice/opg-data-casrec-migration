@@ -84,7 +84,7 @@ def list_bucket_contents(bucket_name, s3):
     files_in_bucket = []
 
     if "Contents" not in resp:
-        sys.exit(
+        os._exit(
             "Casrec source .csv data files not found - please check you have added files to data/anon/*.csv"
         )
 

@@ -1,4 +1,6 @@
 import pandas as pd
+
+from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 from utilities.basic_data_table import get_basic_data_table
 
 definition = {
@@ -47,6 +49,10 @@ def insert_phonenumbers_deputies_daytime(db_config, target_db):
                 .astype(int)
                 .astype(object)
                 .where(phonenos_joined_df["person_id"].notnull())
+            )
+
+            phonenos_joined_df = reapply_datatypes_to_fk_cols(
+                columns=["person_id"], df=phonenos_joined_df
             )
 
             target_db.insert_data(
