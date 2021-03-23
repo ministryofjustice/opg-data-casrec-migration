@@ -52,10 +52,7 @@ config = helpers.get_config(env=environment)
 
 # logging
 log = logging.getLogger("root")
-log.addHandler(custom_logger.MyHandler())
-
-config.custom_log_level()
-verbosity_levels = config.verbosity_levels
+custom_logger.setup_logging(env=environment)
 
 
 # database
@@ -87,17 +84,8 @@ target_db = InsertData(db_engine=target_db_engine, schema=db_config["target_sche
     help="Defaults to 10,000 but can be changed for dev",
     default=10000,
 )
-@click.option("-v", "--verbose", count=True)
 @timer
-def main(clear, include_tests, verbose, chunk_size):
-
-    try:
-        log.setLevel(verbosity_levels[verbose])
-        log.info(f"{verbosity_levels[verbose]} logging enabled")
-    except KeyError:
-        log.setLevel("INFO")
-        log.info(f"{verbose} is not a valid verbosity level")
-        log.info(f"INFO logging enabled")
+def main(clear, include_tests, chunk_size):
 
     log.info(log_title(message="Migration Step: Transform Casrec Data"))
     log.info(
@@ -134,7 +122,7 @@ def main(clear, include_tests, verbose, chunk_size):
     warnings.runner(target_db=target_db, db_config=db_config)
 
     if include_tests:
-        run_data_tests(verbosity_level=verbosity_levels[verbose])
+        run_data_tests(verbosity_level="DEBUG")
 
     if environment == "local":
         update_progress(module_name="transform", completed_items=files_used)

@@ -219,3 +219,10 @@ def get_list_of_s3_files(bucket_name, s3, paths):
                 files_in_bucket.append(file)
 
     return files_in_bucket
+
+
+def format_error_message(e):
+    template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+    err = template.format(type(e).__name__, e.args)
+
+    return err

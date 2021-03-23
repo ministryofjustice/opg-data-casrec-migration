@@ -1,5 +1,5 @@
 FROM opg_casrec_migration_base_image:latest
-COPY transform_casrec/requirements.txt /migration/requirements.txt
+COPY /requirements.txt /migration/requirements.txt
 RUN pip3 install -r /migration/requirements.txt
 COPY transform_casrec/app /migration/app
 COPY shared /shared

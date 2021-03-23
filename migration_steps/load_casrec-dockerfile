@@ -1,5 +1,5 @@
 FROM opg_casrec_migration_base_image:latest
-COPY load_casrec/requirements.txt /requirements.txt
+COPY /requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
 COPY load_casrec/app/app.py /app/app.py
 COPY shared /shared

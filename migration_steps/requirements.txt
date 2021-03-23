@@ -7,3 +7,6 @@ colorlog~=4.6
 pytest==6.1.2
 pytest_cases==2.7.2
 pytest-ordering~=0.6
+Deprecated==1.2.12
+python-json-logger==2.0.1
+colorama==0.4.4

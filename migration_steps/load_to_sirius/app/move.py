@@ -9,9 +9,11 @@ import psycopg2
 from psycopg2 import errors
 import pandas as pd
 
+
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../shared")
 
+from helpers import format_error_message
 import db_helpers
 
 completed_tables = []
@@ -61,6 +63,11 @@ def remove_unecessary_columns(columns):
 
 def create_insert_statement(schema, table_name, columns, df):
 
+    log.debug(
+        f"Inserting {len(df)} rows",
+        extra={"table_name": table_name, "size": len(df), "action": "insert"},
+    )
+
     if table_name in SPECIAL_CASES:
         df = handle_special_cases(table_name=table_name, df=df)
 
@@ -96,6 +103,7 @@ def insert_data_into_target(
     log.info(
         f"Inserting new data from {db_config['source_schema']} '{table_name}' table"
     )
+
     get_cols_query = get_columns_query(
         table=table_name, schema=db_config["source_schema"]
     )
@@ -104,11 +112,15 @@ def insert_data_into_target(
 
     columns = remove_unecessary_columns(columns=columns)
 
+    log.verbose(f"columns: {columns}")
+
     order_by = (
         ", ".join(table_details["order_by"])
         if len(table_details["order_by"]) > 0
         else table_details["pk"]
     )
+
+    log.verbose(f"order_by: {order_by}")
 
     chunk_size = 10000
     offset = 0
@@ -121,6 +133,8 @@ def insert_data_into_target(
             LIMIT {chunk_size} OFFSET {offset};;
         """
 
+        log.verbose(f"using source query {query}")
+
         data_to_insert = pd.read_sql_query(
             sql=query, con=db_config["source_db_connection_string"]
         )
@@ -132,15 +146,21 @@ def insert_data_into_target(
             df=data_to_insert,
         )
 
-        log.debug(f"Inserting {len(data_to_insert)} rows")
-
         try:
             target_db_engine.execute(insert_statement)
-        except Exception:
+        except Exception as e:
+
             log.error(
-                f"There was an error inserting data into {len(data_to_insert)} rows into {db_config['source_schema']}.{table_name}"
+                f"There was an error inserting {len(data_to_insert)} rows "
+                f"into {db_config['source_schema']}.{table_name}",
+                extra={
+                    "table_name": table_name,
+                    "size": len(data_to_insert),
+                    "action": "insert",
+                    "error": format_error_message(e=e),
+                },
             )
-            sys.exit(1)
+            os._exit(1)
 
         offset += chunk_size
         log.debug(f"doing offset {offset} for table {table_name}")

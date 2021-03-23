@@ -1,7 +1,7 @@
 import logging
 import os
 from pathlib import Path
-
+from deprecated import deprecated
 from dotenv import load_dotenv
 
 
@@ -48,6 +48,9 @@ class BaseConfig:
         if logging.getLogger().isEnabledFor(self.VERBOSE):
             logging.log(self.VERBOSE, msg)
 
+    @deprecated(
+        version="1", reason="You should use custom_logger.setup_logging instead"
+    )
     def custom_log_level(self):
         logging.addLevelName(self.VERBOSE, "VERBOSE")
         logging.Logger.verbose = self.verbose
@@ -69,6 +72,9 @@ class LocalConfig(BaseConfig):
         if logging.getLogger().isEnabledFor(self.DATA):
             logging.log(self.DATA, msg)
 
+    @deprecated(
+        version="1", reason="You should use custom_logger.setup_logging instead"
+    )
     def custom_log_level(self):
         logging.addLevelName(self.VERBOSE, "VERBOSE")
         logging.Logger.verbose = self.verbose
