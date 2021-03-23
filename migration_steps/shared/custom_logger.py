@@ -76,7 +76,6 @@ def setup_logging(env, level=None):
         level = level if level else "VERBOSE"
         log.addHandler(MyHandler())
     else:
-        # level = "INFO"
         level = "DEBUG"
         logHandler = logging.StreamHandler()
         formatter = CustomJsonFormatter("%(timestamp)s %(level)s %(name)s %(message)s")

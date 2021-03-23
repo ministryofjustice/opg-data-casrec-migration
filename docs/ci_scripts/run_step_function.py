@@ -1,6 +1,6 @@
 import boto3
 import click
-import sys
+import os
 import time
 import json
 
