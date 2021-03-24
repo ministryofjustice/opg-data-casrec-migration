@@ -68,7 +68,7 @@ services:
       DB_NAME: casrecmigration
       DB_HOST: casrec_db
       DB_PORT: 5432
-      ENVIRONMENT: docker
+      ENVIRONMENT: local
     depends_on: [localstack, casrec_db]
   integration:
     build:
