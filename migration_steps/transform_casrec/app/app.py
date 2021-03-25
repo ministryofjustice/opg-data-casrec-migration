@@ -16,7 +16,7 @@ from sqlalchemy import create_engine
 import custom_logger
 from helpers import log_title
 import helpers
-from decorators import timer
+from decorators import timer, mem_tracker
 
 from dotenv import load_dotenv
 
@@ -84,6 +84,7 @@ target_db = InsertData(db_engine=target_db_engine, schema=db_config["target_sche
     help="Defaults to 10,000 but can be changed for dev",
     default=10000,
 )
+@mem_tracker
 @timer
 def main(clear, include_tests, chunk_size):
 
