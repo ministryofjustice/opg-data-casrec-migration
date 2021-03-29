@@ -24,10 +24,10 @@ def insert_base_data(db_config, db_engine):
             values
                 (1,'Howden',21000.00,null,null,'https://www.howdendeputybonds.co.uk','HOWDEN'),
                 (2,'Deputy Bond Services (DBS)',21000.00,null,null,'https://www.deputybondservices.co.uk','DBS'),
-                (3,'Marsh',16000.00,null,null,null,'MARSH')
+                (3,'Marsh',16000.00,null,null,null,'MARSH'),
                 (185,'Howden',21000.00,null,null,'https://www.howdendeputybonds.co.uk','HOWDEN_dev'),
                 (186,'Deputy Bond Services (DBS)',21000.00,null,null,'https://www.deputybondservices.co.uk','DBS_dev'),
-                (187,'Marsh',16000.00,null,null,null,'MARSH_dev')
+                (187,'Marsh',16000.00,null,null,null,'MARSH_dev'),
                 (43745,'OTHER',null,null,null,null,'OTHER_dev');
         """,
     }
