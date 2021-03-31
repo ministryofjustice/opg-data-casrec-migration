@@ -150,5 +150,29 @@
                 "persons.type = 'actor_client'"
             ]
         }
+    },
+    "supervision_level_log": {
+        "exclude": [
+            "order_id"
+        ],
+        "overriden": [],
+        "orderby": {},
+        "casrec": {
+            "from_table": "order",
+            "overriden": {},
+            "joins": [
+                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\""
+            ],
+            "where_clauses": []
+        },
+        "sirius": {
+            "from_table": "supervision_level_log",
+            "overriden": {},
+            "joins": [
+                "LEFT JOIN public.cases ON cases.id = supervision_level_log.order_id",
+                "LEFT JOIN public.persons ON persons.id = cases.client_id"
+            ],
+            "where_clauses": []
+        }
     }
 }

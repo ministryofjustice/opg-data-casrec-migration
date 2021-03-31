@@ -52,7 +52,7 @@ def get_mappings():
     allowed_entities = [k for k, v in config.ENABLED_ENTITIES.items() if v is True]
     all_mappings = {
         "clients": ["client_addresses", "client_persons", "client_phonenumbers"],
-        "cases": ["cases"],
+        "cases": ["cases", "supervision_level_log"],
         "bonds": ["bonds"],
     }
 
