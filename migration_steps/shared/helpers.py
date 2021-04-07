@@ -8,6 +8,9 @@ from config import BaseConfig
 from config import LocalConfig
 
 from decorators import track_file_use
+import logging
+
+log = logging.getLogger("root")
 
 
 def log_title(message: str) -> str:
@@ -27,6 +30,35 @@ def log_title(message: str) -> str:
 def get_current_directory():
     dirname = os.path.dirname(__file__)
     return dirname
+
+
+def check_entity_enabled(entity_name, extra_entities=None):
+    config = get_config(env=os.environ.get("ENVIRONMENT"))
+
+    allowed_entities = [k for k, v in config.ENABLED_ENTITIES.items() if v is True]
+
+    if extra_entities:
+        required_entities = extra_entities + [entity_name]
+    else:
+        required_entities = [entity_name]
+
+    if all(x in allowed_entities for x in required_entities):
+        log.info(f"Entity '{entity_name}' is enabled, transforming...")
+        return True
+    else:
+        if entity_name not in allowed_entities:
+            log.info(f"Entity '{entity_name}' is disabled, moving on")
+        else:
+            if extra_entities:
+                disabled_entities = [
+                    f"'{x}'" for x in required_entities if x not in allowed_entities
+                ]
+                log.info(
+                    f"Entity '{entity_name}' relies on disabled entities {', '.join(disabled_entities)}, moving on"
+                )
+            else:
+                log.info(f"Entity '{entity_name}' is disabled, moving on")
+        return False
 
 
 @track_file_use

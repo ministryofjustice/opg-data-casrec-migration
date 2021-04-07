@@ -62,6 +62,22 @@ class BaseConfig:
             f"/{self.db_config[db]['name']}"
         )  # pragma: allowlist secret
 
+    ENABLED_ENTITIES = {
+        "clients": True,
+        "cases": True,
+        "bonds": True,
+        "supervision_level": True,
+        "deputies": True,
+        "events": False,
+        "finance": False,
+        "remarks": False,
+        "reporting": False,
+        "tasks": False,
+        "teams": False,
+        "visits": False,
+        "warnings": False,
+    }
+
 
 class LocalConfig(BaseConfig):
     verbosity_levels = {0: "INFO", 1: "DEBUG", 2: "VERBOSE", 3: "DATA"}

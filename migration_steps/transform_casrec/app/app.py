@@ -61,6 +61,10 @@ db_config = {
     "source_schema": config.schemas["pre_transform"],
     "target_schema": config.schemas["post_transform"],
 }
+
+allowed_entities = [k for k, v in config.ENABLED_ENTITIES.items() if v is True]
+
+
 target_db_engine = create_engine(db_config["db_connection_string"])
 target_db = InsertData(db_engine=target_db_engine, schema=db_config["target_schema"])
 
@@ -102,6 +106,7 @@ def main(clear, include_tests, chunk_size):
 
     db_config["chunk_size"] = chunk_size if chunk_size else 10000
     log.info(f"Chunking data at {chunk_size} rows")
+    print(f"allowed_entities: {allowed_entities}")
 
     if clear:
         clear_tables(db_config=db_config)
@@ -111,7 +116,6 @@ def main(clear, include_tests, chunk_size):
     bonds.runner(target_db=target_db, db_config=db_config)
     supervision_level.runner(target_db=target_db, db_config=db_config)
     deputies.runner(target_db=target_db, db_config=db_config)
-
     death.runner(target_db=target_db, db_config=db_config)
     events.runner(target_db=target_db, db_config=db_config)
     finance.runner(target_db=target_db, db_config=db_config)

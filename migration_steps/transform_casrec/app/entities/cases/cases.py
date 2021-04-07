@@ -11,6 +11,7 @@ mapping_file_name = "cases_mapping"
 
 
 def insert_cases(db_config, target_db):
+
     chunk_size = db_config["chunk_size"]
     offset = 0
     chunk_no = 1

@@ -3,7 +3,7 @@ import logging
 from entities.supervision_level.supervision_level_log import (
     insert_supervision_level_log,
 )
-from helpers import log_title
+from helpers import log_title, check_entity_enabled
 
 log = logging.getLogger("root")
 
@@ -17,7 +17,12 @@ def runner(db_config, target_db):
 
     """
 
-    log.info(log_title(message="supervision level"))
+    entity_name = "supervision_level"
+    extra_entities = ["cases"]
+    if not check_entity_enabled(entity_name, extra_entities):
+        return False
+
+    log.info(log_title(message=entity_name))
 
     log.debug("insert_supervision_level_log")
     insert_supervision_level_log(

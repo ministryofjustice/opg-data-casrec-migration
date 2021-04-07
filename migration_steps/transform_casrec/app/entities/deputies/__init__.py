@@ -4,7 +4,7 @@ import logging
 from entities.deputies.order_deputy import insert_order_deputies
 from entities.deputies.addresses import insert_addresses_deputies
 from entities.deputies.persons import insert_persons_deputies
-from helpers import log_title
+from helpers import log_title, check_entity_enabled
 
 from entities.deputies.phonenumbers_daytime import insert_phonenumbers_deputies_daytime
 from entities.deputies.phonenumbers_evening import insert_phonenumbers_deputies_evening
@@ -22,7 +22,12 @@ def runner(target_db, db_config):
 
     """
 
-    log.info(log_title(message="deputies"))
+    entity_name = "deputies"
+    extra_entities = ["clients", "cases"]
+    if not check_entity_enabled(entity_name, extra_entities):
+        return False
+
+    log.info(log_title(message=entity_name))
 
     log.debug("insert_persons_deputies")
     insert_persons_deputies(target_db=target_db, db_config=db_config)

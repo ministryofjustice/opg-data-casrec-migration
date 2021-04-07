@@ -3,7 +3,7 @@ import logging
 from entities.clients.addresses import insert_addresses_clients
 from entities.clients.persons import insert_persons_clients
 from entities.clients.phonenumbers import insert_phonenumbers_clients
-from helpers import log_title
+from helpers import log_title, check_entity_enabled
 
 log = logging.getLogger("root")
 
@@ -18,7 +18,11 @@ def runner(target_db, db_config):
 
     """
 
-    log.info(log_title(message="clients"))
+    entity_name = "clients"
+    if not check_entity_enabled(entity_name):
+        return False
+
+    log.info(log_title(message=entity_name))
 
     log.debug("insert_persons_clients")
     insert_persons_clients(
