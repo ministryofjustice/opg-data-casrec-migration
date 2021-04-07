@@ -98,6 +98,11 @@ def main(clear, include_tests, chunk_size):
             message=f"Source: {db_config['source_schema']} Target: {db_config['target_schema']}"
         )
     )
+    log.info(
+        log_title(
+            message=f"Enabled entities: {', '.join(k for k, v in config.ENABLED_ENTITIES.items() if v is True)}"
+        )
+    )
     log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
     version_details = helpers.get_json_version()
     log.info(
