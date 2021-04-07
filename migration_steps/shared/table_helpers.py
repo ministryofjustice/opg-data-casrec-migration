@@ -60,6 +60,37 @@ def get_enabled_table_details(file_name="tables"):
     return allowed_table_list
 
 
+def check_enabled_by_table_name(table_name, file_name="tables"):
+    config = get_config(env=os.environ.get("ENVIRONMENT"))
+
+    allowed_entities = [k for k, v in config.ENABLED_ENTITIES.items() if v is True]
+
+    dirname = get_current_directory()
+    file_path = os.path.join(dirname, f"{file_name}.json")
+
+    with open(file_path) as tables_json:
+        tables_dict = json.load(tables_json, object_pairs_hook=OrderedDict)
+
+    base_entities = tables_dict[table_name]["entities"]["base_entities"]
+    try:
+        extra_entities = tables_dict[table_name]["entities"]["relies_on"]
+    except KeyError:
+        extra_entities = []
+
+    required_entities = base_entities + extra_entities
+
+    if all(x in allowed_entities for x in required_entities):
+        log.info(
+            f"All required entities: {', '.join(required_entities)} for table {table_name} enabled, continue"
+        )
+        return True
+    else:
+        log.info(
+            f"Not all required entities: {', '.join(required_entities)} for table {table_name} enabled, moving on"
+        )
+        return False
+
+
 def get_table_list(table_dict, type=None):
     if type:
 

@@ -11,6 +11,7 @@ from utilities.db_helpers import (
 )
 from utilities.generate_luhn_checksum import append_checksum
 
+from table_helpers import check_enabled_by_table_name
 
 log = logging.getLogger("root")
 
@@ -48,24 +49,28 @@ def insert_unique_uids(db_config, target_db_engine):
     schema = db_config["target_schema"]
     condition = {"method": "INSERT"}
     source_columns = ["id", "uid"]
-    table_names = ["persons", "cases"]
+    all_table_names = ["persons", "cases"]
+
+    enabled_tables = [
+        x for x in all_table_names if check_enabled_by_table_name(table_name=x)
+    ]
 
     sirius_max_uid = get_max_value_of_uid_sequence(
         db_connection_string=db_config["sirius_db_connection_string"],
         db_schema=db_config["sirius_schema"],
-        table_names=table_names,
+        table_names=enabled_tables,
     )
     try:
         sirius_max_seq_val = int(str(sirius_max_uid)[:-1]) - MIN_NUMBER
     except ValueError:
         sirius_max_seq_val = 0
 
-    for table in table_names:
+    for table in enabled_tables:
         log.info(f"table: {table}")
         initial_target_max_uid = get_max_value_of_uid_sequence(
             db_connection_string=db_config["db_connection_string"],
             db_schema=db_config["target_schema"],
-            table_names=table_names,
+            table_names=enabled_tables,
         )
         try:
             target_max_seq_val = int(str(initial_target_max_uid)[:-1]) - MIN_NUMBER
