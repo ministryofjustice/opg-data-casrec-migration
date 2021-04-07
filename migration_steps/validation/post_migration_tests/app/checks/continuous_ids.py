@@ -67,8 +67,14 @@ def get_previous_original_record(db_config, table, col_value, column="id"):
 
 
 def check_continuous(table_list, db_config):
-    table_list.remove("person_caseitem")
-    table_list.remove("caseitem_note")
+    try:
+        table_list.remove("person_caseitem")
+    except ValueError:
+        pass
+    try:
+        table_list.remove("caseitem_note")
+    except ValueError:
+        pass
     report = {"pass": [], "fail": []}
 
     for table in table_list:
