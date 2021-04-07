@@ -57,7 +57,7 @@
 	},
 	"cases": {
 		"entities": {
-			"base_entities": ["remarks"],
+			"base_entities": ["cases"],
 			"relies_on": ["clients"]
 		},
 		"table_type": "data",
