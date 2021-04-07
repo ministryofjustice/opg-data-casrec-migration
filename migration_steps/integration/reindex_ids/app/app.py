@@ -75,7 +75,7 @@ def main(clear):
     if clear:
         clear_tables(db_config)
 
-    table_details = table_helpers.get_table_file()
+    table_details = table_helpers.get_enabled_table_details()
 
     log.info(
         f"Moving data from '{db_config['source_schema']}' schema to '{db_config['target_schema']}' schema"

@@ -67,7 +67,7 @@ def main(audit):
     if environment != "preproduction":
         amend_dev_data(db_engine=target_db_engine)
 
-    tables_dict = table_helpers.get_table_file()
+    tables_dict = table_helpers.get_enabled_table_details()
     tables_list = table_helpers.get_table_list(tables_dict)
 
     if audit == "True":
@@ -104,10 +104,12 @@ def main(audit):
         log.info(f"Finished Post-Audit - Table Copies and Comparisons")
 
     # Post migration db jobs
-    sequence_list = table_helpers.get_sequences_list(table_helpers.get_table_file())
+    sequence_list = table_helpers.get_sequences_list(
+        table_helpers.get_enabled_table_details()
+    )
     reset_all_sequences(sequence_list=sequence_list, db_config=db_config)
     uid_sequence_list = table_helpers.get_uid_sequences_list(
-        table_helpers.get_table_file()
+        table_helpers.get_enabled_table_details()
     )
     reset_all_uid_sequences(uid_sequence_list=uid_sequence_list, db_config=db_config)
 

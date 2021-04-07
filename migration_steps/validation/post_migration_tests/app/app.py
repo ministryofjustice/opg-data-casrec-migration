@@ -69,11 +69,10 @@ def main(verbose):
 
     log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
-    table_list = table_helpers.get_table_list(table_helpers.get_table_file())
-    sequence_list = table_helpers.get_sequences_list(table_helpers.get_table_file())
-    uid_sequence_list = table_helpers.get_uid_sequences_list(
-        table_helpers.get_table_file()
-    )
+    enabled_table_dict = table_helpers.get_enabled_table_details()
+    table_list = table_helpers.get_table_list(enabled_table_dict)
+    sequence_list = table_helpers.get_sequences_list(enabled_table_dict)
+    uid_sequence_list = table_helpers.get_uid_sequences_list(enabled_table_dict)
 
     tests = []
     sequences = check_sequences(sequences=sequence_list, db_config=db_config)
