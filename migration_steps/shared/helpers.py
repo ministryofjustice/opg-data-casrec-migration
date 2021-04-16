@@ -109,7 +109,7 @@ def get_additional_data_dict(file_name: str) -> Dict:
 
     dirname = get_current_directory()
     file_path = os.path.join(
-        dirname, f"mapping_definitions/timeline" f"/{file_name}.json"
+        dirname, f"mapping_definitions/additional_data" f"/{file_name}.json"
     )
 
     with open(file_path) as additional_data_json:
@@ -120,7 +120,7 @@ def get_additional_data_dict(file_name: str) -> Dict:
 
 def get_all_additional_data_files():
     dirname = get_current_directory()
-    file_path = os.path.join(dirname, f"mapping_definitions/timeline")
+    file_path = os.path.join(dirname, f"mapping_definitions/additional_data")
 
     all_files = []
     for file in os.listdir(file_path):

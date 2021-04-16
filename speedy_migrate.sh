@@ -14,7 +14,7 @@ docker-compose run --rm wait-for-it -address postgres-sirius:5432 --timeout=30 -
 docker-compose up --no-deps -d postgres-sirius-restore
 
 #r run migration
-docker-compose run --rm transform_casrec python3 app.py --clear=True
+docker-compose run --rm transform_casrec transform_casrec/transform.sh
 docker-compose run --rm integration integration/integration.sh
 docker-compose run --rm load_to_target  load_to_sirius/load_to_sirius.sh
 docker-compose run --rm validation validation/validate.sh

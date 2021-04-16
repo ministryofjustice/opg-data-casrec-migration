@@ -56,7 +56,7 @@ wait $P1 $P2 $P3 $P4
 cat docker_load.log
 rm docker_load.log
 echo "=== Step 1 - Transform ==="
-docker-compose run --rm transform_casrec python3 app.py --clear=True
+docker-compose run --rm transform_casrec transform_casrec/transform.sh --clear=True
 echo "=== Step 2 - Integrate with Sirius ==="
 docker-compose run --rm integration integration/integration.sh
 echo "=== Step 3 - Validate Staging ==="

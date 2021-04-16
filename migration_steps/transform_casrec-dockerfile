@@ -1,7 +1,8 @@
 FROM opg_casrec_migration_base_image:latest
 COPY /requirements.txt /migration/requirements.txt
 RUN pip3 install -r /migration/requirements.txt
-COPY transform_casrec/app /migration/app
+COPY transform_casrec/transform.sh /transform_casrec/transform.sh
+COPY transform_casrec/transform /transform_casrec/transform
+COPY transform_casrec/additional_data /transform_casrec/additional_data
 COPY shared /shared
-WORKDIR /migration/app
 CMD ["echo", "NO_OP"]

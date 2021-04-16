@@ -157,13 +157,13 @@ def insert_additional_data_records(db_config, additional_data_file_name):
         return False
 
     additional_data_table_name = f"additional_data_{additional_data_dict['entity']}_{additional_data_dict['sirius_table']}"
-    details_columns = [v for k, v in additional_data_dict["timeline_cols"].items()]
+    details_columns = [v for k, v in additional_data_dict["detail_cols"].items()]
 
     target_db_engine = create_engine(db_config["db_connection_string"])
 
     cols = ", ".join(
         f'"{col}" as "{alias}"'
-        for col, alias in additional_data_dict["timeline_cols"].items()
+        for col, alias in additional_data_dict["detail_cols"].items()
     )
 
     additional_data_data_query = f"""

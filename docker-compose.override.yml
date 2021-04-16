@@ -27,7 +27,9 @@ services:
 
   transform_casrec:
     volumes:
-      - ./migration_steps/transform_casrec/app/:/app
+      - ./migration_steps/transform_casrec/transform:/transform_casrec/transform
+      - ./migration_steps/transform_casrec/additional_data:/transform_casrec/additional_data
+      - ./migration_steps/transform_casrec/transform.sh:/transform_casrec/transform.sh
       - ./migration_steps/shared:/shared
 
   integration:
