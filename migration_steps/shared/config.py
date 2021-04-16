@@ -78,7 +78,7 @@ class BaseConfig:
         "teams": False,
         "visits": False,
         "warnings": False,
-        "additional_data": True,
+        "additional_data": False,
     }
 
 
