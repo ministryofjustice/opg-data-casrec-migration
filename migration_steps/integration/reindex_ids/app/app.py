@@ -80,20 +80,24 @@ def main(clear):
     if clear:
         clear_tables(db_config)
 
-    table_details = table_helpers.get_enabled_table_details()
+    enabled_tables = table_helpers.get_enabled_table_details()
+    enabled_extra_tables = table_helpers.get_enabled_table_details(
+        file_name="timeline_tables"
+    )
+    all_enabled_tables = {**enabled_tables, **enabled_extra_tables}
 
     log.info(
         f"Moving data from '{db_config['source_schema']}' schema to '{db_config['target_schema']}' schema"
     )
-    move_all_tables(db_config=db_config, table_list=table_details)
+    move_all_tables(db_config=db_config, table_list=all_enabled_tables)
 
     log.info(f"Merge new data with existing data in Sirius")
-    match_existing_data(db_config=db_config, table_details=table_details)
+    match_existing_data(db_config=db_config, table_details=all_enabled_tables)
 
     log.info(f"Reindex all primary keys")
-    update_pks(db_config=db_config, table_details=table_details)
+    update_pks(db_config=db_config, table_details=all_enabled_tables)
     log.info(f"Reindex all foreign keys")
-    update_fks(db_config=db_config, table_details=table_details)
+    update_fks(db_config=db_config, table_details=all_enabled_tables)
 
 
 if __name__ == "__main__":

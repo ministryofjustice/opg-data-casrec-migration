@@ -1,0 +1,24 @@
+{
+  "additional_data_clients_persons": {
+    "entities": {
+      "base_entities": [
+        "clients"
+      ]
+    },
+    "table_type": "timeline",
+    "pk": "id",
+    "pk_table": "casrec_extra_data",
+      "fks": [
+          {
+              "column":"sirius_pk_value",
+              "parent_table" : "persons",
+              "parent_column": "id"
+          }],
+    "sequences": [],
+    "order_by": [
+      "id"
+    ],
+    "source_table": "persons",
+    "source_column": "id"
+  }
+}
