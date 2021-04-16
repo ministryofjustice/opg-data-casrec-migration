@@ -27,4 +27,8 @@ cd migration_steps/integration
 ./integration.sh
 cd ${DIR}
 
-python3 migration_steps/load_to_target/app/app.py
+
+./migration_steps/load_to_sirius/load_to_sirius
+cd migration_steps/load_to_sirius
+./load_to_sirius.sh
+#python3 migration_steps/load_to_target/app/app.py

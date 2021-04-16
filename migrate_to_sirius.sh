@@ -27,5 +27,5 @@ rm docker_load.log
 
 docker-compose -f docker-compose.sirius.yml -f docker-compose.override.yml run --rm transform_casrec python3 app.py --clear=True
 docker-compose -f docker-compose.sirius.yml -f docker-compose.override.yml run --rm integration integration/integration.sh
-docker-compose -f docker-compose.sirius.yml -f docker-compose.override.yml run --rm load_to_target python3 app.py --audit=False
+docker-compose -f docker-compose.sirius.yml -f docker-compose.override.yml run --rm load_to_target  load_to_sirius/load_to_sirius.sh --audit=False
 docker-compose -f docker-compose.sirius.yml -f docker-compose.override.yml run --rm validation validation/validate.sh "$@"

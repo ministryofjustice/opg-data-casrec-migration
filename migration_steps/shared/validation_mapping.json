@@ -28,8 +28,8 @@
             "from_table": "bonds",
             "overriden": {},
             "joins": [
-                "LEFT JOIN public.cases ON cases.id = bonds.order_id",
-                "LEFT JOIN public.persons ON persons.id = cases.client_id"
+                "LEFT JOIN {target_schema}.cases ON cases.id = bonds.order_id",
+                "LEFT JOIN {target_schema}.persons ON persons.id = cases.client_id"
             ],
             "where_clauses": []
         }
@@ -67,7 +67,7 @@
             "from_table": "cases",
             "overriden": {},
             "joins": [
-                "LEFT JOIN public.persons ON persons.id = cases.client_id"
+                "LEFT JOIN {target_schema}.persons ON persons.id = cases.client_id"
             ],
             "where_clauses": [
                 "persons.type = 'actor_client'",
@@ -100,7 +100,7 @@
                 "address_lines":  "getSiriusAddress(addresses.address_lines, addresses.town, addresses.county)"
             },
             "joins": [
-                "LEFT JOIN public.persons ON persons.id = addresses.person_id"
+                "LEFT JOIN {target_schema}.persons ON persons.id = addresses.person_id"
             ],
             "where_clauses": [
                 "persons.type = 'actor_client'"
@@ -144,7 +144,7 @@
             "from_table": "phonenumbers",
             "overriden": {},
             "joins": [
-                "LEFT JOIN public.persons ON persons.id = phonenumbers.person_id"
+                "LEFT JOIN {target_schema}.persons ON persons.id = phonenumbers.person_id"
             ],
             "where_clauses": [
                 "persons.type = 'actor_client'"

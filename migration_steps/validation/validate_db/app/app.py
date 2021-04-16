@@ -381,6 +381,7 @@ def build_validation_statements(mapping_name):
         2,
     )
     for join in validation_dict[mapping_name]["sirius"]["joins"]:
+        join = join.replace("{target_schema}", str(target_schema))
         sql_add(f"{join}", 2)
 
     # WHERE
@@ -461,6 +462,7 @@ def write_column_validation_sql(
         3,
     )
     for join in validation_dict[mapping_name]["sirius"]["joins"]:
+        join = join.replace("{target_schema}", str(target_schema))
         sql_add(f"{join}", 3)
     sql_add(f"LEFT JOIN {get_exception_table(mapping_name)} exc_table", 3)
     sql_add("ON exc_table.caserecnumber = persons.caserecnumber", 4)

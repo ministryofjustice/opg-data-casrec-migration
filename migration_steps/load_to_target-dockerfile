@@ -1,8 +1,12 @@
 FROM opg_casrec_migration_base_image:latest
-COPY /requirements.txt /migration/requirements.txt
-RUN pip3 install -r /migration/requirements.txt
-COPY load_to_sirius/app /migration/app
+RUN apt-get install -y postgresql-client
+COPY /requirements.txt /requirements.txt
+RUN pip3 install -r requirements.txt
+COPY load_to_sirius/load_to_sirius.sh /load_to_sirius/load_to_sirius.sh
+COPY load_to_sirius/move_data /load_to_sirius/move_data
+COPY load_to_sirius/post_migration_db_tasks /load_to_sirius/post_migration_db_tasks
 COPY shared /shared
-WORKDIR /migration/app
-RUN chmod 755 /migration/app/*.py
+
+RUN chmod 755 /load_to_sirius/load_to_sirius.sh
+
 CMD ["echo", "NO_OP"]

@@ -7,6 +7,5 @@ COPY validation/validate_db /validation/validate_db
 COPY validation/post_migration_tests /validation/post_migration_tests
 COPY validation/api_tests validation/api_tests
 COPY validation/api_test_data_s3_upload validation/api_test_data_s3_upload
-COPY validation/post_migration_db_tasks validation/post_migration_db_tasks
 COPY shared /shared
 CMD ["echo", "NO_OP"]

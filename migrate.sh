@@ -55,12 +55,19 @@ P4=$!
 wait $P1 $P2 $P3 $P4
 cat docker_load.log
 rm docker_load.log
+echo "=== Step 1 - Transform ==="
 docker-compose run --rm transform_casrec python3 app.py --clear=True
+echo "=== Step 2 - Integrate with Sirius ==="
 docker-compose run --rm integration integration/integration.sh
-docker-compose run --rm load_to_target python3 app.py --audit=False
+echo "=== Step 3 - Validate Staging ==="
+docker-compose run --rm validation python3 /validation/validate_db/app/app.py --staging
+echo "=== Step 4 - Load to Sirius ==="
+docker-compose run --rm load_to_target  load_to_sirius/load_to_sirius.sh
+echo "=== Step 5 - Validate Sirius ==="
 docker-compose run --rm validation validation/validate.sh "$@"
 if [ "${GENERATE_DOCS}" == "true" ]
   then
   echo "=== Generating new docs for Github Pages ==="
   python3 docs/create_report/run.py
 fi
+echo "=== FINISHED! ==="

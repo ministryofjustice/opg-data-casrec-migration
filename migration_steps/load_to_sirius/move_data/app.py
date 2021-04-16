@@ -4,7 +4,6 @@ import sys
 from pathlib import Path
 
 from dev_data_fixes import amend_dev_data
-from reset_sequences import reset_all_sequences, reset_all_uid_sequences
 from move import insert_data_into_target
 from move import update_data_in_target
 
@@ -102,16 +101,6 @@ def main(audit):
         log.info(f"Running Post-Audit - Table Copies and Comparisons")
         run_audit(target_db_engine, source_db_engine, "after", log, tables_list)
         log.info(f"Finished Post-Audit - Table Copies and Comparisons")
-
-    # Post migration db jobs
-    sequence_list = table_helpers.get_sequences_list(
-        table_helpers.get_enabled_table_details()
-    )
-    reset_all_sequences(sequence_list=sequence_list, db_config=db_config)
-    uid_sequence_list = table_helpers.get_uid_sequences_list(
-        table_helpers.get_enabled_table_details()
-    )
-    reset_all_uid_sequences(uid_sequence_list=uid_sequence_list, db_config=db_config)
 
 
 if __name__ == "__main__":

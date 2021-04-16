@@ -8,7 +8,6 @@ then
 fi
 
 python3 "${DIR}/validate_db/app/app.py" "$@"
-python3 "${DIR}/post_migration_db_tasks/app/app.py"
 python3 "${DIR}/post_migration_tests/app/app.py" -vv
 
 if [ "${RUN_API_TESTS}" == "True" ]

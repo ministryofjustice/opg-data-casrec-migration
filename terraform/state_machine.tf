@@ -299,7 +299,7 @@ resource "aws_sfn_state_machine" "casrec_migration" {
                 "Overrides": {
                     "ContainerOverrides": [{
                         "Name": "etl4",
-                        "Command": ["python3", "app.py", "--audit=${local.account.run_audit}"]
+                        "Command": ["load_to_sirius/load_to_sirius.sh"]
                     }]
                 }
             }
