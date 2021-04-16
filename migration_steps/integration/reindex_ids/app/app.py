@@ -85,7 +85,7 @@ def main(clear):
 
     else:
         enabled_extra_tables = table_helpers.get_enabled_table_details(
-            file_name="timeline_tables"
+            file_name="additional_data_tables"
         )
 
     all_enabled_tables = {**enabled_tables, **enabled_extra_tables}
@@ -99,7 +99,7 @@ def main(clear):
     match_existing_data(db_config=db_config, table_details=all_enabled_tables)
 
     log.info(f"Reindex all primary keys")
-    update_pks(db_config=db_config, table_details=all_enabled_tables)
+    update_pks(db_config=db_config, table_details=enabled_tables)
     log.info(f"Reindex all foreign keys")
     update_fks(db_config=db_config, table_details=all_enabled_tables)
 

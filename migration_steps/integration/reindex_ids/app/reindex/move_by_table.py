@@ -58,7 +58,8 @@ def generate_create_tables_query(db_config, table_list):
         table_name = table
 
         fks = get_fk_cols_single_table(table=details)
-        keys = [x for x in fks + [details["pk"]] if len(x) > 0]
+
+        keys = [x for x in fks + [details["pk"]] if x]
         select_key_cols = [f"{x} as transformation_schema_{x}" for x in keys]
 
         log.debug(

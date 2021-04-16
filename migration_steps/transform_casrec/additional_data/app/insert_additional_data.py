@@ -91,13 +91,10 @@ def create_table(additional_data_table_name, db_config, target_db):
 
     create_additional_data_table_statement = f"""
         CREATE TABLE {db_config['target_schema']}.{additional_data_table_name} (
-            id serial primary key,
+--             id serial primary key,
             {', '.join(cols_to_create)}
                );
     """
-    print(
-        f"create_additional_data_table_statement: {create_additional_data_table_statement}"
-    )
 
     try:
         with target_db.begin() as conn:

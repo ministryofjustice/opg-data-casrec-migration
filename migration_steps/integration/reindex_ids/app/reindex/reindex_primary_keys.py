@@ -9,26 +9,17 @@ import os
 log = logging.getLogger("root")
 
 
-def get_max_pk_from_existing_tables_query(db_schema, table_details, existing_tables):
+def get_max_pk_from_existing_tables_query(db_schema, table_details):
 
     max_values_query = ""
-    tables_with_pks = {
-        k: v
-        for k, v in table_details.items()
-        if len(v["pk"]) > 0 and k in existing_tables
-    }
-
+    tables_with_pks = {k: v for k, v in table_details.items() if len(v["pk"]) > 0}
     for i, (table, details) in enumerate(tables_with_pks.items()):
-        try:
-            pk_table = details["sirius_target_table"]
-        except KeyError:
-            pk_table = table
         if len(details["pk"]) > 0:
             query = f"""
                 SELECT
                     '{table}' as table_name,
                     '{details['pk']}' as column_name,
-                    (SELECT max({details['pk']}) from {db_schema}.{pk_table}) as max_value
+                    (SELECT max({details['pk']}) from {db_schema}.{table}) as max_value
             """
             if i + 1 < len(tables_with_pks):
                 query += " UNION ALL "
@@ -59,45 +50,10 @@ def get_max_pk_dict(db_connection_string, max_val_query):
     return result_dict
 
 
-def list_tables_that_exist_in_sirius(db_config, table_details):
-    table_names = [f"'{k}'" for k, v in table_details.items() if len(v["pk"]) > 0]
-
-    query = f"""
-        SELECT table_name
-        FROM information_schema.tables
-        WHERE table_schema = '{db_config['sirius_schema']}'
-        AND table_name in ({', '.join(table_names)});
-    """
-
-    connection_string = db_config["sirius_db_connection_string"]
-    conn = psycopg2.connect(connection_string)
-    cursor = conn.cursor()
-
-    try:
-
-        cursor.execute(query)
-        existing_tables = cursor.fetchall()
-
-    except Exception as e:
-        log.debug(e)
-        os._exit(1)
-    finally:
-        cursor.close()
-        conn.commit()
-    return [x[0] for x in existing_tables]
-
-
 @timer
 def update_pks(db_config, table_details):
-
-    existing_tables = list_tables_that_exist_in_sirius(
-        db_config=db_config, table_details=table_details
-    )
-
     max_val_query = get_max_pk_from_existing_tables_query(
-        db_schema=db_config["sirius_schema"],
-        table_details=table_details,
-        existing_tables=existing_tables,
+        db_schema=db_config["sirius_schema"], table_details=table_details
     )
     max_vals = get_max_pk_dict(
         db_connection_string=db_config["sirius_db_connection_string"],
@@ -106,7 +62,7 @@ def update_pks(db_config, table_details):
 
     update_query = ""
     for table, details in table_details.items():
-        if len(details["pk"]) > 0 and table in existing_tables:
+        if len(details["pk"]) > 0:
             pk = details["pk"]
             max_val = max_vals[table][pk]
             log.debug(

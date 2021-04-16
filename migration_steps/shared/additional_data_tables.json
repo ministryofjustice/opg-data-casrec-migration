@@ -1,0 +1,46 @@
+{
+  "additional_data_clients_persons": {
+    "entities": {
+      "base_entities": [
+        "clients"
+      ]
+    },
+    "table_type": "timeline",
+    "pk": null,
+    "sirius_target_table": "casrec_extra_data",
+      "fks": [
+          {
+              "column":"sirius_pk_value",
+              "parent_table" : "persons",
+              "parent_column": "id"
+          }],
+    "sequences": [],
+    "order_by": [
+      "id"
+    ],
+    "source_table": "persons",
+    "source_column": "id"
+  },
+    "additional_data_clients_addresses": {
+    "entities": {
+      "base_entities": [
+        "clients"
+      ]
+    },
+    "table_type": "timeline",
+    "pk": null,
+    "sirius_target_table": "casrec_extra_data",
+      "fks": [
+          {
+              "column":"sirius_pk_value",
+              "parent_table" : "addresses",
+              "parent_column": "id"
+          }],
+    "sequences": [],
+    "order_by": [
+      "id"
+    ],
+    "source_table": "addresses",
+    "source_column": "id"
+  }
+}

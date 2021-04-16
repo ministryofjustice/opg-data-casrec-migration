@@ -58,7 +58,7 @@ if "additional_data" not in allowed_entities:
 
 else:
     enabled_extra_tables = table_helpers.get_enabled_table_details(
-        file_name="timeline_tables"
+        file_name="additional_data_tables"
     )
 
 all_enabled_tables = {**enabled_tables, **enabled_extra_tables}

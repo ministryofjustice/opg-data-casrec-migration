@@ -2,9 +2,9 @@
 set -e
 
 # remove migration images
-#docker rmi opg-data-casrec-migration_validation
-#docker rmi opg-data-casrec-migration_load_to_target
-#docker rmi opg-data-casrec-migration_integration
+docker rmi opg-data-casrec-migration_validation
+docker rmi opg-data-casrec-migration_load_to_target
+docker rmi opg-data-casrec-migration_integration
 docker rmi opg-data-casrec-migration_transform_casrec
 
 # restore sirus
