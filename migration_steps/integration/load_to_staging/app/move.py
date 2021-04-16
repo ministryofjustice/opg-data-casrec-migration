@@ -32,8 +32,7 @@ def add_missing_columns_query(table, schema, columns):
     return query
 
 
-def extra_table_stuff(db_config, db_engine, extra_tables):
-    print(f"extra_tables: {extra_tables}")
+def create_missing_extra_tables(db_config, db_engine, extra_tables):
     tables_to_create = [v["sirius_target_table"] for k, v in extra_tables.items()]
 
     for table in tables_to_create:
@@ -66,7 +65,7 @@ def extra_table_stuff(db_config, db_engine, extra_tables):
 def generate_inserts(db_config, db_engine, tables, extra_tables=None):
 
     if extra_tables:
-        extra_table_stuff(
+        create_missing_extra_tables(
             db_config=db_config, db_engine=db_engine, extra_tables=extra_tables
         )
         tables_list = {**tables, **extra_tables}

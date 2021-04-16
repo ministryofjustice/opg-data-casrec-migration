@@ -55,6 +55,7 @@ target_db_engine = create_engine(db_config["db_connection_string"])
     help="Clear existing database tables: True or False",
 )
 def main(clear):
+    allowed_entities = [k for k, v in config.ENABLED_ENTITIES.items() if v is True]
 
     log.info(
         log_title(message="Integration Step: Reindex migrated data based on Sirius ids")
@@ -64,11 +65,7 @@ def main(clear):
             message=f"Source: {db_config['source_schema']} Target: {db_config['target_schema']}"
         )
     )
-    log.info(
-        log_title(
-            message=f"Enabled entities: {', '.join(k for k, v in config.ENABLED_ENTITIES.items() if v is True)}"
-        )
-    )
+    log.info(log_title(message=f"Enabled entities: {', '.join(allowed_entities)}"))
     log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
     log.info(f"Creating schema '{db_config['target_schema']}' if it doesn't exist")
@@ -81,9 +78,16 @@ def main(clear):
         clear_tables(db_config)
 
     enabled_tables = table_helpers.get_enabled_table_details()
-    enabled_extra_tables = table_helpers.get_enabled_table_details(
-        file_name="timeline_tables"
-    )
+    if "additional_data" not in allowed_entities:
+
+        log.info("additional_data entity not enabled, exiting")
+        enabled_extra_tables = {}
+
+    else:
+        enabled_extra_tables = table_helpers.get_enabled_table_details(
+            file_name="timeline_tables"
+        )
+
     all_enabled_tables = {**enabled_tables, **enabled_extra_tables}
 
     log.info(
