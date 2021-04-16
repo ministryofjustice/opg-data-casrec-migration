@@ -1,0 +1,14 @@
+{
+    "sirius_table": "persons",
+    "sirius_table_pk_column": "id",
+    "casrec_table": "PAT",
+    "entity": "clients",
+    "conditions": {"type":  "actor_client"},
+    "timeline_cols": {
+        "DOB": "birthdate",
+        "Term Date": "Term Date",
+        "Title": "Title",
+        "Forename": "Forename",
+        "Surname": "Surname"
+    }
+}

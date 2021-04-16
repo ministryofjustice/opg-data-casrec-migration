@@ -105,6 +105,30 @@ def get_lookup_dict(file_name: str) -> Dict:
         return {k: v["sirius_mapping"] for k, v in lookup_dict.items()}
 
 
+def get_additional_data_dict(file_name: str) -> Dict:
+
+    dirname = get_current_directory()
+    file_path = os.path.join(
+        dirname, f"mapping_definitions/timeline" f"/{file_name}.json"
+    )
+
+    with open(file_path) as additional_data_json:
+        additional_data_dict = json.load(additional_data_json)
+
+    return additional_data_dict
+
+
+def get_all_additional_data_files():
+    dirname = get_current_directory()
+    file_path = os.path.join(dirname, f"mapping_definitions/timeline")
+
+    all_files = []
+    for file in os.listdir(file_path):
+        all_files.append(file)
+
+    return all_files
+
+
 def get_all_lookup_dicts() -> Dict[str, List[str]]:
     dirname = get_current_directory()
     file_path = os.path.join(dirname, f"mapping_definitions/lookups")
