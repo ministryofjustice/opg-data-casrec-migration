@@ -7,7 +7,7 @@
     },
     "table_type": "timeline",
     "pk": "id",
-    "pk_table": "casrec_extra_data",
+    "sirius_target_table": "casrec_extra_data",
       "fks": [
           {
               "column":"sirius_pk_value",

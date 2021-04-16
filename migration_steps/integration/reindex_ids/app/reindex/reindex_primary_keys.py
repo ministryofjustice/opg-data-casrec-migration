@@ -20,7 +20,7 @@ def get_max_pk_from_existing_tables_query(db_schema, table_details, existing_tab
 
     for i, (table, details) in enumerate(tables_with_pks.items()):
         try:
-            pk_table = details["pk_table"]
+            pk_table = details["sirius_target_table"]
         except KeyError:
             pk_table = table
         if len(details["pk"]) > 0:

@@ -32,21 +32,66 @@ def add_missing_columns_query(table, schema, columns):
     return query
 
 
-def generate_inserts(db_config, db_engine, tables):
+def extra_table_stuff(db_config, db_engine, extra_tables):
+    print(f"extra_tables: {extra_tables}")
+    tables_to_create = [v["sirius_target_table"] for k, v in extra_tables.items()]
 
-    tables_list = tables
+    for table in tables_to_create:
+        query = f"""
+            CREATE TABLE IF NOT EXISTS {db_config['target_schema']}.{table} (
+            id serial primary key,
+            entity varchar(255),
+            details json,
+            sirius_table text,
+            sirius_pk_column text,
+            sirius_pk_value int
+               );
+        """
+
+        try:
+            with db_engine.begin() as conn:
+                log.debug(
+                    f"Creating extra table {table} in {db_config['target_schema']}"
+                )
+                conn.execute(query)
+
+        except Exception as e:
+            log.error(
+                f"There was an error creating {table} in {db_config['target_schema']}"
+            )
+            log.debug(e)
+            os._exit(1)
+
+
+def generate_inserts(db_config, db_engine, tables, extra_tables=None):
+
+    if extra_tables:
+        extra_table_stuff(
+            db_config=db_config, db_engine=db_engine, extra_tables=extra_tables
+        )
+        tables_list = {**tables, **extra_tables}
+    else:
+        tables_list = tables
+
     extra_cols_to_move_to_staging = ["method"]
 
-    for i, table in enumerate(tables_list):
-        log.info(f"Inserting {table} into {db_config['target_schema']}")
+    for i, (table, details) in enumerate(tables_list.items()):
+        try:
+            destination_table = details["sirius_target_table"]
+            source_table = table
+        except KeyError:
+            source_table = table
+            destination_table = table
+
+        log.info(f"Inserting {source_table} into {db_config['target_schema']}")
 
         log.debug(f"This is table number {i+1}")
 
         get_source_cols_query = get_columns_query(
-            table=table, schema=db_config["source_schema"]
+            table=source_table, schema=db_config["source_schema"]
         )
         get_target_cols_query = get_columns_query(
-            table=table, schema=db_config["target_schema"]
+            table=destination_table, schema=db_config["target_schema"]
         )
 
         source_columns = [
@@ -67,7 +112,7 @@ def generate_inserts(db_config, db_engine, tables):
 
         if len(columns_missing_from_target) > 0:
             alter_target_query = add_missing_columns_query(
-                table=table,
+                table=destination_table,
                 schema=db_config["target_schema"],
                 columns=columns_missing_from_target,
             )
@@ -75,8 +120,8 @@ def generate_inserts(db_config, db_engine, tables):
             db_engine.execute(alter_target_query)
 
         query = f"""
-        INSERT INTO {db_config["target_schema"]}.{table} ({', '.join(cols_to_move)})
-        SELECT {', '.join(cols_to_move)} FROM {db_config["source_schema"]}.{table};
+        INSERT INTO {db_config["target_schema"]}.{destination_table} ({', '.join(cols_to_move)})
+        SELECT {', '.join(cols_to_move)} FROM {db_config["source_schema"]}.{source_table};
         """
 
         try:
@@ -84,7 +129,7 @@ def generate_inserts(db_config, db_engine, tables):
                 conn.execute(query)
 
             global completed_tables
-            completed_tables.append(table)
+            completed_tables.append(source_table)
             log.info(
                 f"{len(completed_tables)}/{len(tables_list)} tables have been completed"
             )
@@ -94,7 +139,7 @@ def generate_inserts(db_config, db_engine, tables):
             )
         except Exception as e:
             log.error(
-                f"There was an error inserting {table} into {db_config['target_schema']}"
+                f"There was an error inserting {source_table} into {db_config['target_schema']}"
             )
             log.debug(e)
             os._exit(1)
