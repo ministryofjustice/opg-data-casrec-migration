@@ -176,11 +176,13 @@ def build_lookup_functions():
 
 
 def get_wrapped_sirius_col(col, mapped_item):
-    sql = col
     col_definition = get_col_definition(mapped_item)
+    datatype = col_definition["sirius_details"]["data_type"]
+    if datatype == "str":
+        col = f"NULLIF(TRIM({col}), '')"
     if "current_date" == col_definition["transform_casrec"]["calculated"]:
-        sql = f"CAST({col} AS DATE)"
-    return sql
+        col = f"CAST({col} AS DATE)"
+    return col
 
 
 def get_sirius_col_name(mapped_item):
@@ -672,9 +674,10 @@ def main(verbose, staging):
                 upload_file(bucket_name, file_path, s3, log, s3_file_path)
 
     if get_exception_count() > 0:
-        exit(1)
-
-    log.info("No exceptions found: continue...\n")
+        log.info("Exceptions WERE found: override / continue anyway\n")
+        # exit(1)
+    else:
+        log.info("No exceptions found: continue...\n")
 
 
 if __name__ == "__main__":
