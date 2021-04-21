@@ -217,5 +217,33 @@
                 "persons.clientsource = 'CASRECMIGRATION'"
             ]
         }
+    },
+    "supervision_level_log": {
+        "exclude": [
+            "order_id"
+        ],
+        "forced": {
+            "caserecnumber": {
+                "mapping_table": "client_persons.caserecnumber"
+            }
+        },
+        "orderby": {},
+        "casrec": {
+            "from_table": "order",
+            "joins": [
+                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\""
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_supervision_level_log exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "where_clauses": []
+        },
+        "sirius": {
+            "from_table": "supervision_level_log",
+            "joins": [
+                "LEFT JOIN {target_schema}.cases ON cases.id = supervision_level_log.order_id",
+                "LEFT JOIN {target_schema}.persons ON persons.id = cases.client_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_supervision_level_log exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": []
+        }
     }
 }
