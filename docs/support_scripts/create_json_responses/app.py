@@ -69,6 +69,8 @@ def get_entity_id(session, entity, search_field, search_value, csv_type):
 
     search_result = json.loads(response.text)
 
+    print(search_result)
+
     ids = []
 
     if search_result["hits"]["total"] > 0:
@@ -158,7 +160,7 @@ orders_headers = [
     '["orderExpiryDate"]',
 ]
 
-csvs = ["orders", "clients"]
+csvs = ["clients"]
 
 search_headers = [
     "endpoint",
@@ -203,31 +205,32 @@ for csv in csvs:
                 f'{conn["base_url"]}{endpoint_final}', headers=conn["headers_dict"],
             )
             json_obj = json.loads(response.text)
-            with open(f"responses/{csv}_{entity_ref}.json", "w") as outfile:
-                json.dump(json_obj, outfile, indent=4, sort_keys=False)
 
-            for header in search_headers:
-                curr_var = eval(f'row["{header}"]')
-                try:
-                    line_struct[header] = line_struct[header] + curr_var + "|"
-                except Exception:
-                    line_struct[header] = curr_var + "|"
-            for header in eval(f"{csv}_headers"):
-                var_to_eval = f"json_obj{header}"
-                rationalised_var = rationalise_var(var_to_eval, json_obj)
-                try:
-                    line_struct[header] = line_struct[header] + rationalised_var + "|"
-                except Exception:
-                    line_struct[header] = rationalised_var + "|"
-
-        for header in eval(f"{csv}_headers") + search_headers:
-            col_restruct_text = restructure_text(line_struct[header])
-            line_struct[header] = col_restruct_text
-
-        for attr, value in line_struct.items():
-            line = line + value + ","
-
-        line = line[:-1]
-        line = line + "\n"
-        with open(f"responses/{csv}_output.csv", "a") as csv_outfile:
-            csv_outfile.write(line)
+        #     with open(f"responses/{csv}_{entity_ref}.json", "w") as outfile:
+        #         json.dump(json_obj, outfile, indent=4, sort_keys=False)
+        #
+        #     for header in search_headers:
+        #         curr_var = eval(f'row["{header}"]')
+        #         try:
+        #             line_struct[header] = line_struct[header] + curr_var + "|"
+        #         except Exception:
+        #             line_struct[header] = curr_var + "|"
+        #     for header in eval(f"{csv}_headers"):
+        #         var_to_eval = f"json_obj{header}"
+        #         rationalised_var = rationalise_var(var_to_eval, json_obj)
+        #         try:
+        #             line_struct[header] = line_struct[header] + rationalised_var + "|"
+        #         except Exception:
+        #             line_struct[header] = rationalised_var + "|"
+        #
+        # for header in eval(f"{csv}_headers") + search_headers:
+        #     col_restruct_text = restructure_text(line_struct[header])
+        #     line_struct[header] = col_restruct_text
+        #
+        # for attr, value in line_struct.items():
+        #     line = line + value + ","
+        #
+        # line = line[:-1]
+        # line = line + "\n"
+        # with open(f"responses/{csv}_output.csv", "a") as csv_outfile:
+        #     csv_outfile.write(line)

@@ -1,117 +1,36 @@
 ---
 version: 2.1
 
-parameters:
-  run_master:
-    type: boolean
-    default: true
-  run_preprod:
-    type: boolean
-    default: false
-
 workflows:
-  pull_request:
+  preprod:
     jobs:
       - manage_workflow:
           name: manage workflow
-          filters: {branches:{ignore:[master]}}
-      - reset_sirius:
-          name: reset the sirius fixtures development
-          requires: [manage workflow]
-          tf_workspace: development
           filters: {branches:{ignore:[master]}}
       - build:
           name: build and unit tests
           requires: [manage workflow]
           filters: {branches:{ignore:[master]}}
       - infrastructure:
-          name: plan infra development
-          requires: [build and unit tests]
-          tf_workspace: development
-          tf_command: plan
-          filters: {branches:{ignore:[master]}}
-      - infrastructure:
-          name: build infra development
-          requires: [plan infra development]
-          tf_workspace: development
-          tf_command: apply
-          filters: {branches:{ignore:[master]}}
-      - run_step_function:
-          name: run the step function development
-          requires: [build infra development, reset the sirius fixtures development]
-          filters: {branches:{ignore:[master]}}
-      - cleanup:
-          name: destroy branch environment
-          requires: [run the step function development]
-          filters: {branches:{ignore:[master]}}
-
-  master:
-    when: << pipeline.parameters.run_master >>
-    jobs:
-      - build:
-          name: build and unit tests master
-          filters: {branches:{only:[master]}}
-      - reset_sirius:
-          name: reset the sirius fixtures development master
-          tf_workspace: development
-          filters: {branches:{only:[master]}}
-      - infrastructure:
-          name: build infra development master
-          requires: [reset the sirius fixtures development master, build and unit tests master]
-          tf_workspace: development
-          tf_command: apply
-          filters: {branches:{only:[master]}}
-      - run_step_function:
-          name: run the step function
-          requires: [build infra development master]
-          filters: {branches:{only:[master]}}
-      - approve:
-          name: approve preprod kick off
-          type: approval
-          requires: [run the step function]
-          filters: {branches:{only:[master]}}
-      - kick_off_preprod:
-          name: kick off preprod
-          requires: [approve preprod kick off]
-          filters: {branches:{only:[master]}}
-
-  preprod:
-    when: << pipeline.parameters.run_preprod >>
-    jobs:
-      - manage_workflow:
-          name: manage workflow
-          filters: {branches:{only:[master]}}
-      - get_latest_image:
-          name: get latest tag
-          requires: [manage workflow]
-          filters: {branches:{only:[master]}}
-      - infrastructure:
-          name: plan infra preproduction
-          requires: [get latest tag]
-          tf_workspace: preproduction
-          tf_command: plan
-          filters: {branches:{only:[master]}}
-      - infrastructure:
           name: build infra preproduction
-          requires: [plan infra preproduction]
+          requires: [build and unit tests]
           tf_workspace: preproduction
           tf_command: apply
-          filters: {branches:{only:[master]}}
+          filters: {branches:{ignore:[master]}}
       - run_step_function:
           name: run the step function preproduction
           requires: [build infra preproduction]
           account: "492687888235"
-          wait_for: "3600"
-          filters: {branches:{only:[master]}}
+          wait_for: "10000"
+          filters: {branches:{ignore:[master]}}
       - run_elasticsearch_reset:
           name: run elasticsearch reset preproduction
           tf_workspace: preproduction
           requires: [run the step function preproduction]
-          filters: {branches:{only:[master]}}
+          filters: {branches:{ignore:[master]}}
 
 orbs:
   aws-cli: circleci/aws-cli@1.3.0
-  slack: circleci/slack@3.4.2
   dockerhub_helper:
     orbs:
       docker: circleci/docker@1.4.0
@@ -262,16 +181,7 @@ jobs:
       - checkout
       - run:
           name: check log message
-          command: |
-            git log -1 --oneline
-            if [ `git log -1 --oneline | grep ~nr | wc -l` -gt 0 ]
-            then
-              echo "Detected noreload flag, not running reload steps"
-              echo "export NO_RELOAD=true" >> $BASH_ENV
-            else
-              echo "Running full job normally"
-              echo "export NO_RELOAD=false" >> $BASH_ENV
-            fi
+          command: echo "export NO_RELOAD=true" >> $BASH_ENV
       - run:
           name: install requirements
           command: pip3 install -r requirements-rsf.txt
@@ -280,10 +190,6 @@ jobs:
           name: run the function
           command: python3 run_step_function.py --role sirius-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD}
           working_directory: ~/project/docs/ci_scripts
-      - slack/status:
-          channel: opg-migration-builds
-          failure_message: step function run has failed.
-          success_message: step function run has succeeded.
 
   run_behat_tests:
     executor: terraform/terraform
@@ -386,18 +292,6 @@ jobs:
           name: Show version
           command: echo ${VERSION}
       - run:
-          name: Run transform_casrec unit tests
-          command: |
-            export PYTHONPATH=~/project/migration_steps/transform_casrec:~/project/migration_steps/transform_casrec/transform/app
-            pip3 install -r migration_steps/requirements.txt
-            python3 -m pytest migration_steps/transform_casrec/transform/transform_tests --cov-fail-under=85
-      - run:
-          name: Run shared utillities unit tests
-          command: |
-            export PYTHONPATH=~/project/migration_steps/shared:~/project/migration_steps/shared/shared_tests
-            pip3 install -r migration_steps/shared/shared_tests/requirements.txt
-            python3 -m pytest migration_steps/shared/shared_tests
-      - run:
           name: Docker login
           command: aws ecr get-login-password --region $AWS_REGION --profile sirius-ci | docker login --username AWS --password-stdin $AWS_REGISTRY
       - run:
@@ -406,14 +300,6 @@ jobs:
       - run:
           name: Build images
           command: docker-compose -f docker-compose.ci.yml build --parallel
-      - run:
-          name: Full local run through
-          command: |
-            echo "Switching override so we do not use volume mounts"
-            rm docker-compose.override.yml
-            mv docker-compose.override.ci.yml docker-compose.override.yml
-            echo "Running migrate.sh"
-            ./migrate.sh
       - run:
           name: Push images
           command: docker-compose -f docker-compose.ci.yml push

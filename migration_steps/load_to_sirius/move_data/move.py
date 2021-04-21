@@ -136,8 +136,16 @@ def insert_data_into_target(
         log.verbose(f"using source query {query}")
 
         data_to_insert = pd.read_sql_query(
-            sql=query, con=db_config["source_db_connection_string"]
+            sql=query, con=db_config["source_db_connection_string"], coerce_float=False
         )
+
+        # id_cols = [id_col for id_col in data_to_insert.columns if 'id' in id_col]
+        #
+        # for col in id_cols:
+        #     if data_to_insert[col].dtype == np.number:
+        #         data_to_insert[col] = (
+        #             data_to_insert[col].fillna(0).astype(int)
+        #         )
 
         insert_statement = create_insert_statement(
             schema=db_config["target_schema"],
@@ -152,7 +160,8 @@ def insert_data_into_target(
 
             log.error(
                 f"There was an error inserting {len(data_to_insert)} rows "
-                f"into {db_config['source_schema']}.{table_name}",
+                f"into {db_config['source_schema']}.{table_name}"
+                f"error: {format_error_message(e=e)}",
                 extra={
                     "table_name": table_name,
                     "size": len(data_to_insert),
@@ -187,6 +196,7 @@ def update_data_in_target(db_config, source_db_engine, table, table_details):
     chunk_size = 10000
     offset = 0
     while True:
+        # col_list = ['CAST({0} AS VARCHAR)'.format(x) for x in columns]
         query = f"""
             SELECT {', '.join(columns)} FROM {db_config["source_schema"]}.{table}
             WHERE method = 'UPDATE'

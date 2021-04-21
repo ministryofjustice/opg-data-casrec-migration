@@ -211,7 +211,11 @@ source_profile=identity
 mfa_serial=arn:aws:iam::631181914621:mfa/firstname.lastname
 ```
 
+Then run:
+
+```
 aws-vault exec sirius-dev-operator -- make ecr_login
+```
 
 Setup sirius. *** Note *** Don't do the clean if you already have a recent setup or it will wipe it!!!
 
@@ -324,7 +328,7 @@ The Migration steps, in order, are:
 
 - business rules step, between integration and load_to_target
 - rollback
-- Functional testing, which will be run in situ within a Sirius environment, utiliising establishes Sirius test behaviours
+- Functional testing, which will be run in situ within a Sirius environment, utilising establishes Sirius test behaviours
 
 
 ## DB connections for clients eg PyCharm and DataGrip:
