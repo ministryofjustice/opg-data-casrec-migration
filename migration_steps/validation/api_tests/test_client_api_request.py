@@ -173,7 +173,7 @@ def flat_dict(d, ignore_list):
     return final_dict
 
 
-@pytest.mark.parametrize("csv", ["orders", "clients"])
+@pytest.mark.parametrize("csv", ["deputies"])
 def test_csvs(csv, create_a_session):
     s3_csv_path = f"validation/csvs/{csv}.csv"
 
@@ -255,6 +255,7 @@ def test_csvs(csv, create_a_session):
     print(f"Ran happy path tests against {count} cases in {csv}")
 
 
+@pytest.mark.skip()
 @pytest.mark.parametrize("csv", ["fail"])
 def test_fail_csvs(csv, create_a_session):
     s3_csv_path = f"validation/csvs/{csv}.csv"
