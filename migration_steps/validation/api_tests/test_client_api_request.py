@@ -105,7 +105,7 @@ def get_entity_ids(session, entity, search_field, search_value, csv_type):
     ids = []
 
     if search_result["hits"]["total"] > 0:
-        if csv_type == "clients":
+        if csv_type in ["clients", "deputies"]:
             entity_id = search_result["hits"]["hits"][0]["_id"]
             ids.append(entity_id)
         elif csv_type == "orders":

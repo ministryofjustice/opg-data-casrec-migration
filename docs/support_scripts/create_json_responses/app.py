@@ -143,6 +143,32 @@ clients_headers = [
     '["maritalStatus"]',
 ]
 
+
+deputies_headers = [
+    '["firstname"]',
+    '["surname"]',
+    '["otherNames"]',
+    '["addressLine1"]',
+    '["addressLine2"]',
+    '["addressLine3"]',
+    '["town"]',
+    '["county"]',
+    '["postcode"]',
+    '["country"]',
+    '["phoneNumber"]',
+    '["correspondenceByPost"]',
+    '["correspondenceByPhone"]',
+    '["correspondenceByEmail"]',
+    '["personType"]',
+    '["clientStatus"]["handle"]',
+    '["clientStatus"]["label"]',
+    '["clientAccommodation"]["handle"]',
+    '["clientAccommodation"]["label"]',
+    '["supervisionCaseOwner"]["name"]',
+    '["supervisionCaseOwner"]["phoneNumber"]',
+    '["maritalStatus"]',
+]
+
 orders_headers = [
     '["client"]["firstname"]',
     '["client"]["surname"]',
@@ -200,7 +226,8 @@ for csv in csvs:
             endpoint_final = str(endpoint).replace("{id}", str(entity_id))
             print(endpoint_final)
             response = conn["sess"].get(
-                f'{conn["base_url"]}{endpoint_final}', headers=conn["headers_dict"],
+                f'{conn["base_url"]}{endpoint_final}',
+                headers=conn["headers_dict"],
             )
             json_obj = json.loads(response.text)
             with open(f"responses/{csv}_{entity_ref}.json", "w") as outfile:
