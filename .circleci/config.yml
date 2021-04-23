@@ -15,35 +15,35 @@ workflows:
       - manage_workflow:
           name: manage workflow
           filters: {branches:{ignore:[master]}}
-      - reset_sirius:
-          name: reset the sirius fixtures development
-          requires: [manage workflow]
-          tf_workspace: development
-          filters: {branches:{ignore:[master]}}
+#      - reset_sirius:
+#          name: reset the sirius fixtures development
+#          requires: [manage workflow]
+#          tf_workspace: development
+#          filters: {branches:{ignore:[master]}}
       - build:
           name: build and unit tests
           requires: [manage workflow]
           filters: {branches:{ignore:[master]}}
-      - infrastructure:
-          name: plan infra development
-          requires: [build and unit tests]
-          tf_workspace: development
-          tf_command: plan
-          filters: {branches:{ignore:[master]}}
-      - infrastructure:
-          name: build infra development
-          requires: [plan infra development]
-          tf_workspace: development
-          tf_command: apply
-          filters: {branches:{ignore:[master]}}
-      - run_step_function:
-          name: run the step function development
-          requires: [build infra development, reset the sirius fixtures development]
-          filters: {branches:{ignore:[master]}}
-      - cleanup:
-          name: destroy branch environment
-          requires: [run the step function development]
-          filters: {branches:{ignore:[master]}}
+#      - infrastructure:
+#          name: plan infra development
+#          requires: [build and unit tests]
+#          tf_workspace: development
+#          tf_command: plan
+#          filters: {branches:{ignore:[master]}}
+#      - infrastructure:
+#          name: build infra development
+#          requires: [plan infra development]
+#          tf_workspace: development
+#          tf_command: apply
+#          filters: {branches:{ignore:[master]}}
+#      - run_step_function:
+#          name: run the step function development
+#          requires: [build infra development, reset the sirius fixtures development]
+#          filters: {branches:{ignore:[master]}}
+#      - cleanup:
+#          name: destroy branch environment
+#          requires: [run the step function development]
+#          filters: {branches:{ignore:[master]}}
 
   master:
     when: << pipeline.parameters.run_master >>
@@ -406,14 +406,14 @@ jobs:
       - run:
           name: Build images
           command: docker-compose -f docker-compose.ci.yml build --parallel
-      - run:
-          name: Full local run through
-          command: |
-            echo "Switching override so we do not use volume mounts"
-            rm docker-compose.override.yml
-            mv docker-compose.override.ci.yml docker-compose.override.yml
-            echo "Running migrate.sh"
-            ./migrate.sh
+#      - run:
+#          name: Full local run through
+#          command: |
+#            echo "Switching override so we do not use volume mounts"
+#            rm docker-compose.override.yml
+#            mv docker-compose.override.ci.yml docker-compose.override.yml
+#            echo "Running migrate.sh"
+#            ./migrate.sh
       - run:
           name: Push images
           command: docker-compose -f docker-compose.ci.yml push
