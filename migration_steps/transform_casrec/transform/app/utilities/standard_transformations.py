@@ -25,7 +25,7 @@ def squash_columns(
     new_col: str,
     df: pd.DataFrame,
     drop_original_cols: bool = True,
-    include_keys: bool = True,
+    include_keys: bool = False,
 ) -> pd.DataFrame:
 
     if include_keys:
