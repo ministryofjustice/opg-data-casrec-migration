@@ -41,6 +41,9 @@ mkdir -p data/anon_data
 # copy .csv files within this dir (about 40 files)
 ```
 
+The simplest way of doing this if you don't already have them, is to run the migrate.sh script as normal and choose 'yes' when asked
+if you want to synchronise the data. This will clear out the folder and (make sure folder exists) and pull the files in from s3.
+
 ### Install python requirements
 
 ```bash
@@ -366,3 +369,33 @@ ecs-runner -task reset-api -timeout 600
 ecs-runner -task migrate-api -timeout 600
 ecs-runner -task import-fixtures-api -timeout 600
 ```
+
+## Pull and anonymise a case from preprod
+
+When we encounter issues in our data we want to be able to recreate them in our dev data so that we can debug locally.
+We have an automated system to do this. It is a work in progress as the method to actually achieve
+this is surprisingly complicated.
+
+#### How to run it
+
+From root directory, find the relevant caseref and run:
+
+```
+./run_ecs_task -c <caserefnnumber>
+```
+
+#### How it works
+
+- Initialises terraform and runs a job that populates a template. This stops us needing to hard code the subnet values etc.
+- Kicks off a container that runs an ECS task. We have added the script to do the anonymising and moving of date to s3
+to the etl0 (prepare job) and this gets called with an override.
+- ECS task pulls the relevant data, anonymises it, formats it and puts it in a folder in s3 ready for download.
+- We then kick off the synchronise script using preproduction as the environment parameter. This downloads the data locally
+and merges it with out existing local data.
+
+If you are happy with the data then you can manually add the files to the dev s3 bucket. We may automate this bit but for now I'd rather
+we didn't accidentally overwrite the s3 bucket data.
+
+This process is split across 3 python tasks and a terraform task. We have had to split it this way as we are not able to access DB
+directly so have to access it through a separate ECS task.
+Everything is controlled from the `run_ecs_task.sh` shell script.
