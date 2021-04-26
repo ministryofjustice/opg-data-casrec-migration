@@ -16,3 +16,15 @@ resource "local_file" "output" {
   })
   filename = "${path.module}/terraform.output.json"
 }
+
+resource "local_file" "output_casrec" {
+  content = templatefile("${path.module}/casrec_tasks.toml",
+    {
+      cluster         = aws_ecs_cluster.migration.name,
+      sec_group       = aws_security_group.etl.id,
+      subnets         = local.subnets_string,
+      account         = local.account.account_id
+      task-definition = aws_ecs_task_definition.etl0.arn
+  })
+  filename = "${path.module}/terraform.output_casrec.json"
+}

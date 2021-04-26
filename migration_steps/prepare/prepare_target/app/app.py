@@ -40,7 +40,7 @@ def set_logging_level(verbose):
 
 @click.command()
 @click.option("-v", "--verbose", count=True)
-@click.option("-i", "--ignore_schemas", default="")
+@click.option("-i", "--ignore_schemas", default="reference")
 def main(verbose, ignore_schemas):
     set_logging_level(verbose)
     log.info(log_title(message="Prepare Target"))
