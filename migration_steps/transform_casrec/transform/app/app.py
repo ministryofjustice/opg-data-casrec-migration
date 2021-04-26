@@ -86,7 +86,7 @@ target_db = InsertData(db_engine=target_db_engine, schema=db_config["target_sche
     prompt=False,
     type=int,
     help="Defaults to 10,000 but can be changed for dev",
-    default=10000,
+    default=config.DEFAULT_CHUNK_SIZE,
 )
 @mem_tracker
 @timer

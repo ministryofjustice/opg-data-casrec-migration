@@ -58,7 +58,7 @@ def main(audit):
     log.info(log_title(message="Load to Target Step: AKA do the migration already"))
     log.info(
         log_title(
-            message=f"Source: {db_config['source_schema']} Target: sirius.{db_config['target_schema']}"
+            message=f"Source: {db_config['source_schema']}, Target: sirius.{db_config['target_schema']}, Chunk Size: {config.DEFAULT_CHUNK_SIZE}"
         )
     )
     log.info(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
@@ -84,12 +84,14 @@ def main(audit):
             target_db_engine=target_db_engine,
             table_name=table,
             table_details=tables_dict[table],
+            chunk_size=config.DEFAULT_CHUNK_SIZE,
         )
         update_data_in_target(
             db_config=db_config,
             source_db_engine=source_db_engine,
             table=table,
             table_details=tables_dict[table],
+            chunk_size=config.DEFAULT_CHUNK_SIZE,
         )
 
         completed_tables.append(table)

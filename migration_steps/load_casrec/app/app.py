@@ -277,7 +277,7 @@ def sirius_session(account):
 
 @click.command()
 @click.option("-e", "--entities", default="all", help="list of entities to load")
-@click.option("-c", "--chunk", default="10000", help="chunk size")
+@click.option("-c", "--chunk", default=config.DEFAULT_CHUNK_SIZE, help="chunk size")
 @click.option("-d", "--delay", default="0", help="delay in seconds for process")
 @click.option("-v", "--verbose", count=True)
 @click.option(
