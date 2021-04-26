@@ -1,8 +1,10 @@
+import inspect
 import json
 import os
 import logging
 import time
 from datetime import datetime
+import socket
 
 import colorlog as colourlog
 from pythonjsonlogger import jsonlogger
@@ -51,7 +53,24 @@ class CustomJsonFormatter(jsonlogger.JsonFormatter):
             log_record["level"] = record.levelname
 
 
-def setup_logging(env, level=None):
+class ContextFilter(logging.Filter):
+    def __init__(self, db_config=None, module_details=None):
+        self.db_config = db_config
+        self.module_details = module_details
+
+    def filter(self, record):
+        db_conf = {
+            "source_schema": self.db_config["source_schema"],
+            "target_schema": self.db_config["target_schema"],
+            "chunk_size": self.db_config["chunk_size"],
+        }
+        record.db_config = db_conf
+        record.module_details = self.module_details
+
+        return True
+
+
+def setup_logging(env, level=None, db_config=None, module_name=None):
     log = logging.getLogger("root")
 
     VERBOSE_LEVELV_NUM = 5
@@ -72,15 +91,23 @@ def setup_logging(env, level=None):
 
     logging.Logger.data = data
 
+    # if env == "local":
     if env == "local":
         level = level if level else "VERBOSE"
         log.addHandler(MyHandler())
     else:
         level = "DEBUG"
         logHandler = logging.StreamHandler()
-        formatter = CustomJsonFormatter("%(timestamp)s %(level)s %(name)s %(message)s")
+        formatter = CustomJsonFormatter(
+            "%(timestamp)s %(level)s %(funcName)s %(message)s"
+        )
         logHandler.setFormatter(formatter)
         log.addHandler(logHandler)
+        try:
+            auto_filter = ContextFilter(db_config, module_name)
+            log.addFilter(auto_filter)
+        except Exception:
+            pass
     log.setLevel(level)
     log.info(f"{level} logging enabled for environment {env}")
 

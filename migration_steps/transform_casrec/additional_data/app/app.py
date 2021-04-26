@@ -42,6 +42,7 @@ db_config = {
     "db_connection_string": config.get_db_connection_string("migration"),
     "source_schema": config.schemas["pre_transform"],
     "target_schema": config.schemas["post_transform"],
+    "chunk_size": config.DEFAULT_CHUNK_SIZE,
 }
 
 allowed_entities = [k for k, v in config.ENABLED_ENTITIES.items() if v is True]
@@ -62,7 +63,7 @@ def main(clear):
     log.info(log_title(message="Migration Step: additional_data"))
     log.info(
         log_title(
-            message=f"Source: {db_config['source_schema']}, Target: sirius.{db_config['target_schema']}, Chunk Size: {config.DEFAULT_CHUNK_SIZE}"
+            message=f"Source: {db_config['source_schema']}, Target: {db_config['target_schema']}, Chunk Size: {db_config['chunk_size']}"
         )
     )
     log.info(log_title(message=f"Enabled entities: {', '.join(allowed_entities)}"))
