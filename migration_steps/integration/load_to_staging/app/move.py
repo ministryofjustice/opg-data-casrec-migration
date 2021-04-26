@@ -137,6 +137,7 @@ def generate_inserts(db_config, db_engine, tables, extra_tables=None):
                 f"Not completed tables: {', '.join(list(set(tables_list) - set(completed_tables)))}"
             )
         except Exception as e:
+            print(e)
             log.error(
                 f"There was an error inserting {source_table} into {db_config['target_schema']}"
             )
