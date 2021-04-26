@@ -43,6 +43,7 @@ def insert_person_caseitem(db_config, target_db):
     person_caseitem_df = person_caseitem_df.rename(
         columns={"id_case": "caseitem_id", "id_person": "person_id"}
     )
+    person_caseitem_df["casrec_details"] = None
 
     target_db.insert_data(
         table_name=definition["destination_table_name"],
