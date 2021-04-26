@@ -34,11 +34,11 @@ load_dotenv(dotenv_path=env_path)
 environment = os.environ.get("ENVIRONMENT")
 config = get_config(environment)
 
+
 # logging
 log = logging.getLogger("root")
-log.addHandler(custom_logger.MyHandler())
-config.custom_log_level()
-verbosity_levels = config.verbosity_levels
+custom_logger.setup_logging(env=environment, module_name="validate db")
+
 
 is_staging = False
 conn_target = None
@@ -77,14 +77,6 @@ bucket_name = f"casrec-migration-{environment.lower()}"
 account = os.environ["SIRIUS_ACCOUNT"]
 session = boto3.session.Session()
 sql_lines = []
-
-
-def set_logging_level(verbose):
-    try:
-        log.setLevel(verbosity_levels[verbose])
-    except KeyError:
-        log.setLevel("INFO")
-        log.info(f"{verbose} is not a valid verbosity level")
 
 
 def get_validation_dict():
@@ -153,7 +145,7 @@ def build_exception_table(mapping_name):
 def build_lookup_functions():
     for lookup_name, lookup in helpers.get_all_lookup_dicts().items():
 
-        firstval = lookup[list(lookup)[0]]['sirius_mapping']
+        firstval = lookup[list(lookup)[0]]["sirius_mapping"]
         datatype = "TEXT"
         if isinstance(firstval, bool):
             datatype = "BOOLEAN"
@@ -174,7 +166,11 @@ def build_lookup_functions():
             except AttributeError:
                 escape_quotes = v["sirius_mapping"]
 
-            value = f"'{escape_quotes}'" if isinstance(escape_quotes, str) else escape_quotes
+            value = (
+                f"'{escape_quotes}'"
+                if isinstance(escape_quotes, str)
+                else escape_quotes
+            )
             sql_add(f"WHEN ($1 = '{k}') THEN {value}", 2)
 
         sql_add("END", 1)
@@ -318,10 +314,13 @@ def build_validation_statements(mapping_name):
     sql_add("SELECT DISTINCT", 2)
 
     # overridden cols(eg run through transformations or inserting casrec no. as first column)
-    for overridden_mapped_item_name, overridden_mapped_item in validation_dict[mapping_name][
-        "forced"
-    ].items():
-        sql_add(f"{casrec_wrap(overridden_mapped_item)} AS {overridden_mapped_item_name},", 3)
+    for overridden_mapped_item_name, overridden_mapped_item in validation_dict[
+        mapping_name
+    ]["forced"].items():
+        sql_add(
+            f"{casrec_wrap(overridden_mapped_item)} AS {overridden_mapped_item_name},",
+            3,
+        )
 
     # forced order cols
     for order_mapped_item_name, order_mapped_item in validation_dict[mapping_name][
@@ -349,7 +348,7 @@ def build_validation_statements(mapping_name):
         sql_add(f"{join}", 2)
 
     # WHERE
-    sql_add('WHERE True', 2)
+    sql_add("WHERE True", 2)
     for where_clause in validation_dict[mapping_name]["casrec"]["where_clauses"]:
         sql_add(f"AND {where_clause}", 2)
 
@@ -363,10 +362,13 @@ def build_validation_statements(mapping_name):
     sql_add("SELECT DISTINCT", 2)
 
     # overridden cols(eg run through transformations or inserting casrec no. as first column)
-    for overridden_mapped_item_name, overridden_mapped_item in validation_dict[mapping_name][
-        "forced"
-    ].items():
-        sql_add(f"{sirius_wrap(overridden_mapped_item)} AS {overridden_mapped_item_name},", 3)
+    for overridden_mapped_item_name, overridden_mapped_item in validation_dict[
+        mapping_name
+    ]["forced"].items():
+        sql_add(
+            f"{sirius_wrap(overridden_mapped_item)} AS {overridden_mapped_item_name},",
+            3,
+        )
 
     # forced order cols
     for order_mapped_item_name, order_mapped_item in validation_dict[mapping_name][
@@ -416,7 +418,8 @@ def write_column_validation_sql(
     mapping_name, mapped_item_name, col_source_casrec, col_source_sirius
 ):
     order_by = ",\n        ".join(
-        ["exc_caserecnumber ASC"] + list(validation_dict[mapping_name]["orderby"].keys())
+        ["exc_caserecnumber ASC"]
+        + list(validation_dict[mapping_name]["orderby"].keys())
     )
 
     sql_add(f"-- {mapping_name} / {mapped_item_name}")
@@ -443,7 +446,9 @@ def write_column_validation_sql(
     )
     for join in validation_dict[mapping_name]["casrec"]["joins"]:
         sql_add(f"{join}", 3)
-    exception_table_join = validation_dict[mapping_name]["casrec"]["exception_table_join"]
+    exception_table_join = validation_dict[mapping_name]["casrec"][
+        "exception_table_join"
+    ]
     sql_add(f"{exception_table_join}", 3)
     # WHERE
     sql_add("WHERE exc_table.caserecnumber IS NOT NULL", 3)
@@ -474,7 +479,9 @@ def write_column_validation_sql(
     for join in validation_dict[mapping_name]["sirius"]["joins"]:
         join = join.replace("{target_schema}", str(target_schema))
         sql_add(f"{join}", 3)
-    exception_table_join = validation_dict[mapping_name]["sirius"]["exception_table_join"]
+    exception_table_join = validation_dict[mapping_name]["sirius"][
+        "exception_table_join"
+    ]
     sql_add(f"{exception_table_join}", 3)
     # WHERE
     sql_add("WHERE exc_table.caserecnumber IS NOT NULL", 3)
@@ -498,12 +505,14 @@ def build_column_validation_statements(mapping_name):
     )
 
     # test overridden columns
-    for mapped_item_name, mapped_item in validation_dict[mapping_name]["forced"].items():
+    for mapped_item_name, mapped_item in validation_dict[mapping_name][
+        "forced"
+    ].items():
         write_column_validation_sql(
             mapping_name,
             mapped_item_name,
             casrec_wrap(mapped_item),
-            sirius_wrap(mapped_item)
+            sirius_wrap(mapped_item),
         )
 
     # test regular columns
@@ -657,10 +666,9 @@ def get_exception_count():
 
 
 @click.command()
-@click.option("-v", "--verbose", count=True)
 @click.option("--staging", is_flag=True, default=False)
-def main(verbose, staging):
-    set_logging_level(verbose)
+def main(staging):
+
     log.info(helpers.log_title(message="Validation"))
 
     global is_staging

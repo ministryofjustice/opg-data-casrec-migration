@@ -59,13 +59,14 @@ class ContextFilter(logging.Filter):
         self.module_details = module_details
 
     def filter(self, record):
-        db_conf = {
-            "source_schema": self.db_config["source_schema"],
-            "target_schema": self.db_config["target_schema"],
-            "chunk_size": self.db_config["chunk_size"],
-        }
-        record.db_config = db_conf
         record.module_details = self.module_details
+        if self.db_config:
+            db_conf = {
+                "source_schema": self.db_config["source_schema"],
+                "target_schema": self.db_config["target_schema"],
+                "chunk_size": self.db_config["chunk_size"],
+            }
+            record.db_config = db_conf
 
         return True
 
@@ -91,7 +92,6 @@ def setup_logging(env, level=None, db_config=None, module_name=None):
 
     logging.Logger.data = data
 
-    # if env == "local":
     if env == "local":
         level = level if level else "VERBOSE"
         log.addHandler(MyHandler())

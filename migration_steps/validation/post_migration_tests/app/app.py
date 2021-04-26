@@ -37,11 +37,9 @@ import table_helpers
 config = helpers.get_config(env=environment)
 
 # logging
-# custom_logger.custom_log_level(levels=config.custom_log_levels)
-config.custom_log_level()
-verbosity_levels = config.verbosity_levels
 log = logging.getLogger("root")
-log.addHandler(custom_logger.MyHandler())
+custom_logger.setup_logging(env=environment, module_name="post migration tests")
+
 
 # database
 db_config = {
@@ -55,15 +53,7 @@ db_config = {
 
 
 @click.command()
-@click.option("-v", "--verbose", count=True)
-def main(verbose):
-    try:
-        log.setLevel(verbosity_levels[verbose])
-        log.info(f"{verbosity_levels[verbose]} logging enabled")
-    except KeyError:
-        log.setLevel("INFO")
-        log.info(f"{verbose} is not a valid verbosity level")
-        log.info(f"INFO logging enabled")
+def main():
 
     log.info(log_title(message="Validation Step: check things that are not just data"))
 

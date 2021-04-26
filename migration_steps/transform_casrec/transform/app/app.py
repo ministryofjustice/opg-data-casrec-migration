@@ -50,10 +50,6 @@ environment = os.environ.get("ENVIRONMENT")
 
 config = helpers.get_config(env=environment)
 
-# logging
-log = logging.getLogger("root")
-custom_logger.setup_logging(env=environment)
-
 
 # database
 db_config = {
@@ -62,6 +58,13 @@ db_config = {
     "target_schema": config.schemas["post_transform"],
     "chunk_size": config.DEFAULT_CHUNK_SIZE,
 }
+
+# logging
+log = logging.getLogger("root")
+custom_logger.setup_logging(
+    env=environment, db_config=db_config, module_name="transform"
+)
+
 
 allowed_entities = [k for k, v in config.ENABLED_ENTITIES.items() if v is True]
 
