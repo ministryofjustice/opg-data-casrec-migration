@@ -68,9 +68,11 @@ def insert_order_deputies(db_config, target_db):
         columns=["id", "Deputy No", "CoP Case"]
     )
 
-    deputyship_persons_order_df = deputyship_persons_order_df[
-        deputyship_persons_order_df["casrec_mapping_file_name"].notna()
-    ]
+    remove_nulls = ["casrec_mapping_file_name", "order_id", "deputy_id"]
+    for col in remove_nulls:
+        deputyship_persons_order_df = deputyship_persons_order_df[
+            deputyship_persons_order_df[col].notna()
+        ]
 
     deputyship_persons_order_df = add_unique_id(
         db_conn_string=db_config["db_connection_string"],
