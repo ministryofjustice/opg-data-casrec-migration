@@ -67,8 +67,8 @@ class BaseConfig:
     ENABLED_ENTITIES = {
         "clients": True,
         "cases": True,
-        "bonds": True,
-        "supervision_level": True,
+        "bonds": False,
+        "supervision_level": False,
         "deputies": True,
         "events": False,
         "finance": False,
