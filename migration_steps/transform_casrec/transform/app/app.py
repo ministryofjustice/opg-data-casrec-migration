@@ -95,7 +95,7 @@ def main(clear, include_tests, chunk_size):
     log.info(log_title(message="Migration Step: Transform Casrec Data"))
     log.info(
         log_title(
-            message=f"Source: {db_config['source_schema']} Target: {db_config['target_schema']}"
+            message=f"Source: {db_config['source_schema']}, Target: sirius.{db_config['target_schema']}, Chunk Size: {config.DEFAULT_CHUNK_SIZE}"
         )
     )
     log.info(
