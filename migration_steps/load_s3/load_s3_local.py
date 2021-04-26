@@ -1,6 +1,5 @@
 import boto3
 import os
-import sys
 import logging
 from botocore.exceptions import ClientError
 from pathlib import Path

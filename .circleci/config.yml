@@ -8,12 +8,16 @@ parameters:
   run_preprod:
     type: boolean
     default: false
-
+  run_qa:
+    type: boolean
+    default: false
 workflows:
   pull_request:
+    when: << pipeline.parameters.run_master >>
     jobs:
       - manage_workflow:
           name: manage workflow
+          tf_workspace: PreProduction
           filters: {branches:{ignore:[master]}}
       - reset_sirius:
           name: reset the sirius fixtures development
@@ -40,10 +44,6 @@ workflows:
           name: run the step function development
           requires: [build infra development, reset the sirius fixtures development]
           filters: {branches:{ignore:[master]}}
-      - cleanup:
-          name: destroy branch environment
-          requires: [run the step function development]
-          filters: {branches:{ignore:[master]}}
 
   master:
     when: << pipeline.parameters.run_master >>
@@ -51,39 +51,23 @@ workflows:
       - build:
           name: build and unit tests master
           filters: {branches:{only:[master]}}
-      - reset_sirius:
-          name: reset the sirius fixtures development master
-          tf_workspace: development
-          filters: {branches:{only:[master]}}
-      - infrastructure:
-          name: build infra development master
-          requires: [reset the sirius fixtures development master, build and unit tests master]
-          tf_workspace: development
-          tf_command: apply
-          filters: {branches:{only:[master]}}
-      - run_step_function:
-          name: run the step function
-          requires: [build infra development master]
-          filters: {branches:{only:[master]}}
       - approve:
-          name: approve preprod kick off
+          name: approve preproduction kick off
           type: approval
-          requires: [run the step function]
+          requires: [build and unit tests master]
           filters: {branches:{only:[master]}}
-      - kick_off_preprod:
-          name: kick off preprod
-          requires: [approve preprod kick off]
+      - kick_off_environment:
+          name: kick off preproduction
+          workspace: preproduction
+          requires: [approve preproduction kick off]
           filters: {branches:{only:[master]}}
 
   preprod:
     when: << pipeline.parameters.run_preprod >>
     jobs:
-      - manage_workflow:
-          name: manage workflow
-          filters: {branches:{only:[master]}}
       - get_latest_image:
           name: get latest tag
-          requires: [manage workflow]
+          image_tag: master
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra preproduction
@@ -101,17 +85,54 @@ workflows:
           name: run the step function preproduction
           requires: [build infra preproduction]
           account: "492687888235"
-          wait_for: "3600"
+          wait_for: "10800"
+          environment: preproduction
           filters: {branches:{only:[master]}}
-      - run_elasticsearch_reset:
-          name: run elasticsearch reset preproduction
-          tf_workspace: preproduction
+      - tag_image_for_qa:
+          name: tag image for qa
           requires: [run the step function preproduction]
+          filters: {branches:{only:[master]}}
+      - approve:
+          name: approve qa kick off
+          type: approval
+          requires: [tag image for qa]
+          filters: {branches:{only:[master]}}
+      - kick_off_environment:
+          name: kick off qa
+          workspace: qa
+          requires: [approve qa kick off]
+          filters: {branches:{only:[master]}}
+
+  qa:
+    when: << pipeline.parameters.run_qa >>
+    jobs:
+      - get_latest_image:
+          name: get latest tag
+          image_tag: qa
+          filters: {branches:{only:[master]}}
+      - infrastructure:
+          name: plan infra qa
+          requires: [get latest tag]
+          tf_workspace: qa
+          tf_command: plan
+          filters: {branches:{only:[master]}}
+      - infrastructure:
+          name: build infra qa
+          requires: [plan infra qa]
+          tf_workspace: qa
+          tf_command: apply
+          filters: {branches:{only:[master]}}
+      - run_step_function:
+          name: run the step function qa
+          requires: [build infra qa]
+          account: "492687888235"
+          wait_for: "10800"
+          environment: qa
           filters: {branches:{only:[master]}}
 
 orbs:
   aws-cli: circleci/aws-cli@1.3.0
-  slack: circleci/slack@3.4.2
+  slack: circleci/slack@4.1
   dockerhub_helper:
     orbs:
       docker: circleci/docker@1.4.0
@@ -216,37 +237,115 @@ orbs:
                 --circle_project_reponame "${CIRCLE_PROJECT_REPONAME}"
               working_directory: ~/project/docs/ci_scripts
 jobs:
-  cleanup:
-    executor: migration/python
-    steps:
-      - run:
-          name: cleanup
-          command: echo "running this so job passes as it's requirement to merge"
   manage_workflow:
     executor: migration/python
     resource_class: small
+    parameters:
+      tf_workspace:
+        description: workspace to use
+        type: string
+        default: "development"
+    environment:
+      TF_WORKSPACE: << parameters.tf_workspace >>
     steps:
       - checkout
       - migration/login_codeartifact
       - migration/cancel_redundant_builds
-  kick_off_preprod:
+  kick_off_environment:
     executor: migration/python
     resource_class: small
+    parameters:
+      workspace:
+        description: workspace to use
+        type: string
+        default: "development"
+    environment:
+      WORKSPACE: << parameters.workspace >>
     steps:
       - checkout
       - run:
-          name: kick off preprod job
+          name: set environment variables
+          command: |
+            if [ ${WORKSPACE} == "preproduction" ]
+            then
+              RUN_PREPROD="true"
+              RUN_QA="false"
+            elif [ ${WORKSPACE} == "qa" ]
+            then
+              RUN_PREPROD="false"
+              RUN_QA="true"
+            else
+              RUN_PREPROD="false"
+              RUN_QA="false"
+            fi
+            echo "export RUN_PREPROD=${RUN_PREPROD}" >> $BASH_ENV
+            echo "export RUN_QA=${RUN_QA}" >> $BASH_ENV
+      - run:
+          name: kick off << parameters.workspace >> job
           command: |
             curl --request POST \
             --url https://circleci.com/api/v2/project/github/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pipeline \
             --header "Circle-Token: ${CIRCLE_BUILDS_TOKEN}" \
             --header 'content-type: application/json' \
-            --data '{"branch":"master", "parameters":{"run_master":false, "run_preprod":true}}'
+            --data "{\"branch\":\"IN-687\", \"parameters\":{\"run_master\": false, \"run_preprod\": $RUN_PREPROD, \"run_qa\": $RUN_QA}}"
+
+  tag_image_for_qa:
+    executor: migration/python
+    resource_class: small
+    environment:
+      AWS_REGION: eu-west-1
+      AWS_CONFIG_FILE: ~/project/aws_config
+      AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
+    working_directory: ~/project
+    steps:
+      - checkout
+      - attach_workspace: {at: ~/project}
+      - aws-cli/install
+      - setup_remote_docker
+      - run:
+          name: Set environment
+          command: ~/project/.circleci/set_env.sh >> $BASH_ENV
+      - run:
+          name: Show version before tagging
+          command: echo ${VERSION}
+      - run:
+          name: ECR login
+          command: aws ecr get-login-password --region $AWS_REGION --profile sirius-ci | docker login --username AWS --password-stdin $AWS_REGISTRY
+      - run:
+          name: Pull images
+          command: docker-compose -f docker-compose.ci.yml pull
+      - run:
+          name: Set new tag
+          command: |
+            NEW_TAG=qa-`echo ${VERSION} | awk '-F-' '{print $2}'`
+            echo "export NEW_TAG=${NEW_TAG}" >> $BASH_ENV
+      - run:
+          name: Retag images
+          command: |
+            for i in `docker image ls | grep master- | awk '{print $1":"$2}'`
+            do
+              docker tag $i `echo $i | awk '-F:' '{print $1":"}'`${NEW_TAG}
+            done
+      - run:
+          name: Update tag to push
+          command: echo "export VERSION=${NEW_TAG}" >> $BASH_ENV
+      - run:
+          name: Push images
+          command: |
+            echo $VERSION
+            echo $NEW_TAG
+            echo ${AWS_REGISTRY}/casrec-migration/etl0:${VERSION}
+            docker image ls
+            docker-compose -f docker-compose.ci.yml push
 
   run_step_function:
     executor: migration/python
     resource_class: small
     parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "development"
       account:
         description: account to run step function in
         type: string
@@ -257,6 +356,7 @@ jobs:
         default: "1800"
     environment:
       SIRIUS_ACCOUNT: << parameters.account >>
+      ENVIRONMENT: << parameters.environment >>
       WAIT_FOR: << parameters.wait_for >>
     steps:
       - checkout
@@ -278,13 +378,130 @@ jobs:
           working_directory: ~/project/docs/ci_scripts
       - run:
           name: run the function
-          command: python3 run_step_function.py --role sirius-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD}
+          command: python3 run_step_function.py --role sirius-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD} --environment ${ENVIRONMENT}
           working_directory: ~/project/docs/ci_scripts
-      - slack/status:
+      - run:
+          name: set environment variables
+          command: |
+            echo "export TF_WORKSPACE=\"${TF_WORKSPACE}\"" >> $BASH_ENV
+            cd /home/circleci/project
+            COMMIT_MESSAGE=`git log --oneline -1`
+            echo "export COMMIT_MESSAGE=\"${COMMIT_MESSAGE}\"" >> $BASH_ENV
+            echo "export MENTION_USER=URHDYJ5BR" >> $BASH_ENV
+      - slack/notify:
+          custom: |
+              {
+                  "blocks": [
+                      {
+                          "type": "section",
+                          "text": {
+                              "type": "mrkdwn",
+                              "text": ":github-tick: *Build to ${ENVIRONMENT} successful*"
+                          }
+                      },
+                      {
+                          "type": "section",
+                          "text": {
+                              "type": "mrkdwn",
+                              "text": "*Branch*: ${CIRCLE_BRANCH}\n\n*Commit Message*: ${COMMIT_MESSAGE}"
+                          }
+                      },
+                      {
+                          "type": "section",
+                          "text": {
+                              "type": "mrkdwn",
+                              "text": "Kicked off by *${CIRCLE_USERNAME}*"
+                          }
+                      },
+                      {
+                          "type": "divider"
+                      },
+                      {
+                          "type": "actions",
+                          "elements": [
+                              {
+                                  "type": "button",
+                                  "text": {
+                                      "type": "plain_text",
+                                      "text": "Go to Pull Request",
+                                      "emoji": true
+                                  },
+                                  "value": "github_pr",
+                                  "url": "${CI_PULL_REQUEST}"
+                              },
+                              {
+                                  "type": "button",
+                                  "text": {
+                                      "type": "plain_text",
+                                      "text": "Go to Circle Job",
+                                      "emoji": true
+                                  },
+                                  "value": "circle_job",
+                                  "url": "${CIRCLE_BUILD_URL}"
+                              }
+                          ]
+                      }
+                  ]
+              }
           channel: opg-migration-builds
-          failure_message: step function run has failed.
-          success_message: step function run has succeeded.
-
+          event: pass
+      - slack/notify:
+          custom: |
+              {
+                  "blocks": [
+                      {
+                          "type": "section",
+                          "text": {
+                              "type": "mrkdwn",
+                              "text": ":x::dancebadger: *Build to ${ENVIRONMENT} failed*"
+                          }
+                      },
+                      {
+                          "type": "section",
+                          "text": {
+                              "type": "mrkdwn",
+                              "text": "*Branch*: ${CIRCLE_BRANCH}\n\n*Commit Message*: ${COMMIT_MESSAGE}"
+                          }
+                      },
+                      {
+                          "type": "section",
+                          "text": {
+                              "type": "mrkdwn",
+                              "text": "Kicked off by *${CIRCLE_USERNAME}*"
+                          }
+                      },
+                      {
+                          "type": "divider"
+                      },
+                      {
+                          "type": "actions",
+                          "elements": [
+                              {
+                                  "type": "button",
+                                  "text": {
+                                      "type": "plain_text",
+                                      "text": "Go to Pull Request",
+                                      "emoji": true
+                                  },
+                                  "value": "github_pr",
+                                  "url": "${CI_PULL_REQUEST}"
+                              },
+                              {
+                                  "type": "button",
+                                  "text": {
+                                      "type": "plain_text",
+                                      "text": "Go to Circle Job",
+                                      "emoji": true
+                                  },
+                                  "value": "circle_job",
+                                  "url": "${CIRCLE_BUILD_URL}"
+                              }
+                          ]
+                      }
+                  ]
+              }
+          channel: opg-migration-builds
+          event: fail
   run_behat_tests:
     executor: terraform/terraform
     resource_class: small
@@ -452,10 +669,16 @@ jobs:
   get_latest_image:
     executor: migration/python
     resource_class: small
+    parameters:
+      image_tag:
+        description: image tag to use
+        type: string
+        default: "master"
     environment:
       AWS_REGION: eu-west-1
       AWS_CONFIG_FILE: ~/project/aws_config
       AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
+      IMAGE_TAG: << parameters.image_tag >>
     steps:
       - checkout
       - run:
@@ -463,7 +686,7 @@ jobs:
           command: pip install boto3 click
       - run:
           name: Set latest version
-          command: python get_image.py --role sirius-ci >> ~/project/VERSION
+          command: python get_image.py --role sirius-ci --image_tag ${IMAGE_TAG} >> ~/project/VERSION
           working_directory: ~/project/docs/ci_scripts
       - persist_to_workspace:
           root: .

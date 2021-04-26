@@ -19,7 +19,8 @@ host = os.environ.get("DB_HOST")
 ci = os.getenv("CI")
 account = os.environ["SIRIUS_ACCOUNT"]
 environment = os.environ.get("ENVIRONMENT")
-bucket_name = f"casrec-migration-{environment.lower()}"
+account_name = os.environ.get("ACCOUNT_NAME")
+bucket_name = f"casrec-migration-{account_name.lower()}"
 
 
 def get_session(base_url, user, password):

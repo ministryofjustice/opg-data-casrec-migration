@@ -272,64 +272,6 @@ make reset-databases
 make ingest
 ```
 
-## The Migration Pipeline
-
-Migrations are typically described as 'ETL' (Extract, Transform, Load) but we are building a series of smaller data transform steps, so it's more like ETTTT(...)L
-
-The Migration steps, in order, are:
-
-- load_s3
-- prepare
-- load_casrec
-- transform_casrec
-- integration
-- load_to_target
-- validation
-
-### load_s3
-
-- Runs in local dev only. Takes the anonymised dev data and loads it into an S3 bucket on localdev, so that the next step will find the files in S3 as it does in AWS proper
-
-### prepare
-
-- Runs some modifications on our local copy of sirius (dev only)
-- Makes a copy of Sirius `api.public` schema called `pre_migration`. This will be used to hold our migration data before it is ready for loading, providing a final level of assurance that the data will 'fit' Sirius
-
-### load_casrec
-
-- Reads the S3 files and saves them intact into a postgres database schema, one table per csv file
-- Schema created: `casrecmigration.casrec_csv`
-
-### transform_casrec
-
-- Reads data from the `casrec_csv` schema and performs a series of transformations on the columns
-- Makes extensive use of pandas to perform the transformations
-- Arrives at a schema more closely resembling the Sirius DB
-- outputs schema `etl2`
-
-### integration
-
-- Copies `etl2` to `integration`, which has added id columns to hold associated ids from Sirius
-- Generates ID lookup tables from the Sirius DB
-- Uses the lookup tables to transpose the corresponding Sirius ids into the integration schema
-
-### load_to_target
-
-- takes the `pre_migrate` schema and performs a series of inserts where the data does not exist in Sirius, updates where it does.
-
-### validation
-
-- Validates data at the DB layer, by comparing Sirius `api.public` with `pre_migrate`
-- Returns a list of expected vs actual counts
-- Saves any exceptions it finds to exception tables, to await further analysis
-
-## Yet to implement
-
-- business rules step, between integration and load_to_target
-- rollback
-- Functional testing, which will be run in situ within a Sirius environment, utiliising establishes Sirius test behaviours
-
-
 ## DB connections for clients eg PyCharm and DataGrip:
 ```
 db:   casrecmigration
@@ -399,3 +341,147 @@ we didn't accidentally overwrite the s3 bucket data.
 This process is split across 3 python tasks and a terraform task. We have had to split it this way as we are not able to access DB
 directly so have to access it through a separate ECS task.
 Everything is controlled from the `run_ecs_task.sh` shell script.
+
+## The Migration Pipeline
+
+Migrations are typically described as 'ETL' (Extract, Transform, Load) but we are building a series of smaller data transform steps, so it's more like ETTTT(...)L
+
+The Migration steps, in order, are:
+
+- load_s3
+- prepare
+- load_casrec
+- transform_casrec
+- integration
+- load_to_target
+- validation
+
+#### load_s3
+
+- Runs in local dev only. Takes the anonymised dev data and loads it into an S3 bucket on localdev, so that the next step will find the files in S3 as it does in AWS proper
+
+#### prepare
+
+- Runs some modifications on our local copy of sirius (dev only)
+- Makes a copy of Sirius `api.public` schema called `pre_migration`. This will be used to hold our migration data before it is ready for loading, providing a final level of assurance that the data will 'fit' Sirius
+
+#### load_casrec
+
+- Reads the S3 files and saves them intact into a postgres database schema, one table per csv file
+- Schema created: `casrecmigration.casrec_csv`
+
+#### transform_casrec
+
+- Reads data from the `casrec_csv` schema and performs a series of transformations on the columns
+- Makes extensive use of pandas to perform the transformations
+- Arrives at a schema more closely resembling the Sirius DB
+- outputs schema `etl2`
+
+#### integration
+
+- Copies `etl2` to `integration`, which has added id columns to hold associated ids from Sirius
+- Generates ID lookup tables from the Sirius DB
+- Uses the lookup tables to transpose the corresponding Sirius ids into the integration schema
+
+#### load_to_target
+
+- takes the `pre_migrate` schema and performs a series of inserts where the data does not exist in Sirius, updates where it does.
+
+#### validation
+
+- Validates data at the DB layer, by comparing Sirius `api.public` with `pre_migrate`
+- Returns a list of expected vs actual counts
+- Saves any exceptions it finds to exception tables, to await further analysis
+
+#### api tests
+- Hits a selection of endpoints with a selection of data which we provide via csvs. We are testing per entity to make
+sure that what we set out in the csvs matches the responses back from the APIs.
+
+#### Yet to implement
+
+- Business rules step, between integration and load_to_target
+- Rollback
+
+## Development environment
+
+As of writing, we have a single development environment and do not do branch based builds. As such we need to fully reset
+the environment between builds.
+
+The development pipeline has the following features:
+
+- Kicked off on raising a PR and subsequent pushes to an open PR (even in draft mode). As such only push to your PR
+when you want it to build and be aware that this is blocking of other users!
+- There is a cancel workflow job that intelligently cancels your own previous workflows that
+aren't in the middle of terraform commands (and not other peoples).
+- There is a waiter function that makes your job wait for another users job to finish so that we don't have two or
+more builds running against the environment at the same time.
+- We fully reset the envionment and restore the database as well as run in the fixtures and reset elasticache.
+- We build new images, run local tests and do a full local run through with your commits code in and push them to ECR.
+The reason for doing the full local run through is that it takes no extra time (we're waiting for sirius resets that are running in parallel) and
+it can fail faster and not hold up the environment. It also avoids devs thinking it's an AWS environment issue when it isn't.
+- We kick off a step function that sequences our steps and provides visual progress. Full list of steps can be found in the last section
+- We notify the channel apon completion or failure of the workflow.
+- Once workflow is completed, another dev can approve your PR and you can merge your code.
+- No further job is run against Dev as the pipeline is single file and you are forced to rebase before merge so whatever
+goes in is accurate representation of master.
+
+#### Where to find everything...
+
+Databases:
+
+   - There are two databases we care about. One for the migration side and one for the sirius side. We have our own sirius environment.
+    You can query them through a cloud9 instance. You can get the connection strings in cloud9 or by looking in RDS through the management console
+    and the passwords are stored in secrets manager. The environments for dev are `casmigrate` (sirius)
+    and `casrec-migration-development` (migration).
+
+ECS:
+
+   - The clusters that belong to us in this environment are `casmigrate` (sirius)
+    and `casrec-migration-development` (migration). On migration side tasks get spun up by the step function so we
+    should normally have 0 running.
+
+Step function:
+
+   - Search management console for step function and click on `casrec-mig-state-machine`.
+
+Logs:
+
+   - Find the logs under cloudwatch logs through management console. Our migration logs will
+   be under `casrec-migration-development`
+
+`
+## Preproduction environment
+
+We have two preproduction environments which are clones of each other. `casrecdmpp` and `casrecdmqa`.
+
+`casrecdmpp` is our main preprod env and PRs should be run in as often as possible. `casrecdmqa` is a QA environment
+that should only have builds that have passed in the other environment.
+
+To do a full deploy to pre you should follow the following steps:
+
+- Reset the sirius database. You can go to https://jenkins.opg.service.justice.gov.uk/job/Sirius/job/Deploy_to_CasRec_Data_Migration_Preproduction/
+and click on `Build with Parameters` and pick `casrecdmpp` in the dropdown and and check the restore_database checkbox.
+- Once complete you need to go to the most recent build through CirclCi and click the approval for kick off preprod.
+- You can run it again by picking any previous preproduction workflow and restarting it from beginning. This works as it doesn't pull from build stage
+but actually looks for the most recent image that has been pushed to ECR and tagged with master.
+
+In all other respects the build is the same as in development. Same setup as above except that we use `casrecdmpp` as the sirius cluster
+and `casrec-migration-preproduction` as the migration cluster.
+
+#### Working with big data in preproduction
+
+It can be frustrating debugging preprod because of the amount of data and how long everything takes. Here are some handy pointers:
+- You can try using the `Pull and anonymise a case from preprod` steps as mentioned further up. Hopefully you can recreate the bug in local.
+- You can run a cut down much much faster version of the pipeline that will use your local changes directly against pre
+by building them and pushing to ECR. Simply rename `.circleci/config.yml` to `.circleci/config_orig.yml`
+and then `.circleci/config_hack.yml` to `.circleci/config.yml`.
+
+## QA environment
+
+The QA environment works exactly the same as preproduction except it will only use code that has fully passed in preproduction.
+
+- Kick it off by approving preproduction job or rerunning a QA job. It will pull the last image tagged with QA currently.
+Images are tagged with QA on successful completion of preproduction run.
+
+Circle doesn't have nice drop downs for selecting builds unfortunately so if we want selectable image builds then we will have to develop a
+tiny script to kick off the job with a passed in param of the build number.

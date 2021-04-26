@@ -46,6 +46,7 @@ variable "accounts" {
       min_db_capacity         = number
       max_db_capacity         = number
       run_audit               = string
+      account_name            = string
     })
   )
 }

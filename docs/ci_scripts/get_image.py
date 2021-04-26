@@ -24,7 +24,8 @@ def assume_aws_session(account, role):
 
 @click.command()
 @click.option("--role", default="operator")
-def main(role):
+@click.option("--image_tag", default="master")
+def main(role, image_tag):
     account = "311462405659"
     region = "eu-west-1"
     ecr_session = assume_aws_session(account, role)
@@ -33,13 +34,14 @@ def main(role):
     latest = None
     for images in response["imageDetails"]:
         if "imageTags" in images:
-            if "master" in images["imageTags"][0]:
-                if latest is None:
-                    latest = images["imagePushedAt"]
-                    image = images["imageTags"][0]
-                elif images["imagePushedAt"] > latest:
-                    latest = images["imagePushedAt"]
-                    image = images["imageTags"][0]
+            for each_image in images["imageTags"]:
+                if image_tag in each_image:
+                    if latest is None:
+                        latest = images["imagePushedAt"]
+                        image = each_image
+                    elif images["imagePushedAt"] > latest:
+                        latest = images["imagePushedAt"]
+                        image = each_image
     print(image)
 
 
