@@ -28,20 +28,23 @@ import helpers
 config = helpers.get_config(env=environment)
 
 
-# logging
-log = logging.getLogger("root")
-custom_logger.setup_logging(env=environment)
-
-
 # database
 db_config = {
+    "source_schema": config.schemas["public"],
     "target_db_connection_string": config.get_db_connection_string("target"),
     "target_schema": config.schemas["public"],
     "target_db_name": os.environ.get("SIRIUS_DB_NAME"),
 }
 
+# logging
+log = logging.getLogger("root")
+custom_logger.setup_logging(
+    env=environment, db_config=db_config, module_name="post migration db tasks"
+)
+
 
 def reset_sequences():
+    log.info("Starting reset_sequences")
     tables_dict = table_helpers.get_enabled_table_details()
     sequence_list = table_helpers.get_sequences_list(tables_dict)
     reset_all_sequences(sequence_list=sequence_list, db_config=db_config)
@@ -51,6 +54,7 @@ def reset_sequences():
 
 
 def reset_uid_sequences():
+    log.info("Starting reset_uid_sequences")
     tables_dict = table_helpers.get_enabled_table_details()
     uid_sequence_list = table_helpers.get_uid_sequences_list(tables_dict)
     reset_all_uid_sequences(uid_sequence_list=uid_sequence_list, db_config=db_config)
@@ -60,6 +64,7 @@ def reset_uid_sequences():
 
 
 def reindex():
+    log.info("Starting reindex")
     reindex_db(db_config=db_config)
     global result
     result = "reindex complete"
@@ -70,7 +75,7 @@ def main():
     log.info(log_title(message=f"Target: {db_config['target_schema']}"))
     log.info(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
-    jobs = [reset_sequences, reset_uid_sequences, reindex]
+    jobs = [reset_sequences, reset_uid_sequences]
 
     for job in jobs:
         thread = threading.Thread(target=job)
