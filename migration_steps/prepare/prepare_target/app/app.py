@@ -40,15 +40,15 @@ def set_logging_level(verbose):
 
 @click.command()
 @click.option("-v", "--verbose", count=True)
-@click.option("-i", "--ignore_schemas", default="reference")
-def main(verbose, ignore_schemas):
+@click.option("-i", "--preserve_schemas", default="reference")
+def main(verbose, preserve_schemas):
     set_logging_level(verbose)
     log.info(log_title(message="Prepare Target"))
 
     log.info("Perform Sirius DB Housekeeping")
     conn_target = psycopg2.connect(config.get_db_connection_string("target"))
     conn_source = psycopg2.connect(config.get_db_connection_string("migration"))
-    delete_all_schemas(log=log, conn=conn_source, ignore_schemas=ignore_schemas)
+    delete_all_schemas(log=log, conn=conn_source, preserve_schemas=preserve_schemas)
     log.info("Deleted Schemas")
     log.debug(
         "(operations which need to be performed on Sirius DB ahead of the final Casrec Migration)"
