@@ -5,6 +5,7 @@ RELOAD="y"
 RESYNC="y"
 SKIP_LOAD="false"
 PRESERVE_SCHEMAS=""
+LAY_TEAM=""
 GENERATE_DOCS=false
 
 if [ "${CI}" != "true" ]
@@ -22,6 +23,12 @@ then
     PRESERVE_SCHEMAS="casrec_csv"
     SKIP_LOAD="true"
   fi
+  read -p "Migrate specific Lay Team? (1-9) [All]: " LAY_TEAM
+  if [ "${LAY_TEAM}" == "" ]
+  then
+      echo "Migrating ALL Lay teams"
+  else
+      echo "Migrating Lay Team ${LAY_TEAM} only"
   fi
 fi
 
@@ -67,7 +74,7 @@ wait $P1 $P2 $P3 $P4
 cat docker_load.log
 rm docker_load.log
 echo "=== Step 1 - Transform ==="
-docker-compose run --rm transform_casrec transform_casrec/transform.sh --clear=True
+docker-compose run --rm transform_casrec transform_casrec/transform.sh --team="${LAY_TEAM}"
 echo "=== Step 2 - Integrate with Sirius ==="
 docker-compose run --rm integration integration/integration.sh
 echo "=== Step 3 - Validate Staging ==="
