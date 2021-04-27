@@ -3,7 +3,9 @@ RUN apt-get install -y postgresql-client
 COPY /requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
 COPY prepare/prepare.sh /prepare/prepare.sh
+COPY prepare/test_echo.sh /prepare/test_echo.sh
 COPY prepare/prepare_target /prepare/prepare_target
 COPY prepare/create_stage_schema /prepare/create_stage_schema
+COPY prepare/case_details_to_s3 /prepare/case_details_to_s3
 COPY shared /shared
 CMD ["echo", "NO_OP"]

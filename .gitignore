@@ -39,8 +39,9 @@ casrec_data/do_anonymising/change_log.txt
 *PLAY*
 .pg_restore.api.log
 sirius-snapshot
-data/anon_data/
+data/
 *terraform.output.json
+*terraform.output_casrec.json
 *etl*.sql
 *integration*.sql
 migration_steps/shared/sql/temp/*.sql

@@ -19,13 +19,13 @@ services:
         - DEFAULT_REGION=eu-west-1
   load_s3:
     build:
-      context: ./migration_steps/load_s3
-      dockerfile: Dockerfile
+      context: ./migration_steps
+      dockerfile: load_s3-dockerfile
     environment:
       CSV_DIR_SUFFIX: ./data/anon_data
       LOCALSTACK_URL: localstack
     volumes:
-      - ./data/anon_data:/data/anon_data
+      - ./data:/data
   prepare:
     build:
       context: ./migration_steps
