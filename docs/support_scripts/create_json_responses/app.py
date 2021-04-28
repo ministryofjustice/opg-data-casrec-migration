@@ -184,7 +184,8 @@ orders_headers = [
     '["orderExpiryDate"]',
 ]
 
-csvs = ["orders", "clients"]
+csvs = ["orders", "clients", "deputies"]
+
 
 search_headers = [
     "endpoint",
