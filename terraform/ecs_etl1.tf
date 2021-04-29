@@ -54,6 +54,10 @@ locals {
         value = terraform.workspace
       },
       {
+        name  = "ACCOUNT_NAME",
+        value = local.account.account_name
+      },
+      {
         name  = "S3_PATH",
         value = local.account.s3_path
       },

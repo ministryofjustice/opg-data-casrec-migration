@@ -18,15 +18,15 @@ data "aws_elasticsearch_domain" "sirius" {
 }
 
 data "aws_secretsmanager_secret" "rds_api" {
-  name = "rds-api-${local.account.name}"
+  name = "rds-api-${local.account.account_name}"
 }
 
 data "aws_secretsmanager_secret" "jwt_key" {
-  name = "${local.account.name}/jwt-key"
+  name = "${local.account.account_name}/jwt-key"
 }
 
 data "aws_secretsmanager_secret" "user_one_password" {
-  name = "${local.account.name}/user-one-password"
+  name = "${local.account.account_name}/user-one-password"
 }
 
 data "aws_ecs_container_definition" "casmigrate_api" {

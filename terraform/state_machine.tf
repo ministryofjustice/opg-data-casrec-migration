@@ -83,7 +83,7 @@ locals {
 }
 
 resource "aws_sfn_state_machine" "casrec_migration" {
-  name     = "casrec-mig-state-machine"
+  name     = "casrec-mig-state-machine-${local.account.name}"
   role_arn = aws_iam_role.state_machine.arn
 
   definition = <<EOF

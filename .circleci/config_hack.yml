@@ -22,6 +22,7 @@ workflows:
           requires: [build infra preproduction]
           account: "492687888235"
           wait_for: "6000"
+          environment: preproduction
           filters: {branches:{ignore:[master]}}
       - run_elasticsearch_reset:
           name: run elasticsearch reset preproduction
@@ -166,6 +167,10 @@ jobs:
     executor: migration/python
     resource_class: small
     parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "development"
       account:
         description: account to run step function in
         type: string
@@ -176,6 +181,7 @@ jobs:
         default: "1800"
     environment:
       SIRIUS_ACCOUNT: << parameters.account >>
+      ENVIRONMENT: << parameters.environment >>
       WAIT_FOR: << parameters.wait_for >>
     steps:
       - checkout
@@ -188,7 +194,7 @@ jobs:
           working_directory: ~/project/docs/ci_scripts
       - run:
           name: run the function
-          command: python3 run_step_function.py --role sirius-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD}
+          command: python3 run_step_function.py --role sirius-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD} --environment ${ENVIRONMENT}
           working_directory: ~/project/docs/ci_scripts
 
   run_behat_tests:

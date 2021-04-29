@@ -78,6 +78,10 @@ locals {
         value = terraform.workspace
       },
       {
+        name  = "ACCOUNT_NAME",
+        value = local.account.account_name
+      },
+      {
         name  = "RUN_API_TESTS",
         value = local.account.run_api_tests
       },

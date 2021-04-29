@@ -68,7 +68,7 @@ resource "aws_security_group_rule" "cloud9_to_db_ingress" {
 // Sirius Database
 
 data "aws_secretsmanager_secret" "sirius_db" {
-  name = "rds-api-${terraform.workspace}"
+  name = "rds-api-${local.account.account_name}"
 }
 
 data "aws_rds_cluster" "sirius" {
