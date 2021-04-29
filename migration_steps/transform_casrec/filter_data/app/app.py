@@ -17,7 +17,6 @@ import click
 
 env_path = current_path / "../../../../.env"
 sql_path = current_path / "sql"
-shared_sql_path = current_path / "../../../shared/sql"
 load_dotenv(dotenv_path=env_path)
 
 environment = os.environ.get("ENVIRONMENT")
@@ -40,36 +39,31 @@ def set_logging_level(verbose):
 
 @click.command()
 @click.option("-v", "--verbose", count=True)
-@click.option("-i", "--preserve_schemas", default="reference")
-def main(verbose, preserve_schemas):
+@click.option("--team", default=None)
+@click.option(
+    "--clear",
+    prompt=False,
+    default=False
+)
+def main(verbose, team, clear):
     set_logging_level(verbose)
-    log.info(log_title(message="Prepare Target"))
-
-    log.info("Perform Sirius DB Housekeeping")
-    conn_target = psycopg2.connect(config.get_db_connection_string("target"))
+    log.info(log_title(message="Filter Data"))
     conn_source = psycopg2.connect(config.get_db_connection_string("migration"))
-    delete_all_schemas(log=log, conn=conn_source, preserve_schemas=preserve_schemas)
-    log.info("Deleted Schemas")
-    log.debug(
-        "(operations which need to be performed on Sirius DB ahead of the final Casrec Migration)"
-    )
-    execute_sql_file(sql_path, "prepare_sirius.sql", conn_target)
 
-    log.info("Roll back previous migration")
-
-    if environment in ("local", "development"):
-        max_orig_person_id = result_from_sql_file(
-            sql_path, "get_max_orig_person_id.sql", conn_target
-        )
+    if team:
+        team = 'T' + team
+        log.info(f"Lay Team filtering requested: Team {team}")
+        log.info(f"Deleting data not associated with {team}")
         execute_generated_sql(
             sql_path,
-            "rollback_fixtures.template.sql",
-            "{max_orig_person_id}",
-            max_orig_person_id,
-            conn_target,
+            "delete_filtered_source_data.template.sql",
+            "{team}",
+            team,
+            conn_source,
         )
+    else:
+        log.info(f"No filtering requested, proceed with migrating ALL.")
 
-    conn_target.close()
 
 
 if __name__ == "__main__":
