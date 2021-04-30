@@ -28,9 +28,9 @@ class StepFunctionRunner:
             if machine["name"] == step_function_name:
                 print(f'Setting ARN to: {machine["stateMachineArn"]}')
                 self.sf_arn = machine["stateMachineArn"]
-            else:
-                print("No state machine of given name exists")
-                os._exit(1)
+                return machine["stateMachineArn"]
+        print("No state machine of given name exists")
+        os._exit(1)
 
     def step_function_running_wait_for(self, wait_for):
         secs = 30
