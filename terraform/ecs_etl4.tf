@@ -70,6 +70,10 @@ locals {
         value = data.aws_rds_cluster.sirius.master_username
       },
       {
+        name  = "ACCOUNT_NAME",
+        value = local.account.account_name
+      },
+      {
         name  = "ENVIRONMENT",
         value = terraform.workspace
       },

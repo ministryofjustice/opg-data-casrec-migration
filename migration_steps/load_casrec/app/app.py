@@ -19,6 +19,7 @@ import logging
 import click
 
 environment = os.environ.get("ENVIRONMENT")
+account_name = os.environ.get("ACCOUNT_NAME")
 config = get_config(environment)
 config.custom_log_level()
 verbosity_levels = config.verbosity_levels
@@ -292,7 +293,7 @@ def main(entities, chunk, delay, verbose, skip_load):
         time.sleep(int(delay))
         table_list = entities.split(",")
         chunk_size = int(chunk)
-        bucket_name = f"casrec-migration-{environment.lower()}"
+        bucket_name = f"casrec-migration-{account_name.lower()}"
         setup_logging(log, verbose, log_title, bucket_name)
         env_path = current_path / "../../.env"
         load_dotenv(dotenv_path=env_path)

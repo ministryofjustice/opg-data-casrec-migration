@@ -7,7 +7,12 @@ data "aws_subnet_ids" "public" {
   }
 }
 
+locals {
+  cloud9_id = local.account.name == "qa" ? "1b01031b9fef4ac0ad89b6858fa4fd70" : aws_cloud9_environment_ec2.shared[0].id
+}
+
 resource "aws_cloud9_environment_ec2" "shared" {
+  count                       = local.account.name == "qa" ? 0 : 1
   instance_type               = "t2.micro"
   name                        = "casrec-mig-cloud9-env"
   automatic_stop_time_minutes = 20
@@ -19,7 +24,9 @@ resource "aws_cloud9_environment_ec2" "shared" {
 
 data "aws_security_group" "cloud9" {
   filter {
-    name   = "tag:aws:cloud9:environment"
-    values = [aws_cloud9_environment_ec2.shared.id]
+    name = "tag:aws:cloud9:environment"
+    values = [
+      local.cloud9_id
+    ]
   }
 }

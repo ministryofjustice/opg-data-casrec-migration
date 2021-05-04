@@ -44,7 +44,8 @@ mapping_dict = None
 
 host = os.environ.get("DB_HOST")
 ci = os.getenv("CI")
-bucket_name = f"casrec-migration-{environment.lower()}"
+account_name = os.environ.get("ACCOUNT_NAME")
+bucket_name = f"casrec-migration-{account_name.lower()}"
 account = os.environ["SIRIUS_ACCOUNT"]
 session = boto3.session.Session()
 

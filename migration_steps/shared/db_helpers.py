@@ -12,14 +12,14 @@ from psycopg2.extensions import register_adapter, AsIs
 psycopg2.extensions.register_adapter(np.int64, psycopg2._psycopg.AsIs)
 
 
-def delete_all_schemas(log, conn, ignore_schemas):
+def delete_all_schemas(log, conn, preserve_schemas):
     cursor = conn.cursor()
-    if ignore_schemas != "":
-        ignore_list = ignore_schemas.split(",")
-        ignore_schemas = "'" + "', '".join(ignore_list) + "', "
-        for ignore_schema in ignore_list:
-            log.info(f"Checking schema: {ignore_schema}")
-            if ignore_schema == "casrec_csv":
+    if preserve_schemas != "":
+        schemas_list = preserve_schemas.split(",")
+        preserve_schemas = "'" + "', '".join(schemas_list) + "', "
+        for preserve_schema in schemas_list:
+            log.info(f"Checking schema: {preserve_schema}")
+            if preserve_schema == "casrec_csv":
                 drop_statement = """
                     DROP TABLE IF EXISTS "casrec_csv"."migration_progress";
                     DROP TABLE IF EXISTS "casrec_csv"."table_list";
@@ -32,7 +32,7 @@ def delete_all_schemas(log, conn, ignore_schemas):
         information_schema.schemata
         WHERE
         schema_name not like 'pg_%'
-        and schema_name not in ({ignore_schemas}'public', 'information_schema');
+        and schema_name not in ({preserve_schemas}'public', 'information_schema');
     """
     cursor.execute(get_schemas_statement)
     schemas = ""

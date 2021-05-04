@@ -1,41 +1,47 @@
 #!/bin/bash
 set -e
 
-NO_RELOAD=false
+RELOAD="y"
+RESYNC="y"
+SKIP_LOAD="false"
+PRESERVE_SCHEMAS=""
+LAY_TEAM=""
 GENERATE_DOCS=false
 
 if [ "${CI}" != "true" ]
 then
-  read -p "Do you want to resync? (y/n) [n]: " RESYNC
-  RESYNC=${RESYNC:-n}
-  echo $RESYNC
-  # Only do this if sure the data in casrec_csv schema is correct)
-  read -p "Do you want to skip reload into localstack? (y/n) [n]: " NO_RELOAD
-  NO_RELOAD=${NO_RELOAD:-n}
-  echo $NO_RELOAD
-  if [ ${NO_RELOAD} == "y" ]
+  # Skip this if sure the data in casrec_csv schema is correct)
+  read -p "Rebuild casrec_csv schema from .csv files? (y/n) [n]: " RELOAD
+  RELOAD=${RELOAD:-n}
+  echo $RELOAD
+  if [ "${RELOAD}" == "y" ]
   then
-    NO_RELOAD="true"
-    echo "IN HERE"
-    echo $NO_RELOAD
+      read -p "Sync local .csv files from S3? (y/n) [n]: " RESYNC
+      RESYNC=${RESYNC:-n}
+      echo $RESYNC
+  else
+    PRESERVE_SCHEMAS="casrec_csv"
+    SKIP_LOAD="true"
+  fi
+  read -p "Migrate specific Lay Team? (1-9) [All]: " LAY_TEAM
+  if [ "${LAY_TEAM}" == "" ]
+  then
+      echo "Migrating ALL Lay teams"
+  else
+      echo "Migrating Lay Team ${LAY_TEAM} only"
   fi
 fi
 
 START_TIME=`date +%s`
 
-if [ "${NO_RELOAD}" == "true" ]
-  then
-  echo "=== Setting no reload settings ==="
-  SKIP_SCHEMAS="casrec_csv"
-  SKIP_LOAD="true"
-fi
 # Docker compose file for circle build
 docker build base_image -t opg_casrec_migration_base_image:latest
 docker-compose up --no-deps -d casrec_db localstack postgres-sirius
 docker-compose run --rm wait-for-it -address postgres-sirius:5432 --timeout=30 -debug
 docker-compose run --rm wait-for-it -address casrec_db:5432 --timeout=30 -debug
 docker-compose up --no-deps -d postgres-sirius-restore
-if [ "${NO_RELOAD}" != "true" ]
+
+if [ "${RELOAD}" == "y" ]
 then
   if [ "${CI}" != "true" ]
   then
@@ -51,7 +57,7 @@ then
     docker-compose up --no-deps -d postgres-sirius-restore
   fi
 fi
-docker-compose run --rm prepare prepare/prepare.sh -i "${SKIP_SCHEMAS}"
+docker-compose run --rm prepare prepare/prepare.sh -i "${PRESERVE_SCHEMAS}"
 docker rm casrec_load_1 &>/dev/null || echo "casrec_load_1 does not exist. This is OK"
 docker rm casrec_load_2 &>/dev/null || echo "casrec_load_2 does not exist. This is OK"
 docker rm casrec_load_3 &>/dev/null || echo "casrec_load_3 does not exist. This is OK"
@@ -68,7 +74,7 @@ wait $P1 $P2 $P3 $P4
 cat docker_load.log
 rm docker_load.log
 echo "=== Step 1 - Transform ==="
-docker-compose run --rm transform_casrec transform_casrec/transform.sh --clear=True
+docker-compose run --rm transform_casrec transform_casrec/transform.sh --team="${LAY_TEAM}"
 echo "=== Step 2 - Integrate with Sirius ==="
 docker-compose run --rm integration integration/integration.sh
 echo "=== Step 3 - Validate Staging ==="
