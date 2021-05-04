@@ -33,21 +33,22 @@ import helpers
 config = helpers.get_config(env=environment)
 
 
-# logging
-log = logging.getLogger("root")
-# custom_logger.setup_logging(env="environment")
-custom_logger.setup_logging(env=environment)
-
-
 # database
 db_config = {
     "source_db_connection_string": config.get_db_connection_string("migration"),
     "target_db_connection_string": config.get_db_connection_string("target"),
     "source_schema": config.schemas["pre_migration"],
     "target_schema": config.schemas["public"],
+    "chunk_size": config.DEFAULT_CHUNK_SIZE,
 }
 source_db_engine = create_engine(db_config["source_db_connection_string"])
 target_db_engine = create_engine(db_config["target_db_connection_string"])
+
+# logging
+log = logging.getLogger("root")
+custom_logger.setup_logging(
+    env=environment, db_config=db_config, module_name="load to sirius"
+)
 
 completed_tables = []
 
@@ -58,7 +59,7 @@ def main(audit):
     log.info(log_title(message="Load to Target Step: AKA do the migration already"))
     log.info(
         log_title(
-            message=f"Source: {db_config['source_schema']} Target: sirius.{db_config['target_schema']}"
+            message=f"Source: {db_config['source_schema']}, Target: {db_config['target_schema']}, Chunk Size: {db_config['chunk_size']}"
         )
     )
     log.info(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
@@ -84,12 +85,14 @@ def main(audit):
             target_db_engine=target_db_engine,
             table_name=table,
             table_details=tables_dict[table],
+            chunk_size=db_config["chunk_size"],
         )
         update_data_in_target(
             db_config=db_config,
             source_db_engine=source_db_engine,
             table=table,
             table_details=tables_dict[table],
+            chunk_size=db_config["chunk_size"],
         )
 
         completed_tables.append(table)

@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 from typing import Dict
 
+from pandas.io.json import json_normalize
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
@@ -24,9 +25,16 @@ def squash_columns(
     new_col: str,
     df: pd.DataFrame,
     drop_original_cols: bool = True,
+    include_keys: bool = False,
 ) -> pd.DataFrame:
 
-    df[new_col] = df[cols_to_squash].values.tolist()
+    if include_keys:
+        details_dict = df[[x for x in cols_to_squash]].to_dict("records")
+        df[new_col] = details_dict
+
+    else:
+        df[new_col] = df[cols_to_squash].values.tolist()
+
     df[new_col] = df[new_col].apply(lambda x: json.dumps(x))
 
     if drop_original_cols:

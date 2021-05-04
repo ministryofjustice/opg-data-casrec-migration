@@ -56,7 +56,7 @@ def get_columns_query(table, schema):
 
 
 def remove_unecessary_columns(columns):
-    unecessary_field_names = ["method"]
+    unecessary_field_names = ["method", "casrec_details"]
 
     return [column for column in columns if column not in unecessary_field_names]
 
@@ -97,7 +97,7 @@ def create_insert_statement(schema, table_name, columns, df):
 
 
 def insert_data_into_target(
-    db_config, source_db_engine, target_db_engine, table_name, table_details
+    db_config, source_db_engine, target_db_engine, table_name, table_details, chunk_size
 ):
 
     log.info(
@@ -122,7 +122,6 @@ def insert_data_into_target(
 
     log.verbose(f"order_by: {order_by}")
 
-    chunk_size = 10000
     offset = 0
     while True:
         query = f"""
@@ -152,7 +151,7 @@ def insert_data_into_target(
 
             log.error(
                 f"There was an error inserting {len(data_to_insert)} rows "
-                f"into {db_config['source_schema']}.{table_name}",
+                f"into {db_config['target_schema']}.{table_name}",
                 extra={
                     "table_name": table_name,
                     "size": len(data_to_insert),
@@ -168,7 +167,9 @@ def insert_data_into_target(
             break
 
 
-def update_data_in_target(db_config, source_db_engine, table, table_details):
+def update_data_in_target(
+    db_config, source_db_engine, table, table_details, chunk_size
+):
 
     log.info(
         f"Updating existing data from {db_config['source_schema']} '{table}' table"
@@ -184,7 +185,6 @@ def update_data_in_target(db_config, source_db_engine, table, table_details):
         else table_details["pk"]
     )
 
-    chunk_size = 10000
     offset = 0
     while True:
         query = f"""

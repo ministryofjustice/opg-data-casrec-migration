@@ -32,9 +32,6 @@ environment = os.environ.get("ENVIRONMENT")
 
 config = helpers.get_config(env=environment)
 
-# logging
-log = logging.getLogger("root")
-custom_logger.setup_logging(env=environment)
 
 # database
 db_config = {
@@ -43,8 +40,15 @@ db_config = {
     "source_schema": config.schemas["post_transform"],
     "target_schema": config.schemas["integration"],
     "sirius_schema": config.schemas["public"],
+    "chunk_size": config.DEFAULT_CHUNK_SIZE,
 }
 target_db_engine = create_engine(db_config["db_connection_string"])
+
+# logging
+log = logging.getLogger("root")
+custom_logger.setup_logging(
+    env=environment, db_config=db_config, module_name="reindex ids"
+)
 
 
 @click.command()
@@ -62,7 +66,7 @@ def main(clear):
     )
     log.info(
         log_title(
-            message=f"Source: {db_config['source_schema']} Target: {db_config['target_schema']}"
+            message=f"Source: {db_config['source_schema']}, Target: {db_config['target_schema']}, Chunk Size: {db_config['chunk_size']}"
         )
     )
     log.info(log_title(message=f"Enabled entities: {', '.join(allowed_entities)}"))

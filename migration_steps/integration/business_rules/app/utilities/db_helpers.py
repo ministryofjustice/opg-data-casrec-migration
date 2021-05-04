@@ -78,12 +78,18 @@ def update_uids(db_connection_string, db_schema, table, update_data):
         """
         )
 
-        cursor.executemany(
-            """
-            INSERT INTO temp_uids VALUES (%s, %s)
-        """,
-            update_data,
-        )
+        insert_query = f"""
+            INSERT INTO temp_uids VALUES
+        """
+        update_data_list = list(update_data)
+        for i, (id, uid) in enumerate(update_data_list):
+            insert_query += f"({id}, {uid})"
+            if i + 1 < len(update_data_list):
+                insert_query += ", "
+            else:
+                insert_query += ";"
+
+        cursor.execute(insert_query)
 
         cursor.execute(
             f"""

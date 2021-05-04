@@ -34,11 +34,11 @@ load_dotenv(dotenv_path=env_path)
 environment = os.environ.get("ENVIRONMENT")
 config = get_config(environment)
 
+
 # logging
 log = logging.getLogger("root")
-log.addHandler(custom_logger.MyHandler())
-config.custom_log_level()
-verbosity_levels = config.verbosity_levels
+custom_logger.setup_logging(env=environment, module_name="validate db")
+
 
 is_staging = False
 conn_target = None
@@ -78,14 +78,6 @@ bucket_name = f"casrec-migration-{account_name.lower()}"
 account = os.environ["SIRIUS_ACCOUNT"]
 session = boto3.session.Session()
 sql_lines = []
-
-
-def set_logging_level(verbose):
-    try:
-        log.setLevel(verbosity_levels[verbose])
-    except KeyError:
-        log.setLevel("INFO")
-        log.info(f"{verbose} is not a valid verbosity level")
 
 
 def get_validation_dict():
@@ -675,10 +667,9 @@ def get_exception_count():
 
 
 @click.command()
-@click.option("-v", "--verbose", count=True)
 @click.option("--staging", is_flag=True, default=False)
-def main(verbose, staging):
-    set_logging_level(verbose)
+def main(staging):
+
     log.info(helpers.log_title(message="Validation"))
 
     global is_staging
