@@ -1,0 +1,184 @@
+{
+    "id": 1841,
+    "uId": "7000-0004-0357",
+    "caseRecNumber": "95907481",
+    "assignee": {
+        "id": 0,
+        "phoneNumber": "03004560300",
+        "displayName": "Unassigned"
+    },
+    "client": {
+        "id": 1045,
+        "uId": "7000-0001-2315",
+        "workPhoneNumber": null,
+        "homePhoneNumber": {
+            "id": 1064,
+            "phoneNumber": "0114 4960222",
+            "type": "Home",
+            "default": false
+        },
+        "mobilePhoneNumber": null,
+        "email": null,
+        "dob": "14/04/2001",
+        "dateOfDeath": "",
+        "salutation": null,
+        "firstname": "Roger",
+        "middlenames": "Roger",
+        "surname": "Hughes",
+        "addressLine1": "Flat 99",
+        "addressLine2": "Billy road",
+        "addressLine3": "",
+        "town": "Ianmouth",
+        "county": "E4 3FN",
+        "postcode": "NR6 0LD",
+        "country": null,
+        "isAirmailRequired": false,
+        "addresses": [
+            {
+                "id": 1045,
+                "addressLines": [
+                    "Flat 99",
+                    "Billy road"
+                ],
+                "town": "Ianmouth",
+                "county": "E4 3FN",
+                "postcode": "NR6 0LD",
+                "country": null,
+                "isAirmailRequired": false,
+                "type": "Primary",
+                "addressLine1": "Flat 99",
+                "addressLine2": "Billy road",
+                "addressLine3": ""
+            }
+        ],
+        "phoneNumber": "0114 4960222",
+        "phoneNumbers": [
+            {
+                "id": 1064,
+                "phoneNumber": "0114 4960222",
+                "type": "Home",
+                "default": false
+            }
+        ],
+        "personType": "Client",
+        "companyName": null
+    },
+    "donor": null,
+    "applicationType": "Classic",
+    "batchId": null,
+    "title": null,
+    "caseType": "ORDER",
+    "caseSubtype": "pfa",
+    "receiptDate": "17/04/2018",
+    "dueDate": null,
+    "registrationDate": null,
+    "closedDate": null,
+    "status": null,
+    "statusDate": null,
+    "orderStatusNotes": null,
+    "ragRating": 1,
+    "invalidDate": null,
+    "rejectedDate": null,
+    "revokedDate": null,
+    "withdrawnDate": null,
+    "caseAttorneySingular": false,
+    "tasks": [],
+    "clauseExpiryDate": null,
+    "bond": null,
+    "latestAnnualReport": false,
+    "latestSupervisionLevel": {
+        "appliesFrom": "04/05/2021",
+        "supervisionLevel": {
+            "handle": "GENERAL",
+            "label": "General",
+            "deprecated": null
+        },
+        "assetLevel": {
+            "handle": "HIGH",
+            "label": "\u00a321k or more",
+            "deprecated": null
+        },
+        "notes": "placeholder note"
+    },
+    "isSupervisedOrder": true,
+    "howDeputyAppointed": null,
+    "fileLocationDescription": null,
+    "orderDate": "05/04/2018",
+    "orderIssueDate": "06/04/2018",
+    "securityBond": false,
+    "bondReferenceNumber": null,
+    "bondValue": null,
+    "orderStatus": {
+        "handle": "ACTIVE",
+        "label": "Active",
+        "deprecated": false
+    },
+    "feePayer": null,
+    "deputies": [
+        {
+            "deputy": {
+                "id": 1100,
+                "uId": "7000-0001-2828",
+                "workPhoneNumber": {
+                    "id": 1119,
+                    "phoneNumber": "+44(0)1414960331",
+                    "type": "Work",
+                    "default": false
+                },
+                "homePhoneNumber": null,
+                "mobilePhoneNumber": null,
+                "email": "barryfrench@bird.com",
+                "dob": "",
+                "dateOfDeath": "",
+                "salutation": "Trust Corporation",
+                "firstname": "Kirsty",
+                "middlenames": null,
+                "surname": "Simmons",
+                "addressLine1": "997 Jeffrey ridges",
+                "addressLine2": "Lorrainetown",
+                "addressLine3": "",
+                "town": "LS8 9ZW",
+                "county": null,
+                "postcode": "LS7 7LB",
+                "country": null,
+                "isAirmailRequired": false,
+                "addresses": [
+                    {
+                        "id": 1098,
+                        "addressLines": [
+                            "997 Jeffrey ridges",
+                            "Lorrainetown"
+                        ],
+                        "town": "LS8 9ZW",
+                        "county": null,
+                        "postcode": "LS7 7LB",
+                        "country": null,
+                        "isAirmailRequired": false,
+                        "type": "Primary",
+                        "addressLine1": "997 Jeffrey ridges",
+                        "addressLine2": "Lorrainetown",
+                        "addressLine3": ""
+                    }
+                ],
+                "phoneNumber": "+44(0)1414960331",
+                "phoneNumbers": [
+                    {
+                        "id": 1119,
+                        "phoneNumber": "+44(0)1414960331",
+                        "type": "Work",
+                        "default": false
+                    }
+                ],
+                "personType": "Deputy"
+            }
+        }
+    ],
+    "orderExpiryDate": null,
+    "orderClosureReason": null,
+    "orderSubtype": {
+        "handle": "NEW DEPUTY",
+        "label": "New deputy",
+        "deprecated": null
+    },
+    "orderNotes": null
+}

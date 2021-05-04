@@ -1,0 +1,53 @@
+{
+    "id": 1377,
+    "uId": "7000-0001-5524",
+    "normalizedUid": 700000015524,
+    "errorMessages": [],
+    "researchOptOut": false,
+    "workPhoneNumber": {
+        "id": 1396,
+        "phoneNumber": "+44115 496 0358",
+        "type": "Work",
+        "default": false
+    },
+    "email": "lynn01@yahoo.co.uk",
+    "dob": "",
+    "dateOfDeath": "",
+    "salutation": "Rabbi",
+    "firstname": "Hayley",
+    "surname": "Anderson",
+    "addressLine1": "38 Sian tunnel",
+    "addressLine2": "New Paulineville",
+    "addressLine3": "",
+    "town": "S7T 5WG",
+    "postcode": "HX5X 5EA",
+    "isAirmailRequired": false,
+    "phoneNumber": "+44115 496 0358",
+    "phoneNumbers": [
+        {
+            "id": 1396,
+            "phoneNumber": "+44115 496 0358",
+            "type": "Work",
+            "default": false
+        }
+    ],
+    "reference": [],
+    "correspondenceByPost": false,
+    "correspondenceByPhone": false,
+    "correspondenceByEmail": false,
+    "correspondenceByWelsh": false,
+    "updatedDate": "2021-05-04T00:00:00+00:00",
+    "personType": "Deputy",
+    "specialCorrespondenceRequirements": {
+        "audioTape": false,
+        "largePrint": false,
+        "hearingImpaired": false,
+        "spellingOfNameRequiresCare": false
+    },
+    "canDelete": false,
+    "deputyStatus": "Active",
+    "orders": [
+        []
+    ],
+    "newsletter": false
+}

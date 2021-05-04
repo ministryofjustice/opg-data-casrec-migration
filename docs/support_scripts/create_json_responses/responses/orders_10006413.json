@@ -1,0 +1,184 @@
+{
+    "id": 100,
+    "uId": "7000-0002-3080",
+    "caseRecNumber": "10006413",
+    "assignee": {
+        "id": 0,
+        "phoneNumber": "03004560300",
+        "displayName": "Unassigned"
+    },
+    "client": {
+        "id": 95,
+        "uId": "7000-0000-2761",
+        "workPhoneNumber": null,
+        "homePhoneNumber": {
+            "id": 114,
+            "phoneNumber": "+441154960484",
+            "type": "Home",
+            "default": false
+        },
+        "mobilePhoneNumber": null,
+        "email": null,
+        "dob": "24/05/1978",
+        "dateOfDeath": "",
+        "salutation": null,
+        "firstname": "Donna",
+        "middlenames": "Donna",
+        "surname": "Owen",
+        "addressLine1": "Flat 10Y",
+        "addressLine2": "Margaret stream",
+        "addressLine3": "",
+        "town": "Lake Markmouth",
+        "county": "G63 3DR",
+        "postcode": "B4K 2RB",
+        "country": null,
+        "isAirmailRequired": false,
+        "addresses": [
+            {
+                "id": 95,
+                "addressLines": [
+                    "Flat 10Y",
+                    "Margaret stream"
+                ],
+                "town": "Lake Markmouth",
+                "county": "G63 3DR",
+                "postcode": "B4K 2RB",
+                "country": null,
+                "isAirmailRequired": false,
+                "type": "Primary",
+                "addressLine1": "Flat 10Y",
+                "addressLine2": "Margaret stream",
+                "addressLine3": ""
+            }
+        ],
+        "phoneNumber": "+441154960484",
+        "phoneNumbers": [
+            {
+                "id": 114,
+                "phoneNumber": "+441154960484",
+                "type": "Home",
+                "default": false
+            }
+        ],
+        "personType": "Client",
+        "companyName": null
+    },
+    "donor": null,
+    "applicationType": "Classic",
+    "batchId": null,
+    "title": null,
+    "caseType": "ORDER",
+    "caseSubtype": "pfa",
+    "receiptDate": "25/02/2008",
+    "dueDate": null,
+    "registrationDate": null,
+    "closedDate": null,
+    "status": null,
+    "statusDate": null,
+    "orderStatusNotes": null,
+    "ragRating": 1,
+    "invalidDate": null,
+    "rejectedDate": null,
+    "revokedDate": null,
+    "withdrawnDate": null,
+    "caseAttorneySingular": false,
+    "tasks": [],
+    "clauseExpiryDate": null,
+    "bond": null,
+    "latestAnnualReport": false,
+    "latestSupervisionLevel": {
+        "appliesFrom": "04/05/2021",
+        "supervisionLevel": {
+            "handle": "GENERAL",
+            "label": "General",
+            "deprecated": null
+        },
+        "assetLevel": {
+            "handle": "HIGH",
+            "label": "\u00a321k or more",
+            "deprecated": null
+        },
+        "notes": "placeholder note"
+    },
+    "isSupervisedOrder": true,
+    "howDeputyAppointed": null,
+    "fileLocationDescription": null,
+    "orderDate": "22/02/2008",
+    "orderIssueDate": "22/02/2008",
+    "securityBond": false,
+    "bondReferenceNumber": null,
+    "bondValue": null,
+    "orderStatus": {
+        "handle": "ACTIVE",
+        "label": "Active",
+        "deprecated": false
+    },
+    "feePayer": null,
+    "deputies": [
+        {
+            "deputy": {
+                "id": 1229,
+                "uId": "7000-0001-4055",
+                "workPhoneNumber": {
+                    "id": 1248,
+                    "phoneNumber": "0113 4960560",
+                    "type": "Work",
+                    "default": false
+                },
+                "homePhoneNumber": null,
+                "mobilePhoneNumber": null,
+                "email": "geraldine73@chapman.net",
+                "dob": "",
+                "dateOfDeath": "",
+                "salutation": "Lord",
+                "firstname": "Helen",
+                "middlenames": null,
+                "surname": "Nelson",
+                "addressLine1": "972 Moore vista",
+                "addressLine2": "North Lewis",
+                "addressLine3": "",
+                "town": "E1 8BA",
+                "county": null,
+                "postcode": "M9 8GP",
+                "country": null,
+                "isAirmailRequired": false,
+                "addresses": [
+                    {
+                        "id": 1219,
+                        "addressLines": [
+                            "972 Moore vista",
+                            "North Lewis"
+                        ],
+                        "town": "E1 8BA",
+                        "county": null,
+                        "postcode": "M9 8GP",
+                        "country": null,
+                        "isAirmailRequired": false,
+                        "type": "Primary",
+                        "addressLine1": "972 Moore vista",
+                        "addressLine2": "North Lewis",
+                        "addressLine3": ""
+                    }
+                ],
+                "phoneNumber": "0113 4960560",
+                "phoneNumbers": [
+                    {
+                        "id": 1248,
+                        "phoneNumber": "0113 4960560",
+                        "type": "Work",
+                        "default": false
+                    }
+                ],
+                "personType": "Deputy"
+            }
+        }
+    ],
+    "orderExpiryDate": null,
+    "orderClosureReason": null,
+    "orderSubtype": {
+        "handle": "REPLACEMENT",
+        "label": "Replacement",
+        "deprecated": null
+    },
+    "orderNotes": null
+}

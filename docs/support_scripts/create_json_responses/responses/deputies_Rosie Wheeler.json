@@ -1,0 +1,59 @@
+{
+    "id": 1145,
+    "uId": "7000-0001-3222",
+    "normalizedUid": 700000013222,
+    "errorMessages": [],
+    "researchOptOut": false,
+    "workPhoneNumber": {
+        "id": 1164,
+        "phoneNumber": "0121 496 0087",
+        "type": "Work",
+        "default": false
+    },
+    "email": "ddyer@ball.com",
+    "dob": "",
+    "dateOfDeath": "",
+    "salutation": "Eur Ing",
+    "firstname": "Rosie",
+    "surname": "Wheeler",
+    "addressLine1": "24 Elizabeth turnpike",
+    "addressLine2": "Greenwoodchester",
+    "addressLine3": "",
+    "town": "B5 0AU",
+    "postcode": "S8 0JG",
+    "isAirmailRequired": false,
+    "phoneNumber": "0121 496 0087",
+    "phoneNumbers": [
+        {
+            "id": 1164,
+            "phoneNumber": "0121 496 0087",
+            "type": "Work",
+            "default": false
+        }
+    ],
+    "reference": [],
+    "correspondenceByPost": false,
+    "correspondenceByPhone": false,
+    "correspondenceByEmail": false,
+    "correspondenceByWelsh": false,
+    "updatedDate": "2021-05-04T00:00:00+00:00",
+    "personType": "Deputy",
+    "specialCorrespondenceRequirements": {
+        "audioTape": false,
+        "largePrint": false,
+        "hearingImpaired": false,
+        "spellingOfNameRequiresCare": false
+    },
+    "canDelete": false,
+    "deputyStatus": "Active",
+    "orders": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+    ],
+    "newsletter": false
+}

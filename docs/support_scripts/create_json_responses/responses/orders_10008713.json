@@ -1,0 +1,184 @@
+{
+    "id": 107,
+    "uId": "7000-0002-3163",
+    "caseRecNumber": "10008713",
+    "assignee": {
+        "id": 0,
+        "phoneNumber": "03004560300",
+        "displayName": "Unassigned"
+    },
+    "client": {
+        "id": 99,
+        "uId": "7000-0000-2803",
+        "workPhoneNumber": null,
+        "homePhoneNumber": {
+            "id": 118,
+            "phoneNumber": "(0131) 4960727",
+            "type": "Home",
+            "default": false
+        },
+        "mobilePhoneNumber": null,
+        "email": null,
+        "dob": "24/05/1980",
+        "dateOfDeath": "",
+        "salutation": null,
+        "firstname": "Valerie",
+        "middlenames": "Valerie",
+        "surname": "Quinn",
+        "addressLine1": "300 Wood cliffs",
+        "addressLine2": "North Melissa",
+        "addressLine3": "",
+        "town": "G0 9AU",
+        "county": null,
+        "postcode": "W1C 7FL",
+        "country": null,
+        "isAirmailRequired": false,
+        "addresses": [
+            {
+                "id": 99,
+                "addressLines": [
+                    "300 Wood cliffs",
+                    "North Melissa"
+                ],
+                "town": "G0 9AU",
+                "county": null,
+                "postcode": "W1C 7FL",
+                "country": null,
+                "isAirmailRequired": false,
+                "type": "Primary",
+                "addressLine1": "300 Wood cliffs",
+                "addressLine2": "North Melissa",
+                "addressLine3": ""
+            }
+        ],
+        "phoneNumber": "(0131) 4960727",
+        "phoneNumbers": [
+            {
+                "id": 118,
+                "phoneNumber": "(0131) 4960727",
+                "type": "Home",
+                "default": false
+            }
+        ],
+        "personType": "Client",
+        "companyName": null
+    },
+    "donor": null,
+    "applicationType": "Classic",
+    "batchId": null,
+    "title": null,
+    "caseType": "ORDER",
+    "caseSubtype": "pfa",
+    "receiptDate": null,
+    "dueDate": null,
+    "registrationDate": null,
+    "closedDate": null,
+    "status": null,
+    "statusDate": null,
+    "orderStatusNotes": null,
+    "ragRating": 1,
+    "invalidDate": null,
+    "rejectedDate": null,
+    "revokedDate": null,
+    "withdrawnDate": null,
+    "caseAttorneySingular": false,
+    "tasks": [],
+    "clauseExpiryDate": null,
+    "bond": null,
+    "latestAnnualReport": false,
+    "latestSupervisionLevel": {
+        "appliesFrom": "04/05/2021",
+        "supervisionLevel": {
+            "handle": "GENERAL",
+            "label": "General",
+            "deprecated": null
+        },
+        "assetLevel": {
+            "handle": "HIGH",
+            "label": "\u00a321k or more",
+            "deprecated": null
+        },
+        "notes": "placeholder note"
+    },
+    "isSupervisedOrder": true,
+    "howDeputyAppointed": null,
+    "fileLocationDescription": null,
+    "orderDate": "05/08/2000",
+    "orderIssueDate": "05/08/2000",
+    "securityBond": false,
+    "bondReferenceNumber": null,
+    "bondValue": null,
+    "orderStatus": {
+        "handle": "CLOSED",
+        "label": "Closed",
+        "deprecated": false
+    },
+    "feePayer": null,
+    "deputies": [
+        {
+            "deputy": {
+                "id": 1231,
+                "uId": "7000-0001-4071",
+                "workPhoneNumber": {
+                    "id": 1250,
+                    "phoneNumber": "(0808)1570187",
+                    "type": "Work",
+                    "default": false
+                },
+                "homePhoneNumber": null,
+                "mobilePhoneNumber": null,
+                "email": "woodrobin@burton.info",
+                "dob": "",
+                "dateOfDeath": "",
+                "salutation": "Reverend",
+                "firstname": "Lynda",
+                "middlenames": null,
+                "surname": "Stanley",
+                "addressLine1": "9 Tom rue",
+                "addressLine2": "New Julianstad",
+                "addressLine3": "",
+                "town": "G1 6QJ",
+                "county": null,
+                "postcode": "M1A 3DS",
+                "country": null,
+                "isAirmailRequired": false,
+                "addresses": [
+                    {
+                        "id": 1224,
+                        "addressLines": [
+                            "9 Tom rue",
+                            "New Julianstad"
+                        ],
+                        "town": "G1 6QJ",
+                        "county": null,
+                        "postcode": "M1A 3DS",
+                        "country": null,
+                        "isAirmailRequired": false,
+                        "type": "Primary",
+                        "addressLine1": "9 Tom rue",
+                        "addressLine2": "New Julianstad",
+                        "addressLine3": ""
+                    }
+                ],
+                "phoneNumber": "(0808)1570187",
+                "phoneNumbers": [
+                    {
+                        "id": 1250,
+                        "phoneNumber": "(0808)1570187",
+                        "type": "Work",
+                        "default": false
+                    }
+                ],
+                "personType": "Deputy"
+            }
+        }
+    ],
+    "orderExpiryDate": null,
+    "orderClosureReason": null,
+    "orderSubtype": {
+        "handle": "NEW DEPUTY",
+        "label": "New deputy",
+        "deprecated": null
+    },
+    "orderNotes": null
+}

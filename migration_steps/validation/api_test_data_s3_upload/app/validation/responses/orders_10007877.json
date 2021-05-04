@@ -1,0 +1,184 @@
+{
+    "id": 106,
+    "uId": "7000-0002-3148",
+    "caseRecNumber": "10007877",
+    "assignee": {
+        "id": 0,
+        "phoneNumber": "03004560300",
+        "displayName": "Unassigned"
+    },
+    "client": {
+        "id": 98,
+        "uId": "7000-0000-2795",
+        "workPhoneNumber": null,
+        "homePhoneNumber": {
+            "id": 117,
+            "phoneNumber": "+44191 496 0766",
+            "type": "Home",
+            "default": false
+        },
+        "mobilePhoneNumber": null,
+        "email": null,
+        "dob": "21/09/2016",
+        "dateOfDeath": "",
+        "salutation": null,
+        "firstname": "Marc",
+        "middlenames": "Marc",
+        "surname": "Burrows",
+        "addressLine1": "Flat 1",
+        "addressLine2": "Williams spring",
+        "addressLine3": "",
+        "town": "Lisastad",
+        "county": "LN5M 5YL",
+        "postcode": "B6T 8RP",
+        "country": null,
+        "isAirmailRequired": false,
+        "addresses": [
+            {
+                "id": 98,
+                "addressLines": [
+                    "Flat 1",
+                    "Williams spring"
+                ],
+                "town": "Lisastad",
+                "county": "LN5M 5YL",
+                "postcode": "B6T 8RP",
+                "country": null,
+                "isAirmailRequired": false,
+                "type": "Primary",
+                "addressLine1": "Flat 1",
+                "addressLine2": "Williams spring",
+                "addressLine3": ""
+            }
+        ],
+        "phoneNumber": "+44191 496 0766",
+        "phoneNumbers": [
+            {
+                "id": 117,
+                "phoneNumber": "+44191 496 0766",
+                "type": "Home",
+                "default": false
+            }
+        ],
+        "personType": "Client",
+        "companyName": null
+    },
+    "donor": null,
+    "applicationType": "Classic",
+    "batchId": null,
+    "title": null,
+    "caseType": "ORDER",
+    "caseSubtype": "pfa",
+    "receiptDate": "01/12/2009",
+    "dueDate": null,
+    "registrationDate": null,
+    "closedDate": null,
+    "status": null,
+    "statusDate": null,
+    "orderStatusNotes": null,
+    "ragRating": 1,
+    "invalidDate": null,
+    "rejectedDate": null,
+    "revokedDate": null,
+    "withdrawnDate": null,
+    "caseAttorneySingular": false,
+    "tasks": [],
+    "clauseExpiryDate": null,
+    "bond": null,
+    "latestAnnualReport": false,
+    "latestSupervisionLevel": {
+        "appliesFrom": "04/05/2021",
+        "supervisionLevel": {
+            "handle": "GENERAL",
+            "label": "General",
+            "deprecated": null
+        },
+        "assetLevel": {
+            "handle": "HIGH",
+            "label": "\u00a321k or more",
+            "deprecated": null
+        },
+        "notes": "placeholder note"
+    },
+    "isSupervisedOrder": true,
+    "howDeputyAppointed": null,
+    "fileLocationDescription": null,
+    "orderDate": "09/11/2009",
+    "orderIssueDate": "16/11/2009",
+    "securityBond": false,
+    "bondReferenceNumber": null,
+    "bondValue": null,
+    "orderStatus": {
+        "handle": "ACTIVE",
+        "label": "Active",
+        "deprecated": false
+    },
+    "feePayer": null,
+    "deputies": [
+        {
+            "deputy": {
+                "id": 1230,
+                "uId": "7000-0001-4063",
+                "workPhoneNumber": {
+                    "id": 1249,
+                    "phoneNumber": "+44151 496 0873",
+                    "type": "Work",
+                    "default": false
+                },
+                "homePhoneNumber": null,
+                "mobilePhoneNumber": null,
+                "email": "lisa79@wilkinson.co.uk",
+                "dob": "",
+                "dateOfDeath": "",
+                "salutation": "Right Honourable",
+                "firstname": "Kevin",
+                "middlenames": null,
+                "surname": "Shaw",
+                "addressLine1": "3 Damian mill",
+                "addressLine2": "Harrisfort",
+                "addressLine3": "",
+                "town": "EX9 1AG",
+                "county": null,
+                "postcode": "DT3 8NA",
+                "country": null,
+                "isAirmailRequired": false,
+                "addresses": [
+                    {
+                        "id": 1221,
+                        "addressLines": [
+                            "3 Damian mill",
+                            "Harrisfort"
+                        ],
+                        "town": "EX9 1AG",
+                        "county": null,
+                        "postcode": "DT3 8NA",
+                        "country": null,
+                        "isAirmailRequired": false,
+                        "type": "Primary",
+                        "addressLine1": "3 Damian mill",
+                        "addressLine2": "Harrisfort",
+                        "addressLine3": ""
+                    }
+                ],
+                "phoneNumber": "+44151 496 0873",
+                "phoneNumbers": [
+                    {
+                        "id": 1249,
+                        "phoneNumber": "+44151 496 0873",
+                        "type": "Work",
+                        "default": false
+                    }
+                ],
+                "personType": "Deputy"
+            }
+        }
+    ],
+    "orderExpiryDate": null,
+    "orderClosureReason": null,
+    "orderSubtype": {
+        "handle": "REPLACEMENT",
+        "label": "Replacement",
+        "deprecated": null
+    },
+    "orderNotes": null
+}

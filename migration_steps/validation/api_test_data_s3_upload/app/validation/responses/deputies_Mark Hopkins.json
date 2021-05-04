@@ -1,0 +1,54 @@
+{
+    "id": 1311,
+    "uId": "7000-0001-4865",
+    "normalizedUid": 700000014865,
+    "errorMessages": [],
+    "researchOptOut": false,
+    "workPhoneNumber": {
+        "id": 1330,
+        "phoneNumber": "01174960722",
+        "type": "Work",
+        "default": false
+    },
+    "email": "mandy17@wright.com",
+    "dob": "",
+    "dateOfDeath": "",
+    "salutation": "Canon",
+    "firstname": "Mark",
+    "surname": "Hopkins",
+    "addressLine1": "Flat 01U",
+    "addressLine2": "Allen wells",
+    "addressLine3": "",
+    "town": "South Vanessa",
+    "county": "G5G 7WY",
+    "postcode": "HD11 3FD",
+    "isAirmailRequired": false,
+    "phoneNumber": "01174960722",
+    "phoneNumbers": [
+        {
+            "id": 1330,
+            "phoneNumber": "01174960722",
+            "type": "Work",
+            "default": false
+        }
+    ],
+    "reference": [],
+    "correspondenceByPost": false,
+    "correspondenceByPhone": false,
+    "correspondenceByEmail": false,
+    "correspondenceByWelsh": false,
+    "updatedDate": "2021-05-04T00:00:00+00:00",
+    "personType": "Deputy",
+    "specialCorrespondenceRequirements": {
+        "audioTape": false,
+        "largePrint": false,
+        "hearingImpaired": false,
+        "spellingOfNameRequiresCare": false
+    },
+    "canDelete": false,
+    "deputyStatus": "Active",
+    "orders": [
+        []
+    ],
+    "newsletter": false
+}

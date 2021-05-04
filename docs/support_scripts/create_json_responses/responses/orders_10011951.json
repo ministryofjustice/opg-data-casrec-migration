@@ -1,0 +1,184 @@
+{
+    "id": 115,
+    "uId": "7000-0002-3239",
+    "caseRecNumber": "10011951",
+    "assignee": {
+        "id": 0,
+        "phoneNumber": "03004560300",
+        "displayName": "Unassigned"
+    },
+    "client": {
+        "id": 103,
+        "uId": "7000-0000-2852",
+        "workPhoneNumber": null,
+        "homePhoneNumber": {
+            "id": 122,
+            "phoneNumber": "0117 4960465",
+            "type": "Home",
+            "default": false
+        },
+        "mobilePhoneNumber": null,
+        "email": null,
+        "dob": "27/01/1978",
+        "dateOfDeath": "",
+        "salutation": null,
+        "firstname": "Bethan",
+        "middlenames": "Bethan",
+        "surname": "Cooke",
+        "addressLine1": "0 Linda court",
+        "addressLine2": "Tonyville",
+        "addressLine3": "",
+        "town": "M53 3EF",
+        "county": null,
+        "postcode": "SL9 6SR",
+        "country": null,
+        "isAirmailRequired": false,
+        "addresses": [
+            {
+                "id": 103,
+                "addressLines": [
+                    "0 Linda court",
+                    "Tonyville"
+                ],
+                "town": "M53 3EF",
+                "county": null,
+                "postcode": "SL9 6SR",
+                "country": null,
+                "isAirmailRequired": false,
+                "type": "Primary",
+                "addressLine1": "0 Linda court",
+                "addressLine2": "Tonyville",
+                "addressLine3": ""
+            }
+        ],
+        "phoneNumber": "0117 4960465",
+        "phoneNumbers": [
+            {
+                "id": 122,
+                "phoneNumber": "0117 4960465",
+                "type": "Home",
+                "default": false
+            }
+        ],
+        "personType": "Client",
+        "companyName": null
+    },
+    "donor": null,
+    "applicationType": "Classic",
+    "batchId": null,
+    "title": null,
+    "caseType": "ORDER",
+    "caseSubtype": "pfa",
+    "receiptDate": "04/08/2010",
+    "dueDate": null,
+    "registrationDate": null,
+    "closedDate": null,
+    "status": null,
+    "statusDate": null,
+    "orderStatusNotes": null,
+    "ragRating": 1,
+    "invalidDate": null,
+    "rejectedDate": null,
+    "revokedDate": null,
+    "withdrawnDate": null,
+    "caseAttorneySingular": false,
+    "tasks": [],
+    "clauseExpiryDate": null,
+    "bond": null,
+    "latestAnnualReport": false,
+    "latestSupervisionLevel": {
+        "appliesFrom": "04/05/2021",
+        "supervisionLevel": {
+            "handle": "GENERAL",
+            "label": "General",
+            "deprecated": null
+        },
+        "assetLevel": {
+            "handle": "HIGH",
+            "label": "\u00a321k or more",
+            "deprecated": null
+        },
+        "notes": "placeholder note"
+    },
+    "isSupervisedOrder": true,
+    "howDeputyAppointed": null,
+    "fileLocationDescription": null,
+    "orderDate": "20/07/2010",
+    "orderIssueDate": "29/07/2010",
+    "securityBond": false,
+    "bondReferenceNumber": null,
+    "bondValue": null,
+    "orderStatus": {
+        "handle": "ACTIVE",
+        "label": "Active",
+        "deprecated": false
+    },
+    "feePayer": null,
+    "deputies": [
+        {
+            "deputy": {
+                "id": 1234,
+                "uId": "7000-0001-4105",
+                "workPhoneNumber": {
+                    "id": 1253,
+                    "phoneNumber": "020 74960407",
+                    "type": "Work",
+                    "default": false
+                },
+                "homePhoneNumber": null,
+                "mobilePhoneNumber": null,
+                "email": "michaelsanders@fletcher.com",
+                "dob": "",
+                "dateOfDeath": "",
+                "salutation": "Baron",
+                "firstname": "Lynn",
+                "middlenames": null,
+                "surname": "Owen",
+                "addressLine1": "5 Megan fields",
+                "addressLine2": "North Charleneburgh",
+                "addressLine3": "",
+                "town": "L2E 3FW",
+                "county": null,
+                "postcode": "M5K 2PJ",
+                "country": null,
+                "isAirmailRequired": false,
+                "addresses": [
+                    {
+                        "id": 1227,
+                        "addressLines": [
+                            "5 Megan fields",
+                            "North Charleneburgh"
+                        ],
+                        "town": "L2E 3FW",
+                        "county": null,
+                        "postcode": "M5K 2PJ",
+                        "country": null,
+                        "isAirmailRequired": false,
+                        "type": "Primary",
+                        "addressLine1": "5 Megan fields",
+                        "addressLine2": "North Charleneburgh",
+                        "addressLine3": ""
+                    }
+                ],
+                "phoneNumber": "020 74960407",
+                "phoneNumbers": [
+                    {
+                        "id": 1253,
+                        "phoneNumber": "020 74960407",
+                        "type": "Work",
+                        "default": false
+                    }
+                ],
+                "personType": "Deputy"
+            }
+        }
+    ],
+    "orderExpiryDate": null,
+    "orderClosureReason": null,
+    "orderSubtype": {
+        "handle": "REPLACEMENT",
+        "label": "Replacement",
+        "deprecated": null
+    },
+    "orderNotes": null
+}

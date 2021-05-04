@@ -1,0 +1,184 @@
+{
+    "id": 1839,
+    "uId": "7000-0004-0340",
+    "caseRecNumber": "95708936",
+    "assignee": {
+        "id": 0,
+        "phoneNumber": "03004560300",
+        "displayName": "Unassigned"
+    },
+    "client": {
+        "id": 1044,
+        "uId": "7000-0001-2307",
+        "workPhoneNumber": null,
+        "homePhoneNumber": {
+            "id": 1063,
+            "phoneNumber": "+44(0)28 9018 0441",
+            "type": "Home",
+            "default": false
+        },
+        "mobilePhoneNumber": null,
+        "email": null,
+        "dob": "08/08/2014",
+        "dateOfDeath": "",
+        "salutation": null,
+        "firstname": "Suzanne",
+        "middlenames": "Suzanne",
+        "surname": "Watts",
+        "addressLine1": "285 Williams landing",
+        "addressLine2": "East Amy",
+        "addressLine3": "",
+        "town": "N0U 0PS",
+        "county": null,
+        "postcode": "M8B 7XG",
+        "country": null,
+        "isAirmailRequired": false,
+        "addresses": [
+            {
+                "id": 1044,
+                "addressLines": [
+                    "285 Williams landing",
+                    "East Amy"
+                ],
+                "town": "N0U 0PS",
+                "county": null,
+                "postcode": "M8B 7XG",
+                "country": null,
+                "isAirmailRequired": false,
+                "type": "Primary",
+                "addressLine1": "285 Williams landing",
+                "addressLine2": "East Amy",
+                "addressLine3": ""
+            }
+        ],
+        "phoneNumber": "+44(0)28 9018 0441",
+        "phoneNumbers": [
+            {
+                "id": 1063,
+                "phoneNumber": "+44(0)28 9018 0441",
+                "type": "Home",
+                "default": false
+            }
+        ],
+        "personType": "Client",
+        "companyName": null
+    },
+    "donor": null,
+    "applicationType": "Classic",
+    "batchId": null,
+    "title": null,
+    "caseType": "ORDER",
+    "caseSubtype": "pfa",
+    "receiptDate": "21/10/2011",
+    "dueDate": null,
+    "registrationDate": null,
+    "closedDate": null,
+    "status": null,
+    "statusDate": null,
+    "orderStatusNotes": null,
+    "ragRating": 1,
+    "invalidDate": null,
+    "rejectedDate": null,
+    "revokedDate": null,
+    "withdrawnDate": null,
+    "caseAttorneySingular": false,
+    "tasks": [],
+    "clauseExpiryDate": null,
+    "bond": null,
+    "latestAnnualReport": false,
+    "latestSupervisionLevel": {
+        "appliesFrom": "04/05/2021",
+        "supervisionLevel": {
+            "handle": "MINIMAL",
+            "label": "Minimal",
+            "deprecated": null
+        },
+        "assetLevel": {
+            "handle": "LOW",
+            "label": "Less than \u00a321K",
+            "deprecated": null
+        },
+        "notes": "placeholder note"
+    },
+    "isSupervisedOrder": true,
+    "howDeputyAppointed": null,
+    "fileLocationDescription": null,
+    "orderDate": "12/10/2011",
+    "orderIssueDate": "21/10/2011",
+    "securityBond": false,
+    "bondReferenceNumber": null,
+    "bondValue": null,
+    "orderStatus": {
+        "handle": "ACTIVE",
+        "label": "Active",
+        "deprecated": false
+    },
+    "feePayer": null,
+    "deputies": [
+        {
+            "deputy": {
+                "id": 1094,
+                "uId": "7000-0001-2778",
+                "workPhoneNumber": {
+                    "id": 1113,
+                    "phoneNumber": "+44118 4960263",
+                    "type": "Work",
+                    "default": false
+                },
+                "homePhoneNumber": null,
+                "mobilePhoneNumber": null,
+                "email": "carol60@yahoo.co.uk",
+                "dob": "",
+                "dateOfDeath": "",
+                "salutation": "The Honourable",
+                "firstname": "Cheryl",
+                "middlenames": null,
+                "surname": "Mitchell",
+                "addressLine1": "Studio 4",
+                "addressLine2": "Carol mills",
+                "addressLine3": "",
+                "town": "Stevensstad",
+                "county": "TA9 7TP",
+                "postcode": "DA7V 0NH",
+                "country": null,
+                "isAirmailRequired": false,
+                "addresses": [
+                    {
+                        "id": 1092,
+                        "addressLines": [
+                            "Studio 4",
+                            "Carol mills"
+                        ],
+                        "town": "Stevensstad",
+                        "county": "TA9 7TP",
+                        "postcode": "DA7V 0NH",
+                        "country": null,
+                        "isAirmailRequired": false,
+                        "type": "Primary",
+                        "addressLine1": "Studio 4",
+                        "addressLine2": "Carol mills",
+                        "addressLine3": ""
+                    }
+                ],
+                "phoneNumber": "+44118 4960263",
+                "phoneNumbers": [
+                    {
+                        "id": 1113,
+                        "phoneNumber": "+44118 4960263",
+                        "type": "Work",
+                        "default": false
+                    }
+                ],
+                "personType": "Deputy"
+            }
+        }
+    ],
+    "orderExpiryDate": null,
+    "orderClosureReason": null,
+    "orderSubtype": {
+        "handle": "NEW DEPUTY",
+        "label": "New deputy",
+        "deprecated": null
+    },
+    "orderNotes": null
+}

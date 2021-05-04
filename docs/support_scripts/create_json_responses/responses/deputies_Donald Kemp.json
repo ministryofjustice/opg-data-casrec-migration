@@ -1,0 +1,53 @@
+{
+    "id": 1799,
+    "uId": "7000-0001-9765",
+    "normalizedUid": 700000019765,
+    "errorMessages": [],
+    "researchOptOut": false,
+    "workPhoneNumber": {
+        "id": 1818,
+        "phoneNumber": "(020) 7496 0088",
+        "type": "Work",
+        "default": false
+    },
+    "email": "dunnnathan@barnett.com",
+    "dob": "",
+    "dateOfDeath": "",
+    "salutation": "Ms",
+    "firstname": "Donald",
+    "surname": "Kemp",
+    "addressLine1": "456 Edwards groves",
+    "addressLine2": "South Ross",
+    "addressLine3": "",
+    "town": "UB65 3SN",
+    "postcode": "M9C 6HH",
+    "isAirmailRequired": false,
+    "phoneNumber": "(020) 7496 0088",
+    "phoneNumbers": [
+        {
+            "id": 1818,
+            "phoneNumber": "(020) 7496 0088",
+            "type": "Work",
+            "default": false
+        }
+    ],
+    "reference": [],
+    "correspondenceByPost": false,
+    "correspondenceByPhone": false,
+    "correspondenceByEmail": true,
+    "correspondenceByWelsh": false,
+    "updatedDate": "2021-05-04T00:00:00+00:00",
+    "personType": "Deputy",
+    "specialCorrespondenceRequirements": {
+        "audioTape": false,
+        "largePrint": false,
+        "hearingImpaired": false,
+        "spellingOfNameRequiresCare": false
+    },
+    "canDelete": false,
+    "deputyStatus": "Active",
+    "orders": [
+        []
+    ],
+    "newsletter": false
+}

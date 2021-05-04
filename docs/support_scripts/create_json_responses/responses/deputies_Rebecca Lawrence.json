@@ -1,0 +1,54 @@
+{
+    "id": 1155,
+    "uId": "7000-0001-3313",
+    "normalizedUid": 700000013313,
+    "errorMessages": [],
+    "researchOptOut": false,
+    "workPhoneNumber": {
+        "id": 1174,
+        "phoneNumber": "01414960466",
+        "type": "Work",
+        "default": false
+    },
+    "email": "jayne42@nelson.com",
+    "dob": "",
+    "dateOfDeath": "",
+    "salutation": "Lady",
+    "firstname": "Rebecca",
+    "surname": "Lawrence",
+    "addressLine1": "Studio 1",
+    "addressLine2": "Robert spurs",
+    "addressLine3": "",
+    "town": "Lake Garystad",
+    "county": "SP1A 4DQ",
+    "postcode": "M7 9EW",
+    "isAirmailRequired": false,
+    "phoneNumber": "01414960466",
+    "phoneNumbers": [
+        {
+            "id": 1174,
+            "phoneNumber": "01414960466",
+            "type": "Work",
+            "default": false
+        }
+    ],
+    "reference": [],
+    "correspondenceByPost": false,
+    "correspondenceByPhone": false,
+    "correspondenceByEmail": true,
+    "correspondenceByWelsh": false,
+    "updatedDate": "2021-05-04T00:00:00+00:00",
+    "personType": "Deputy",
+    "specialCorrespondenceRequirements": {
+        "audioTape": false,
+        "largePrint": false,
+        "hearingImpaired": false,
+        "spellingOfNameRequiresCare": false
+    },
+    "canDelete": false,
+    "deputyStatus": "Active",
+    "orders": [
+        []
+    ],
+    "newsletter": false
+}

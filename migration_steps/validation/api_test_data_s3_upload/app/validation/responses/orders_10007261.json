@@ -1,0 +1,184 @@
+{
+    "id": 104,
+    "uId": "7000-0002-3122",
+    "caseRecNumber": "10007261",
+    "assignee": {
+        "id": 0,
+        "phoneNumber": "03004560300",
+        "displayName": "Unassigned"
+    },
+    "client": {
+        "id": 97,
+        "uId": "7000-0000-2787",
+        "workPhoneNumber": null,
+        "homePhoneNumber": {
+            "id": 116,
+            "phoneNumber": "(0131) 496 0533",
+            "type": "Home",
+            "default": false
+        },
+        "mobilePhoneNumber": null,
+        "email": null,
+        "dob": "28/09/2016",
+        "dateOfDeath": "",
+        "salutation": null,
+        "firstname": "Eileen",
+        "middlenames": "Eileen",
+        "surname": "Evans",
+        "addressLine1": "97 Morris junctions",
+        "addressLine2": "Edwardsmouth",
+        "addressLine3": "",
+        "town": "WF8 3NT",
+        "county": null,
+        "postcode": "B0 5WH",
+        "country": null,
+        "isAirmailRequired": false,
+        "addresses": [
+            {
+                "id": 97,
+                "addressLines": [
+                    "97 Morris junctions",
+                    "Edwardsmouth"
+                ],
+                "town": "WF8 3NT",
+                "county": null,
+                "postcode": "B0 5WH",
+                "country": null,
+                "isAirmailRequired": false,
+                "type": "Primary",
+                "addressLine1": "97 Morris junctions",
+                "addressLine2": "Edwardsmouth",
+                "addressLine3": ""
+            }
+        ],
+        "phoneNumber": "(0131) 496 0533",
+        "phoneNumbers": [
+            {
+                "id": 116,
+                "phoneNumber": "(0131) 496 0533",
+                "type": "Home",
+                "default": false
+            }
+        ],
+        "personType": "Client",
+        "companyName": null
+    },
+    "donor": null,
+    "applicationType": "Classic",
+    "batchId": null,
+    "title": null,
+    "caseType": "ORDER",
+    "caseSubtype": "pfa",
+    "receiptDate": "01/06/2010",
+    "dueDate": null,
+    "registrationDate": null,
+    "closedDate": null,
+    "status": null,
+    "statusDate": null,
+    "orderStatusNotes": null,
+    "ragRating": 1,
+    "invalidDate": null,
+    "rejectedDate": null,
+    "revokedDate": null,
+    "withdrawnDate": null,
+    "caseAttorneySingular": false,
+    "tasks": [],
+    "clauseExpiryDate": null,
+    "bond": null,
+    "latestAnnualReport": false,
+    "latestSupervisionLevel": {
+        "appliesFrom": "04/05/2021",
+        "supervisionLevel": {
+            "handle": "GENERAL",
+            "label": "General",
+            "deprecated": null
+        },
+        "assetLevel": {
+            "handle": "HIGH",
+            "label": "\u00a321k or more",
+            "deprecated": null
+        },
+        "notes": "placeholder note"
+    },
+    "isSupervisedOrder": true,
+    "howDeputyAppointed": null,
+    "fileLocationDescription": null,
+    "orderDate": "26/05/2010",
+    "orderIssueDate": "28/05/2010",
+    "securityBond": false,
+    "bondReferenceNumber": null,
+    "bondValue": null,
+    "orderStatus": {
+        "handle": "ACTIVE",
+        "label": "Active",
+        "deprecated": false
+    },
+    "feePayer": null,
+    "deputies": [
+        {
+            "deputy": {
+                "id": 1684,
+                "uId": "7000-0001-8593",
+                "workPhoneNumber": {
+                    "id": 1703,
+                    "phoneNumber": "+44(0)1314960300",
+                    "type": "Work",
+                    "default": false
+                },
+                "homePhoneNumber": null,
+                "mobilePhoneNumber": null,
+                "email": "bowenleonard@gmail.co.uk",
+                "dob": "",
+                "dateOfDeath": "",
+                "salutation": "His Honour",
+                "firstname": "Lesley",
+                "middlenames": null,
+                "surname": "Jones",
+                "addressLine1": "728 Curtis court",
+                "addressLine2": "Jeffreybury",
+                "addressLine3": "",
+                "town": "E6D 5DP",
+                "county": null,
+                "postcode": "JE6H 0PJ",
+                "country": null,
+                "isAirmailRequired": false,
+                "addresses": [
+                    {
+                        "id": 1220,
+                        "addressLines": [
+                            "728 Curtis court",
+                            "Jeffreybury"
+                        ],
+                        "town": "E6D 5DP",
+                        "county": null,
+                        "postcode": "JE6H 0PJ",
+                        "country": null,
+                        "isAirmailRequired": false,
+                        "type": "Primary",
+                        "addressLine1": "728 Curtis court",
+                        "addressLine2": "Jeffreybury",
+                        "addressLine3": ""
+                    }
+                ],
+                "phoneNumber": "+44(0)1314960300",
+                "phoneNumbers": [
+                    {
+                        "id": 1703,
+                        "phoneNumber": "+44(0)1314960300",
+                        "type": "Work",
+                        "default": false
+                    }
+                ],
+                "personType": "Deputy"
+            }
+        }
+    ],
+    "orderExpiryDate": null,
+    "orderClosureReason": null,
+    "orderSubtype": {
+        "handle": "REPLACEMENT",
+        "label": "Replacement",
+        "deprecated": null
+    },
+    "orderNotes": null
+}

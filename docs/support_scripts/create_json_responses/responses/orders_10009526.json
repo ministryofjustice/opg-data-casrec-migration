@@ -1,0 +1,184 @@
+{
+    "id": 111,
+    "uId": "7000-0002-3205",
+    "caseRecNumber": "10009526",
+    "assignee": {
+        "id": 0,
+        "phoneNumber": "03004560300",
+        "displayName": "Unassigned"
+    },
+    "client": {
+        "id": 101,
+        "uId": "7000-0000-2837",
+        "workPhoneNumber": null,
+        "homePhoneNumber": {
+            "id": 120,
+            "phoneNumber": "09098790086",
+            "type": "Home",
+            "default": false
+        },
+        "mobilePhoneNumber": null,
+        "email": null,
+        "dob": "24/12/1981",
+        "dateOfDeath": "",
+        "salutation": null,
+        "firstname": "Cheryl",
+        "middlenames": "Cheryl",
+        "surname": "Reid",
+        "addressLine1": "96 Charlotte shores",
+        "addressLine2": "Singhburgh",
+        "addressLine3": "",
+        "town": "TS2 1UD",
+        "county": null,
+        "postcode": "G3 3DP",
+        "country": null,
+        "isAirmailRequired": false,
+        "addresses": [
+            {
+                "id": 101,
+                "addressLines": [
+                    "96 Charlotte shores",
+                    "Singhburgh"
+                ],
+                "town": "TS2 1UD",
+                "county": null,
+                "postcode": "G3 3DP",
+                "country": null,
+                "isAirmailRequired": false,
+                "type": "Primary",
+                "addressLine1": "96 Charlotte shores",
+                "addressLine2": "Singhburgh",
+                "addressLine3": ""
+            }
+        ],
+        "phoneNumber": "09098790086",
+        "phoneNumbers": [
+            {
+                "id": 120,
+                "phoneNumber": "09098790086",
+                "type": "Home",
+                "default": false
+            }
+        ],
+        "personType": "Client",
+        "companyName": null
+    },
+    "donor": null,
+    "applicationType": "Classic",
+    "batchId": null,
+    "title": null,
+    "caseType": "ORDER",
+    "caseSubtype": "pfa",
+    "receiptDate": null,
+    "dueDate": null,
+    "registrationDate": null,
+    "closedDate": null,
+    "status": null,
+    "statusDate": null,
+    "orderStatusNotes": null,
+    "ragRating": 1,
+    "invalidDate": null,
+    "rejectedDate": null,
+    "revokedDate": null,
+    "withdrawnDate": null,
+    "caseAttorneySingular": false,
+    "tasks": [],
+    "clauseExpiryDate": null,
+    "bond": null,
+    "latestAnnualReport": false,
+    "latestSupervisionLevel": {
+        "appliesFrom": "04/05/2021",
+        "supervisionLevel": {
+            "handle": "GENERAL",
+            "label": "General",
+            "deprecated": null
+        },
+        "assetLevel": {
+            "handle": "HIGH",
+            "label": "\u00a321k or more",
+            "deprecated": null
+        },
+        "notes": "placeholder note"
+    },
+    "isSupervisedOrder": true,
+    "howDeputyAppointed": null,
+    "fileLocationDescription": null,
+    "orderDate": "20/05/2005",
+    "orderIssueDate": "20/05/2005",
+    "securityBond": false,
+    "bondReferenceNumber": null,
+    "bondValue": null,
+    "orderStatus": {
+        "handle": "ACTIVE",
+        "label": "Active",
+        "deprecated": false
+    },
+    "feePayer": null,
+    "deputies": [
+        {
+            "deputy": {
+                "id": 1232,
+                "uId": "7000-0001-4089",
+                "workPhoneNumber": {
+                    "id": 1251,
+                    "phoneNumber": "(0191)4960634",
+                    "type": "Work",
+                    "default": false
+                },
+                "homePhoneNumber": null,
+                "mobilePhoneNumber": null,
+                "email": "russellbishop@evans.org",
+                "dob": "",
+                "dateOfDeath": "",
+                "salutation": "Father",
+                "firstname": "Dominic",
+                "middlenames": null,
+                "surname": "Davies",
+                "addressLine1": "47 Jodie ville",
+                "addressLine2": "Simpsonberg",
+                "addressLine3": "",
+                "town": "NE1P 9SN",
+                "county": null,
+                "postcode": "L7 7PU",
+                "country": null,
+                "isAirmailRequired": false,
+                "addresses": [
+                    {
+                        "id": 1225,
+                        "addressLines": [
+                            "47 Jodie ville",
+                            "Simpsonberg"
+                        ],
+                        "town": "NE1P 9SN",
+                        "county": null,
+                        "postcode": "L7 7PU",
+                        "country": null,
+                        "isAirmailRequired": false,
+                        "type": "Primary",
+                        "addressLine1": "47 Jodie ville",
+                        "addressLine2": "Simpsonberg",
+                        "addressLine3": ""
+                    }
+                ],
+                "phoneNumber": "(0191)4960634",
+                "phoneNumbers": [
+                    {
+                        "id": 1251,
+                        "phoneNumber": "(0191)4960634",
+                        "type": "Work",
+                        "default": false
+                    }
+                ],
+                "personType": "Deputy"
+            }
+        }
+    ],
+    "orderExpiryDate": null,
+    "orderClosureReason": null,
+    "orderSubtype": {
+        "handle": "NEW DEPUTY",
+        "label": "New deputy",
+        "deprecated": null
+    },
+    "orderNotes": null
+}
