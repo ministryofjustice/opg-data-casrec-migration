@@ -4,12 +4,8 @@ version: 2.1
 workflows:
   preprod:
     jobs:
-      - manage_workflow:
-          name: manage workflow
-          filters: {branches:{ignore:[master]}}
       - build:
           name: build and unit tests
-          requires: [manage workflow]
           filters: {branches:{ignore:[master]}}
       - infrastructure:
           name: build infra preproduction
@@ -23,11 +19,6 @@ workflows:
           account: "492687888235"
           wait_for: "6000"
           environment: preproduction
-          filters: {branches:{ignore:[master]}}
-      - run_elasticsearch_reset:
-          name: run elasticsearch reset preproduction
-          tf_workspace: preproduction
-          requires: [run the step function preproduction]
           filters: {branches:{ignore:[master]}}
 
 orbs:

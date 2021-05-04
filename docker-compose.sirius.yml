@@ -42,6 +42,7 @@ services:
       SIRIUS_DB_HOST: docker.for.mac.localhost
       SIRIUS_DB_PORT: 5432
       ENVIRONMENT: local
+      ACCOUNT_NAME: local
       SIRIUS_ACCOUNT: NA
     depends_on: [casrec_db]
   load_casrec:
@@ -57,6 +58,7 @@ services:
       ENVIRONMENT: local
       S3_PATH: anon
       SIRIUS_ACCOUNT: NA
+      ACCOUNT_NAME: local
     depends_on: [localstack, casrec_db]
   transform_casrec:
     build:
@@ -103,6 +105,7 @@ services:
       SIRIUS_DB_HOST: docker.for.mac.localhost
       SIRIUS_DB_PORT: 5432
       ENVIRONMENT: local
+      ACCOUNT_NAME: local
       SIRIUS_ACCOUNT: NA
       RUN_API_TESTS: "True"
       API_TEST_PASSWORD: "Password1" # pragma: allowlist secret
