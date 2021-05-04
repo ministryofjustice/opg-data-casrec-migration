@@ -42,7 +42,7 @@ class StepFunctionRunner:
             self.wait_time += secs
             print(f"Waited for {self.wait_time} seconds. Timeout is {wait_for}")
             self.step_function_running_wait_for(wait_for)
-        elif self.wait_time > 1800:
+        elif self.wait_time > wait_for:
             print("Timeout.. something is wrong. Check the step function")
             os._exit()
         else:
