@@ -23,11 +23,6 @@ load_dotenv(dotenv_path=env_path)
 environment = os.environ.get("ENVIRONMENT")
 config = get_config(environment)
 
-# logging
-log = logging.getLogger("root")
-log.addHandler(custom_logger.MyHandler())
-config.custom_log_level()
-verbosity_levels = config.verbosity_levels
 session = boto3.session.Session()
 host = os.environ.get("DB_HOST")
 ci = os.getenv("CI")
@@ -36,18 +31,15 @@ account_name = os.environ.get("ACCOUNT_NAME")
 bucket_name = f"casrec-migration-{account_name.lower()}"
 
 
-def set_logging_level(verbose):
-    try:
-        log.setLevel(verbosity_levels[verbose])
-    except KeyError:
-        log.setLevel("INFO")
-        log.info(f"{verbose} is not a valid verbosity level")
+# logging
+log = logging.getLogger("root")
+custom_logger.setup_logging(env=environment, module_name="upload api test data")
 
 
 @click.command()
 @click.option("-v", "--verbose", count=True)
 def main(verbose):
-    set_logging_level(verbose)
+    # set_logging_level(verbose)
     log.info(log_title(message="API CSV Upload"))
 
     log.info("Perform Upload to S3 for API files")

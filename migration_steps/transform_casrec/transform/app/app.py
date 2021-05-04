@@ -50,17 +50,21 @@ environment = os.environ.get("ENVIRONMENT")
 
 config = helpers.get_config(env=environment)
 
-# logging
-log = logging.getLogger("root")
-custom_logger.setup_logging(env=environment)
-
 
 # database
 db_config = {
     "db_connection_string": config.get_db_connection_string("migration"),
     "source_schema": config.schemas["pre_transform"],
     "target_schema": config.schemas["post_transform"],
+    "chunk_size": config.DEFAULT_CHUNK_SIZE,
 }
+
+# logging
+log = logging.getLogger("root")
+custom_logger.setup_logging(
+    env=environment, db_config=db_config, module_name="transform"
+)
+
 
 allowed_entities = [k for k, v in config.ENABLED_ENTITIES.items() if v is True]
 
@@ -86,7 +90,7 @@ target_db = InsertData(db_engine=target_db_engine, schema=db_config["target_sche
     prompt=False,
     type=int,
     help="Defaults to 10,000 but can be changed for dev",
-    default=10000,
+    default=db_config["chunk_size"],
 )
 @mem_tracker
 @timer
@@ -95,7 +99,7 @@ def main(clear, include_tests, chunk_size):
     log.info(log_title(message="Migration Step: Transform Casrec Data"))
     log.info(
         log_title(
-            message=f"Source: {db_config['source_schema']} Target: {db_config['target_schema']}"
+            message=f"Source: {db_config['source_schema']}, Target: {db_config['target_schema']}, Chunk Size: {db_config['chunk_size']}"
         )
     )
     log.info(

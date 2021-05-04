@@ -10,11 +10,16 @@ import sqlalchemy
 from db_helpers import create_schema
 from table_helpers import get_pk
 
+environment = os.environ.get("ENVIRONMENT")
+import helpers
+
+config = helpers.get_config(env=environment)
+
 
 def copy_table(
     engine_from, engine_to, schema_from, schema_to, table_from, table_to, pk
 ):
-    chunk_size = 10000
+    chunk_size = config.DEFAULT_CHUNK_SIZE
     offset = 0
     while True:
         select_table_statement = f"""

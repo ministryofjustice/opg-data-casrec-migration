@@ -178,7 +178,7 @@ def insert_additional_data_records(db_config, additional_data_file_name):
     conn = target_db_engine.connect().execution_options(stream_results=True)
 
     for additional_data_df in pd.read_sql(
-        additional_data_data_query, conn, chunksize=config.DEFAULT_CHUNK_SIZE
+        additional_data_data_query, conn, chunksize=db_config["chunk_size"]
     ):
         additional_data_df = format_details(additional_data_df, details_columns)
         additional_data_df = format_other_cols(additional_data_df, additional_data_dict)

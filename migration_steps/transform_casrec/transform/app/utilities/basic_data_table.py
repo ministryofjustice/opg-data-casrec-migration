@@ -4,6 +4,8 @@ from transform_data import transform
 from utilities.generate_source_query import generate_select_string_from_mapping
 import logging
 
+from utilities.standard_transformations import squash_columns
+
 log = logging.getLogger("root")
 
 
@@ -60,6 +62,19 @@ def get_basic_data_table(
     )
 
     result_df["casrec_mapping_file_name"] = mapping_file_name
+    result_df["casrec_table_name"] = source_table
+
+    result_df = squash_columns(
+        cols_to_squash=[
+            "casrec_row_id",
+            "casrec_mapping_file_name",
+            "casrec_table_name",
+        ],
+        new_col="casrec_details",
+        df=result_df,
+        drop_original_cols=False,
+        include_keys=True,
+    )
 
     log.debug(f"Basic data for {mapping_file_name} has {len(result_df)} rows")
 
