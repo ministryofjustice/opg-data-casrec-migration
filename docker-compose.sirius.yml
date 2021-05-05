@@ -42,8 +42,8 @@ services:
       SIRIUS_DB_HOST: docker.for.mac.localhost
       SIRIUS_DB_PORT: 5432
       ENVIRONMENT: local
-      ACCOUNT_NAME: local
       SIRIUS_ACCOUNT: NA
+      ACCOUNT_NAME: local
     depends_on: [casrec_db]
   load_casrec:
     build:
@@ -105,11 +105,11 @@ services:
       SIRIUS_DB_HOST: docker.for.mac.localhost
       SIRIUS_DB_PORT: 5432
       ENVIRONMENT: local
-      ACCOUNT_NAME: local
       SIRIUS_ACCOUNT: NA
       RUN_API_TESTS: "True"
       API_TEST_PASSWORD: "Password1" # pragma: allowlist secret
       SIRIUS_FRONT_URL: http://host.docker.internal:8080
+      ACCOUNT_NAME: local
     depends_on: [casrec_db]
   wait-for-it:
     build: ./wait-for-it
