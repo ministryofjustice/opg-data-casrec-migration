@@ -1,14 +1,14 @@
 {
     "id": 76,
-    "uId": "7000-0000-2555",
-    "normalizedUid": 700000002555,
+    "uId": "7000-0000-2571",
+    "normalizedUid": 700000002571,
     "errorMessages": [],
     "caseRecNumber": "10000037",
     "researchOptOut": false,
     "email": null,
     "dob": "29/05/2011",
     "dateOfDeath": "",
-    "salutation": "Mr",
+    "salutation": null,
     "firstname": "Lesley",
     "middlenames": "Lesley",
     "surname": "Bell",
@@ -31,7 +31,7 @@
     "correspondenceByWelsh": false,
     "occupation": null,
     "createdDate": "03/05/1996",
-    "updatedDate": "2021-03-22T00:00:00+00:00",
+    "updatedDate": "2021-05-04T00:00:00+00:00",
     "personType": "Client",
     "cases": [
         {
@@ -82,7 +82,7 @@
     "latestAnnualReport": false,
     "currentReportingPeriodDueDate": null,
     "pendingReportingPeriod": null,
-    "statusDate": "22/03/2021",
+    "statusDate": "04/05/2021",
     "medicalCondition": null,
     "clientStatus": {
         "handle": "ACTIVE",

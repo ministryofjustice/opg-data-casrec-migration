@@ -106,6 +106,7 @@ services:
       SIRIUS_DB_PORT: 5432
       ENVIRONMENT: local
       SIRIUS_ACCOUNT: NA
+      ACCOUNT_NAME: local
       RUN_API_TESTS: "True"
       API_TEST_PASSWORD: "Password1" # pragma: allowlist secret
       SIRIUS_FRONT_URL: http://host.docker.internal:8080
