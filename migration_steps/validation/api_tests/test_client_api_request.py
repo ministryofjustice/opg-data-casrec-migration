@@ -105,7 +105,7 @@ def get_entity_ids(session, entity, search_field, search_value, csv_type):
     ids = []
 
     if search_result["hits"]["total"] > 0:
-        if csv_type == "clients":
+        if csv_type in ["clients", "deputies"]:
             entity_id = search_result["hits"]["hits"][0]["_id"]
             ids.append(entity_id)
         elif csv_type == "orders":
@@ -173,7 +173,7 @@ def flat_dict(d, ignore_list):
     return final_dict
 
 
-@pytest.mark.parametrize("csv", ["orders", "clients"])
+@pytest.mark.parametrize("csv", ["orders", "clients", "deputies"])
 def test_csvs(csv, create_a_session):
     s3_csv_path = f"validation/csvs/{csv}.csv"
 
@@ -203,6 +203,10 @@ def test_csvs(csv, create_a_session):
         entity_ids = get_entity_ids(
             create_a_session, search_entity, search_field, entity_ref, csv
         )
+
+        if len(entity_ids) == 0:
+            print(f"No ids found for '{csv}', nothing to test")
+            os._exit(1)
 
         # Because some of our searches may bring back multiple entities we need an object to aggregate them
         response_struct = {}
@@ -269,9 +273,11 @@ def test_fail_csvs(csv, create_a_session):
         entity_ref = row["entity_ref"]
         search_entity = row["search_entity"]
         search_field = row["search_field"]
+
         entity_ids = get_entity_ids(
             create_a_session, search_entity, search_field, entity_ref, csv
         )
+
         for entity_id in entity_ids:
             endpoint_final = str(endpoint).replace("{id}", str(entity_id))
 
