@@ -4,30 +4,21 @@ version: 2.1
 workflows:
   preprod:
     jobs:
-      - manage_workflow:
-          name: manage workflow
-          filters: {branches:{ignore:[master]}}
       - build:
           name: build and unit tests
-          requires: [manage workflow]
           filters: {branches:{ignore:[master]}}
       - infrastructure:
-          name: build infra preproduction
+          name: build infra qa
           requires: [build and unit tests]
-          tf_workspace: preproduction
+          tf_workspace: qa
           tf_command: apply
           filters: {branches:{ignore:[master]}}
       - run_step_function:
-          name: run the step function preproduction
-          requires: [build infra preproduction]
+          name: run the step function qa
+          requires: [build infra qa]
           account: "492687888235"
-          wait_for: "6000"
-          environment: preproduction
-          filters: {branches:{ignore:[master]}}
-      - run_elasticsearch_reset:
-          name: run elasticsearch reset preproduction
-          tf_workspace: preproduction
-          requires: [run the step function preproduction]
+          wait_for: "10800"
+          environment: qa
           filters: {branches:{ignore:[master]}}
 
 orbs:
@@ -186,7 +177,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: check log message
+          name: set no reload to true
           command: echo "export NO_RELOAD=true" >> $BASH_ENV
       - run:
           name: install requirements

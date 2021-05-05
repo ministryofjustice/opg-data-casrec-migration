@@ -210,7 +210,15 @@ def update_data_in_target(
 
         log.debug(f"Updating {len(data_to_update)} rows")
 
-        target_connection = psycopg2.connect(db_config["target_db_connection_string"])
+        keepalive_kwargs = {
+            "keepalives": 1,
+            "keepalives_idle": 30,
+            "keepalives_interval": 5,
+            "keepalives_count": 5,
+        }
+        target_connection = psycopg2.connect(
+            db_config["target_db_connection_string"], **keepalive_kwargs
+        )
         db_helpers.execute_update(
             conn=target_connection, df=data_to_update, table=table, pk_col="id"
         )
