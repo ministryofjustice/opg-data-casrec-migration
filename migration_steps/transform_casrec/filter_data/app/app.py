@@ -20,6 +20,7 @@ sql_path = current_path / "sql"
 load_dotenv(dotenv_path=env_path)
 
 environment = os.environ.get("ENVIRONMENT")
+lay_team = os.environ.get("LAY_TEAM")
 config = get_config(environment)
 
 # logging
@@ -39,7 +40,7 @@ def set_logging_level(verbose):
 
 @click.command()
 @click.option("-v", "--verbose", count=True)
-@click.option("--team", default=None)
+@click.option("--team", default="")
 @click.option(
     "--clear",
     prompt=False,
@@ -51,8 +52,19 @@ def main(verbose, team, clear):
     conn_source = psycopg2.connect(config.get_db_connection_string("migration"))
 
     if team:
+        if lay_team:
+            log.info(f"Lay Team filtering specified in env vars: Team {lay_team}")
+            log.info(f"Overriding with Lay Team requested at runtime: Team {team}")
+        else:
+            log.info(f"Lay Team filtering requested at runtime: Team {team}")
+    elif lay_team:
+        team = lay_team
+        log.info(f"Lay Team filtering specified in env vars: Team {team}")
+    else:
+        log.info(f"No filtering requested, proceed with migrating ALL.")
+
+    if team:
         team = 'T' + team
-        log.info(f"Lay Team filtering requested: Team {team}")
         log.info(f"Deleting data not associated with {team}")
         execute_generated_sql(
             sql_path,
@@ -61,9 +73,6 @@ def main(verbose, team, clear):
             team,
             conn_source,
         )
-    else:
-        log.info(f"No filtering requested, proceed with migrating ALL.")
-
 
 
 if __name__ == "__main__":

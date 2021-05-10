@@ -60,32 +60,25 @@ docker-compose down
 docker system prune -a
 ```
 
-### Migrate
+### Running Migrate with migrate.sh (recommended)
 
 ```bash
 ./migrate.sh
 ```
 
-Or, you can run each step individually:
+#### Reloading source data (or skip)
 
-```bash
-docker-compose run --rm load_s3 python3 load_s3_local.py
-docker-compose run --rm prepare prepare/prepare.sh
-docker-compose run --rm load_casrec python3 app.py
-docker-compose run --rm transform_casrec python3 app.py --clear=True
-docker-compose run --rm integration integration/integration.sh
-docker-compose run --rm load_to_target python3 app.py
-docker-compose run --rm validation validation/validate.sh
-```
+You will be asked if you want to rebuild your local database from the source casrec csv files (building the schema which contains the data you're about to migrate). If you've made some changes and wish to restore, or if this is the first time you have run migrate.sh, click "y", otherwise there are Big time savings in selecying the default "n"
 
-You will be asked if you want to resync your data from development s3. You can just hit enter if
-you don't or type "y" if you do. If you do then you will need to enter your aws vault password and 2FA so you
-can connect to aws dev s3.
+If you clicked "y" you'll now be asked if you want to syncronise the local data csv files from OPG Migrations dev on AWS S3. Again, if you have made changes to the local csv files, OR if this is a first run, click "y" otherwise there are big timesavings on "n"
 
-You will be asked if you want to skip reload (no_reload) to s3. This step takes all your local files and puts them in the S3
-of your localstack. The default is to do it on each run but if you like
-then you can type "y" and it will skip this step. Obviously you can only skip this step if you have
-already done an initial run that has loaded into s3!
+If you do then you will need to enter your AWS Vault password and 2FA so you can connect to aws dev s3. If you don't have AWS Vault and 2FA set up, you'll need to grab someone in WebOps
+
+
+Finally, you will be asked if you want to migrate all clients or just those managed by a certain Lay Team. You can leave this at default (all) unless you have a reason not to. See Filtering section below
+
+
+#### No reload
 
 You can also get the pipeline to run with no reload option.
 
@@ -96,6 +89,17 @@ This is useful in a number of circumstances:
 2) You want to avoid reload on preprod because it takes a very long time
 
 You should not use this in pipeline if previous build didn't finish.
+
+
+#### Filtering
+
+By default, all lay clients will be migrated, but you can limit this to those of a certain Lay team in two ways:
+
+In Env Vars (useful for pipeline/final production) - Specify a number 1-9 in `LAY_TEAM` in docker-compose or leave blank
+At runtime (useful for dev) - you will be promped for a lay team when running `migrate.sh` enter 1-9 or hit return for default All. This will override the env var setting
+
+
+### Troubleshooting
 
 #### Local issues
 
@@ -129,6 +133,21 @@ You should not use this in pipeline if previous build didn't finish.
         - Now in AWS sirius dev account, go to dynamo db and look for the WorkspaceCleanup table
         - Go to the items tab, find casmigrate and edit to epoch timestamp to be waaaaay in the future.
         This will stop it being deleted by cleanup jobs
+
+
+### Running Migration steps individually
+
+Commands to run each step individually, still  via docker compose:
+
+```bash
+docker-compose run --rm load_s3 python3 load_s3_local.py
+docker-compose run --rm prepare prepare/prepare.sh
+docker-compose run --rm load_casrec python3 app.py
+docker-compose run --rm transform_casrec python3 app.py --clear=True
+docker-compose run --rm integration integration/integration.sh
+docker-compose run --rm load_to_target python3 app.py
+docker-compose run --rm validation validation/validate.sh
+```
 
 #### Running the steps (Non-dockerised):
 
