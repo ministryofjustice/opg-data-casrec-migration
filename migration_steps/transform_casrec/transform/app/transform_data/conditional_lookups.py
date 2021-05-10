@@ -38,7 +38,7 @@ def conditional_lookup(
         lambda x: x[data_col] if x[temp_col] == data_col else None, axis=1
     )
 
-    df = df.drop(columns=[data_col, lookup_col, temp_col])
+    df = df.drop(columns=[temp_col, data_col])
 
     log.log(
         config.DATA,
