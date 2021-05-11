@@ -191,5 +191,21 @@
 		"table_type": "join",
 		"sequences": [],
 		"order_by": ["note_id", "caseitem_id"]
+	},
+	"death_notifications": {
+		"entities": {
+			"base_entities": ["death"],
+			"relies_on": ["clients", "deputies"]
+		},
+		"pk": "id",
+		"fks": [
+			{
+				"column":"person_id",
+				"parent_table" : "persons",
+				"parent_column": "id"
+			}],
+		"table_type": "data",
+		"sequences": [],
+		"order_by": ["id"]
 	}
 }
