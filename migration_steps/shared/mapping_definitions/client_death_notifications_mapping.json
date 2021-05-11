@@ -81,7 +81,7 @@
             "casrec_column_name": "Letter Sent",
             "alias": "Letter Sent",
             "requires_transformation": "conditional_lookup",
-            "lookup_table": "date_of_death_lookup",
+            "lookup_table": "letter_sent_death_lookup",
             "default_value": "",
             "calculated": "",
             "additional_columns": "Term Type"
@@ -89,7 +89,7 @@
     },
     "datedeathcertificatereceived": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
@@ -99,14 +99,14 @@
             "entity": "death_notification"
         },
         "transform_casrec": {
-            "casrec_table": "PAT",
-            "casrec_column_name": "Proof",
-            "alias": "Proof",
-            "requires_transformation": "conditional_lookup",
-            "lookup_table": "date_of_death_lookup",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
             "default_value": "",
             "calculated": "",
-            "additional_columns": "Term Type"
+            "additional_columns": ""
         }
     },
     "datenotified": {
@@ -125,7 +125,7 @@
             "casrec_column_name": "Notified",
             "alias": "Notified",
             "requires_transformation": "conditional_lookup",
-            "lookup_table": "date_of_death_lookup",
+            "lookup_table": "notified_lookup",
             "default_value": "",
             "calculated": "",
             "additional_columns": "Term Type"
@@ -147,7 +147,7 @@
             "casrec_column_name": "Term by",
             "alias": "Term by",
             "requires_transformation": "conditional_lookup",
-            "lookup_table": "date_of_death_lookup",
+            "lookup_table": "termby_lookup",
             "default_value": "",
             "calculated": "",
             "additional_columns": "Term Type"
@@ -169,7 +169,7 @@
             "casrec_column_name": "Notify",
             "alias": "Notify",
             "requires_transformation": "conditional_lookup",
-            "lookup_table": "date_of_death_lookup",
+            "lookup_table": "notify_lookup",
             "default_value": "",
             "calculated": "",
             "additional_columns": "Term Type"

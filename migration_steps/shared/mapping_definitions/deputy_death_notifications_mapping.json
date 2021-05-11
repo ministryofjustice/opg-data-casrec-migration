@@ -78,13 +78,13 @@
         },
         "transform_casrec": {
             "casrec_table": "Deputy",
-            "casrec_column_name": "Disch Death",
-            "alias": "Disch Death",
-            "requires_transformation": "",
-            "lookup_table": "",
+            "casrec_column_name": "Letter Sent",
+            "alias": "Letter Sent",
+            "requires_transformation": "conditional_lookup",
+            "lookup_table": "deputy_date_of_death_lookup",
             "default_value": "",
             "calculated": "",
-            "additional_columns": ""
+            "additional_columns": "Stat"
         }
     },
     "datedeathcertificatereceived": {
@@ -100,13 +100,13 @@
         },
         "transform_casrec": {
             "casrec_table": "Deputy",
-            "casrec_column_name": "Disch Death",
-            "alias": "Disch Death 1",
-            "requires_transformation": "",
-            "lookup_table": "",
+            "casrec_column_name": "Proof",
+            "alias": "Proof",
+            "requires_transformation": "conditional_lookup",
+            "lookup_table": "deputy_date_of_death_lookup",
             "default_value": "",
             "calculated": "",
-            "additional_columns": ""
+            "additional_columns": "Stat"
         }
     },
     "datenotified": {
@@ -122,13 +122,13 @@
         },
         "transform_casrec": {
             "casrec_table": "Deputy",
-            "casrec_column_name": "Disch Death",
-            "alias": "Disch Death 2",
-            "requires_transformation": "",
-            "lookup_table": "",
+            "casrec_column_name": "Notified",
+            "alias": "Notified",
+            "requires_transformation": "conditional_lookup",
+            "lookup_table": "deputy_date_of_death_lookup",
             "default_value": "",
             "calculated": "",
-            "additional_columns": ""
+            "additional_columns": "Stat"
         }
     },
     "notifiedby": {
@@ -150,7 +150,7 @@
             "lookup_table": "",
             "default_value": "OTHER",
             "calculated": "",
-            "additional_columns": ""
+            "additional_columns": "Stat"
         }
     },
     "notificationmethod": {
@@ -172,7 +172,7 @@
             "lookup_table": "",
             "default_value": "EMAIL",
             "calculated": "",
-            "additional_columns": ""
+            "additional_columns": "Term Type"
         }
     },
     "notes": {

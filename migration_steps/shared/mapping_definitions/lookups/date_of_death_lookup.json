@@ -1,20 +1,5 @@
 {
     "D": {
-        "sirius_mapping": "Letter Sent"
-    },
-    "E": {
-        "sirius_mapping": "Letter Sent"
-    },
-    "F": {
-        "sirius_mapping": "Proof"
-    },
-    "G": {
-        "sirius_mapping": "Notified"
-    },
-    "H": {
-        "sirius_mapping": "Term by"
-    },
-    "I": {
-        "sirius_mapping": "Notify"
+        "sirius_mapping": "Term Date"
     }
 }
