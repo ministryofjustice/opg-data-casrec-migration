@@ -1,7 +1,11 @@
 DELETE FROM addresses WHERE person_id in (SELECT id FROM persons WHERE id > {max_orig_person_id});
 DELETE FROM phonenumbers WHERE person_id in (SELECT id FROM persons WHERE id > {max_orig_person_id});
 DELETE FROM person_note WHERE person_id in (SELECT id FROM persons WHERE id > {max_orig_person_id});
--- DELETE FROM notes WHERE id in (SELECT note_id FROM person_note WHERE person_id > {max_orig_person_id});
+DELETE FROM notes WHERE id in (SELECT note_id FROM person_note WHERE person_id > {max_orig_person_id});
+DELETE FROM supervision_level_log where order_id in (SELECT id FROM cases WHERE client_id in (SELECT id FROM persons WHERE id > {max_orig_person_id}));
+DELETE FROM order_deputy where order_id in (SELECT id FROM cases WHERE client_id in (SELECT id FROM persons WHERE id > {max_orig_person_id}));
+DELETE FROM bonds where order_id in (SELECT id FROM cases WHERE client_id in (SELECT id FROM persons WHERE id > {max_orig_person_id}));
 DELETE FROM cases WHERE client_id in (SELECT id FROM persons WHERE id > {max_orig_person_id});
 DELETE FROM person_caseitem WHERE person_id in (SELECT id FROM persons WHERE id > {max_orig_person_id});
+DELETE FROM api.public.death_notifications WHERE person_id in (SELECT id FROM persons WHERE id > {max_orig_person_id});
 DELETE FROM persons WHERE id > {max_orig_person_id};
