@@ -4,8 +4,8 @@ from utilities.basic_data_table import get_basic_data_table
 
 definition = {
     "source_table_name": "deputy",
-    "source_table_additional_columns": [],
-    "source_not_null_cols": ["Disch Death", "Case"],
+    "source_table_additional_columns": ["Stat"],
+    "source_not_null_cols": ["Disch Death"],
     "destination_table_name": "death_notifications",
 }
 
