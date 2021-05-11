@@ -23,7 +23,7 @@
     },
     "email": {
         "mapping_status": {
-            "is_complete": false
+            "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
@@ -36,50 +36,6 @@
             "casrec_table": "DEPUTY",
             "casrec_column_name": "Email",
             "alias": "Email",
-            "requires_transformation": "",
-            "lookup_table": "",
-            "default_value": "",
-            "calculated": "",
-            "additional_columns": ""
-        }
-    },
-    "dob": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date",
-            "table_name": "persons",
-            "entity": "deputy"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": "",
-            "default_value": "",
-            "calculated": "",
-            "additional_columns": ""
-        }
-    },
-    "dateofdeath": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date",
-            "table_name": "persons",
-            "entity": "deputy"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
             "requires_transformation": "",
             "lookup_table": "",
             "default_value": "",
@@ -111,7 +67,7 @@
     },
     "firstname": {
         "mapping_status": {
-            "is_complete": false
+            "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
@@ -133,7 +89,7 @@
     },
     "middlenames": {
         "mapping_status": {
-            "is_complete": false
+            "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
@@ -153,31 +109,9 @@
             "additional_columns": ""
         }
     },
-    "surname": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str",
-            "table_name": "persons",
-            "entity": "deputy"
-        },
-        "transform_casrec": {
-            "casrec_table": "DEPUTY",
-            "casrec_column_name": "Dep Surname",
-            "alias": "Dep Surname",
-            "requires_transformation": "",
-            "lookup_table": "",
-            "default_value": "",
-            "calculated": "",
-            "additional_columns": ""
-        }
-    },
     "correspondencebypost": {
         "mapping_status": {
-            "is_complete": false
+            "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
@@ -199,7 +133,7 @@
     },
     "correspondencebyphone": {
         "mapping_status": {
-            "is_complete": false
+            "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
@@ -241,31 +175,9 @@
             "additional_columns": ""
         }
     },
-    "createddate": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "datetime",
-            "table_name": "persons",
-            "entity": "deputy"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": "",
-            "default_value": "",
-            "calculated": "",
-            "additional_columns": ""
-        }
-    },
     "uid": {
         "mapping_status": {
-            "is_complete": false
+            "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
@@ -373,94 +285,6 @@
             "additional_columns": ""
         }
     },
-    "previousnames": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str",
-            "table_name": "persons",
-            "entity": "deputy"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": "",
-            "default_value": "",
-            "calculated": "",
-            "additional_columns": ""
-        }
-    },
-    "caserecnumber": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str",
-            "table_name": "persons",
-            "entity": "deputy"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": "",
-            "default_value": "",
-            "calculated": "",
-            "additional_columns": ""
-        }
-    },
-    "clientaccommodation": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str",
-            "table_name": "persons",
-            "entity": "deputy"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": "",
-            "default_value": "",
-            "calculated": "",
-            "additional_columns": ""
-        }
-    },
-    "maritalstatus": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str",
-            "table_name": "persons",
-            "entity": "deputy"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": "",
-            "default_value": "",
-            "calculated": "",
-            "additional_columns": ""
-        }
-    },
     "correspondencebywelsh": {
         "mapping_status": {
             "is_complete": true
@@ -478,28 +302,6 @@
             "alias": "Welsh",
             "requires_transformation": "",
             "lookup_table": "corres_indicator_lookup",
-            "default_value": "",
-            "calculated": "",
-            "additional_columns": ""
-        }
-    },
-    "countryofresidence": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str",
-            "table_name": "persons",
-            "entity": "deputy"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": "",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
@@ -529,7 +331,7 @@
     },
     "specialcorrespondencerequirements_audiotape": {
         "mapping_status": {
-            "is_complete": false
+            "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
@@ -551,7 +353,7 @@
     },
     "specialcorrespondencerequirements_largeprint": {
         "mapping_status": {
-            "is_complete": false
+            "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
@@ -573,7 +375,7 @@
     },
     "specialcorrespondencerequirements_hearingimpaired": {
         "mapping_status": {
-            "is_complete": false
+            "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
@@ -595,7 +397,7 @@
     },
     "specialcorrespondencerequirements_spellingofnamerequirescare": {
         "mapping_status": {
-            "is_complete": false
+            "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
@@ -618,28 +420,6 @@
     "isorganisation": {
         "mapping_status": {
             "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool",
-            "table_name": "persons",
-            "entity": "deputy"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": "",
-            "default_value": false,
-            "calculated": "",
-            "additional_columns": ""
-        }
-    },
-    "casesmanagedashybrid": {
-        "mapping_status": {
-            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",

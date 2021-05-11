@@ -4,7 +4,8 @@ from utilities.basic_data_table import get_basic_data_table
 
 definition = {
     "source_table_name": "deputy",
-    "source_table_additional_columns": ["Disch Date", "Case"],
+    "source_table_additional_columns": [],
+    "source_not_null_cols": ["Disch Death", "Case"],
     "destination_table_name": "death_notifications",
 }
 
@@ -33,6 +34,9 @@ def insert_deputy_death_notifications(db_config, target_db):
                 table_definition=definition,
                 chunk_details={"chunk_size": chunk_size, "offset": offset},
             )
+
+            print(deputy_death_df.to_markdown())
+
             death_joined_df = deputy_death_df.merge(
                 persons_df, how="left", left_on="c_case", right_on="caserecnumber"
             )

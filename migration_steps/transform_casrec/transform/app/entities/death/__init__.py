@@ -30,11 +30,11 @@ def runner(target_db, db_config):
         db_config=db_config,
     )
 
-    log.debug("insert_deputy_death_notifications")
-    insert_deputy_death_notifications(
-        target_db=target_db,
-        db_config=db_config,
-    )
+    # log.debug("insert_deputy_death_notifications")
+    # insert_deputy_death_notifications(
+    #     target_db=target_db,
+    #     db_config=db_config,
+    # )
 
 
 if __name__ == "__main__":

@@ -45,7 +45,7 @@
     },
     "dateofdeath": {
         "mapping_status": {
-            "is_complete": false
+            "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
