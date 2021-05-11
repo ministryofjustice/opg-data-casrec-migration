@@ -89,17 +89,15 @@
     "client_addresses": {
         "exclude": [
             "person_id",
-            "address_lines",
-            "town",
-            "county"
+            "address_lines"
         ],
         "forced": {
             "caserecnumber": {
                 "mapping_table": "client_persons.caserecnumber"
             },
             "address_lines": {
-                "casrec": "getCasrecAddress(\"Adrs1\", \"Adrs2\", \"Adrs3\", \"Adrs4\")",
-                "sirius": "getSiriusAddress(addresses.address_lines, addresses.town, addresses.county)"
+                "casrec": "CONCAT(\"Adrs1\", ',', \"Adrs2\")",
+                "sirius": "array_to_string(ARRAY(SELECT json_array_elements_text(addresses.address_lines)), ',')"
             }
         },
         "orderby": {},
