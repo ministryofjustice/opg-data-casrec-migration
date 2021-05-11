@@ -1,10 +1,13 @@
 import pandas as pd
 from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 from utilities.basic_data_table import get_basic_data_table
+import json
+
 
 definition = {
     "source_table_name": "pat",
     "source_table_additional_columns": ["Term Type", "Case"],
+    "source_not_null_cols": ["Letter Sent", "Proof", "Notified", "Term by"],
     "destination_table_name": "death_notifications",
 }
 
