@@ -28,10 +28,9 @@ def amend_dev_data(db_engine):
     except Exception as e:
 
         log.error(
-            f"Error amending Sirius DB",
+            f"Unable to amend Sirius DB: data probably already exists",
             extra={
                 "file_name": "",
                 "error": format_error_message(e=e),
             },
         )
-        os._exit(1)
