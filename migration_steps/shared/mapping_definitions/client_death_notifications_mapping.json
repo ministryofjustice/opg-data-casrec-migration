@@ -55,14 +55,14 @@
             "entity": "death_notification"
         },
         "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": "",
-            "default_value": true,
+            "casrec_table": "PAT",
+            "casrec_column_name": "Proof",
+            "alias": "Proof",
+            "requires_transformation": "conditional_lookup",
+            "lookup_table": "proof_lookup\nproof_boolean_lookup",
+            "default_value": "",
             "calculated": "",
-            "additional_columns": ""
+            "additional_columns": "Term Type"
         }
     },
     "datelettersentout": {
@@ -147,7 +147,7 @@
             "casrec_column_name": "Term by",
             "alias": "Term by",
             "requires_transformation": "conditional_lookup",
-            "lookup_table": "termby_lookup",
+            "lookup_table": "termby_lookup\ntermby_type_lookup",
             "default_value": "",
             "calculated": "",
             "additional_columns": "Term Type"
@@ -169,7 +169,7 @@
             "casrec_column_name": "Notify",
             "alias": "Notify",
             "requires_transformation": "conditional_lookup",
-            "lookup_table": "notify_lookup",
+            "lookup_table": "notify_lookup\nnotify_type_lookup",
             "default_value": "",
             "calculated": "",
             "additional_columns": "Term Type"

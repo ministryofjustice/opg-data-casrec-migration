@@ -43,6 +43,28 @@
             "additional_columns": ""
         }
     },
+    "dateofdeath": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "date",
+            "table_name": "persons",
+            "entity": "deputy"
+        },
+        "transform_casrec": {
+            "casrec_table": "deputy",
+            "casrec_column_name": "Disch Death",
+            "alias": "Disch Death",
+            "requires_transformation": "conditional_lookup",
+            "lookup_table": "deputy_date_of_death_lookup",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": "Stat"
+        }
+    },
     "salutation": {
         "mapping_status": {
             "is_complete": true

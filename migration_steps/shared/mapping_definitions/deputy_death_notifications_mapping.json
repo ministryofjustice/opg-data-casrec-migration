@@ -78,8 +78,8 @@
         },
         "transform_casrec": {
             "casrec_table": "Deputy",
-            "casrec_column_name": "Disch Death",
-            "alias": "Disch Death",
+            "casrec_column_name": "Letter Sent",
+            "alias": "Letter Sent",
             "requires_transformation": "conditional_lookup",
             "lookup_table": "deputy_date_of_death_lookup",
             "default_value": "",
@@ -100,8 +100,8 @@
         },
         "transform_casrec": {
             "casrec_table": "Deputy",
-            "casrec_column_name": "Disch Death",
-            "alias": "Disch Death 1",
+            "casrec_column_name": "Proof",
+            "alias": "Proof",
             "requires_transformation": "conditional_lookup",
             "lookup_table": "deputy_date_of_death_lookup",
             "default_value": "",
@@ -122,8 +122,8 @@
         },
         "transform_casrec": {
             "casrec_table": "Deputy",
-            "casrec_column_name": "Disch Death",
-            "alias": "Disch Death 2",
+            "casrec_column_name": "Notified",
+            "alias": "Notified",
             "requires_transformation": "conditional_lookup",
             "lookup_table": "deputy_date_of_death_lookup",
             "default_value": "",

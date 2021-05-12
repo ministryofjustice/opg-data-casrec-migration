@@ -102,6 +102,9 @@ def get_lookup_dict(file_name: str) -> Dict:
     with open(file_path) as lookup_json:
         lookup_dict = json.load(lookup_json)
 
+        if len(lookup_dict) == 0:
+            log.error(f"No data for lookup file {file_name}")
+
         return {k: v["sirius_mapping"] for k, v in lookup_dict.items()}
 
 
