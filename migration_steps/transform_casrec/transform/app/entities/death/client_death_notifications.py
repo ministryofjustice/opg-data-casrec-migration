@@ -37,6 +37,7 @@ def insert_client_death_notifications(db_config, target_db):
                 chunk_details={"chunk_size": chunk_size, "offset": offset},
             )
 
+            print("CLIENT")
             print(client_death_df.to_markdown())
 
             death_joined_df = client_death_df.merge(

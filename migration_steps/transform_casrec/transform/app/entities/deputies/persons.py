@@ -19,7 +19,6 @@ def insert_persons_deputies(db_config, target_db):
     chunk_no = 1
 
     while True:
-        print("WHILE TRUE")
         try:
 
             sirius_details, persons_df = get_basic_data_table(

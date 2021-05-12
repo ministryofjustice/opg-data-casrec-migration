@@ -30,6 +30,11 @@ def conditional_lookup(
     temp_col = "mapping_col"
     lookup_col = format_additional_col_alias(lookup_col)
 
+    if any(data_col in s for s in df.columns.tolist()):
+        data_col = [x for x in df.columns.tolist() if data_col in x][0]
+
+    log.debug(f"Using data col: {data_col}")
+
     lookup_dict = helpers.get_lookup_dict(lookup_file_name)
 
     df[temp_col] = df[lookup_col].map(lookup_dict)
@@ -37,11 +42,6 @@ def conditional_lookup(
 
     df[final_col] = df.apply(
         lambda x: x[data_col] if x[temp_col] == data_col else None, axis=1
-    )
-
-    log.log(
-        config.VERBOSE,
-        f"2\n{df.sample(n=config.row_limit).to_markdown()}",
     )
 
     df = df.drop(columns=[temp_col, data_col])

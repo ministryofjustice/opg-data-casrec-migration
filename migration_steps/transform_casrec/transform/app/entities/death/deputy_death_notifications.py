@@ -1,10 +1,13 @@
+import logging
+
 import pandas as pd
 from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 from utilities.basic_data_table import get_basic_data_table
 
+log = logging.getLogger("root")
 definition = {
     "source_table_name": "deputy",
-    "source_table_additional_columns": ["Stat"],
+    "source_table_additional_columns": ["Stat", "Deputy No"],
     "source_not_null_cols": ["Disch Death"],
     "destination_table_name": "death_notifications",
 }
@@ -19,12 +22,12 @@ def insert_deputy_death_notifications(db_config, target_db):
     chunk_no = 1
 
     persons_query = (
-        f'select "id", "caserecnumber" from {db_config["target_schema"]}.persons '
+        f'select "id", "c_deputy_no" from {db_config["target_schema"]}.persons '
         f"where \"type\" = 'actor_deputy';"
     )
     persons_df = pd.read_sql_query(persons_query, db_config["db_connection_string"])
 
-    persons_df = persons_df[["id", "caserecnumber"]]
+    persons_df = persons_df[["id", "c_deputy_no"]]
 
     while True:
         try:
@@ -35,10 +38,8 @@ def insert_deputy_death_notifications(db_config, target_db):
                 chunk_details={"chunk_size": chunk_size, "offset": offset},
             )
 
-            print(deputy_death_df.to_markdown())
-
             death_joined_df = deputy_death_df.merge(
-                persons_df, how="left", left_on="c_case", right_on="caserecnumber"
+                persons_df, how="left", left_on="c_deputy_no", right_on="c_deputy_no"
             )
 
             death_joined_df["person_id"] = death_joined_df["id_y"]
@@ -60,4 +61,6 @@ def insert_deputy_death_notifications(db_config, target_db):
             chunk_no += 1
 
         except Exception:
+
+            log.debug(f"End of insert_deputy_death_notifications")
             break

@@ -43,28 +43,6 @@
             "additional_columns": ""
         }
     },
-    "proofofdeathreceived": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "bool",
-            "table_name": "death_notifications",
-            "entity": "death_notification"
-        },
-        "transform_casrec": {
-            "casrec_table": "PAT",
-            "casrec_column_name": "Proof",
-            "alias": "Proof",
-            "requires_transformation": "conditional_lookup",
-            "lookup_table": "proof_lookup\nproof_boolean_lookup",
-            "default_value": "",
-            "calculated": "",
-            "additional_columns": "Term Type"
-        }
-    },
     "datelettersentout": {
         "mapping_status": {
             "is_complete": true

@@ -55,7 +55,7 @@
             "entity": "deputy"
         },
         "transform_casrec": {
-            "casrec_table": "deputy",
+            "casrec_table": "DEPUTY",
             "casrec_column_name": "Disch Death",
             "alias": "Disch Death",
             "requires_transformation": "conditional_lookup",
