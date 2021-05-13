@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 
 import pandas as pd
 import helpers
@@ -30,8 +31,8 @@ def conditional_lookup(
     temp_col = "mapping_col"
     lookup_col = format_additional_col_alias(lookup_col)
 
-    if any(data_col in s for s in df.columns.tolist()):
-        data_col = [x for x in df.columns.tolist() if data_col in x][0]
+    pattern = re.compile(f"^{data_col}$|^{data_col}\s[0-9]+$|^{data_col}\s$")
+    data_col = list(filter(pattern.match, df.columns.tolist()))[0]
 
     log.debug(f"Using data col: {data_col}")
 
