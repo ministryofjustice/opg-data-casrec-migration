@@ -64,6 +64,21 @@ def get_basic_data_table(
         sirius_details=sirius_details,
     )
 
+    try:
+        not_null_cols = table_definition.get(
+            "source_not_null_cols", []
+        ) + table_definition.get("destination_not_null_cols", [])
+        log.debug(
+            f"Removing rows where these fields are all null: {', '.join(not_null_cols)}"
+        )
+
+        result_df = remove_empty_rows(df=result_df, not_null_cols=not_null_cols)
+
+    except KeyError:
+        log.debug("Not removing any rows")
+    except Exception as e:
+        log.debug(f"prolems {e}")
+
     result_df["casrec_mapping_file_name"] = mapping_file_name
     result_df["casrec_table_name"] = source_table
 
