@@ -65,7 +65,7 @@ class BaseConfig:
     DEFAULT_CHUNK_SIZE = 20000
 
     ENABLED_ENTITIES = {
-        "clients": False,
+        "clients": True,
         "cases": False,
         "bonds": False,
         "supervision_level": True,
