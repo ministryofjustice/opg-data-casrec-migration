@@ -4,6 +4,8 @@ import numpy as np
 definition = {
     "source_table_name": "deputy",
     "source_table_additional_columns": [],
+    "source_not_null_cols": [],
+    "destination_not_null_cols": ["warningtype", "warningtext"],
     "destination_table_name": "deputy_violent_warnings",
 }
 
@@ -23,12 +25,6 @@ def insert_deputy_violent_warnings(db_config, target_db):
                 mapping_file_name=mapping_file_name,
                 table_definition=definition,
                 chunk_details={"chunk_size": chunk_size, "offset": offset},
-            )
-
-            warnings_df = warnings_df.replace("", np.nan)
-            remove_null_cols = ["warningtype", "warningtext"]
-            warnings_df = warnings_df.dropna(
-                subset=remove_null_cols, thresh=len(remove_null_cols)
             )
 
             target_db.insert_data(

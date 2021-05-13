@@ -22,6 +22,11 @@ def conditional_lookup(
     df: pd.DataFrame,
 ) -> pd.DataFrame:
 
+    print(f"final_col: {final_col}")
+    print(f"lookup_col: {lookup_col}")
+    print(f"data_col: {data_col}")
+    print(f"lookup_file_name: {lookup_file_name}")
+
     log.info(f"Doing conditional lookup on {lookup_col} in file {lookup_file_name}")
     log.log(
         config.VERBOSE,

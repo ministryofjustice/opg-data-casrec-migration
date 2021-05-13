@@ -1,10 +1,10 @@
 {
     "worksheets": {
         "client_death_notifications": {
-            "total_rows": 9,
+            "total_rows": 8,
             "total_unmapped": 1,
-            "total_mapped": 8,
-            "percentage_complete": 89
+            "total_mapped": 7,
+            "percentage_complete": 88
         },
         "deputy_death_notifications": {
             "total_rows": 9,
@@ -147,14 +147,14 @@
     },
     "total": {
         "worksheets": {
-            "total_sheets": 24,
+            "total_sheets": 31,
             "total_complete": 3
         },
         "fields": {
-            "total_fields": 273,
-            "total_unmapped": 70,
-            "total_mapped": 203,
-            "percentage_complete": 74
+            "total_fields": 343,
+            "total_unmapped": 83,
+            "total_mapped": 260,
+            "percentage_complete": 76
         }
     }
 }

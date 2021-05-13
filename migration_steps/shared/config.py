@@ -68,7 +68,7 @@ class BaseConfig:
         "clients": False,
         "cases": False,
         "bonds": False,
-        "supervision_level": False,
+        "supervision_level": True,
         "deputies": False,
         "events": False,
         "finance": False,
