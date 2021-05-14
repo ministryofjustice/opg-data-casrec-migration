@@ -62,7 +62,7 @@ def main(verbose, preserve_schemas):
             sql_path, "get_max_orig_person_id.sql", conn_target
         )
 
-        log.debug(f"max_orig_person_id: {max_orig_person_id}")
+        log.info(f"max_orig_person_id: {max_orig_person_id}")
 
         try:
             execute_generated_sql(
