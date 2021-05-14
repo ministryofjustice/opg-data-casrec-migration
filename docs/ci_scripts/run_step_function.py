@@ -23,6 +23,7 @@ class StepFunctionRunner:
     wait_time = 0
     previous_pointers = []
     latest_timestamp = ""
+    log_group = ""
 
     def __init__(self, role_name, sts_client, region):
         self.role_name = role_name
@@ -60,17 +61,19 @@ class StepFunctionRunner:
         else:
             print("Ready to run step function")
 
+    def set_log_group(self, log_group):
+        self.log_group = log_group
+
     def print_from_logs(self):
         query = (
-            "fields @timestamp, @logStream, @message | sort @timestamp asc | limit 2000"
+            "fields @timestamp, @logStream, @message | sort @timestamp asc | limit 1000"
         )
-        log_group = "casrec-migration-development"
 
         start_time = int((datetime.now() - timedelta(minutes=5)).timestamp())
         end_time = int((datetime.today() + timedelta(days=1)).timestamp())
 
         start_query_response = self.auto_refresh_session_logs.start_query(
-            logGroupName=log_group,
+            logGroupName=self.log_group,
             startTime=start_time,
             endTime=end_time,
             queryString=query,
@@ -197,11 +200,13 @@ class StepFunctionRunner:
 def main(role, account, wait_for, no_reload, environment):
     region = "eu-west-1"
     sf_name = f"casrec-mig-state-machine-{environment}"
+    log_group = f"casrec-migration-{environment}"
     role_to_assume = f"arn:aws:iam::{account}:role/{role}"
     base_client = boto3.client("sts")
 
     step_function_runner = StepFunctionRunner(role_to_assume, base_client, region)
 
+    step_function_runner.set_log_group(log_group)
     step_function_runner.create_session_step()
     step_function_runner.create_session_logs()
     step_function_runner.step_function_arn(sf_name)
