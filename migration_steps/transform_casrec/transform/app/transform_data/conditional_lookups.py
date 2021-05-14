@@ -28,10 +28,6 @@ def conditional_lookup(
     print(f"lookup_file_name: {lookup_file_name}")
 
     log.info(f"Doing conditional lookup on {lookup_col} in file {lookup_file_name}")
-    log.log(
-        config.VERBOSE,
-        f"before\n{df.sample(n=config.row_limit).to_markdown()}",
-    )
 
     temp_col = "mapping_col"
     lookup_col = format_additional_col_alias(lookup_col)
@@ -51,10 +47,5 @@ def conditional_lookup(
     )
 
     df = df.drop(columns=[temp_col, data_col])
-
-    log.log(
-        config.VERBOSE,
-        f"after\n{df.sample(n=config.row_limit).to_markdown()}",
-    )
 
     return df

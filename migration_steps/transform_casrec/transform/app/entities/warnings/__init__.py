@@ -2,6 +2,7 @@ import logging
 
 from entities.warnings.client_person_warning import insert_client_person_warning
 from entities.warnings.client_violent_warnings import insert_client_violent_warnings
+from entities.warnings.deputy_person_warning import insert_deputy_person_warning
 from entities.warnings.deputy_violent_warnings import insert_deputy_violent_warnings
 from helpers import log_title, check_entity_enabled
 
@@ -19,7 +20,8 @@ def runner(target_db, db_config):
     """
 
     entity_name = "warnings"
-    if not check_entity_enabled(entity_name):
+    extra_entities = ["clients", "deputies"]
+    if not check_entity_enabled(entity_name, extra_entities):
         return False
 
     log.info(log_title(message=entity_name))
@@ -36,11 +38,17 @@ def runner(target_db, db_config):
         db_config=db_config,
     )
 
-    # log.debug("insert_deputy_violent_warnings")
-    # insert_deputy_violent_warnings(
-    #     target_db=target_db,
-    #     db_config=db_config,
-    # )
+    log.debug("insert_deputy_violent_warnings")
+    insert_deputy_violent_warnings(
+        target_db=target_db,
+        db_config=db_config,
+    )
+
+    log.debug("insert_deputy_person_warning")
+    insert_deputy_person_warning(
+        target_db=target_db,
+        db_config=db_config,
+    )
 
 
 if __name__ == "__main__":

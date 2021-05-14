@@ -1,9 +1,15 @@
+import os
+
 from utilities.basic_data_table import get_basic_data_table
 import numpy as np
+import logging
 
+from utilities.custom_errors import EmptyDataFrame
+
+log = logging.getLogger("root")
 definition = {
     "source_table_name": "deputy",
-    "source_table_additional_columns": [],
+    "source_table_additional_columns": ["Deputy No"],
     "source_not_null_cols": [],
     "destination_not_null_cols": ["warningtype", "warningtext"],
     "destination_table_name": "deputy_violent_warnings",
@@ -37,5 +43,9 @@ def insert_deputy_violent_warnings(db_config, target_db):
             offset += chunk_size
             chunk_no += 1
 
-        except Exception:
+        except EmptyDataFrame as e:
+            log.debug(e)
             break
+        except Exception as e:
+            log.error(f"unexpected error {e}")
+            os._exit(1)

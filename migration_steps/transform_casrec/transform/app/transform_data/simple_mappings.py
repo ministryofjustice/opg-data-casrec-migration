@@ -34,8 +34,6 @@ def do_simple_mapping(
 
     log.log(config.VERBOSE, f"columns: {columns}")
 
-    log.log(
-        config.DATA,
-        f"Data after simple mapping\n{source_data_df.rename(columns=columns).sample(n=config.row_limit).to_markdown()}",
-    )
-    return source_data_df.rename(columns=columns)
+    result_df = source_data_df.rename(columns=columns)
+
+    return result_df
