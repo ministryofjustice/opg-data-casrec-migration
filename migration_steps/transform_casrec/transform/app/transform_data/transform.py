@@ -84,19 +84,17 @@ def perform_transformations(
             raise EmptyDataFrame
 
     try:
+
         not_null_cols = table_definition.get(
             "source_not_null_cols", []
         ) + table_definition.get("destination_not_null_cols", [])
+
         log.debug(
             f"Removing rows where these fields are all null: {', '.join(not_null_cols)}"
         )
 
         final_df = remove_empty_rows(df=final_df, not_null_cols=not_null_cols)
-        if len(final_df) == 0:
-            raise EmptyDataFrame
 
-    except KeyError:
-        log.debug("Not removing any rows")
     except Exception as e:
         log.debug(f"Problems removing null rows: {e}")
 

@@ -8,7 +8,12 @@ log = logging.getLogger("root")
 definition = {
     "source_table_name": "deputy",
     "source_table_additional_columns": ["Stat", "Deputy No"],
-    "source_not_null_cols": ["Disch Death"],
+    # "source_not_null_cols": ["Disch Death"],
+    "destination_not_null_cols": [
+        "datelettersentout",
+        "datedeathcertificatereceived",
+        "datenotified",
+    ],
     "destination_table_name": "death_notifications",
 }
 
