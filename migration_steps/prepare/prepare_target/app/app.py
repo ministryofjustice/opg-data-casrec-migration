@@ -61,13 +61,20 @@ def main(verbose, preserve_schemas):
         max_orig_person_id = result_from_sql_file(
             sql_path, "get_max_orig_person_id.sql", conn_target
         )
-        execute_generated_sql(
-            sql_path,
-            "rollback_fixtures.template.sql",
-            "{max_orig_person_id}",
-            max_orig_person_id,
-            conn_target,
-        )
+
+        log.debug(f"max_orig_person_id: {max_orig_person_id}")
+
+        try:
+            execute_generated_sql(
+                sql_path,
+                "rollback_fixtures.template.sql",
+                "{max_orig_person_id}",
+                max_orig_person_id,
+                conn_target,
+            )
+        except Exception as e:
+            log.error(e)
+            os._exit(1)
 
     conn_target.close()
 
