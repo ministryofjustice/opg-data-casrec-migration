@@ -55,7 +55,7 @@ def main(verbose, preserve_schemas):
     )
     execute_sql_file(sql_path, "prepare_sirius.sql", conn_target)
 
-    log.info("Roll back previous migration")
+    log.info("Roll back previous migration BANANA")
 
     if environment in ("local", "development"):
         max_orig_person_id = result_from_sql_file(
