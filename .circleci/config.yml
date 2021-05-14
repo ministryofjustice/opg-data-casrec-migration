@@ -132,7 +132,7 @@ workflows:
 
 orbs:
   aws-cli: circleci/aws-cli@1.3.0
-  slack: circleci/slack@4.1
+
   dockerhub_helper:
     orbs:
       docker: circleci/docker@1.4.0
@@ -174,6 +174,7 @@ orbs:
           - run:
               name: Install Terraform
               command: sudo unzip terraform_${TF_VERSION}_linux_amd64.zip -d /bin
+
       setup_ecs_runner:
         steps:
           - run:
@@ -192,6 +193,7 @@ orbs:
                 sudo tar -xvf $HOME/opg-ecs-helper.tar.gz -C /usr/local/bin
                 sudo chmod +x /usr/local/bin/ecs-stabilizer
                 sudo chmod +x /usr/local/bin/ecs-runner
+
   migration:
     executors:
       python:
@@ -236,6 +238,140 @@ orbs:
                 --circle_project_username "${CIRCLE_PROJECT_USERNAME}" \
                 --circle_project_reponame "${CIRCLE_PROJECT_REPONAME}"
               working_directory: ~/project/docs/ci_scripts
+  notififications:
+    orbs:
+      slack: circleci/slack@4.1
+    commands:
+      notify_env_vars:
+        steps:
+          - run:
+              name: set environment variables
+              when: always
+              command: |
+                echo "export TF_WORKSPACE=\"${TF_WORKSPACE}\"" >> $BASH_ENV
+                cd /home/circleci/project
+                COMMIT_MESSAGE=`git log --oneline -1`
+                echo "export COMMIT_MESSAGE=\"${COMMIT_MESSAGE}\"" >> $BASH_ENV
+                echo "export MENTION_USER=URHDYJ5BR" >> $BASH_ENV
+      notify_if_success:
+        steps:
+          - slack/notify:
+              channel: opg-migration-builds
+              event: pass
+              custom: |
+                {
+                    "blocks": [
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": ":github-tick: *Build to ${ENVIRONMENT} successful*"
+                            }
+                        },
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "*Branch*: ${CIRCLE_BRANCH}\n\n*Commit Message*: ${COMMIT_MESSAGE}\n\n*"
+                            }
+                        },
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "Kicked off by *${CIRCLE_USERNAME}*"
+                            }
+                        },
+                        {
+                            "type": "divider"
+                        },
+                        {
+                            "type": "actions",
+                            "elements": [
+                                {
+                                    "type": "button",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "Go to Pull Request",
+                                        "emoji": true
+                                    },
+                                    "value": "github_pr",
+                                    "url": "${CI_PULL_REQUEST}"
+                                },
+                                {
+                                    "type": "button",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "Go to Circle Job",
+                                        "emoji": true
+                                    },
+                                    "value": "circle_job",
+                                    "url": "${CIRCLE_BUILD_URL}"
+                                }
+                            ]
+                        }
+                    ]
+                }
+      notify_if_fail:
+        steps:
+          - slack/notify:
+              channel: opg-migration-builds
+              event: fail
+              custom: |
+                {
+                    "blocks": [
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": ":x::dancebadger: *Build to ${ENVIRONMENT} failed*"
+                            }
+                        },
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "*Branch*: ${CIRCLE_BRANCH}\n\n*Commit Message*: ${COMMIT_MESSAGE}\n\n*Stage Failed*: ${CIRCLE_STAGE}"
+                            }
+                        },
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "Kicked off by *${CIRCLE_USERNAME}*\n\n"
+                            }
+                        },
+                        {
+                            "type": "divider"
+                        },
+                        {
+                            "type": "actions",
+                            "elements": [
+                                {
+                                    "type": "button",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "Go to Pull Request",
+                                        "emoji": true
+                                    },
+                                    "value": "github_pr",
+                                    "url": "${CI_PULL_REQUEST}"
+                                },
+                                {
+                                    "type": "button",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "Go to Circle Job",
+                                        "emoji": true
+                                    },
+                                    "value": "circle_job",
+                                    "url": "${CIRCLE_BUILD_URL}"
+                                }
+                            ]
+                        }
+                    ]
+                }
+
 jobs:
   manage_workflow:
     executor: migration/python
@@ -251,6 +387,8 @@ jobs:
       - checkout
       - migration/login_codeartifact
       - migration/cancel_redundant_builds
+      - notififications/notify_env_vars
+      - notififications/notify_if_fail
   kick_off_environment:
     executor: migration/python
     resource_class: small
@@ -288,6 +426,8 @@ jobs:
             --header "Circle-Token: ${CIRCLE_BUILDS_TOKEN}" \
             --header 'content-type: application/json' \
             --data "{\"branch\":\"master\", \"parameters\":{\"run_master\": false, \"run_preprod\": $RUN_PREPROD, \"run_qa\": $RUN_QA}}"
+      - notififications/notify_env_vars
+      - notififications/notify_if_fail
 
   tag_image_for_qa:
     executor: migration/python
@@ -337,6 +477,8 @@ jobs:
             echo ${AWS_REGISTRY}/casrec-migration/etl0:${VERSION}
             docker image ls
             docker-compose -f docker-compose.ci.yml push
+      - notififications/notify_env_vars
+      - notififications/notify_if_fail
 
   run_step_function:
     executor: migration/python
@@ -380,128 +522,9 @@ jobs:
           name: run the function
           command: python3 run_step_function.py --role sirius-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD} --environment ${ENVIRONMENT}
           working_directory: ~/project/docs/ci_scripts
-      - run:
-          name: set environment variables
-          command: |
-            echo "export TF_WORKSPACE=\"${TF_WORKSPACE}\"" >> $BASH_ENV
-            cd /home/circleci/project
-            COMMIT_MESSAGE=`git log --oneline -1`
-            echo "export COMMIT_MESSAGE=\"${COMMIT_MESSAGE}\"" >> $BASH_ENV
-            echo "export MENTION_USER=URHDYJ5BR" >> $BASH_ENV
-      - slack/notify:
-          custom: |
-              {
-                  "blocks": [
-                      {
-                          "type": "section",
-                          "text": {
-                              "type": "mrkdwn",
-                              "text": ":github-tick: *Build to ${ENVIRONMENT} successful*"
-                          }
-                      },
-                      {
-                          "type": "section",
-                          "text": {
-                              "type": "mrkdwn",
-                              "text": "*Branch*: ${CIRCLE_BRANCH}\n\n*Commit Message*: ${COMMIT_MESSAGE}"
-                          }
-                      },
-                      {
-                          "type": "section",
-                          "text": {
-                              "type": "mrkdwn",
-                              "text": "Kicked off by *${CIRCLE_USERNAME}*"
-                          }
-                      },
-                      {
-                          "type": "divider"
-                      },
-                      {
-                          "type": "actions",
-                          "elements": [
-                              {
-                                  "type": "button",
-                                  "text": {
-                                      "type": "plain_text",
-                                      "text": "Go to Pull Request",
-                                      "emoji": true
-                                  },
-                                  "value": "github_pr",
-                                  "url": "${CI_PULL_REQUEST}"
-                              },
-                              {
-                                  "type": "button",
-                                  "text": {
-                                      "type": "plain_text",
-                                      "text": "Go to Circle Job",
-                                      "emoji": true
-                                  },
-                                  "value": "circle_job",
-                                  "url": "${CIRCLE_BUILD_URL}"
-                              }
-                          ]
-                      }
-                  ]
-              }
-          channel: opg-migration-builds
-          event: pass
-      - slack/notify:
-          custom: |
-              {
-                  "blocks": [
-                      {
-                          "type": "section",
-                          "text": {
-                              "type": "mrkdwn",
-                              "text": ":x::dancebadger: *Build to ${ENVIRONMENT} failed*"
-                          }
-                      },
-                      {
-                          "type": "section",
-                          "text": {
-                              "type": "mrkdwn",
-                              "text": "*Branch*: ${CIRCLE_BRANCH}\n\n*Commit Message*: ${COMMIT_MESSAGE}"
-                          }
-                      },
-                      {
-                          "type": "section",
-                          "text": {
-                              "type": "mrkdwn",
-                              "text": "Kicked off by *${CIRCLE_USERNAME}*"
-                          }
-                      },
-                      {
-                          "type": "divider"
-                      },
-                      {
-                          "type": "actions",
-                          "elements": [
-                              {
-                                  "type": "button",
-                                  "text": {
-                                      "type": "plain_text",
-                                      "text": "Go to Pull Request",
-                                      "emoji": true
-                                  },
-                                  "value": "github_pr",
-                                  "url": "${CI_PULL_REQUEST}"
-                              },
-                              {
-                                  "type": "button",
-                                  "text": {
-                                      "type": "plain_text",
-                                      "text": "Go to Circle Job",
-                                      "emoji": true
-                                  },
-                                  "value": "circle_job",
-                                  "url": "${CIRCLE_BUILD_URL}"
-                              }
-                          ]
-                      }
-                  ]
-              }
-          channel: opg-migration-builds
-          event: fail
+      - notififications/notify_env_vars
+      - notififications/notify_if_fail
+      - notififications/notify_if_success
   run_behat_tests:
     executor: terraform/terraform
     resource_class: small
@@ -519,6 +542,8 @@ jobs:
       - run:
           name: Run behat tests
           command: ecs-runner -task behat-migration -timeout 600
+      - notififications/notify_env_vars
+      - notififications/notify_if_fail
   run_elasticsearch_reset:
     executor: terraform/terraform
     resource_class: small
@@ -536,6 +561,8 @@ jobs:
       - run:
           name: Reset Elasticsearch
           command: ecs-runner -task reset-elasticsearch -timeout 600
+      - notififications/notify_env_vars
+      - notififications/notify_if_fail
   reset_sirius:
     executor: terraform/terraform
     resource_class: small
@@ -574,6 +601,9 @@ jobs:
       - run:
           name: Reset Elasticsearch
           command: ecs-runner -task reset-elasticsearch -timeout 600
+      - notififications/notify_env_vars
+      - notififications/notify_if_fail
+
   build:
     executor: migration/python
     resource_class: small
@@ -634,6 +664,9 @@ jobs:
       - run:
           name: Push images
           command: docker-compose -f docker-compose.ci.yml push
+      - notififications/notify_env_vars
+      - notififications/notify_if_fail
+
   infrastructure:
     executor: terraform/terraform
     resource_class: small
@@ -666,6 +699,9 @@ jobs:
       - run:
           name: Output
           command: terraform output -json > terraform.output.json
+      - notififications/notify_env_vars
+      - notififications/notify_if_fail
+
   get_latest_image:
     executor: migration/python
     resource_class: small
@@ -692,3 +728,5 @@ jobs:
           root: .
           paths:
             - VERSION
+      - notififications/notify_env_vars
+      - notififications/notify_if_fail
