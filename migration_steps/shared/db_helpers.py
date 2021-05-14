@@ -182,9 +182,17 @@ def copy_schema(
     )
 
 
+import logging
+
+log = logging.getLogger("root")
+
+
 def execute_sql_file(sql_path, filename, conn, schema="public"):
     cursor = conn.cursor()
     sql_file = open(sql_path / filename, "r")
+    sql_lines = sql_file.readlines()
+    for line in sql_lines:
+        log.info(line)
 
     try:
         cursor.execute(sql_file.read().replace("{schema}", str(schema)))
