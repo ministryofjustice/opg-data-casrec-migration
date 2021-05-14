@@ -66,10 +66,10 @@ class BaseConfig:
 
     ENABLED_ENTITIES = {
         "clients": True,
-        "cases": False,
+        "cases": True,
         "bonds": False,
-        "supervision_level": True,
-        "deputies": False,
+        "supervision_level": False,
+        "deputies": True,
         "events": False,
         "finance": False,
         "remarks": False,
@@ -79,7 +79,7 @@ class BaseConfig:
         "visits": False,
         "warnings": True,
         "additional_data": False,
-        "death": True,
+        "death": False,
     }
 
 
