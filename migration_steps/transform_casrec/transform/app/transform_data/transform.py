@@ -49,32 +49,39 @@ def perform_transformations(
     lookup_tables = mappings["lookup_tables"]
 
     if len(simple_mapping) > 0:
+        log.debug("Doing simple mappings")
         final_df = process_simple_mappings.do_simple_mapping(
             simple_mapping, table_definition, final_df
         )
 
     if len(transformations) > 0:
+        log.debug("Doing transformations")
         final_df = process_simple_transformations.do_simple_transformations(
             transformations, final_df
         )
 
     if len(required_columns) > 0:
+        log.debug("Doing default columns")
         final_df = process_default_columns.add_required_columns(
             required_columns, final_df
         )
 
     if len(calculated_fields) > 0:
+        log.debug("Doing calculated fields")
         final_df = process_calculations.do_calculations(calculated_fields, final_df)
 
     if len(lookup_tables) > 0:
+        log.debug("Doing lookup tables")
         final_df = process_lookup_tables.map_lookup_tables(lookup_tables, final_df)
 
     if "id" not in source_data_df.columns.values.tolist():
+        log.debug("Doing unique id")
         final_df = process_unique_id.add_unique_id(
             db_conn_string, db_schema, table_definition, final_df
         )
 
     if sirius_details:
+        log.debug("Doing datatypes")
         final_df = apply_datatypes(mapping_details=sirius_details, df=final_df)
 
     log.log(

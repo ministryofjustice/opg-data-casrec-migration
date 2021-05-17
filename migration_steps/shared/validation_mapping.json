@@ -119,6 +119,34 @@
             ]
         }
     },
+    "client_death_notifications": {
+        "exclude": [
+            "person_id"
+        ],
+        "forced": {
+            "caserecnumber": {
+                "mapping_table": "client_persons.caserecnumber"
+            }
+        },
+        "orderby": {},
+        "casrec": {
+            "from_table": "pat",
+            "joins": [],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_death_notifications exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "where_clauses": []
+        },
+        "sirius": {
+            "from_table": "death_notifications",
+            "joins": [
+                "LEFT JOIN {target_schema}.persons ON persons.id = death_notifications.person_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_death_notifications exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "persons.type = 'actor_client'",
+                "persons.clientsource = 'CASRECMIGRATION'"
+            ]
+        }
+    },
     "client_persons": {
         "exclude": [
             "caserecnumber"
@@ -169,6 +197,47 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_phonenumbers exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
+                "persons.clientsource = 'CASRECMIGRATION'"
+            ]
+        }
+    },
+    "deputy_death_notifications": {
+        "exclude": [
+            "person_id"
+        ],
+        "forced": {
+            "caserecnumber": {
+                "mapping_table": "client_persons.caserecnumber"
+            }
+        },
+        "orderby": {
+            "casesubtype": {
+                "mapping_table": "cases.casesubtype",
+                "direction": "ASC"
+            },
+            "orderdate": {
+                "mapping_table": "cases.orderdate",
+                "direction": "ASC"
+            }
+        },
+        "casrec": {
+            "from_table": "deputyship",
+            "joins": [
+                "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputy.\"Deputy No\" = casrec_csv.deputyship.\"Deputy No\"",
+                "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\"",
+                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\""
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_persons exc_table\n    ON exc_table.caserecnumber = pat.\"Case\"\n    AND exc_table.casesubtype = casrec_csv.order_type_lookup(casrec_csv.order.\"Ord Type\")\n    AND exc_table.orderdate = casrec_csv.order.\"Made Date\"",
+            "where_clauses": []
+        },
+        "sirius": {
+            "from_table": "death_notifications",
+            "joins": [
+                "LEFT JOIN {target_schema}.persons ON persons.id = death_notifications.person_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_death_notifications exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "persons.type = 'actor_deputy'",
                 "persons.clientsource = 'CASRECMIGRATION'"
             ]
         }

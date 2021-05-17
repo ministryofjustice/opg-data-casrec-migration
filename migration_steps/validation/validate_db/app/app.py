@@ -51,10 +51,10 @@ def get_mappings():
     mappings_to_run = []
     allowed_entities = [k for k, v in config.ENABLED_ENTITIES.items() if v is True]
     all_mappings = {
-        "clients": ["client_addresses", "client_persons", "client_phonenumbers"],
+        "clients": ["client_addresses", "client_persons", "client_phonenumbers", "client_death_notifications"],
         "cases": ["cases", "supervision_level_log"],
         "bonds": ["bonds"],
-        "deputies": ["deputy_persons"],
+        "deputies": ["deputy_persons", "deputy_death_notifications"],
     }
 
     for entity, mapping in all_mappings.items():
@@ -678,27 +678,27 @@ def main(staging):
 
     pre_validation()
 
-    log.info("RUN VALIDATION")
-    execute_sql_file(
-        sql_path_temp, validation_sqlfile, conn_target, config.schemas["public"]
-    )
-
-    post_validation()
-
-    log.info("Adding sql files to bucket...\n")  #
-    s3 = get_s3_session(session, environment, host)
-    if ci != "true":
-        for file in os.listdir(sql_path_temp):
-            file_path = f"{sql_path_temp}/{file}"
-            s3_file_path = f"validation/sql/{file}"
-            if file.endswith(".sql"):
-                upload_file(bucket_name, file_path, s3, log, s3_file_path)
-
-    if get_exception_count() > 0:
-        log.info("Exceptions WERE found: override / continue anyway\n")
-        # exit(1)
-    else:
-        log.info("No exceptions found: continue...\n")
+    # log.info("RUN VALIDATION")
+    # execute_sql_file(
+    #     sql_path_temp, validation_sqlfile, conn_target, config.schemas["public"]
+    # )
+    #
+    # post_validation()
+    #
+    # log.info("Adding sql files to bucket...\n")  #
+    # s3 = get_s3_session(session, environment, host)
+    # if ci != "true":
+    #     for file in os.listdir(sql_path_temp):
+    #         file_path = f"{sql_path_temp}/{file}"
+    #         s3_file_path = f"validation/sql/{file}"
+    #         if file.endswith(".sql"):
+    #             upload_file(bucket_name, file_path, s3, log, s3_file_path)
+    #
+    # if get_exception_count() > 0:
+    #     log.info("Exceptions WERE found: override / continue anyway\n")
+    #     # exit(1)
+    # else:
+    #     log.info("No exceptions found: continue...\n")
 
 
 if __name__ == "__main__":
