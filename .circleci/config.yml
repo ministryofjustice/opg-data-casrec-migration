@@ -17,32 +17,38 @@ workflows:
     jobs:
       - manage_workflow:
           name: manage workflow
-          tf_workspace: PreProduction
+          environment: Development
           filters: {branches:{ignore:[master]}}
       - reset_sirius:
           name: reset the sirius fixtures development
           requires: [manage workflow]
           tf_workspace: development
+          environment: Development
           filters: {branches:{ignore:[master]}}
       - build:
           name: build and unit tests
           requires: [manage workflow]
+          environment: Development
           filters: {branches:{ignore:[master]}}
       - infrastructure:
           name: plan infra development
           requires: [build and unit tests]
           tf_workspace: development
           tf_command: plan
+          environment: Development
           filters: {branches:{ignore:[master]}}
       - infrastructure:
           name: build infra development
           requires: [plan infra development]
           tf_workspace: development
           tf_command: apply
+          environment: Development
           filters: {branches:{ignore:[master]}}
       - run_step_function:
           name: run the step function development
           requires: [build infra development, reset the sirius fixtures development]
+          tf_workspace: development
+          environment: Development
           filters: {branches:{ignore:[master]}}
 
   master:
@@ -50,16 +56,19 @@ workflows:
     jobs:
       - build:
           name: build and unit tests master
+          environment: Development on Main
           filters: {branches:{only:[master]}}
       - approve:
           name: approve preproduction kick off
           type: approval
           requires: [build and unit tests master]
+          environment: Development on Main
           filters: {branches:{only:[master]}}
       - kick_off_environment:
           name: kick off preproduction
           workspace: preproduction
           requires: [approve preproduction kick off]
+          environment: Development on Main
           filters: {branches:{only:[master]}}
 
   preprod:
@@ -68,39 +77,57 @@ workflows:
       - get_latest_image:
           name: get latest tag
           image_tag: master
+          environment: Preproduction
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra preproduction
           requires: [get latest tag]
           tf_workspace: preproduction
           tf_command: plan
+          environment: Preproduction
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: build infra preproduction
           requires: [plan infra preproduction]
           tf_workspace: preproduction
           tf_command: apply
+          environment: Preproduction
           filters: {branches:{only:[master]}}
       - run_step_function:
           name: run the step function preproduction
           requires: [build infra preproduction]
           account: "492687888235"
           wait_for: "10800"
-          environment: preproduction
+          tf_workspace: preproduction
+          environment: Preproduction
           filters: {branches:{only:[master]}}
       - tag_image_for_qa:
           name: tag image for qa
           requires: [run the step function preproduction]
           filters: {branches:{only:[master]}}
       - approve:
+          name: approve full elastic reset preprod
+          type: approval
+          requires: [build infra preproduction]
+          environment: Preproduction
+          filters: {branches:{only:[master]}}
+      - run_elasticsearch_reset:
+          name: full reindex elasticsearch preprod
+          requires: [approve full elastic reset preprod]
+          tf_workspace: preproduction
+          environment: Preproduction
+          filters: {branches:{only:[master]}}
+      - approve:
           name: approve qa kick off
           type: approval
           requires: [tag image for qa]
+          environment: Preproduction
           filters: {branches:{only:[master]}}
       - kick_off_environment:
           name: kick off qa
           workspace: qa
           requires: [approve qa kick off]
+          environment: Preproduction
           filters: {branches:{only:[master]}}
 
   qa:
@@ -109,25 +136,41 @@ workflows:
       - get_latest_image:
           name: get latest tag
           image_tag: qa
+          environment: Quality Assurance
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra qa
           requires: [get latest tag]
           tf_workspace: qa
           tf_command: plan
+          environment: Quality Assurance
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: build infra qa
           requires: [plan infra qa]
           tf_workspace: qa
           tf_command: apply
+          environment: Quality Assurance
           filters: {branches:{only:[master]}}
       - run_step_function:
           name: run the step function qa
           requires: [build infra qa]
           account: "492687888235"
           wait_for: "10800"
-          environment: qa
+          tf_workspace: qa
+          environment: Quality Assurance
+          filters: {branches:{only:[master]}}
+      - approve:
+          name: approve full elastic reset qa
+          type: approval
+          requires: [build infra qa]
+          environment: Quality Assurance
+          filters: {branches:{only:[master]}}
+      - run_elasticsearch_reset:
+          name: full reindex elasticsearch qa
+          requires: [approve full elastic reset qa]
+          tf_workspace: qa
+          environment: Quality Assurance
           filters: {branches:{only:[master]}}
 
 orbs:
@@ -248,11 +291,9 @@ orbs:
               name: set environment variables
               when: always
               command: |
-                echo "export TF_WORKSPACE=\"${TF_WORKSPACE}\"" >> $BASH_ENV
-                cd /home/circleci/project
                 COMMIT_MESSAGE=`git log --oneline -1`
                 echo "export COMMIT_MESSAGE=\"${COMMIT_MESSAGE}\"" >> $BASH_ENV
-                echo "export MENTION_USER=URHDYJ5BR" >> $BASH_ENV
+              working_directory: ~/project
       notify_if_success:
         steps:
           - slack/notify:
@@ -377,12 +418,17 @@ jobs:
     executor: migration/python
     resource_class: small
     parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "Development"
       tf_workspace:
         description: workspace to use
         type: string
         default: "development"
     environment:
       TF_WORKSPACE: << parameters.tf_workspace >>
+      ENVIRONMENT: << parameters.environment >>
     steps:
       - checkout
       - migration/login_codeartifact
@@ -393,12 +439,17 @@ jobs:
     executor: migration/python
     resource_class: small
     parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "Development"
       workspace:
         description: workspace to use
         type: string
         default: "development"
     environment:
       WORKSPACE: << parameters.workspace >>
+      ENVIRONMENT: << parameters.environment >>
     steps:
       - checkout
       - run:
@@ -432,10 +483,16 @@ jobs:
   tag_image_for_qa:
     executor: migration/python
     resource_class: small
+    parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "Development"
     environment:
       AWS_REGION: eu-west-1
       AWS_CONFIG_FILE: ~/project/aws_config
       AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
+      ENVIRONMENT: << parameters.environment >>
     working_directory: ~/project
     steps:
       - checkout
@@ -487,6 +544,10 @@ jobs:
       environment:
         description: environment for step function
         type: string
+        default: "Development"
+      tf_workspace:
+        description: terraform workspace
+        type: string
         default: "development"
       account:
         description: account to run step function in
@@ -499,6 +560,7 @@ jobs:
     environment:
       SIRIUS_ACCOUNT: << parameters.account >>
       ENVIRONMENT: << parameters.environment >>
+      TF_WORKSPACE: << parameters.tf_workspace >>
       WAIT_FOR: << parameters.wait_for >>
     steps:
       - checkout
@@ -520,7 +582,7 @@ jobs:
           working_directory: ~/project/docs/ci_scripts
       - run:
           name: run the function
-          command: python3 run_step_function.py --role sirius-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD} --environment ${ENVIRONMENT}
+          command: python3 run_step_function.py --role sirius-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD} --workspace ${TF_WORKSPACE}
           working_directory: ~/project/docs/ci_scripts
       - notififications/notify_env_vars
       - notififications/notify_if_fail
@@ -529,10 +591,17 @@ jobs:
     executor: terraform/terraform
     resource_class: small
     parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "Development"
       tf_workspace:
         description: terraform workspace
         type: string
         default: "development"
+    environment:
+      ENVIRONMENT: << parameters.environment >>
+      TF_WORKSPACE: << parameters.tf_workspace >>
     working_directory: ~/project/terraform
     steps:
       - checkout:
@@ -548,10 +617,17 @@ jobs:
     executor: terraform/terraform
     resource_class: small
     parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "Development"
       tf_workspace:
         description: terraform workspace
         type: string
         default: "development"
+    environment:
+      ENVIRONMENT: << parameters.environment >>
+      TF_WORKSPACE: << parameters.tf_workspace >>
     working_directory: ~/project/terraform
     steps:
       - checkout:
@@ -560,17 +636,24 @@ jobs:
       - terraform/setup_ecs_runner
       - run:
           name: Reset Elasticsearch
-          command: ecs-runner -task reset-elasticsearch -timeout 600
+          command: ecs-runner -task elasticsearch-reindex -timeout 18000
       - notififications/notify_env_vars
       - notififications/notify_if_fail
   reset_sirius:
     executor: terraform/terraform
     resource_class: small
     parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "Development"
       tf_workspace:
         description: terraform workspace
         type: string
         default: "development"
+    environment:
+      ENVIRONMENT: << parameters.environment >>
+      TF_WORKSPACE: << parameters.tf_workspace >>
     working_directory: ~/project/terraform
     steps:
       - checkout:
@@ -607,10 +690,16 @@ jobs:
   build:
     executor: migration/python
     resource_class: small
+    parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "Development"
     environment:
       AWS_REGION: eu-west-1
       AWS_CONFIG_FILE: ~/project/aws_config
       AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
+      ENVIRONMENT: << parameters.environment >>
     steps:
       - dockerhub_helper/dockerhub_login
       - setup_remote_docker
@@ -671,6 +760,10 @@ jobs:
     executor: terraform/terraform
     resource_class: small
     parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "Development"
       tf_workspace:
         description: terraform workspace
         type: string
@@ -680,6 +773,7 @@ jobs:
         type: string
     environment:
       WORKSPACE: << parameters.tf_workspace >>
+      ENVIRONMENT: << parameters.environment >>
     working_directory: ~/project/terraform
     steps:
       - checkout:
@@ -706,6 +800,10 @@ jobs:
     executor: migration/python
     resource_class: small
     parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "Development"
       image_tag:
         description: image tag to use
         type: string
@@ -715,6 +813,7 @@ jobs:
       AWS_CONFIG_FILE: ~/project/aws_config
       AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
       IMAGE_TAG: << parameters.image_tag >>
+      ENVIRONMENT: << parameters.environment >>
     steps:
       - checkout
       - run:
