@@ -5,6 +5,11 @@ import time
 import json
 from botocore.credentials import RefreshableCredentials
 from botocore.session import get_session
+from datetime import datetime, timedelta
+
+
+def to_datetime(date_string):
+    return datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S.%f")
 
 
 class StepFunctionRunner:
@@ -12,15 +17,22 @@ class StepFunctionRunner:
     sts_client = ""
     region = ""
     auto_refresh_session_step_func = ""
+    auto_refresh_session_logs = ""
     sf_arn = ""
     execution_arn = ""
     wait_time = 0
+    previous_pointers = []
+    latest_timestamp = ""
+    log_group = ""
 
     def __init__(self, role_name, sts_client, region):
         self.role_name = role_name
         self.sts_client = sts_client
         self.region = region
         self.wait_time = 0
+        self.latest_timestamp = datetime.fromtimestamp(
+            int((datetime.now() - timedelta(hours=12)).timestamp())
+        )
 
     def step_function_arn(self, step_function_name):
         state_machines = self.auto_refresh_session_step_func.list_state_machines()
@@ -37,6 +49,7 @@ class StepFunctionRunner:
         executions = self.auto_refresh_session_step_func.list_executions(
             stateMachineArn=self.sf_arn, statusFilter="RUNNING"
         )
+        self.print_from_logs()
         if len(executions["executions"]) > 0 and self.wait_time < wait_for:
             time.sleep(secs)
             self.wait_time += secs
@@ -47,6 +60,52 @@ class StepFunctionRunner:
             os._exit()
         else:
             print("Ready to run step function")
+
+    def set_log_group(self, log_group):
+        self.log_group = log_group
+
+    def print_from_logs(self):
+        query = (
+            "fields @timestamp, @logStream, @message | sort @timestamp asc | limit 1000"
+        )
+
+        start_time = int((datetime.now() - timedelta(minutes=5)).timestamp())
+        end_time = int((datetime.today() + timedelta(days=1)).timestamp())
+
+        start_query_response = self.auto_refresh_session_logs.start_query(
+            logGroupName=self.log_group,
+            startTime=start_time,
+            endTime=end_time,
+            queryString=query,
+        )
+        query_id = start_query_response["queryId"]
+        time.sleep(1)
+        response = self.auto_refresh_session_logs.get_query_results(queryId=query_id)
+
+        log_records = []
+        for fields in response["results"]:
+            if (
+                (fields[0]["field"] == "@timestamp")
+                and (to_datetime(fields[0]["value"]) >= self.latest_timestamp)
+                and (fields[3]["value"] not in self.previous_pointers)
+            ):
+                log_record = {
+                    "timestamp": fields[0]["value"],
+                    "logStream": fields[1]["value"],
+                    "message": fields[2]["value"],
+                    "ptr": fields[3]["value"],
+                }
+                log_records.append(log_record)
+                self.latest_timestamp = to_datetime(log_record["timestamp"])
+
+        for log_record in log_records:
+            print(
+                f"{log_record['timestamp']} - {log_record['logStream']}: {log_record['message']}"
+            )
+        if len(log_records) > 0:
+            self.previous_pointers = []
+            for ptr in log_records:
+                self.previous_pointers.append(ptr["ptr"])
 
     def run_step_function(self, no_reload):
         if no_reload == "true":
@@ -103,7 +162,7 @@ class StepFunctionRunner:
         }
         return credentials
 
-    def create_session(self):
+    def create_session_step(self):
         session_credentials = RefreshableCredentials.create_from_metadata(
             metadata=self.refresh_creds(),
             refresh_using=self.refresh_creds,
@@ -117,6 +176,20 @@ class StepFunctionRunner:
             "stepfunctions", region_name=self.region
         )
 
+    def create_session_logs(self):
+        session_credentials = RefreshableCredentials.create_from_metadata(
+            metadata=self.refresh_creds(),
+            refresh_using=self.refresh_creds,
+            method="sts-assume-role",
+        )
+        session = get_session()
+        session._credentials = session_credentials
+        session.set_config_variable("region", self.region)
+        autorefresh_session = boto3.Session(botocore_session=session)
+        self.auto_refresh_session_logs = autorefresh_session.client(
+            "logs", region_name=self.region
+        )
+
 
 @click.command()
 @click.option("--role", default="operator")
@@ -127,12 +200,15 @@ class StepFunctionRunner:
 def main(role, account, wait_for, no_reload, environment):
     region = "eu-west-1"
     sf_name = f"casrec-mig-state-machine-{environment}"
+    log_group = f"casrec-migration-{environment}"
     role_to_assume = f"arn:aws:iam::{account}:role/{role}"
     base_client = boto3.client("sts")
 
     step_function_runner = StepFunctionRunner(role_to_assume, base_client, region)
 
-    step_function_runner.create_session()
+    step_function_runner.set_log_group(log_group)
+    step_function_runner.create_session_step()
+    step_function_runner.create_session_logs()
     step_function_runner.step_function_arn(sf_name)
     step_function_runner.step_function_running_wait_for(int(wait_for))
     response = step_function_runner.run_step_function(no_reload)
