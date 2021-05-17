@@ -5,14 +5,15 @@ from typing import Dict
 import helpers
 import pandas as pd
 
+
 log = logging.getLogger("root")
 environment = os.environ.get("ENVIRONMENT")
 
 config = helpers.get_config(env=environment)
 
 datatype_remap = {
-    "date": "datetime64",
-    "datetime": "datetime64",
+    "date": "datetime64[ns]",
+    "datetime": "datetime64[ns]",
     "dict": "str",
     "Decimal": "float",
 }
@@ -21,7 +22,6 @@ datatype_remap = {
 def apply_datatypes(mapping_details: Dict, df: pd.DataFrame) -> pd.DataFrame:
 
     log.log(config.VERBOSE, "starting to apply column datatypes")
-    log.log(config.VERBOSE, f"datatypes mapping dict: {mapping_details}")
 
     cols_with_datatype = {
         k: v["data_type"]
@@ -33,14 +33,12 @@ def apply_datatypes(mapping_details: Dict, df: pd.DataFrame) -> pd.DataFrame:
 
     log.log(config.VERBOSE, f"cols_with_datatype: {cols_with_datatype}")
 
-    result_df = df.astype({k: v for k, v in cols_with_datatype.items()})
-
-    log.log(
-        config.DATA,
-        f"Data after datatypes\n{result_df.sample(n=config.row_limit).to_markdown()}",
-    )
-
-    return result_df
+    try:
+        result_df = df.astype({k: v for k, v in cols_with_datatype.items()})
+        return result_df
+    except Exception as e:
+        log.error(f"Error applying datatypes: {e}")
+        os._exit(1)
 
 
 def reapply_datatypes_to_fk_cols(columns, df):

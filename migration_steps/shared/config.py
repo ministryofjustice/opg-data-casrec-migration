@@ -77,7 +77,7 @@ class BaseConfig:
         "tasks": False,
         "teams": False,
         "visits": False,
-        "warnings": False,
+        "warnings": True,
         "additional_data": False,
         "death": True,
     }

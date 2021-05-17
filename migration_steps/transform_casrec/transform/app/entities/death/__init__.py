@@ -18,7 +18,8 @@ def runner(target_db, db_config):
     """
 
     entity_name = "death"
-    if not check_entity_enabled(entity_name):
+    extra_entities = ["clients", "deputies"]
+    if not check_entity_enabled(entity_name, extra_entities):
         return False
 
     log.info(log_title(message=entity_name))

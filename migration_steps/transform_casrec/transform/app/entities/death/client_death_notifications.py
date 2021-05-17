@@ -7,7 +7,12 @@ import json
 definition = {
     "source_table_name": "pat",
     "source_table_additional_columns": ["Term Type", "Case"],
-    "source_not_null_cols": ["Letter Sent", "Notified", "Term by"],
+    # "source_not_null_cols": ["Letter Sent", "Notified", "Term by"],
+    "destination_not_null_cols": [
+        "datelettersentout",
+        "datedeathcertificatereceived",
+        "datenotified",
+    ],
     "destination_table_name": "death_notifications",
 }
 

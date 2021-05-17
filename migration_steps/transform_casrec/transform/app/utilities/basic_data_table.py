@@ -6,6 +6,8 @@ import logging
 
 from utilities.remove_empty_rows import remove_empty_rows
 from utilities.standard_transformations import squash_columns
+from transform_data import unique_id as process_unique_id
+
 
 log = logging.getLogger("root")
 
@@ -52,16 +54,6 @@ def get_basic_data_table(
     source_data_df = pd.read_sql_query(
         sql=source_data_query, con=db_config["db_connection_string"]
     )
-
-    try:
-        source_data_df = remove_empty_rows(
-            df=source_data_df, required_cols=table_definition["source_not_null_cols"]
-        )
-        log.debug(
-            f"Removing rows where these fields are all null: {', '.join(table_definition['source_not_null_cols'])}"
-        )
-    except KeyError:
-        log.debug("Not removing any rows")
 
     result_df = transform.perform_transformations(
         mapping_definitions=mapping_dict,

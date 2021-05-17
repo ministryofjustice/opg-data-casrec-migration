@@ -5,6 +5,7 @@ import sys
 import os
 from pathlib import Path
 
+from utilities.custom_errors import EmptyDataFrame
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
@@ -218,8 +219,22 @@ class InsertData:
 
         return datatypes_match
 
+    def _get_dest_table(self, mapping_dict):
+        dest_table_list = [v["table_name"].lower() for k, v in mapping_dict.items()]
+        no_dupes = list(set(dest_table_list))
+        if len(no_dupes) == 1:
+            return list(set(dest_table_list))[0]
+        else:
+            log.error("Multiple dest tables")
+            return ""
+
     @timer
-    def insert_data(self, table_name, df, sirius_details=None, chunk_no=None):
+    def insert_data(self, df, table_name=None, sirius_details=None, chunk_no=None):
+        if len(df) == 0:
+            raise EmptyDataFrame
+
+        if sirius_details:
+            table_name = self._get_dest_table(mapping_dict=sirius_details)
 
         if not self._check_datatypes(mapping_details=sirius_details, df=df):
             log.error("Datatypes do not match")
