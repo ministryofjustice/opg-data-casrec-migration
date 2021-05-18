@@ -207,5 +207,36 @@
 		"table_type": "data",
 		"sequences": [],
 		"order_by": ["id"]
+	},
+	"warnings": {
+		"entities": {
+			"base_entities": ["warnings"],
+			"relies_on": []
+		},
+		"pk": "id",
+		"fks": [],
+		"table_type": "data",
+		"sequences": [],
+		"order_by": ["id"]
+	},
+	"person_warning": {
+		"entities": {
+			"base_entities": ["warnings"],
+			"relies_on": ["clients"]
+		},
+		"pk": "",
+		"fks": [
+			{
+				"column":"person_id",
+				"parent_table" : "persons",
+				"parent_column": "id"
+			},{
+				"column":"warning_id",
+				"parent_table" : "warnings",
+				"parent_column": "id"
+			}],
+		"table_type": "join",
+		"sequences": [],
+		"order_by": ["person_id", "warning_id"]
 	}
 }
