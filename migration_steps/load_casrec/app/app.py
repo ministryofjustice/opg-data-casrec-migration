@@ -276,6 +276,80 @@ def sirius_session(account):
     return session
 
 
+def get_s3_session(host, account, ci):
+    s3_session = boto3.session.Session()
+    if environment == "local":
+
+        if host == "localhost":
+            stack_host = "localhost"
+        else:
+            stack_host = "localstack"
+        s3 = s3_session.client(
+            "s3",
+            endpoint_url=f"http://{stack_host}:4572",
+            aws_access_key_id="fake",
+            aws_secret_access_key="fake",
+        )
+    elif ci == "true":
+        s3_session = sirius_session(account)
+        s3 = s3_session.client("s3")
+    else:
+        s3 = s3_session.client("s3")
+
+    return s3
+
+
+def create_table(table, schema, engine, table_cols):
+    if not check_table_exists(table, schema, engine):
+        log.info(f"Creating {table} table")
+        engine.execute(create_table_statement(table, schema, table_cols))
+    else:
+        log.info(f"{table} table exists")
+
+
+def initialise_progress_table(
+    progress_table, list_of_files, schema, engine, progress_table_cols, processor_id
+):
+    progress_df = pd.DataFrame(list_of_files)
+    progress_df["state"] = "UNPROCESSED"
+    progress_df["process"] = "None"
+    progress_df.rename(index={0: "file"})
+
+    if (
+        get_row_count(progress_table, schema, engine) > 0
+        and get_row_count(progress_table, schema, engine, "UNPROCESSED") == 0
+        and get_row_count(progress_table, schema, engine, "READY_TO_PROCESS") == 0
+    ):
+        truncate_table(progress_table, schema, engine)
+
+    if get_row_count(progress_table, schema, engine) < 1:
+        engine.execute(
+            create_insert_statement(
+                progress_table, schema, progress_table_cols, progress_df
+            )
+        )
+
+    while get_row_count(progress_table, schema, engine, status="UNPROCESSED") > 0:
+        files = get_remaining_files(progress_table, schema, engine, "UNPROCESSED")
+        if len(files) > 0:
+            file_to_set = files[0]
+
+            update_progress(
+                progress_table,
+                schema,
+                engine,
+                file_to_set,
+                "READY_TO_PROCESS",
+                processor_id,
+            )
+        # To allow multiple processes to get involved
+        if environment == "local":
+            secs = 0
+        else:
+            secs = rnd.uniform(3.00, 5.99)
+        time.sleep(secs)
+
+
 @click.command()
 @click.option("-e", "--entities", default="all", help="list of entities to load")
 @click.option("-c", "--chunk", default=config.DEFAULT_CHUNK_SIZE, help="chunk size")
@@ -319,24 +393,7 @@ def main(entities, chunk, delay, verbose, skip_load):
 
         engine = create_engine(db_conn_string)
 
-        s3_session = boto3.session.Session()
-        if environment == "local":
-
-            if host == "localhost":
-                stack_host = "localhost"
-            else:
-                stack_host = "localstack"
-            s3 = s3_session.client(
-                "s3",
-                endpoint_url=f"http://{stack_host}:4572",
-                aws_access_key_id="fake",
-                aws_secret_access_key="fake",
-            )
-        elif ci == "true":
-            s3_session = sirius_session(account)
-            s3 = s3_session.client("s3")
-        else:
-            s3 = s3_session.client("s3")
+        s3 = get_s3_session(host, account, ci)
 
         schema = config.schemas["pre_transform"]
 
@@ -345,59 +402,20 @@ def main(entities, chunk, delay, verbose, skip_load):
         log.info(f"Creating schema {schema}")
         create_schema(schema, engine)
 
-        if not check_table_exists(progress_table, schema, engine):
-            log.info(f"Creating progress table")
-            engine.execute(
-                create_table_statement(progress_table, schema, progress_table_cols)
-            )
-        else:
-            log.info("Progress table exists")
+        create_table(progress_table, schema, engine, progress_table_cols)
 
-        if not check_table_exists(table_lookup, schema, engine):
-            log.info(f"Creating table_lookup table")
-            engine.execute(
-                create_table_statement(table_lookup, schema, table_lookup_cols)
-            )
-        else:
-            log.info("table_lookup table exists")
+        create_table(table_lookup, schema, engine, table_lookup_cols)
 
         list_of_files = get_list_of_files(bucket_name, s3, path, table_list)
 
-        progress_df = pd.DataFrame(list_of_files)
-        progress_df["state"] = "UNPROCESSED"
-        progress_df["process"] = "None"
-        progress_df.rename(index={0: "file"})
-
-        if (
-            get_row_count(progress_table, schema, engine) > 0
-            and get_row_count(progress_table, schema, engine, "UNPROCESSED") == 0
-            and get_row_count(progress_table, schema, engine, "READY_TO_PROCESS") == 0
-        ):
-            truncate_table(progress_table, schema, engine)
-
-        if get_row_count(progress_table, schema, engine) < 1:
-            engine.execute(
-                create_insert_statement(
-                    progress_table, schema, progress_table_cols, progress_df
-                )
-            )
-
-        while get_row_count(progress_table, schema, engine, status="UNPROCESSED") > 0:
-            files = get_remaining_files(progress_table, schema, engine, "UNPROCESSED")
-            if len(files) > 0:
-                file_to_set = files[0]
-
-                update_progress(
-                    progress_table,
-                    schema,
-                    engine,
-                    file_to_set,
-                    "READY_TO_PROCESS",
-                    processor_id,
-                )
-            # To allow multiple processes to get involved
-            secs = rnd.uniform(3.00, 5.99)
-            time.sleep(secs)
+        initialise_progress_table(
+            progress_table,
+            list_of_files,
+            schema,
+            engine,
+            progress_table_cols,
+            processor_id,
+        )
 
         while (
             get_row_count(

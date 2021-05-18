@@ -46,37 +46,13 @@ def main(verbose, preserve_schemas):
     log.info(log_title(message="Prepare Target"))
 
     log.info("Perform Sirius DB Housekeeping")
-    conn_target = psycopg2.connect(config.get_db_connection_string("target"))
     conn_source = psycopg2.connect(config.get_db_connection_string("migration"))
     delete_all_schemas(log=log, conn=conn_source, preserve_schemas=preserve_schemas)
+    conn_source.close()
     log.info("Deleted Schemas")
     log.debug(
         "(operations which need to be performed on Sirius DB ahead of the final Casrec Migration)"
     )
-    execute_sql_file(sql_path, "prepare_sirius.sql", conn_target)
-
-    log.info("Roll back previous migration BANANA")
-
-    if environment in ("local", "development"):
-        max_orig_person_id = result_from_sql_file(
-            sql_path, "get_max_orig_person_id.sql", conn_target
-        )
-
-        log.info(f"max_orig_person_id: {max_orig_person_id}")
-
-        try:
-            execute_generated_sql(
-                sql_path,
-                "rollback_fixtures.template.sql",
-                "{max_orig_person_id}",
-                max_orig_person_id,
-                conn_target,
-            )
-        except Exception as e:
-            log.error(e)
-            os._exit(1)
-
-    conn_target.close()
 
 
 if __name__ == "__main__":
