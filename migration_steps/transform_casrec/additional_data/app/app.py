@@ -45,7 +45,8 @@ db_config = {
     "chunk_size": config.DEFAULT_CHUNK_SIZE,
 }
 
-allowed_entities = [k for k, v in config.ENABLED_ENTITIES.items() if v is True]
+
+allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
 
 
 @click.command()
@@ -58,7 +59,8 @@ allowed_entities = [k for k, v in config.ENABLED_ENTITIES.items() if v is True]
 @mem_tracker
 @timer
 def main(clear):
-    allowed_entities = [k for k, v in config.ENABLED_ENTITIES.items() if v is True]
+
+    allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
 
     log.info(log_title(message="Migration Step: additional_data"))
     log.info(

@@ -64,23 +64,28 @@ class BaseConfig:
 
     DEFAULT_CHUNK_SIZE = 20000
 
+    ALL_ENVIRONMENTS = ["local", "development", "preproduction", "qa"]
     ENABLED_ENTITIES = {
-        "clients": True,
-        "cases": True,
-        "bonds": False,
-        "supervision_level": False,
-        "deputies": True,
-        "events": False,
-        "finance": False,
-        "remarks": False,
-        "reporting": False,
-        "tasks": False,
-        "teams": False,
-        "visits": False,
-        "warnings": True,
-        "additional_data": False,
-        "death": False,
+        "clients": ["local", "development", "preproduction"],
+        "cases": ["local", "development", "preproduction"],
+        "bonds": [],
+        "supervision_level": [],
+        "deputies": ["local", "development", "preproduction"],
+        "events": [],
+        "finance": [],
+        "remarks": [],
+        "reporting": [],
+        "tasks": [],
+        "teams": [],
+        "visits": [],
+        "warnings": ["local", "development", "preproduction"],
+        "additional_data": [],
+        "death": ["local", "development", "preproduction"],
     }
+
+    def allowed_entities(self, env):
+
+        return [k for k, v in self.ENABLED_ENTITIES.items() if env in v]
 
 
 class LocalConfig(BaseConfig):

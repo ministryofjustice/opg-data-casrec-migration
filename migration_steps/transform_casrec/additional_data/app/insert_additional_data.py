@@ -144,7 +144,8 @@ def create_insert_statement(db_config, additional_data_table_name, df):
 def insert_additional_data_records(db_config, additional_data_file_name):
 
     config = get_config(env=os.environ.get("ENVIRONMENT"))
-    allowed_entities = [k for k, v in config.ENABLED_ENTITIES.items() if v is True]
+
+    allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
     additional_data_dict = get_additional_data_dict(file_name=additional_data_file_name)
 
     if not additional_data_dict["entity"] in allowed_entities:
