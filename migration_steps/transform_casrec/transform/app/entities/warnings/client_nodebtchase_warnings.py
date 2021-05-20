@@ -11,6 +11,7 @@ log = logging.getLogger("root")
 definition = {
     "source_table_name": "pat",
     "source_table_additional_columns": ["Case"],
+    "source_not_null_cols": ["Debt chase", "Debt chase 1", "Debt chase 2"],
     "destination_not_null_cols": ["warningtype", "warningtext"],
     "destination_table_name": "warnings",
 }

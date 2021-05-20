@@ -32,49 +32,49 @@ def runner(target_db, db_config):
 
     log.info(log_title(message=entity_name))
 
-    # log.debug("insert_client_violent_warnings")
-    # insert_client_violent_warnings(
-    #     target_db=target_db,
-    #     db_config=db_config,
-    # )
-    # log.debug("insert_client_special_warnings")
-    # insert_client_special_warnings(
-    #     target_db=target_db,
-    #     db_config=db_config,
-    # )
+    log.debug("insert_client_violent_warnings")
+    insert_client_violent_warnings(
+        target_db=target_db,
+        db_config=db_config,
+    )
+    log.debug("insert_client_special_warnings")
+    insert_client_special_warnings(
+        target_db=target_db,
+        db_config=db_config,
+    )
     log.debug("insert_client_saarcheck_warnings")
     insert_client_saarcheck_warnings(
         target_db=target_db,
         db_config=db_config,
     )
-    # log.debug("insert_client_nodebtchase_warnings")
-    # insert_client_nodebtchase_warnings(
-    #     target_db=target_db,
-    #     db_config=db_config,
-    # )
-    #
-    # log.debug("insert_client_person_warning")
-    # insert_client_person_warning(
-    #     target_db=target_db,
-    #     db_config=db_config,
-    # )
-    #
-    # log.debug("insert_deputy_violent_warnings")
-    # insert_deputy_violent_warnings(
-    #     target_db=target_db,
-    #     db_config=db_config,
-    # )
-    # log.debug("insert_deputy_special_warnings")
-    # insert_deputy_special_warnings(
-    #     target_db=target_db,
-    #     db_config=db_config,
-    # )
-    #
-    # log.debug("insert_deputy_person_warning")
-    # insert_deputy_person_warning(
-    #     target_db=target_db,
-    #     db_config=db_config,
-    # )
+    log.debug("insert_client_nodebtchase_warnings")
+    insert_client_nodebtchase_warnings(
+        target_db=target_db,
+        db_config=db_config,
+    )
+
+    log.debug("insert_client_person_warning")
+    insert_client_person_warning(
+        target_db=target_db,
+        db_config=db_config,
+    )
+
+    log.debug("insert_deputy_violent_warnings")
+    insert_deputy_violent_warnings(
+        target_db=target_db,
+        db_config=db_config,
+    )
+    log.debug("insert_deputy_special_warnings")
+    insert_deputy_special_warnings(
+        target_db=target_db,
+        db_config=db_config,
+    )
+
+    log.debug("insert_deputy_person_warning")
+    insert_deputy_person_warning(
+        target_db=target_db,
+        db_config=db_config,
+    )
 
 
 if __name__ == "__main__":
