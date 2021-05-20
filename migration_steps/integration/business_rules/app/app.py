@@ -8,6 +8,7 @@ from utilities.clear_tables import clear_tables
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
 
+from quick_validation import check_row_counts
 
 import logging
 import time
@@ -77,6 +78,15 @@ def main(clear):
         clear_tables(db_engine=target_db_engine, db_config=db_config)
 
     insert_unique_uids(db_config=db_config, target_db_engine=target_db_engine)
+
+    if environment == "local":
+        check_row_counts.count_rows(
+            connection_string=db_config["db_connection_string"],
+            destination_schema=db_config["target_schema"],
+            enabled_entities=[
+                k for k, v in config.ENABLED_ENTITIES.items() if v is True
+            ],
+        )
 
 
 if __name__ == "__main__":

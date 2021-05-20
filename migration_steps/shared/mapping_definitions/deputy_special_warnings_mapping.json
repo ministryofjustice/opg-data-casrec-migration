@@ -170,7 +170,7 @@
             "alias": "",
             "requires_transformation": "",
             "lookup_table": "",
-            "default_value": "",
+            "default_value": 1,
             "calculated": "",
             "additional_columns": ""
         }
