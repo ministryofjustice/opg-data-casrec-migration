@@ -39,6 +39,11 @@ def perform_transformations(
 
     final_df = source_data_df
 
+    if len(table_definition.get("source_not_null_cols", [])) > 0:
+        final_df = remove_empty_rows(
+            df=final_df, not_null_cols=table_definition.get("source_not_null_cols", [])
+        )
+
     simple_mapping = mappings["simple_mapping"]
     transformations = mappings["transformations"]
     required_columns = mappings["required_columns"]
@@ -83,20 +88,11 @@ def perform_transformations(
         if len(final_df) == 0:
             raise EmptyDataFrame
 
-    try:
-
-        not_null_cols = table_definition.get(
-            "source_not_null_cols", []
-        ) + table_definition.get("destination_not_null_cols", [])
-
-        log.debug(
-            f"Removing rows where these fields are all null: {', '.join(not_null_cols)}"
+    if len(table_definition.get("destination_not_null_cols", [])) > 0:
+        final_df = remove_empty_rows(
+            df=final_df,
+            not_null_cols=table_definition.get("destination_not_null_cols", []),
         )
-
-        final_df = remove_empty_rows(df=final_df, not_null_cols=not_null_cols)
-
-    except Exception as e:
-        log.debug(f"Problems removing null rows: {e}")
 
     if "id" not in source_data_df.columns.values.tolist():
         log.debug("Doing unique id")

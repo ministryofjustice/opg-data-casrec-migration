@@ -79,7 +79,7 @@ class BaseConfig:
         "visits": False,
         "warnings": True,
         "additional_data": False,
-        "death": True,
+        "death": False,
     }
 
 
