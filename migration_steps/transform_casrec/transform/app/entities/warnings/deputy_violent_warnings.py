@@ -12,7 +12,7 @@ definition = {
     "source_table_additional_columns": ["Deputy No"],
     "source_not_null_cols": [],
     "destination_not_null_cols": ["warningtype", "warningtext"],
-    "destination_table_name": "deputy_violent_warnings",
+    "destination_table_name": "warnings",
 }
 
 mapping_file_name = "deputy_violent_warnings_mapping"

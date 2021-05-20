@@ -60,7 +60,9 @@ def main():
     log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
     enabled_table_dict = table_helpers.get_enabled_table_details()
-    table_list = table_helpers.get_table_list(enabled_table_dict)
+
+    data_table_list = table_helpers.get_table_list(enabled_table_dict, type="data")
+
     sequence_list = table_helpers.get_sequences_list(enabled_table_dict)
     uid_sequence_list = table_helpers.get_uid_sequences_list(enabled_table_dict)
 
@@ -72,7 +74,7 @@ def main():
     )
     tests.append({"name": "UID Sequences Reset", "result": uid_sequences})
 
-    continuous_ids = check_continuous(table_list=table_list, db_config=db_config)
+    continuous_ids = check_continuous(table_list=data_table_list, db_config=db_config)
     tests.append({"name": "Continuous IDs", "result": continuous_ids})
 
     duplicate_uids = get_duplicate_uids(
