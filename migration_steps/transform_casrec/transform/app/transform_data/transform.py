@@ -4,6 +4,7 @@ import os
 import pandas as pd
 
 import helpers
+from custom_errors import EmptyDataFrame
 from decorators import timer
 
 from transform_data.apply_datatypes import apply_datatypes
@@ -15,7 +16,7 @@ from transform_data import lookup_tables as process_lookup_tables
 from transform_data import simple_mappings as process_simple_mappings
 from transform_data import simple_transformations as process_simple_transformations
 from transform_data import unique_id as process_unique_id
-from utilities.custom_errors import EmptyDataFrame
+
 from utilities.remove_empty_rows import remove_empty_rows
 
 log = logging.getLogger("root")

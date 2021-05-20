@@ -1,7 +1,7 @@
 import numpy as np
 import logging
 
-from utilities.custom_errors import EmptyDataFrame
+from custom_errors import EmptyDataFrame
 
 log = logging.getLogger("root")
 

@@ -4,7 +4,7 @@ import numpy as np
 import os
 import logging
 
-from utilities.custom_errors import EmptyDataFrame
+from custom_errors import EmptyDataFrame
 
 log = logging.getLogger("root")
 
@@ -33,8 +33,6 @@ def insert_client_saarcheck_warnings(db_config, target_db):
                 table_definition=definition,
                 chunk_details={"chunk_size": chunk_size, "offset": offset},
             )
-
-            print(warnings_df.sample(10).to_markdown())
 
             target_db.insert_data(
                 table_name=definition["destination_table_name"],
