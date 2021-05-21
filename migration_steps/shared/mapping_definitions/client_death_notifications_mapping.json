@@ -125,7 +125,7 @@
             "casrec_column_name": "Term by",
             "alias": "Term by",
             "requires_transformation": "conditional_lookup",
-            "lookup_table": "termby_lookup\ntermby_type_lookup",
+            "lookup_table": "termby_lookup",
             "default_value": "",
             "calculated": "",
             "additional_columns": "Term Type"
@@ -147,7 +147,7 @@
             "casrec_column_name": "Notify",
             "alias": "Notify",
             "requires_transformation": "conditional_lookup",
-            "lookup_table": "notify_lookup\nnotify_type_lookup",
+            "lookup_table": "notify_lookup",
             "default_value": "",
             "calculated": "",
             "additional_columns": "Term Type"

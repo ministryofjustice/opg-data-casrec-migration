@@ -50,14 +50,9 @@ def generate_select_string_from_mapping(
 
     additional_columns_list = additional_cols(additional_columns)
 
-    log.log(
-        config.VERBOSE,
-        f"columns from mapping: " f"{[x['casrec_column_name'] for x in cols]}",
-    )
-    log.log(
-        config.VERBOSE,
-        f"additional columns: "
-        f"{[x['casrec_column_name'] for x in additional_columns_list]}",
+    log.debug(
+        f"Generating source query with columns: {[x['casrec_column_name'] for x in cols]} "
+        f"and additional_columns: {[x['casrec_column_name'] for x in additional_columns_list]}"
     )
 
     col_names_with_alias = cols + additional_columns_list
