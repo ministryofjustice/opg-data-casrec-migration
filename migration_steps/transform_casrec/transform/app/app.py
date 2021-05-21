@@ -16,6 +16,7 @@ from sqlalchemy import create_engine
 import custom_logger
 from helpers import log_title
 import helpers
+from quick_validation import check_row_counts
 from decorators import timer, mem_tracker
 
 from dotenv import load_dotenv
@@ -80,11 +81,6 @@ target_db = InsertData(db_engine=target_db_engine, schema=db_config["target_sche
     help="Clear existing database tables: True or False",
 )
 @click.option(
-    "--include_tests",
-    help="Run data tests after performing the transformations",
-    default=False,
-)
-@click.option(
     "--chunk_size",
     prompt=False,
     type=int,
@@ -93,8 +89,7 @@ target_db = InsertData(db_engine=target_db_engine, schema=db_config["target_sche
 )
 @mem_tracker
 @timer
-def main(clear, include_tests, chunk_size):
-    allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
+def main(clear, chunk_size):
 
     log.info(log_title(message="Migration Step: Transform Casrec Data"))
     log.info(
@@ -131,10 +126,13 @@ def main(clear, include_tests, chunk_size):
     visits.runner(target_db=target_db, db_config=db_config)
     warnings.runner(target_db=target_db, db_config=db_config)
 
-    if include_tests:
-        run_data_tests(verbosity_level="DEBUG")
-
     if environment == "local":
+        check_row_counts.count_rows(
+            connection_string=db_config["db_connection_string"],
+            destination_schema=db_config["target_schema"],
+            enabled_entities=allowed_entities,
+        )
+
         update_progress(module_name="transform", completed_items=files_used)
         log.debug(f"Number of mapping docs used: {len(files_used)}")
 
