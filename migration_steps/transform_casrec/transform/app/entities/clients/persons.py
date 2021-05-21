@@ -1,8 +1,8 @@
+from custom_errors import EmptyDataFrame
 from utilities.basic_data_table import get_basic_data_table
 import logging
 import os
 
-from utilities.custom_errors import EmptyDataFrame
 
 log = logging.getLogger("root")
 
