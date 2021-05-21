@@ -57,6 +57,7 @@ def perform_transformations(
             simple_mapping, table_definition, final_df
         )
         if len(final_df) == 0:
+            log.debug(f"No data left after simple_mapping")
             raise EmptyDataFrame
 
     if len(transformations) > 0:
@@ -65,6 +66,7 @@ def perform_transformations(
             transformations, final_df
         )
         if len(final_df) == 0:
+            log.debug(f"No data left after transformations")
             raise EmptyDataFrame
 
     if len(required_columns) > 0:
@@ -73,6 +75,7 @@ def perform_transformations(
             required_columns, final_df
         )
         if len(final_df) == 0:
+            log.debug(f"No data left after default columns")
             raise EmptyDataFrame
 
     if len(calculated_fields) > 0:
@@ -80,6 +83,7 @@ def perform_transformations(
         final_df = process_calculations.do_calculations(calculated_fields, final_df)
 
         if len(final_df) == 0:
+            log.debug(f"No data left after calculated fields")
             raise EmptyDataFrame
 
     if len(lookup_tables) > 0:
@@ -87,6 +91,7 @@ def perform_transformations(
         final_df = process_lookup_tables.map_lookup_tables(lookup_tables, final_df)
 
         if len(final_df) == 0:
+            log.debug(f"No data left after lookup tables")
             raise EmptyDataFrame
 
     if len(table_definition.get("destination_not_null_cols", [])) > 0:

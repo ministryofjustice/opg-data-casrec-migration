@@ -5,6 +5,7 @@ import pandas as pd
 definition = {
     "source_table_name": "order",
     "source_table_additional_columns": ["CoP Case"],
+    "destination_not_null_cols": ["bondreferencenumber"],
     "destination_table_name": "bonds",
 }
 
@@ -48,9 +49,9 @@ def insert_bonds(target_db, db_config):
             bonds_cases_joined_df = reapply_datatypes_to_fk_cols(
                 columns=["order_id"], df=bonds_cases_joined_df
             )
-            bonds_cases_joined_df = bonds_cases_joined_df.loc[
-                bonds_cases_joined_df["bondreferencenumber"] != ""
-            ]
+            # bonds_cases_joined_df = bonds_cases_joined_df.loc[
+            #     bonds_cases_joined_df["bondreferencenumber"] != ""
+            # ]
 
             target_db.insert_data(
                 table_name=definition["destination_table_name"],

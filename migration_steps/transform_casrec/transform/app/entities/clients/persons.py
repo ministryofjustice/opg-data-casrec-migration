@@ -1,4 +1,10 @@
 from utilities.basic_data_table import get_basic_data_table
+import logging
+import os
+
+from utilities.custom_errors import EmptyDataFrame
+
+log = logging.getLogger("root")
 
 definition = {
     "source_table_name": "pat",
@@ -34,5 +40,9 @@ def insert_persons_clients(db_config, target_db):
             offset += chunk_size
             chunk_no += 1
 
-        except Exception:
+        except EmptyDataFrame as e:
+            log.debug(e)
             break
+        except Exception as e:
+            log.error(f"Unexpected error: {e}")
+            os._exit(1)
