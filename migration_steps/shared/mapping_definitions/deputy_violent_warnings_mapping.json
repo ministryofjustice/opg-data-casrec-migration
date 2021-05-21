@@ -38,7 +38,7 @@
             "alias": "",
             "requires_transformation": "",
             "lookup_table": "",
-            "default_value": 2,
+            "default_value": 2.0,
             "calculated": "",
             "additional_columns": ""
         }
@@ -170,7 +170,7 @@
             "alias": "",
             "requires_transformation": "",
             "lookup_table": "",
-            "default_value": "DEFAULT",
+            "default_value": 1.0,
             "calculated": "",
             "additional_columns": ""
         }

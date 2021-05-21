@@ -1,0 +1,93 @@
+[
+  {
+    "clients": [
+      {
+        "table_name": "persons",
+        "query": "select count(*) from {schema}.persons where type='actor_client';",
+        "row_count": 1000
+      },
+      {
+        "table_name": "addresses",
+        "query": "select count(*) from {schema}.addresses where person_id in (select id from {schema}.persons where type='actor_client');",
+        "row_count": 1000
+      },
+      {
+        "table_name": "phonenumbers",
+        "query": "select count(*) from {schema}.phonenumbers where person_id in (select id from {schema}.persons where type='actor_client');",
+        "row_count": 1000
+      }
+    ]
+  },
+  {
+    "deputies": [
+      {
+        "table_name": "persons",
+        "query": "select count(*) from {schema}.persons where type='actor_deputy';",
+        "row_count": 1008
+      },
+      {
+        "table_name": "addresses",
+        "query": "select count(*) from {schema}.addresses where person_id in (select id from {schema}.persons where type='actor_deputy');",
+        "row_count": 939
+      },
+      {
+        "table_name": "phonenumbers",
+        "query": "select count(*) from {schema}.phonenumbers where person_id in (select id from {schema}.persons where type='actor_deputy');",
+        "row_count": 1008
+      },
+      {
+        "table_name": "order_deputy",
+        "query": "select count(*) from {schema}.order_deputy;",
+        "row_count": 1730
+      }
+    ]
+  },
+  {
+    "cases": [
+      {
+        "table_name": "cases",
+        "query": "select count(*) from {schema}.cases;",
+        "row_count": 1832
+      },
+      {
+        "table_name": "person_caseitem",
+        "query": "select count(*) from {schema}.person_caseitem;",
+        "row_count": 1832
+      }
+    ]
+  },
+  {
+    "death": [
+      {
+        "table_name": "death_notifications (client)",
+        "query": "select count(*) from {schema}.death_notifications where person_id in (select id from {schema}.persons where type='actor_client');",
+        "row_count": 1832
+      },
+      {
+        "table_name": "death_notifications (deputy)",
+        "query": "select count(*) from {schema}.death_notifications where person_id in (select id from {schema}.persons where type='actor_deputy');",
+        "row_count": 43
+      }
+    ]
+  },
+    {
+    "warnings": [
+      {
+        "table_name": "warnings",
+        "query": "select count(*) from {schema}.warnings;",
+        "row_count": 40
+      },
+      {
+        "table_name": "person_warning (client)",
+        "query": "select count(*) from {schema}.person_warning where person_id in (select id from {schema}.persons where type='actor_client');",
+        "row_count": 39
+      },
+      {
+        "table_name": "person_warning (deputy)",
+        "query": "select count(*) from {schema}.person_warning where person_id in (select id from {schema}.persons where type='actor_deputy');",
+        "row_count": 1
+      }
+    ]
+  }
+]
+

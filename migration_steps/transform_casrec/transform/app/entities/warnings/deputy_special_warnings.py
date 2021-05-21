@@ -1,24 +1,24 @@
+import os
+
 from utilities.basic_data_table import get_basic_data_table
 import numpy as np
-
-import os
 import logging
 
 from custom_errors import EmptyDataFrame
 
 log = logging.getLogger("root")
-
 definition = {
-    "source_table_name": "pat",
-    "source_table_additional_columns": ["Case"],
+    "source_table_name": "deputy",
+    "source_table_additional_columns": ["Deputy No"],
+    "source_not_null_cols": [],
     "destination_not_null_cols": ["warningtype", "warningtext"],
     "destination_table_name": "warnings",
 }
 
-mapping_file_name = "client_violent_warnings_mapping"
+mapping_file_name = "deputy_special_warnings_mapping"
 
 
-def insert_client_violent_warnings(db_config, target_db):
+def insert_deputy_special_warnings(db_config, target_db):
 
     chunk_size = db_config["chunk_size"]
     offset = 0
@@ -42,9 +42,10 @@ def insert_client_violent_warnings(db_config, target_db):
 
             offset += chunk_size
             chunk_no += 1
+
         except EmptyDataFrame as e:
             log.debug(e)
             break
         except Exception as e:
-            log.error(f"Unexpected error: {e}")
+            log.error(f"unexpected error {e}")
             os._exit(1)

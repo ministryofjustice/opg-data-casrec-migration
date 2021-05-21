@@ -4,6 +4,7 @@ import os
 import pandas as pd
 
 import helpers
+from custom_errors import EmptyDataFrame
 from decorators import timer
 
 from transform_data.apply_datatypes import apply_datatypes
@@ -15,7 +16,7 @@ from transform_data import lookup_tables as process_lookup_tables
 from transform_data import simple_mappings as process_simple_mappings
 from transform_data import simple_transformations as process_simple_transformations
 from transform_data import unique_id as process_unique_id
-from utilities.custom_errors import EmptyDataFrame
+
 from utilities.remove_empty_rows import remove_empty_rows
 
 log = logging.getLogger("root")
@@ -38,6 +39,11 @@ def perform_transformations(
     mappings = mapping_defs.generate_mapping_def()
 
     final_df = source_data_df
+
+    if len(table_definition.get("source_not_null_cols", [])) > 0:
+        final_df = remove_empty_rows(
+            df=final_df, not_null_cols=table_definition.get("source_not_null_cols", [])
+        )
 
     simple_mapping = mappings["simple_mapping"]
     transformations = mappings["transformations"]
@@ -83,20 +89,11 @@ def perform_transformations(
         if len(final_df) == 0:
             raise EmptyDataFrame
 
-    try:
-
-        not_null_cols = table_definition.get(
-            "source_not_null_cols", []
-        ) + table_definition.get("destination_not_null_cols", [])
-
-        log.debug(
-            f"Removing rows where these fields are all null: {', '.join(not_null_cols)}"
+    if len(table_definition.get("destination_not_null_cols", [])) > 0:
+        final_df = remove_empty_rows(
+            df=final_df,
+            not_null_cols=table_definition.get("destination_not_null_cols", []),
         )
-
-        final_df = remove_empty_rows(df=final_df, not_null_cols=not_null_cols)
-
-    except Exception as e:
-        log.debug(f"Problems removing null rows: {e}")
 
     if "id" not in source_data_df.columns.values.tolist():
         log.debug("Doing unique id")

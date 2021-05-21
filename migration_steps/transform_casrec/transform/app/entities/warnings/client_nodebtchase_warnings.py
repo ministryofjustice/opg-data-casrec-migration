@@ -11,14 +11,15 @@ log = logging.getLogger("root")
 definition = {
     "source_table_name": "pat",
     "source_table_additional_columns": ["Case"],
+    "source_not_null_cols": ["Debt chase", "Debt chase 1", "Debt chase 2"],
     "destination_not_null_cols": ["warningtype", "warningtext"],
     "destination_table_name": "warnings",
 }
 
-mapping_file_name = "client_violent_warnings_mapping"
+mapping_file_name = "client_nodebtchase_warnings_mapping"
 
 
-def insert_client_violent_warnings(db_config, target_db):
+def insert_client_nodebtchase_warnings(db_config, target_db):
 
     chunk_size = db_config["chunk_size"]
     offset = 0

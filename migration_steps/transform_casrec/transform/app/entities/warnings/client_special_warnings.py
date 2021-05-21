@@ -15,10 +15,10 @@ definition = {
     "destination_table_name": "warnings",
 }
 
-mapping_file_name = "client_violent_warnings_mapping"
+mapping_file_name = "client_special_warnings_mapping"
 
 
-def insert_client_violent_warnings(db_config, target_db):
+def insert_client_special_warnings(db_config, target_db):
 
     chunk_size = db_config["chunk_size"]
     offset = 0

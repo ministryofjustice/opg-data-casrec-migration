@@ -38,7 +38,7 @@
             "alias": "",
             "requires_transformation": "",
             "lookup_table": "",
-            "default_value": 1,
+            "default_value": 2,
             "calculated": "",
             "additional_columns": ""
         }
@@ -80,7 +80,7 @@
             "casrec_table": "PAT",
             "casrec_column_name": "Debt chase",
             "alias": "Debt chase",
-            "requires_transformation": "conditional_lookup",
+            "requires_transformation": "",
             "lookup_table": "warning_violent_lookup",
             "default_value": "OTHER",
             "calculated": "",
@@ -102,7 +102,7 @@
             "casrec_table": "PAT",
             "casrec_column_name": "Debt chase",
             "alias": "Debt chase 1",
-            "requires_transformation": "conditional_lookup",
+            "requires_transformation": "",
             "lookup_table": "warning_violent_lookup",
             "default_value": "No Debt to be chased",
             "calculated": "",
@@ -124,7 +124,7 @@
             "casrec_table": "PAT",
             "casrec_column_name": "Debt chase",
             "alias": "Debt chase 2",
-            "requires_transformation": "conditional_lookup",
+            "requires_transformation": "",
             "lookup_table": "warning_violent_lookup",
             "default_value": "",
             "calculated": "current_date",
@@ -170,7 +170,7 @@
             "alias": "",
             "requires_transformation": "",
             "lookup_table": "",
-            "default_value": "",
+            "default_value": true,
             "calculated": "",
             "additional_columns": ""
         }
