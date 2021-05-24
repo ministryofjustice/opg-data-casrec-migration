@@ -24,13 +24,13 @@ def runner(target_db, db_config):
 
     log.info(log_title(message=entity_name))
 
-    log.debug("insert_client_death_notifications")
+    log.info("Inserting client_death_notifications")
     insert_client_death_notifications(
         target_db=target_db,
         db_config=db_config,
     )
 
-    log.debug("insert_deputy_death_notifications")
+    log.info("Inserting deputy_death_notifications")
     insert_deputy_death_notifications(
         target_db=target_db,
         db_config=db_config,

@@ -81,6 +81,11 @@ target_db = InsertData(db_engine=target_db_engine, schema=db_config["target_sche
     help="Clear existing database tables: True or False",
 )
 @click.option(
+    "--include_tests",
+    help="Run data tests after performing the transformations",
+    default=False,
+)
+@click.option(
     "--chunk_size",
     prompt=False,
     type=int,
@@ -89,7 +94,8 @@ target_db = InsertData(db_engine=target_db_engine, schema=db_config["target_sche
 )
 @mem_tracker
 @timer
-def main(clear, chunk_size):
+def main(clear, include_tests, chunk_size):
+    allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
 
     log.info(log_title(message="Migration Step: Transform Casrec Data"))
     log.info(

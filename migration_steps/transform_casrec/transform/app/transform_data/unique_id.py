@@ -16,13 +16,11 @@ def add_unique_id(
     table_definition: dict,
     source_data_df: pd.DataFrame,
 ) -> pd.DataFrame:
-    log.log(config.VERBOSE, f"starting to add unique id")
+
     db_conn = db_conn_string
     db_schema = db_schema
     destination_table_name = table_definition["destination_table_name"]
     unique_column_name = "id"
-
-    log.log(config.VERBOSE, destination_table_name)
 
     query = (
         f"select max({unique_column_name}) from {db_schema}.{destination_table_name};"

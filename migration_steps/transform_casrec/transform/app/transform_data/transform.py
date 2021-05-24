@@ -26,7 +26,6 @@ environment = os.environ.get("ENVIRONMENT")
 config = helpers.get_config(env=environment)
 
 
-@timer
 def perform_transformations(
     mapping_definitions: dict,
     table_definition: dict,
@@ -62,7 +61,7 @@ def perform_transformations(
             raise EmptyDataFrame
 
     if len(simple_mapping) > 0:
-        log.debug("Doing simple mappings")
+        log.debug("Applying simple mappings")
         final_df = process_simple_mappings.do_simple_mapping(
             simple_mapping, table_definition, final_df
         )
@@ -71,7 +70,7 @@ def perform_transformations(
             raise EmptyDataFrame
 
     if len(transformations) > 0:
-        log.debug("Doing transformations")
+        log.debug("Applying transformations")
         final_df = process_simple_transformations.do_simple_transformations(
             transformations, final_df
         )
@@ -80,7 +79,7 @@ def perform_transformations(
             raise EmptyDataFrame
 
     if len(required_columns) > 0:
-        log.debug("Doing default columns")
+        log.debug("Applying default columns")
         final_df = process_default_columns.add_required_columns(
             required_columns, final_df
         )
@@ -89,7 +88,7 @@ def perform_transformations(
             raise EmptyDataFrame
 
     if len(calculated_fields) > 0:
-        log.debug("Doing calculated fields")
+        log.debug("Applying calculated fields")
         final_df = process_calculations.do_calculations(calculated_fields, final_df)
 
         if len(final_df) == 0:
@@ -97,7 +96,7 @@ def perform_transformations(
             raise EmptyDataFrame
 
     if len(lookup_tables) > 0:
-        log.debug("Doing lookup tables")
+        log.debug("Applying lookup tables")
         final_df = process_lookup_tables.map_lookup_tables(lookup_tables, final_df)
 
         if len(final_df) == 0:
@@ -111,7 +110,7 @@ def perform_transformations(
         )
 
     if "id" not in source_data_df.columns.values.tolist():
-        log.debug("Doing unique id")
+        log.debug("Applying unique id")
         final_df = process_unique_id.add_unique_id(
             db_conn_string, db_schema, table_definition, final_df
         )
@@ -119,7 +118,7 @@ def perform_transformations(
             raise EmptyDataFrame
 
     if sirius_details:
-        log.debug("Doing datatypes")
+        log.debug("Applying datatypes")
         final_df = apply_datatypes(mapping_details=sirius_details, df=final_df)
         if len(final_df) == 0:
             raise EmptyDataFrame

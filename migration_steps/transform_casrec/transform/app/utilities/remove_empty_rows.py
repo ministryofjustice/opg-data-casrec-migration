@@ -3,7 +3,13 @@ import logging
 
 from custom_errors import EmptyDataFrame
 
+import helpers
+import os
+
 log = logging.getLogger("root")
+environment = os.environ.get("ENVIRONMENT")
+
+config = helpers.get_config(env=environment)
 
 
 def remove_empty_rows(df, not_null_cols, how="all"):
@@ -13,7 +19,7 @@ def remove_empty_rows(df, not_null_cols, how="all"):
         return df
 
     log.debug(
-        f"Removing rows where these fields are all after transformation null: {', '.join(not_null_cols)}"
+        f"Removing rows where these fields are all null after transformation: {', '.join(not_null_cols)}"
     )
 
     final_df = df
@@ -26,7 +32,7 @@ def remove_empty_rows(df, not_null_cols, how="all"):
     except Exception as e:
         log.debug(f"Problems removing null rows after transformation: {e}")
 
-    log.debug(f"Rows remaining: {len(final_df)}")
+    log.log(config.VERBOSE, f"Dataframe size after removing empty rows: {len(df)}")
 
     if len(final_df) == 0:
         raise EmptyDataFrame

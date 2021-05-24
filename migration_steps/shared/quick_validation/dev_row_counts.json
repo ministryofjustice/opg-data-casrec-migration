@@ -61,7 +61,7 @@
       {
         "table_name": "death_notifications (client)",
         "query": "select count(*) from {schema}.death_notifications where person_id in (select id from {schema}.persons where type='actor_client');",
-        "row_count": 1832
+        "row_count": 27
       },
       {
         "table_name": "death_notifications (deputy)",
