@@ -1,5 +1,16 @@
 from utilities.generate_source_query import format_additional_col_alias
 
+import logging
+import os
+
+
+import helpers
+
+log = logging.getLogger("root")
+environment = os.environ.get("ENVIRONMENT")
+
+config = helpers.get_config(env=environment)
+
 
 def source_conditions(df, conditions):
 
@@ -14,5 +25,7 @@ def source_conditions(df, conditions):
             pass
         else:
             df = df.loc[df[col_name] == value]
+
+    log.log(config.VERBOSE, f"Dataframe size after applying conditions: {len(df)}")
 
     return df

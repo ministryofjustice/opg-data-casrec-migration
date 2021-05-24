@@ -69,4 +69,8 @@ def do_simple_transformations(
                 t["original_columns"], t["aggregate_col"], transformed_df
             )
 
+    log.log(
+        config.VERBOSE, f"Dataframe size after transformations: {len(transformed_df)}"
+    )
+
     return transformed_df

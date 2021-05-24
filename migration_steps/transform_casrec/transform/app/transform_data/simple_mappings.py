@@ -31,4 +31,8 @@ def do_simple_mapping(
 
     result_df = source_data_df.rename(columns=columns)
 
+    log.log(
+        config.VERBOSE, f"Dataframe size after simple mappings: {len(source_data_df)}"
+    )
+
     return result_df
