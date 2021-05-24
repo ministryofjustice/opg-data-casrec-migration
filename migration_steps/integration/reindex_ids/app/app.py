@@ -60,7 +60,8 @@ custom_logger.setup_logging(
     help="Clear existing database tables: True or False",
 )
 def main(clear):
-    allowed_entities = [k for k, v in config.ENABLED_ENTITIES.items() if v is True]
+
+    allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
 
     log.info(
         log_title(message="Integration Step: Reindex migrated data based on Sirius ids")

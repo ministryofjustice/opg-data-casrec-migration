@@ -1,4 +1,6 @@
 import pandas as pd
+
+from custom_errors import EmptyDataFrame
 from helpers import get_mapping_dict
 from transform_data import transform
 from utilities.generate_source_query import generate_select_string_from_mapping
@@ -54,6 +56,10 @@ def get_basic_data_table(
     source_data_df = pd.read_sql_query(
         sql=source_data_query, con=db_config["db_connection_string"]
     )
+
+    if len(source_data_df) == 0:
+        log.debug(f"No data returned from database")
+        raise EmptyDataFrame
 
     result_df = transform.perform_transformations(
         mapping_definitions=mapping_dict,

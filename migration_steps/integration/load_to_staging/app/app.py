@@ -54,7 +54,8 @@ custom_logger.setup_logging(
 
 result = None
 
-allowed_entities = [k for k, v in config.ENABLED_ENTITIES.items() if v is True]
+
+allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
 tables_list = table_helpers.get_table_list(table_helpers.get_table_file())
 
 enabled_tables = table_helpers.get_enabled_table_details()
@@ -114,6 +115,7 @@ def update():
     help="Clear existing database tables: True or False",
 )
 def main(clear):
+    allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
 
     log.info(log_title(message="Integration Step: Load to Staging"))
     log.info(
@@ -121,11 +123,7 @@ def main(clear):
             message=f"Source: {db_config['source_schema']}, Target: {db_config['target_schema']}, Chunk Size: {db_config['chunk_size']}"
         )
     )
-    log.info(
-        log_title(
-            message=f"Enabled entities: {', '.join(k for k, v in config.ENABLED_ENTITIES.items() if v is True)}"
-        )
-    )
+    log.info(log_title(message=f"Enabled entities: {', '.join(allowed_entities)}"))
     log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
     work = [base_data, inserts]

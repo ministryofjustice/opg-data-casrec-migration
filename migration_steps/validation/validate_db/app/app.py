@@ -49,9 +49,15 @@ mapping_dict = None
 
 def get_mappings():
     mappings_to_run = []
-    allowed_entities = [k for k, v in config.ENABLED_ENTITIES.items() if v is True]
+
+    allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
     all_mappings = {
-        "clients": ["client_addresses", "client_persons", "client_phonenumbers", "client_death_notifications"],
+        "clients": [
+            "client_addresses",
+            "client_persons",
+            "client_phonenumbers",
+            "client_death_notifications",
+        ],
         "cases": ["cases", "supervision_level_log"],
         "bonds": ["bonds"],
         "deputies": ["deputy_persons", "deputy_death_notifications"],

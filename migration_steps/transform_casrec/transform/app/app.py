@@ -67,8 +67,7 @@ custom_logger.setup_logging(
 )
 
 
-allowed_entities = [k for k, v in config.ENABLED_ENTITIES.items() if v is True]
-
+allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
 
 target_db_engine = create_engine(db_config["db_connection_string"])
 target_db = InsertData(db_engine=target_db_engine, schema=db_config["target_schema"])
@@ -98,11 +97,7 @@ def main(clear, chunk_size):
             message=f"Source: {db_config['source_schema']}, Target: {db_config['target_schema']}, Chunk Size: {db_config['chunk_size']}"
         )
     )
-    log.info(
-        log_title(
-            message=f"Enabled entities: {', '.join(k for k, v in config.ENABLED_ENTITIES.items() if v is True)}"
-        )
-    )
+    log.info(log_title(message=f"Enabled entities: {', '.join(allowed_entities)}"))
     log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
     version_details = helpers.get_json_version()
     log.info(

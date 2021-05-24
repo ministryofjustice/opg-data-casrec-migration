@@ -35,7 +35,7 @@ def get_current_directory():
 def check_entity_enabled(entity_name, extra_entities=None):
     config = get_config(env=os.environ.get("ENVIRONMENT"))
 
-    allowed_entities = [k for k, v in config.ENABLED_ENTITIES.items() if v is True]
+    allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
 
     if extra_entities:
         required_entities = extra_entities + [entity_name]

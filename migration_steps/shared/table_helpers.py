@@ -27,7 +27,7 @@ def get_enabled_table_details(file_name="tables"):
 
     config = get_config(env=os.environ.get("ENVIRONMENT"))
 
-    allowed_entities = [k for k, v in config.ENABLED_ENTITIES.items() if v is True]
+    allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
 
     dirname = get_current_directory()
     file_path = os.path.join(dirname, f"{file_name}.json")
@@ -63,7 +63,7 @@ def get_enabled_table_details(file_name="tables"):
 def check_enabled_by_table_name(table_name, file_name="tables"):
     config = get_config(env=os.environ.get("ENVIRONMENT"))
 
-    allowed_entities = [k for k, v in config.ENABLED_ENTITIES.items() if v is True]
+    allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
 
     dirname = get_current_directory()
     file_path = os.path.join(dirname, f"{file_name}.json")
