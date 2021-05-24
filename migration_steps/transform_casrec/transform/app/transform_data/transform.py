@@ -6,6 +6,7 @@ import pandas as pd
 import helpers
 from custom_errors import EmptyDataFrame
 from decorators import timer
+from transform_data.apply_conditions import source_conditions
 
 from transform_data.apply_datatypes import apply_datatypes
 from utilities.convert_json_to_mappings import MappingDefinitions
@@ -45,11 +46,20 @@ def perform_transformations(
             df=final_df, not_null_cols=table_definition.get("source_not_null_cols", [])
         )
 
+    conditions = table_definition.get("source_conditions")
+
     simple_mapping = mappings["simple_mapping"]
     transformations = mappings["transformations"]
     required_columns = mappings["required_columns"]
     calculated_fields = mappings["calculated_fields"]
     lookup_tables = mappings["lookup_tables"]
+
+    if conditions:
+        log.debug("Applying conditions to source data")
+        final_df = source_conditions(df=final_df, conditions=conditions)
+        if len(final_df) == 0:
+            log.debug(f"No data left after applying source conditions")
+            raise EmptyDataFrame
 
     if len(simple_mapping) > 0:
         log.debug("Doing simple mappings")
