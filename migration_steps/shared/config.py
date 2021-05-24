@@ -78,7 +78,7 @@ class BaseConfig:
         "tasks": [],
         "teams": [],
         "visits": [],
-        "warnings": [],
+        "warnings": ["local", "development"],
         "additional_data": [],
         "death": ["local", "development"],
     }

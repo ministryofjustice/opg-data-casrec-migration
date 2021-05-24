@@ -10,8 +10,7 @@ log = logging.getLogger("root")
 definition = {
     "source_table_name": "deputy",
     "source_table_additional_columns": ["Deputy No"],
-    "source_not_null_cols": [],
-    "destination_not_null_cols": ["warningtype", "warningtext"],
+    "source_conditions": {"VWM": "not null"},
     "destination_table_name": "warnings",
 }
 

@@ -11,7 +11,6 @@ log = logging.getLogger("root")
 environment = os.environ.get("ENVIRONMENT")
 
 config = helpers.get_config(env=environment)
-import json
 
 
 def do_simple_transformations(

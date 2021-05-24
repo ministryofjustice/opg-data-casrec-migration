@@ -6,9 +6,7 @@ from transform_data import transform
 from utilities.generate_source_query import generate_select_string_from_mapping
 import logging
 
-from utilities.remove_empty_rows import remove_empty_rows
 from utilities.standard_transformations import squash_columns
-from transform_data import unique_id as process_unique_id
 
 
 log = logging.getLogger("root")

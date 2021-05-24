@@ -18,7 +18,6 @@ from transform_data import simple_mappings as process_simple_mappings
 from transform_data import simple_transformations as process_simple_transformations
 from transform_data import unique_id as process_unique_id
 
-from utilities.remove_empty_rows import remove_empty_rows
 
 log = logging.getLogger("root")
 environment = os.environ.get("ENVIRONMENT")
@@ -39,11 +38,6 @@ def perform_transformations(
     mappings = mapping_defs.generate_mapping_def()
 
     final_df = source_data_df
-
-    if len(table_definition.get("source_not_null_cols", [])) > 0:
-        final_df = remove_empty_rows(
-            df=final_df, not_null_cols=table_definition.get("source_not_null_cols", [])
-        )
 
     conditions = table_definition.get("source_conditions")
 
@@ -102,12 +96,6 @@ def perform_transformations(
         if len(final_df) == 0:
             log.debug(f"No data left after lookup tables")
             raise EmptyDataFrame
-
-    if len(table_definition.get("destination_not_null_cols", [])) > 0:
-        final_df = remove_empty_rows(
-            df=final_df,
-            not_null_cols=table_definition.get("destination_not_null_cols", []),
-        )
 
     if "id" not in source_data_df.columns.values.tolist():
         log.debug("Applying unique id")
