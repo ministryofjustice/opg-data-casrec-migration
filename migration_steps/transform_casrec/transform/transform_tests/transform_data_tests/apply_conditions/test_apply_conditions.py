@@ -3,7 +3,7 @@ import pandas as pd
 from pytest_cases import parametrize_with_cases
 
 from transform_data.apply_conditions import source_conditions
-from transform_data_tests.apply_conditions import (
+from transform_tests.transform_data_tests.apply_conditions import (
     cases_not_null_condition,
     cases_condition_with_value,
 )
