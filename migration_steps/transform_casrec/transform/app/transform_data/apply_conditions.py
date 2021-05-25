@@ -1,5 +1,3 @@
-from utilities.generate_source_query import format_additional_col_alias
-
 import logging
 import os
 import numpy as np
@@ -7,10 +5,15 @@ import numpy as np
 import helpers
 from custom_errors import EmptyDataFrame
 
+
 log = logging.getLogger("root")
 environment = os.environ.get("ENVIRONMENT")
 
 config = helpers.get_config(env=environment)
+
+
+def format_additional_col_alias(original_column_name: str) -> str:
+    return f"c_{original_column_name.lower().replace(' ', '_').replace('.','')}"
 
 
 def source_conditions(df, conditions):
@@ -30,6 +33,7 @@ def source_conditions(df, conditions):
         if column not in not_null_cols:
             df = df.loc[df[column] == value]
 
+    df = df.reset_index(drop=True)
     log.log(config.VERBOSE, f"Dataframe size after applying conditions: {len(df)}")
 
     return df
@@ -46,14 +50,18 @@ def remove_empty_rows(df, not_null_cols, how="all"):
     )
 
     final_df = df
-    final_df = final_df.replace("", np.nan)
-    final_df = final_df.replace(" ", np.nan)
-    final_df = final_df.replace("0", np.nan)
 
     cols_to_remove = [x for x in df.columns.tolist() if x in not_null_cols]
 
     try:
-        final_df = final_df.dropna(subset=cols_to_remove, how=how)
+        final_df = final_df.replace("", np.nan)
+        final_df = final_df.replace(" ", np.nan)
+        final_df = final_df.replace("0", np.nan)
+
+        final_df = final_df.dropna(subset=cols_to_remove, how="all")
+        final_df = final_df.reset_index(drop=True)
+        final_df = final_df.replace(np.nan, "")
+
     except Exception as e:
         log.debug(f"Problems removing null rows: {e}")
 
