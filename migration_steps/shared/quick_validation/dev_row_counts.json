@@ -57,6 +57,15 @@
     ]
   },
   {
+    "bonds": [
+      {
+        "table_name": "bonds",
+        "query": "select count(*) from {schema}.bonds;",
+        "row_count": 1023
+      }
+    ]
+  },
+  {
     "death": [
       {
         "table_name": "death_notifications (client)",

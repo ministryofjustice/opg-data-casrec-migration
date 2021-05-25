@@ -68,7 +68,7 @@ class BaseConfig:
     ENABLED_ENTITIES = {
         "clients": ["local", "development", "preproduction"],
         "cases": ["local", "development", "preproduction"],
-        "bonds": [],
+        "bonds": ["local", "development"],
         "supervision_level": [],
         "deputies": ["local", "development", "preproduction"],
         "events": [],
