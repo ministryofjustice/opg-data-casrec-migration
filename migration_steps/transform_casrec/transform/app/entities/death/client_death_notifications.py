@@ -7,12 +7,7 @@ import json
 definition = {
     "source_table_name": "pat",
     "source_table_additional_columns": ["Term Type", "Case"],
-    # "source_not_null_cols": ["Letter Sent", "Notified", "Term by"],
-    "destination_not_null_cols": [
-        "datelettersentout",
-        "datedeathcertificatereceived",
-        "datenotified",
-    ],
+    "source_conditions": {"Term Type": "D"},
     "destination_table_name": "death_notifications",
 }
 
@@ -41,9 +36,6 @@ def insert_client_death_notifications(db_config, target_db):
                 table_definition=definition,
                 chunk_details={"chunk_size": chunk_size, "offset": offset},
             )
-
-            print("CLIENT")
-            print(client_death_df.to_markdown())
 
             death_joined_df = client_death_df.merge(
                 persons_df, how="left", left_on="c_case", right_on="caserecnumber"

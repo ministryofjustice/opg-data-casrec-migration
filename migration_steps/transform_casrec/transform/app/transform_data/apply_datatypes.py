@@ -21,8 +21,6 @@ datatype_remap = {
 
 def apply_datatypes(mapping_details: Dict, df: pd.DataFrame) -> pd.DataFrame:
 
-    log.log(config.VERBOSE, "starting to apply column datatypes")
-
     cols_with_datatype = {
         k: v["data_type"]
         if v["data_type"] not in datatype_remap
@@ -30,8 +28,6 @@ def apply_datatypes(mapping_details: Dict, df: pd.DataFrame) -> pd.DataFrame:
         for k, v in mapping_details.items()
         if k in df.columns
     }
-
-    log.log(config.VERBOSE, f"cols_with_datatype: {cols_with_datatype}")
 
     try:
         result_df = df.astype({k: v for k, v in cols_with_datatype.items()})

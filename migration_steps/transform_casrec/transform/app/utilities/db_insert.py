@@ -38,7 +38,6 @@ class InsertData:
         statement = f"CREATE SCHEMA IF NOT EXISTS {self.schema};"
         return statement
 
-    @timer
     def _create_table_statement_with_datatype(
         self, df: pd.DataFrame, mapping_details: Dict, table_name: str
     ) -> str:
@@ -63,7 +62,7 @@ class InsertData:
         statement += ", ".join(columns)
 
         statement += ");"
-        log.log(config.VERBOSE, f"Table create statement: {statement}")
+
         return statement
 
     def _create_table_statement(self, table_name, df):
@@ -226,9 +225,9 @@ class InsertData:
             log.error("Multiple dest tables")
             return ""
 
-    @timer
     def insert_data(self, df, table_name=None, sirius_details=None, chunk_no=None):
         if len(df) == 0:
+            log.info(f"0 records to insert into '{table_name}' table")
             raise EmptyDataFrame
 
         if sirius_details:

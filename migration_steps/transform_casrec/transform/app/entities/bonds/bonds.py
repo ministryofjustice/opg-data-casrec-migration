@@ -5,7 +5,7 @@ import pandas as pd
 definition = {
     "source_table_name": "order",
     "source_table_additional_columns": ["CoP Case"],
-    "destination_not_null_cols": ["bondreferencenumber"],
+    "source_conditions": {"Bond No.": "not null"},
     "destination_table_name": "bonds",
 }
 

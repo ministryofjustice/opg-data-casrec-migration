@@ -11,7 +11,7 @@ log = logging.getLogger("root")
 definition = {
     "source_table_name": "pat",
     "source_table_additional_columns": ["Case"],
-    "destination_not_null_cols": ["warningtype", "warningtext"],
+    "source_conditions": {"VWM": "not null"},
     "destination_table_name": "warnings",
 }
 

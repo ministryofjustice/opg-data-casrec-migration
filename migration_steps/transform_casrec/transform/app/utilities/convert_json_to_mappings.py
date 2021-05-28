@@ -41,8 +41,6 @@ class MappingDefinitions:
             else:
                 transformations[tr] = [d]
 
-        log.log(config.VERBOSE, f"transformations {transformations}")
-
         return transformations
 
     def _get_default_values(self) -> dict:

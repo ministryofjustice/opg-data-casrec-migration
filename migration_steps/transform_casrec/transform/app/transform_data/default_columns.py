@@ -13,8 +13,12 @@ config = helpers.get_config(env=environment)
 def add_required_columns(
     required_columns: dict, source_data_df: pd.DataFrame
 ) -> pd.DataFrame:
-    log.log(config.VERBOSE, "starting to apply required columns")
+
     for col, details in required_columns.items():
         source_data_df[col] = details["default_value"]
+
+    log.log(
+        config.VERBOSE, f"Dataframe size after default columns: {len(source_data_df)}"
+    )
 
     return source_data_df

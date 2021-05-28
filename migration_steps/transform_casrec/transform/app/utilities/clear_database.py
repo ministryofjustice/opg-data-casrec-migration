@@ -23,7 +23,7 @@ def clear_tables(db_config):
     tables = [x[0] for x in cursor.fetchall()]
 
     for t in tables:
-        log.log(5, (f"drop table if exists {db_config['target_schema']}.{t};"))
+        log.debug(f"drop table if exists {db_config['target_schema']}.{t};")
         cursor.execute(f"drop table if exists {db_config['target_schema']}.{t};")
 
     conn.commit()

@@ -22,20 +22,17 @@ def conditional_lookup(
     df: pd.DataFrame,
 ) -> pd.DataFrame:
 
-    print(f"final_col: {final_col}")
-    print(f"lookup_col: {lookup_col}")
-    print(f"data_col: {data_col}")
-    print(f"lookup_file_name: {lookup_file_name}")
-
-    log.info(f"Doing conditional lookup on {lookup_col} in file {lookup_file_name}")
+    log.log(
+        config.VERBOSE,
+        f"Doing conditional lookup using final_col: {final_col}, lookup_col: {lookup_col}, data_col: {data_col}, "
+        f"lookup_file_name: {lookup_file_name}",
+    )
 
     temp_col = "mapping_col"
     lookup_col = format_additional_col_alias(lookup_col)
 
     pattern = re.compile(f"^{data_col}$|^{data_col}\s[0-9]+$|^{data_col}\s$")
     data_col = list(filter(pattern.match, df.columns.tolist()))[0]
-
-    log.debug(f"Using data col: {data_col}")
 
     lookup_dict = helpers.get_lookup_dict(lookup_file_name)
 
@@ -47,5 +44,7 @@ def conditional_lookup(
     )
 
     df = df.drop(columns=[temp_col, data_col])
+
+    log.log(config.VERBOSE, f"Dataframe size after conditional lookup: {len(df)}")
 
     return df

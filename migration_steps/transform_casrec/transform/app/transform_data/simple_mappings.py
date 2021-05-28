@@ -15,9 +15,6 @@ def do_simple_mapping(
     simple_mapping: dict, table_definition: dict, source_data_df: pd.DataFrame
 ) -> pd.DataFrame:
 
-    log.log(config.VERBOSE, "starting to apply simple mapping")
-    log.log(config.VERBOSE, f"simple mapping dict: {simple_mapping}")
-
     source_table_name = table_definition["source_table_name"]
 
     columns = {}
@@ -32,8 +29,10 @@ def do_simple_mapping(
             else:
                 columns[v["alias"]] = k
 
-    log.log(config.VERBOSE, f"columns: {columns}")
-
     result_df = source_data_df.rename(columns=columns)
+
+    log.log(
+        config.VERBOSE, f"Dataframe size after simple mappings: {len(source_data_df)}"
+    )
 
     return result_df
