@@ -105,14 +105,24 @@ def get_entity_ids(session, entity, search_field, search_value, csv_type):
     ids = []
 
     if search_result["hits"]["total"] > 0:
-        if csv_type in ["clients", "deputies"]:
+        if csv_type in ["clients", "bonds"]:
             entity_id = search_result["hits"]["hits"][0]["_id"]
-            ids.append(entity_id)
-        elif csv_type == "orders":
+            if csv_type == "bonds":
+                bonds = get_bond_entity_ids(session, entity_id)
+                for bond in bonds:
+                    ids.append(bond)
+            else:
+                ids.append(entity_id)
+        elif csv_type in ["orders", "supervision_level", "deputies"]:
             cases = search_result["hits"]["hits"][0]["_source"]["cases"]
             for case in cases:
                 if case["caseType"] == "ORDER":
-                    ids.append(case["id"])
+                    if csv_type == "deputies":
+                        deputies = get_deputy_entity_ids(session, case["id"])
+                        for deputy in deputies:
+                            ids.append(deputy)
+                    else:
+                        ids.append(case["id"])
     return ids
 
 
@@ -151,6 +161,68 @@ def restructure_text(col):
     return col_restructured_text
 
 
+def get_bond_entity_ids(conn, entity_id):
+    response = conn["sess"].get(
+        f'{conn["base_url"]}/api/v1/clients/{entity_id}/orders',
+        headers=conn["headers_dict"],
+    )
+    json_obj = json.loads(response.text)
+    cases = json_obj["cases"]
+
+    bonds = []
+    for case in cases:
+
+        print(case["bond"])
+        try:
+            order_id = case["id"]
+        except Exception:
+            order_id = ""
+
+        try:
+            bond_id = case["bond"]["id"]
+        except Exception:
+            bond_id = ""
+
+        if len(str(order_id)) > 0 and len(str(bond_id)) > 0:
+            bond = {"order_id": order_id, "bond_id": bond_id}
+            bonds.append(bond)
+
+    return bonds
+
+
+def get_deputy_entity_ids(conn, entity_id):
+    response = conn["sess"].get(
+        f'{conn["base_url"]}/api/v1/orders/{entity_id}', headers=conn["headers_dict"],
+    )
+    json_obj = json.loads(response.text)
+    deputies = json_obj["deputies"]
+
+    deputy_ids = []
+    for deputy in deputies:
+        try:
+            deputy_id = deputy["deputy"]["id"]
+        except Exception:
+            deputy_id = ""
+
+        if len(str(deputy_id)) > 0:
+            deputy_ids.append(deputy_id)
+
+    return deputy_ids
+
+
+def get_endpoint_final(entity_id, endpoint, csv):
+    if csv == "bonds":
+        endpoint_final = (
+            str(endpoint)
+            .replace("{id}", str(entity_id["order_id"]))
+            .replace("{id2}", str(entity_id["bond_id"]))
+        )
+    else:
+        endpoint_final = str(endpoint).replace("{id}", str(entity_id))
+
+    return endpoint_final
+
+
 def remove_dynamic_keys(dict, keys):
     for key in keys:
         dict.pop(key, None)
@@ -173,14 +245,14 @@ def flat_dict(d, ignore_list):
     return final_dict
 
 
-@pytest.mark.parametrize("csv", ["orders", "clients", "deputies"])
+@pytest.mark.parametrize("csv", ["orders", "clients", "deputies", "supervision_level"])
 def test_csvs(csv, create_a_session):
     s3_csv_path = f"validation/csvs/{csv}.csv"
 
     obj = create_a_session["s3_sess"].get_object(Bucket=bucket_name, Key=s3_csv_path)
     csv_data = pd.read_csv(io.BytesIO(obj["Body"].read()), dtype=str)
     count = 0
-    # Iterate over rows in the input spreadheet
+    # Iterate over rows in the input spreadsheet
     for index, row in csv_data.iterrows():
         count = count + 1
         endpoint = row["endpoint"]
@@ -211,7 +283,7 @@ def test_csvs(csv, create_a_session):
         # Because some of our searches may bring back multiple entities we need an object to aggregate them
         response_struct = {}
         for entity_id in entity_ids:
-            endpoint_final = str(endpoint).replace("{id}", str(entity_id))
+            endpoint_final = get_endpoint_final(entity_id, endpoint, csv)
             print(f"Checking responses from: {endpoint_final}")
             response = create_a_session["sess"].get(
                 f'{create_a_session["base_url"]}{endpoint_final}',

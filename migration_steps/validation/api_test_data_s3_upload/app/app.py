@@ -30,7 +30,6 @@ account = os.environ["SIRIUS_ACCOUNT"]
 account_name = os.environ.get("ACCOUNT_NAME")
 bucket_name = f"casrec-migration-{account_name.lower()}"
 
-
 # logging
 log = logging.getLogger("root")
 custom_logger.setup_logging(env=environment, module_name="upload api test data")
