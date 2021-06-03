@@ -12,3 +12,18 @@ services:
     volumes:
       - ./casrec_data/run_ecs_task/run_ecs_task.py:/run_ecs_task.py
       - ./terraform:/terraform
+  task_runner:
+    build:
+      context: ./casrec_data/ecs_task_runner
+      dockerfile: Dockerfile
+    environment:
+      TAG: override_this
+      ENVIRONMENT: preproduction
+      WORKSPACE: preproduction
+      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+      AWS_SESSION_TOKEN: $AWS_SESSION_TOKEN
+    volumes:
+      - ./casrec_data/ecs_task_runner/run_ecs_task.py:/run_ecs_task.py
+      - ./casrec_data/ecs_task_runner/run_ecs_task.sh:/run_ecs_task.sh
+      - ./terraform:/terraform
