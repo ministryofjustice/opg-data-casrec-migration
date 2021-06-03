@@ -1,0 +1,73 @@
+{
+  "id": 43,
+  "uId": "7000-0000-0914",
+  "normalizedUid": 700000000914,
+  "errorMessages": [],
+  "researchOptOut": false,
+  "workPhoneNumber": {
+    "id": 42,
+    "phoneNumber": "01215647877",
+    "type": "Work",
+    "default": false
+  },
+  "homePhoneNumber": {
+    "id": 43,
+    "phoneNumber": "",
+    "type": "Home",
+    "default": false
+  },
+  "email": "deputyone@email.com",
+  "dob": "",
+  "dateOfDeath": "",
+  "salutation": "Mr",
+  "firstname": "Deputy",
+  "surname": "One",
+  "otherNames": "",
+  "addressLine1": "Flat 1 Beech Court",
+  "addressLine2": "140 Cobs road",
+  "addressLine3": "Bournville",
+  "town": "Birmingham",
+  "county": "West Midlands",
+  "postcode": "B301SL",
+  "country": "United Kingdom",
+  "isAirmailRequired": true,
+  "phoneNumber": "01215647877",
+  "phoneNumbers": [{
+    "id": 42,
+    "phoneNumber": "01215647877",
+    "type": "Work",
+    "default": false
+  }, {
+    "id": 43,
+    "phoneNumber": "",
+    "type": "Home",
+    "default": false
+  }],
+  "reference": [],
+  "correspondenceByPost": false,
+  "correspondenceByPhone": false,
+  "correspondenceByEmail": false,
+  "correspondenceByWelsh": false,
+  "createdDate": "28\/05\/2021",
+  "updatedDate": "2021-05-28T10:21:35+00:00",
+  "personType": "Deputy",
+  "specialCorrespondenceRequirements": {
+    "audioTape": false,
+    "largePrint": false,
+    "hearingImpaired": false,
+    "spellingOfNameRequiresCare": false
+  },
+  "canDelete": false,
+  "deputyStatus": "Inactive",
+  "orders": [
+    []
+  ],
+  "previousNames": "",
+  "mobileNumber": "",
+  "eveningNumber": "",
+  "newsletter": false,
+  "deputyType": {
+    "handle": "LAY",
+    "label": "Lay"
+  }
+}

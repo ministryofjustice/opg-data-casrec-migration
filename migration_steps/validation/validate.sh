@@ -17,4 +17,6 @@ then
   pip3 install -r requirements.txt > /dev/null
   echo "== Running API tests =="
   pytest -s .
+  echo $?
+  echo "== Finished API tests =="
 fi

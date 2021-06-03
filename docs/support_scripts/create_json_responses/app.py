@@ -44,7 +44,7 @@ def create_a_session():
     return session
 
 
-def get_entity_id(session, entity, search_field, search_value, csv_type):
+def get_entity_ids(session, entity, search_field, search_value, csv_type):
     extra_headers = {"content-type": "application/json"}
     full_headers = {**session["headers_dict"], **extra_headers}
 
@@ -72,14 +72,27 @@ def get_entity_id(session, entity, search_field, search_value, csv_type):
     ids = []
 
     if search_result["hits"]["total"] > 0:
-        if csv_type in ["clients", "deputies"]:
+        if csv_type in ["clients", "bonds"]:
             entity_id = search_result["hits"]["hits"][0]["_id"]
-            ids.append(entity_id)
-        elif csv_type == "orders":
+
+            print(entity_id)
+
+            if csv_type == "bonds":
+                bonds = get_bond_entity_ids(session, entity_id)
+                for bond in bonds:
+                    ids.append(bond)
+            else:
+                ids.append(entity_id)
+        elif csv_type in ["orders", "supervision_level", "deputies"]:
             cases = search_result["hits"]["hits"][0]["_source"]["cases"]
             for case in cases:
                 if case["caseType"] == "ORDER":
-                    ids.append(case["id"])
+                    if csv_type == "deputies":
+                        deputies = get_deputy_entity_ids(session, case["id"])
+                        for deputy in deputies:
+                            ids.append(deputy)
+                    else:
+                        ids.append(case["id"])
     return ids
 
 
@@ -118,6 +131,74 @@ def restructure_text(col):
     return col_restructured_text
 
 
+def get_bond_entity_ids(conn, entity_id):
+    response = conn["sess"].get(
+        f'{conn["base_url"]}/api/v1/clients/{entity_id}/orders',
+        headers=conn["headers_dict"],
+    )
+
+    print(response.text)
+
+    json_obj = json.loads(str(response.text))
+    print(json_obj)
+
+    cases = json_obj["cases"]
+
+    bonds = []
+    for case in cases:
+
+        print(case["bond"])
+        try:
+            order_id = case["id"]
+        except Exception:
+            order_id = ""
+
+        try:
+            bond_id = case["bond"]["id"]
+        except Exception:
+            bond_id = ""
+
+        if len(str(order_id)) > 0 and len(str(bond_id)) > 0:
+            bond = {"order_id": order_id, "bond_id": bond_id}
+            bonds.append(bond)
+
+    return bonds
+
+
+def get_deputy_entity_ids(conn, entity_id):
+    response = conn["sess"].get(
+        f'{conn["base_url"]}/api/v1/orders/{entity_id}', headers=conn["headers_dict"],
+    )
+
+    json_obj = json.loads(response.text)
+    deputies = json_obj["deputies"]
+
+    deputy_ids = []
+    for deputy in deputies:
+        try:
+            deputy_id = deputy["deputy"]["id"]
+        except Exception:
+            deputy_id = ""
+
+        if len(str(deputy_id)) > 0:
+            deputy_ids.append(deputy_id)
+
+    return deputy_ids
+
+
+def get_endpoint_final(entity_id, endpoint, csv):
+    if csv == "bonds":
+        endpoint_final = (
+            str(endpoint)
+            .replace("{id}", str(entity_id["order_id"]))
+            .replace("{id2}", str(entity_id["bond_id"]))
+        )
+    else:
+        endpoint_final = str(endpoint).replace("{id}", str(entity_id))
+
+    return endpoint_final
+
+
 clients_headers = [
     '["firstname"]',
     '["surname"]',
@@ -145,28 +226,9 @@ clients_headers = [
 
 
 deputies_headers = [
-    '["firstname"]',
-    '["surname"]',
-    '["otherNames"]',
+    '["email"]',
     '["addressLine1"]',
-    '["addressLine2"]',
-    '["addressLine3"]',
-    '["town"]',
-    '["county"]',
     '["postcode"]',
-    '["country"]',
-    '["phoneNumber"]',
-    '["correspondenceByPost"]',
-    '["correspondenceByPhone"]',
-    '["correspondenceByEmail"]',
-    '["personType"]',
-    '["clientStatus"]["handle"]',
-    '["clientStatus"]["label"]',
-    '["clientAccommodation"]["handle"]',
-    '["clientAccommodation"]["label"]',
-    '["supervisionCaseOwner"]["name"]',
-    '["supervisionCaseOwner"]["phoneNumber"]',
-    '["maritalStatus"]',
 ]
 
 orders_headers = [
@@ -184,7 +246,19 @@ orders_headers = [
     '["orderExpiryDate"]',
 ]
 
-csvs = ["orders", "clients", "deputies"]
+bonds_headers = [
+    '["bondProvider"]["name"]',
+    '["requiredBondAmount"]',
+    '["referenceNumber"]',
+]
+
+supervision_level_headers = [
+    '["latestSupervisionLevel"]["appliesFrom"]',
+    '["latestSupervisionLevel"]["supervisionLevel"]["handle"]',
+    '["latestSupervisionLevel"]["assetLevel"]["handle"]',
+]
+
+csvs = ["bonds"]
 
 search_headers = [
     "endpoint",
@@ -203,8 +277,6 @@ for csv in csvs:
     head_line = head_line[:-1]
     head_line = head_line + "\n"
 
-    print(head_line)
-
     with open(f"responses/{csv}_output.csv", "w") as csv_outfile:
         csv_outfile.write(head_line)
 
@@ -212,24 +284,34 @@ for csv in csvs:
     columns = csv_data.columns.tolist()
     conn = create_a_session()
 
+    #     response = conn["sess"].get('http://localhost:8080/api/v1/deputies/43', headers=conn["headers_dict"])
+    #     print(response.text)
+
     # Iterate over rows
     for index, row in csv_data.iterrows():
         endpoint = row["endpoint"]
         entity_ref = row["entity_ref"]
         search_entity = row["search_entity"]
         search_field = row["search_field"]
-        entity_ids = get_entity_id(conn, search_entity, search_field, entity_ref, csv)
+        entity_ids = get_entity_ids(conn, search_entity, search_field, entity_ref, csv)
 
         line_struct = {}
         line = ""
+
         for entity_id in entity_ids:
-            endpoint_final = str(endpoint).replace("{id}", str(entity_id))
+
+            endpoint_final = get_endpoint_final(entity_id, endpoint, csv)
             print(endpoint_final)
+
             response = conn["sess"].get(
-                f'{conn["base_url"]}{endpoint_final}',
-                headers=conn["headers_dict"],
+                f'{conn["base_url"]}{endpoint_final}', headers=conn["headers_dict"],
             )
+            print(f'{conn["base_url"]}{endpoint_final}')
+            print(response.text)
+            print(response.status_code)
+
             json_obj = json.loads(response.text)
+
             with open(f"responses/{csv}_{entity_ref}.json", "w") as outfile:
                 json.dump(json_obj, outfile, indent=4, sort_keys=False)
 
@@ -248,7 +330,12 @@ for csv in csvs:
                     line_struct[header] = rationalised_var + "|"
 
         for header in eval(f"{csv}_headers") + search_headers:
-            col_restruct_text = restructure_text(line_struct[header])
+            try:
+                line_struct_header = line_struct[header]
+            except KeyError:
+                line_struct_header = ""
+
+            col_restruct_text = restructure_text(line_struct_header)
             line_struct[header] = col_restruct_text
 
         for attr, value in line_struct.items():

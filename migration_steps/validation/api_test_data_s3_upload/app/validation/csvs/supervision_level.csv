@@ -1,0 +1,4 @@
+endpoint,entity_ref,search_entity,search_field,full_check,["latestSupervisionLevel"]["supervisionLevel"]["handle"],["latestSupervisionLevel"]["assetLevel"]["handle"]
+/api/v1/orders/{id},10003409,persons,caseRecNumber,FALSE,GENERAL,HIGH
+/api/v1/orders/{id},10006413,persons,caseRecNumber,FALSE,GENERAL,HIGH
+/api/v1/orders/{id},10007163,persons,caseRecNumber,FALSE,GENERAL,HIGH

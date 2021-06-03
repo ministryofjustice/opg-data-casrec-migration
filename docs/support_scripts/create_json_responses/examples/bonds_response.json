@@ -1,0 +1,21 @@
+{
+	"bondProviderId": 1,
+	"id": 65,
+	"requiredBondAmount": 15000,
+	"amountTaken": 15000,
+	"bondProvider": {
+		"id": 1,
+		"name": "Howden",
+		"oneOffValue": 21000,
+		"telephoneNumber": null,
+		"emailAddress": null,
+		"webAddress": "https://www.howdendeputybonds.co.uk"
+	},
+	"referenceNumber": "70910",
+	"companyName": null,
+	"renewalDate": null,
+	"dischargeDate": null,
+	"dispensedReason": null,
+	"status": null,
+	"oneOff": null
+}

@@ -728,7 +728,7 @@ jobs:
             pip3 install -r migration_steps/requirements.txt
             python3 -m pytest migration_steps/transform_casrec/transform/transform_tests --cov-fail-under=85
       - run:
-          name: Run shared utillities unit tests
+          name: Run shared utilities unit tests
           command: |
             export PYTHONPATH=~/project/migration_steps/shared:~/project/migration_steps/shared/shared_tests
             pip3 install -r migration_steps/shared/shared_tests/requirements.txt
