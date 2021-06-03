@@ -18,13 +18,14 @@ resource "local_file" "output" {
 }
 
 resource "local_file" "output_casrec" {
-  content = templatefile("${path.module}/casrec_tasks.toml",
+  content = templatefile("${path.module}/casrec_migration_tasks.toml",
     {
-      cluster         = aws_ecs_cluster.migration.name,
-      sec_group       = aws_security_group.etl.id,
-      subnets         = local.subnets_string,
-      account         = local.account.account_id
-      task-definition = aws_ecs_task_definition.etl0.arn
+      cluster                    = aws_ecs_cluster.migration.name,
+      sec_group                  = aws_security_group.etl.id,
+      subnets                    = local.subnets_string,
+      account                    = local.account.account_id
+      task-definition-pull-case  = aws_ecs_task_definition.etl0.arn
+      task-definition-validation = aws_ecs_task_definition.etl5.arn
   })
-  filename = "${path.module}/terraform.output_casrec.json"
+  filename = "${path.module}/terraform.output_casrec_migration.json"
 }
