@@ -1,0 +1,1 @@
+endpoint,entity_ref,search_entity,search_field,full_check,["firstname"],["surname"]/api/v1/clients/{id},12325847,persons,caseRecNumber,FALSE,Marjorie,Evans
