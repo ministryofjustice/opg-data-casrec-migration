@@ -245,7 +245,9 @@ def flat_dict(d, ignore_list):
     return final_dict
 
 
-@pytest.mark.parametrize("csv", ["supervision_level"])
+@pytest.mark.parametrize(
+    "csv", ["clients", "orders", "bonds", "deputies", "supervision_level"]
+)
 def test_csvs(csv, create_a_session):
     s3_csv_path = f"validation/csvs/{csv}.csv"
 
@@ -290,7 +292,7 @@ def test_csvs(csv, create_a_session):
                 headers=create_a_session["headers_dict"],
             )
             json_obj = json.loads(response.text)
-            print(json_obj)
+
             for header in headers_to_check:
                 var_to_eval = f"json_obj{header}"
                 rationalised_var = rationalise_var(var_to_eval, json_obj)
