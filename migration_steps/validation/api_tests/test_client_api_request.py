@@ -245,7 +245,7 @@ def flat_dict(d, ignore_list):
     return final_dict
 
 
-@pytest.mark.parametrize("csv", ["orders", "clients", "deputies", "supervision_level"])
+@pytest.mark.parametrize("csv", ["orders", "clients"])
 def test_csvs(csv, create_a_session):
     s3_csv_path = f"validation/csvs/{csv}.csv"
 
