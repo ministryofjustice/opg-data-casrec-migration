@@ -1,7 +1,10 @@
+import logging
+
 import pandas as pd
 
-from helpers import get_mapping_dict
+from helpers import get_mapping_dict, format_error_message
 
+log = logging.getLogger("root")
 
 definition = {
     "destination_table_name": "person_warning",
@@ -20,35 +23,45 @@ def insert_client_person_warning(db_config, target_db):
         only_complete_fields=False,
     )
 
-    clients_query = (
-        f'select "id", "caserecnumber" from {db_config["target_schema"]}.persons '
-        f"where \"type\" = 'actor_client';"
-    )
-    clients_df = pd.read_sql_query(clients_query, db_config["db_connection_string"])
+    try:
 
-    client_warning_query = (
-        f'select "id", "c_case" from {db_config["target_schema"]}.warnings;'
-    )
-    client_warning_df = pd.read_sql_query(
-        client_warning_query, db_config["db_connection_string"]
-    )
+        clients_query = (
+            f'select "id", "caserecnumber" from {db_config["target_schema"]}.persons '
+            f"where \"type\" = 'actor_client';"
+        )
+        clients_df = pd.read_sql_query(clients_query, db_config["db_connection_string"])
 
-    client_warning_df = client_warning_df.merge(
-        clients_df,
-        how="left",
-        left_on="c_case",
-        right_on="caserecnumber",
-        suffixes=["_warning", "_client"],
-    )
+        client_warning_query = (
+            f'select "id", "c_case" from {db_config["target_schema"]}.warnings;'
+        )
+        client_warning_df = pd.read_sql_query(
+            client_warning_query, db_config["db_connection_string"]
+        )
 
-    client_warning_df = client_warning_df.drop(columns=["caserecnumber"])
-    client_warning_df = client_warning_df.rename(
-        columns={"id_warning": "warning_id", "id_client": "person_id"}
-    )
-    client_warning_df["casrec_details"] = None
+        client_warning_df = client_warning_df.merge(
+            clients_df,
+            how="left",
+            left_on="c_case",
+            right_on="caserecnumber",
+            suffixes=["_warning", "_client"],
+        )
 
-    target_db.insert_data(
-        table_name=definition["destination_table_name"],
-        df=client_warning_df,
-        sirius_details=sirius_details,
-    )
+        client_warning_df = client_warning_df.drop(columns=["caserecnumber"])
+        client_warning_df = client_warning_df.rename(
+            columns={"id_warning": "warning_id", "id_client": "person_id"}
+        )
+        client_warning_df["casrec_details"] = None
+
+        target_db.insert_data(
+            table_name=definition["destination_table_name"],
+            df=client_warning_df,
+            sirius_details=sirius_details,
+        )
+    except Exception as e:
+        log.debug(
+            "No data to insert",
+            extra={
+                "file_name": "",
+                "error": format_error_message(e=e),
+            },
+        )
