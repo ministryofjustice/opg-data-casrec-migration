@@ -4,17 +4,26 @@
       {
         "table_name": "persons",
         "query": "select count(*) from {schema}.persons where type='actor_client';",
-        "row_count": 1000
+        "row_counts": {
+            "all": 1000,
+            "team_2": 0
+            }
       },
       {
         "table_name": "addresses",
         "query": "select count(*) from {schema}.addresses where person_id in (select id from {schema}.persons where type='actor_client');",
-        "row_count": 1000
+        "row_counts": {
+            "all": 1000,
+            "team_2": 0
+            }
       },
       {
         "table_name": "phonenumbers",
         "query": "select count(*) from {schema}.phonenumbers where person_id in (select id from {schema}.persons where type='actor_client');",
-        "row_count": 1000
+        "row_counts": {
+            "all": 1000,
+            "team_2": 0
+            }
       }
     ]
   },
@@ -23,22 +32,34 @@
       {
         "table_name": "persons",
         "query": "select count(*) from {schema}.persons where type='actor_deputy';",
-        "row_count": 1008
+        "row_counts": {
+            "all": 1008,
+            "team_2": 0
+            }
       },
       {
         "table_name": "addresses",
         "query": "select count(*) from {schema}.addresses where person_id in (select id from {schema}.persons where type='actor_deputy');",
-        "row_count": 939
+        "row_counts": {
+            "all": 939,
+            "team_2": 0
+            }
       },
       {
         "table_name": "phonenumbers",
         "query": "select count(*) from {schema}.phonenumbers where person_id in (select id from {schema}.persons where type='actor_deputy');",
-        "row_count": 1008
+        "row_counts": {
+            "all": 1008,
+            "team_2": 0
+            }
       },
       {
         "table_name": "order_deputy",
         "query": "select count(*) from {schema}.order_deputy;",
-        "row_count": 1730
+        "row_counts": {
+            "all": 1730,
+            "team_2": 0
+            }
       }
     ]
   },
@@ -47,12 +68,18 @@
       {
         "table_name": "cases",
         "query": "select count(*) from {schema}.cases;",
-        "row_count": 1832
+        "row_counts": {
+            "all": 1832,
+            "team_2": 0
+            }
       },
       {
         "table_name": "person_caseitem",
         "query": "select count(*) from {schema}.person_caseitem;",
-        "row_count": 1832
+        "row_counts": {
+            "all": 1832,
+            "team_2": 0
+            }
       }
     ]
   },
@@ -61,7 +88,10 @@
       {
         "table_name": "bonds",
         "query": "select count(*) from {schema}.bonds;",
-        "row_count": 1023
+        "row_counts": {
+            "all": 1023,
+            "team_2": 0
+            }
       }
     ]
   },
@@ -70,12 +100,18 @@
       {
         "table_name": "death_notifications (client)",
         "query": "select count(*) from {schema}.death_notifications where person_id in (select id from {schema}.persons where type='actor_client');",
-        "row_count": 27
+        "row_counts": {
+            "all": 27,
+            "team_2": 0
+            }
       },
       {
         "table_name": "death_notifications (deputy)",
         "query": "select count(*) from {schema}.death_notifications where person_id in (select id from {schema}.persons where type='actor_deputy');",
-        "row_count": 43
+        "row_counts": {
+            "all": 43,
+            "team_2": 0
+            }
       }
     ]
   },
@@ -84,17 +120,26 @@
       {
         "table_name": "warnings",
         "query": "select count(*) from {schema}.warnings;",
-        "row_count": 40
+        "row_counts": {
+            "all": 40,
+            "team_2": 0
+            }
       },
       {
         "table_name": "person_warning (client)",
         "query": "select count(*) from {schema}.person_warning where person_id in (select id from {schema}.persons where type='actor_client');",
-        "row_count": 39
+        "row_counts": {
+            "all": 39,
+            "team_2": 0
+            }
       },
       {
         "table_name": "person_warning (deputy)",
         "query": "select count(*) from {schema}.person_warning where person_id in (select id from {schema}.persons where type='actor_deputy');",
-        "row_count": 1
+        "row_counts": {
+            "all": 1,
+            "team_2": 0
+            }
       }
     ]
   }

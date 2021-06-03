@@ -25,7 +25,12 @@ def get_current_directory():
     return dirname
 
 
-def count_rows(connection_string, destination_schema, enabled_entities):
+def count_rows(connection_string, destination_schema, enabled_entities, team=""):
+    log.info(
+        helpers.log_title(
+            message=f"Checking row counts for schema '{destination_schema}',  team: '{team if team != '' else 'all'}'"
+        )
+    )
 
     current_dir = get_current_directory()
 
@@ -42,7 +47,12 @@ def count_rows(connection_string, destination_schema, enabled_entities):
                     for query_details in entity_details:
                         query = query_details["query"]
                         query_schema = query.replace("{schema}", destination_schema)
-                        expected_row_count = query_details["row_count"]
+                        if team != "":
+                            expected_row_count = query_details["row_counts"][
+                                f"team_{team}"
+                            ]
+                        else:
+                            expected_row_count = query_details["row_counts"]["all"]
 
                         try:
                             cursor.execute(query_schema)
@@ -61,3 +71,4 @@ def count_rows(connection_string, destination_schema, enabled_entities):
                             log.error(e)
                         except (Exception) as e:
                             log.error(e)
+        log.info("All row counts checked")
