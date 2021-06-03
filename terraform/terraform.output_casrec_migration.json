@@ -20,7 +20,7 @@
                         ]
                     }
                 },
-                "TaskDefinition":"arn:aws:ecs:eu-west-1:492687888235:task-definition/etl0-preproduction:86"
+                "TaskDefinition":"arn:aws:ecs:eu-west-1:492687888235:task-definition/etl0-preproduction:87"
             },
             "validation":{
                 "Cluster":"casrec-migration-preproduction",
@@ -35,7 +35,7 @@
                         ]
                     }
                 },
-                "TaskDefinition":"arn:aws:ecs:eu-west-1:492687888235:task-definition/etl5-preproduction:83"
+                "TaskDefinition":"arn:aws:ecs:eu-west-1:492687888235:task-definition/etl5-preproduction:84"
             }
         }
     }

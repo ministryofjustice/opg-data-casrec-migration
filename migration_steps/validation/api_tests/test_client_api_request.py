@@ -21,6 +21,13 @@ account = os.environ["SIRIUS_ACCOUNT"]
 environment = os.environ.get("ENVIRONMENT")
 account_name = os.environ.get("ACCOUNT_NAME")
 bucket_name = f"casrec-migration-{account_name.lower()}"
+entities = {
+    "local": ["clients", "orders"],
+    "development": ["clients", "orders"],
+    "preproduction": ["clients"],
+    "qa": [],
+    "production": [],
+}
 
 
 def get_session(base_url, user, password):
@@ -39,6 +46,7 @@ def get_session(base_url, user, password):
 def create_a_session():
     base_url = os.environ.get("SIRIUS_FRONT_URL")
     env_users = {
+        "local": "case.manager@opgtest.com",
         "development": "case.manager@opgtest.com",
         "preproduction": "opg+siriussmoketest@digital.justice.gov.uk",
         "qa": "opg+siriussmoketest@digital.justice.gov.uk",
@@ -179,90 +187,95 @@ def flat_dict(d, ignore_list):
     return final_dict
 
 
-@pytest.mark.parametrize("csv", ["clients"])
+@pytest.mark.parametrize("csv", ["clients", "orders"])
 def test_csvs(csv, create_a_session):
-    s3_csv_path = f"validation/csvs/{csv}.csv"
-
-    obj = create_a_session["s3_sess"].get_object(Bucket=bucket_name, Key=s3_csv_path)
-    csv_data = pd.read_csv(io.BytesIO(obj["Body"].read()), dtype=str)
-    count = 0
-    # Iterate over rows in the input spreadheet
-    for index, row in csv_data.iterrows():
-        count = count + 1
-        endpoint = row["endpoint"]
-        entity_ref = row["entity_ref"]
-        search_entity = row["search_entity"]
-        search_field = row["search_field"]
-
-        # Create a list of headers to verify
-        headers_to_check = []
-        for header in row.index:
-            if header not in [
-                "endpoint",
-                "search_entity",
-                "search_field",
-                "entity_ref",
-                "full_check",
-            ]:
-                headers_to_check.append(header)
-        # Get the ids to perform the search on based on the caserecnumber
-        entity_ids = get_entity_ids(
-            create_a_session, search_entity, search_field, entity_ref, csv
+    if csv in entities[environment]:
+        s3_csv_path = f"validation/csvs/{csv}.csv"
+        obj = create_a_session["s3_sess"].get_object(
+            Bucket=bucket_name, Key=s3_csv_path
         )
+        csv_data = pd.read_csv(io.BytesIO(obj["Body"].read()), dtype=str)
 
-        if len(entity_ids) == 0:
-            print(f"No ids found for '{csv}', nothing to test")
-            os._exit(1)
+        count = 0
+        # Iterate over rows in the input spreadheet
+        for index, row in csv_data.iterrows():
+            count = count + 1
+            endpoint = row["endpoint"]
+            entity_ref = row["entity_ref"]
+            search_entity = row["search_entity"]
+            search_field = row["search_field"]
 
-        # Because some of our searches may bring back multiple entities we need an object to aggregate them
-        response_struct = {}
-        for entity_id in entity_ids:
-            endpoint_final = str(endpoint).replace("{id}", str(entity_id))
-            print(f"Checking responses from: {endpoint_final}")
-            response = create_a_session["sess"].get(
-                f'{create_a_session["base_url"]}{endpoint_final}',
-                headers=create_a_session["headers_dict"],
+            # Create a list of headers to verify
+            headers_to_check = []
+            for header in row.index:
+                if header not in [
+                    "endpoint",
+                    "search_entity",
+                    "search_field",
+                    "entity_ref",
+                    "full_check",
+                ]:
+                    headers_to_check.append(header)
+            # Get the ids to perform the search on based on the caserecnumber
+            entity_ids = get_entity_ids(
+                create_a_session, search_entity, search_field, entity_ref, csv
             )
-            json_obj = json.loads(response.text)
 
-            for header in headers_to_check:
-                var_to_eval = f"json_obj{header}"
-                rationalised_var = rationalise_var(var_to_eval, json_obj)
-                try:
-                    response_struct[header] = (
-                        response_struct[header] + rationalised_var + "|"
-                    )
-                except Exception:
-                    response_struct[header] = rationalised_var + "|"
+            if len(entity_ids) == 0:
+                print(f"No ids found for '{csv}', nothing to test")
+                os._exit(1)
 
-            # Does a full check against each sub entity
-            if row["full_check"].lower() == "true":
-                ignore_list = [
-                    "id",
-                    "uid",
-                    "normalizedUid",
-                    "statusDate",
-                    "updatedDate",
-                    "researchOptOut",
-                ]
-                s3_json = f"validation/responses/{csv}_{entity_ref}.json"
-                content_object = create_a_session["s3_sess"].get_object(
-                    Bucket=bucket_name, Key=s3_json
+            # Because some of our searches may bring back multiple entities we need an object to aggregate them
+            response_struct = {}
+            for entity_id in entity_ids:
+                endpoint_final = str(endpoint).replace("{id}", str(entity_id))
+                print(f"Checking responses from: {endpoint_final}")
+                response = create_a_session["sess"].get(
+                    f'{create_a_session["base_url"]}{endpoint_final}',
+                    headers=create_a_session["headers_dict"],
                 )
-                content_decoded = json.loads(content_object["Body"].read().decode())
-                actual_response = flat_dict(json_obj, ignore_list)
-                expected_response = flat_dict(content_decoded, ignore_list)
-                assert actual_response == expected_response
+                json_obj = json.loads(response.text)
 
-        # Where we have multiple entity_ids we need rationalise the grouped responses
-        for header in headers_to_check:
-            col_restruct_text = restructure_text(response_struct[header])
-            response_struct[header] = col_restruct_text
-        # Check through each value in spreadsheet for that row against each value in our response struct
-        for header in headers_to_check:
-            assert response_struct[header] == str(row[header]).replace("nan", "")
+                for header in headers_to_check:
+                    var_to_eval = f"json_obj{header}"
+                    rationalised_var = rationalise_var(var_to_eval, json_obj)
+                    try:
+                        response_struct[header] = (
+                            response_struct[header] + rationalised_var + "|"
+                        )
+                    except Exception:
+                        response_struct[header] = rationalised_var + "|"
 
-    print(f"Ran happy path tests against {count} cases in {csv}")
+                # Does a full check against each sub entity
+                if row["full_check"].lower() == "true":
+                    ignore_list = [
+                        "id",
+                        "uid",
+                        "normalizedUid",
+                        "statusDate",
+                        "updatedDate",
+                        "researchOptOut",
+                    ]
+                    s3_json = f"validation/responses/{csv}_{entity_ref}.json"
+                    content_object = create_a_session["s3_sess"].get_object(
+                        Bucket=bucket_name, Key=s3_json
+                    )
+                    content_decoded = json.loads(content_object["Body"].read().decode())
+                    actual_response = flat_dict(json_obj, ignore_list)
+                    expected_response = flat_dict(content_decoded, ignore_list)
+                    assert actual_response == expected_response
+
+            # Where we have multiple entity_ids we need rationalise the grouped responses
+            for header in headers_to_check:
+                col_restruct_text = restructure_text(response_struct[header])
+                response_struct[header] = col_restruct_text
+            # Check through each value in spreadsheet for that row against each value in our response struct
+            for header in headers_to_check:
+                assert response_struct[header] == str(row[header]).replace("nan", "")
+
+        print(f"Ran happy path tests against {count} cases in {csv}")
+    else:
+        print(f"CSV '{csv}' doesn't exist in this environment. Skipping...")
 
 
 @pytest.mark.parametrize("csv", ["fail"])
