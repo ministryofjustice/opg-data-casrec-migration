@@ -2,40 +2,40 @@
     "Role":{
         "sensitive":false,
         "type":"string",
-        "value":"arn:aws:iam::288342028542:role/sirius-ci"
+        "value":"arn:aws:iam::492687888235:role/sirius-ci"
     },
     "Tasks":{
         "sensitive":false,
         "value":{
             "pull-case":{
-                "Cluster":"casrec-migration-development",
+                "Cluster":"casrec-migration-preproduction",
                 "LaunchType":"FARGATE",
                 "NetworkConfiguration":{
                     "AwsvpcConfiguration":{
                         "SecurityGroups":[
-                            "sg-08936d537018e5086"
+                            "sg-029eb238260776225"
                         ],
                         "Subnets":[
-                            "subnet-7f49711b","subnet-a07e41d6","subnet-bd98dde5"
+                            "subnet-07f9a4fa1ccbb708c","subnet-0a1aa1a87d0e91d37","subnet-0ddfe4e4767a58faf"
                         ]
                     }
                 },
-                "TaskDefinition":"arn:aws:ecs:eu-west-1:288342028542:task-definition/etl0-development:320"
+                "TaskDefinition":"arn:aws:ecs:eu-west-1:492687888235:task-definition/etl0-preproduction:86"
             },
             "validation":{
-                "Cluster":"casrec-migration-development",
+                "Cluster":"casrec-migration-preproduction",
                 "LaunchType":"FARGATE",
                 "NetworkConfiguration":{
                     "AwsvpcConfiguration":{
                         "SecurityGroups":[
-                            "sg-08936d537018e5086"
+                            "sg-029eb238260776225"
                         ],
                         "Subnets":[
-                            "subnet-7f49711b","subnet-a07e41d6","subnet-bd98dde5"
+                            "subnet-07f9a4fa1ccbb708c","subnet-0a1aa1a87d0e91d37","subnet-0ddfe4e4767a58faf"
                         ]
                     }
                 },
-                "TaskDefinition":"arn:aws:ecs:eu-west-1:288342028542:task-definition/etl5-development:315"
+                "TaskDefinition":"arn:aws:ecs:eu-west-1:492687888235:task-definition/etl5-preproduction:83"
             }
         }
     }

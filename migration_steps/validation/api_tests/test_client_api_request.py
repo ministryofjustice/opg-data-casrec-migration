@@ -38,7 +38,13 @@ def get_session(base_url, user, password):
 @pytest.fixture(scope="session", autouse=True)
 def create_a_session():
     base_url = os.environ.get("SIRIUS_FRONT_URL")
-    user = "case.manager@opgtest.com"
+    env_users = {
+        "development": "case.manager@opgtest.com",
+        "preproduction": "opg+siriussmoketest@digital.justice.gov.uk",
+        "qa": "opg+siriussmoketest@digital.justice.gov.uk",
+        "production": "opg+siriussmoketest@digital.justice.gov.uk",
+    }
+    user = env_users[environment]
     password = os.environ.get("API_TEST_PASSWORD")
     sess, headers_dict, status_code = get_session(base_url, user, password)
 
@@ -173,7 +179,7 @@ def flat_dict(d, ignore_list):
     return final_dict
 
 
-@pytest.mark.parametrize("csv", ["orders", "clients", "deputies"])
+@pytest.mark.parametrize("csv", ["clients"])
 def test_csvs(csv, create_a_session):
     s3_csv_path = f"validation/csvs/{csv}.csv"
 

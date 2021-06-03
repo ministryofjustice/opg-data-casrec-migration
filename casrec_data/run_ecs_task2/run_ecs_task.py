@@ -181,6 +181,7 @@ def main(task_identifier, task_name, task_command, log_group):
 
     if code == "EssentialContainerExited":
         print("Container ran correctly - checking logs...")
+        time.sleep(120)
         task_runner.set_log_group(log_group)
         task_runner.print_from_logs()
     else:
