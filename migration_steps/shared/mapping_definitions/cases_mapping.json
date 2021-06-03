@@ -1013,7 +1013,7 @@
     },
     "securitybond": {
         "mapping_status": {
-            "is_complete": false
+            "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
@@ -1026,8 +1026,8 @@
             "casrec_table": "ORDER",
             "casrec_column_name": "Bond Rqd",
             "alias": "Bond Rqd",
-            "requires_transformation": "convert_to_bool",
-            "lookup_table": "",
+            "requires_transformation": "",
+            "lookup_table": "bond_required_lookup",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
