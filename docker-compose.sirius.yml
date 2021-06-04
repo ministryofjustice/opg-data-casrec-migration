@@ -110,7 +110,6 @@ services:
       RUN_API_TESTS: "True"
       API_TEST_PASSWORD: "Password1" # pragma: allowlist secret
       SIRIUS_FRONT_URL: http://host.docker.internal:8080
-      ACCOUNT_NAME: local
     depends_on: [casrec_db]
   wait-for-it:
     build: ./wait-for-it

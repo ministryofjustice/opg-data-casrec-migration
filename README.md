@@ -475,6 +475,21 @@ docker-compose run --rm load_to_target python3 app.py
 docker-compose run --rm validation validation/validate.sh
 ```
 
+### Running the steps individually on AWS (ECS task runner)
+
+We can kick off individual tasks if we so desire. This can be very useful for just running the API tests for example.
+
+We do this from the command line by running the following:
+
+```
+aws-vault exec identity -- docker-compose -f docker-compose.commands.yml run --rm task_runner ./run_ecs_task.sh \
+-t in720-7105668 \
+-i validation \
+-n etl5 \
+-c "validation/validate.sh" \
+-l casrec-migration-preproduction
+```
+
 #### Running the steps (Non-dockerised):
 
 Note - the steps rely on data passed forward by the chain, so your safest bet is to run ./migrate  - but for debugging.

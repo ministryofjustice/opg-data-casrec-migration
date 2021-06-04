@@ -37,7 +37,7 @@ locals {
       },
       {
         name      = "API_TEST_PASSWORD"
-        valueFrom = data.aws_secretsmanager_secret.user_one_password.arn
+        valueFrom = aws_secretsmanager_secret.api_tests.arn
       },
     ],
     environment = [
