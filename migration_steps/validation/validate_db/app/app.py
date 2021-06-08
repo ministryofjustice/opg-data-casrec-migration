@@ -70,8 +70,6 @@ def get_mappings():
 
 
 mappings_to_run = get_mappings()
-
-
 results_sqlfile = "get_validation_results.sql"
 validation_sqlfile = "validation.sql"
 transformations_sqlfile = "transformation_functions.sql"
@@ -216,7 +214,7 @@ def get_wrapped_casrec_col(col, col_definition):
     datatype = col_definition["sirius_details"]["data_type"]
     calculated = col_definition["transform_casrec"]["calculated"]
 
-    if datatype not in ["bool", "int"]:
+    if datatype not in ["bool", "int"] and col_definition["transform_casrec"]["lookup_table"] == "":
         col = f"NULLIF(TRIM({col}), '')"
 
     # wrap fransform

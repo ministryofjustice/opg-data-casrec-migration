@@ -134,7 +134,9 @@
             "from_table": "pat",
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_death_notifications exc_table ON exc_table.caserecnumber = pat.\"Case\"",
-            "where_clauses": []
+            "where_clauses": [
+                "casrec_csv.pat.\"Term Type\" = 'D'"
+            ]
         },
         "sirius": {
             "from_table": "death_notifications",
@@ -211,7 +213,7 @@
         ],
         "forced": {
             "caserecnumber": {
-                "mapping_table": "client_persons.caserecnumber"
+                "mapping_table": "cases.caserecnumber"
             }
         },
         "orderby": {
@@ -222,24 +224,31 @@
             "orderdate": {
                 "mapping_table": "cases.orderdate",
                 "direction": "ASC"
+            },
+            "email": {
+                "mapping_table": "deputy_persons.email",
+                "direction": "ASC"
             }
         },
         "casrec": {
-            "from_table": "deputyship",
+            "from_table": "deputy",
             "joins": [
-                "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputy.\"Deputy No\" = casrec_csv.deputyship.\"Deputy No\"",
-                "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\"",
-                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\""
+                "LEFT JOIN casrec_csv.deputyship ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\"",
+                "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_persons exc_table\n    ON exc_table.caserecnumber = pat.\"Case\"\n    AND exc_table.casesubtype = casrec_csv.order_type_lookup(casrec_csv.order.\"Ord Type\")\n    AND exc_table.orderdate = casrec_csv.order.\"Made Date\"",
-            "where_clauses": []
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_death_notifications exc_table\n    ON exc_table.caserecnumber = deputyship.\"Case\"\n    AND exc_table.casesubtype = casrec_csv.order_type_lookup(casrec_csv.order.\"Ord Type\")\n    AND exc_table.orderdate = casrec_csv.order.\"Made Date\"",
+            "where_clauses": [
+                "casrec_csv.deputy.\"Stat\" = '99'"
+            ]
         },
         "sirius": {
             "from_table": "death_notifications",
             "joins": [
-                "LEFT JOIN {target_schema}.persons ON persons.id = death_notifications.person_id"
+                "LEFT JOIN {target_schema}.persons ON persons.id = death_notifications.person_id",
+                "LEFT JOIN {target_schema}.order_deputy ON order_deputy.deputy_id = death_notifications.person_id",
+                "LEFT JOIN {target_schema}.cases ON cases.id = order_deputy.order_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_death_notifications exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_death_notifications exc_table ON exc_table.caserecnumber = public.cases.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
                 "persons.clientsource = 'CASRECMIGRATION'"
