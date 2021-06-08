@@ -248,7 +248,7 @@
                 "LEFT JOIN {target_schema}.order_deputy ON order_deputy.deputy_id = death_notifications.person_id",
                 "LEFT JOIN {target_schema}.cases ON cases.id = order_deputy.order_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_death_notifications exc_table ON exc_table.caserecnumber = public.cases.caserecnumber",
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_death_notifications exc_table ON exc_table.caserecnumber = cases.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
                 "persons.clientsource = 'CASRECMIGRATION'"
