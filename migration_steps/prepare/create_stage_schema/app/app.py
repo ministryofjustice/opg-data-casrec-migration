@@ -56,7 +56,7 @@ if __name__ == "__main__":
     t = time.process_time()
 
     log.setLevel(1)
-    log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
+    log.debug(f"create_stage_schema (Environment: {os.environ.get('ENVIRONMENT')})")
 
     main()
 

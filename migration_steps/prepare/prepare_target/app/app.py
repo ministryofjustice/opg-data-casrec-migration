@@ -43,23 +43,18 @@ def set_logging_level(verbose):
 @click.option("-i", "--preserve_schemas", default="reference")
 def main(verbose, preserve_schemas):
     set_logging_level(verbose)
-    log.info(log_title(message="Prepare Target"))
-
-    log.info("Perform Sirius DB Housekeeping")
     conn_source = psycopg2.connect(config.get_db_connection_string("migration"))
+    log.info("Dropping schemas on Source")
     delete_all_schemas(log=log, conn=conn_source, preserve_schemas=preserve_schemas)
     conn_source.close()
-    log.info("Deleted Schemas")
-    log.debug(
-        "(operations which need to be performed on Sirius DB ahead of the final Casrec Migration)"
-    )
 
 
 if __name__ == "__main__":
     t = time.process_time()
 
     log.setLevel(1)
-    log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
+    log.info(log_title(message="Prepare"))
+    log.debug(f"prepare_target (Environment: {os.environ.get('ENVIRONMENT')})")
 
     main()
 

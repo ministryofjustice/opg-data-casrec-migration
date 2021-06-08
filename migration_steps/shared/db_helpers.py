@@ -18,7 +18,7 @@ def delete_all_schemas(log, conn, preserve_schemas):
         schemas_list = preserve_schemas.split(",")
         preserve_schemas = "'" + "', '".join(schemas_list) + "', "
         for preserve_schema in schemas_list:
-            log.info(f"Checking schema: {preserve_schema}")
+            log.info(f"Schema: {preserve_schema} not dropped")
             if preserve_schema == "casrec_csv":
                 drop_statement = """
                     DROP TABLE IF EXISTS "casrec_csv"."migration_progress";
@@ -43,7 +43,7 @@ def delete_all_schemas(log, conn, preserve_schemas):
         delete_schemas_statement = f"""
         DROP SCHEMA {schemas} CASCADE;
         """
-        log.info(delete_schemas_statement)
+        log.info(f"Schemas {schemas} dropped")
         log.debug(f'Running "{delete_schemas_statement}"')
         cursor.execute(delete_schemas_statement)
         conn.commit()

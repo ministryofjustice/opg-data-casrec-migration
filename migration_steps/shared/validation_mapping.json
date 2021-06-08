@@ -48,7 +48,8 @@
             "correspondent_id",
             "donor_id",
             "feepayer_id",
-            "person_id"
+            "person_id",
+            "uid"
         ],
         "forced": {
             "caserecnumber": {
@@ -149,7 +150,10 @@
     },
     "client_persons": {
         "exclude": [
-            "caserecnumber"
+            "caserecnumber",
+            "dateofdeath",
+            "middlenames",
+            "uid"
         ],
         "forced": {
             "caserecnumber": {
@@ -244,7 +248,10 @@
     },
     "deputy_persons": {
         "exclude": [
-            "caserecnumber"
+            "caserecnumber",
+            "dateofdeath",
+            "middlenames",
+            "uid"
         ],
         "orderby": {
             "casesubtype": {
