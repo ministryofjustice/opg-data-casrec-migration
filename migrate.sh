@@ -7,7 +7,8 @@ SKIP_LOAD="false"
 PRESERVE_SCHEMAS=""
 LAY_TEAM=""
 GENERATE_DOCS="false"
-MIGRATE_TO_SIRIUS="n"
+FULL_SIRIUS_APP="n"
+COMPOSE_ARGS=""
 
 if [ "${CI}" != "true" ]
 then
@@ -31,14 +32,12 @@ then
   else
       echo "Migrating Lay Team ${LAY_TEAM} only"
   fi
-  read -p "Migrate to local sirius app? (y/n) [n]: " MIGRATE_TO_SIRIUS
-  MIGRATE_TO_SIRIUS=${MIGRATE_TO_SIRIUS:-n}
-  echo ${MIGRATE_TO_SIRIUS}
-  if [ "${MIGRATE_TO_SIRIUS}" == "y" ]
+  read -p "Migrate to full sirius app? (y/n) [n]: " FULL_SIRIUS_APP
+  FULL_SIRIUS_APP=${FULL_SIRIUS_APP:-n}
+  echo ${FULL_SIRIUS_APP}
+  if [ "${FULL_SIRIUS_APP}" == "y" ]
   then
       COMPOSE_ARGS="-f docker-compose.sirius.yml -f docker-compose.override.yml"
-  else
-      COMPOSE_ARGS=""
   fi
 fi
 
@@ -47,7 +46,7 @@ START_TIME=`date +%s`
 # Docker compose file for circle build
 docker-compose ${COMPOSE_ARGS} up --no-deps -d casrec_db localstack
 docker build base_image -t opg_casrec_migration_base_image:latest
-if [ "${MIGRATE_TO_SIRIUS}" != "y" ]
+if [ "${FULL_SIRIUS_APP}" == "n" ]
 then
   docker-compose ${COMPOSE_ARGS} up --no-deps -d postgres-sirius
   docker-compose ${COMPOSE_ARGS} run --rm wait-for-it -address postgres-sirius:5432 --timeout=30 -debug
