@@ -53,19 +53,21 @@ custom_logger.setup_logging(
 
 
 @click.command()
+@click.option("--team", default="")
 @click.option(
     "--clear",
     prompt=False,
     default=False,
     help="Clear existing database tables: True or False",
 )
-def main(clear):
+def main(clear, team):
 
     allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
 
     log.info(
         log_title(message="Integration Step: Reindex migrated data based on Sirius ids")
     )
+    log.info(log_title(message=f"Team: {team}"))
     log.info(
         log_title(
             message=f"Source: {db_config['source_schema']}, Target: {db_config['target_schema']}, Chunk Size: {db_config['chunk_size']}"
@@ -114,6 +116,7 @@ def main(clear):
             connection_string=db_config["db_connection_string"],
             destination_schema=db_config["target_schema"],
             enabled_entities=allowed_entities,
+            team=team,
         )
 
 

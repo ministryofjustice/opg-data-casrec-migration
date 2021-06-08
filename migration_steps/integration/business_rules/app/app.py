@@ -51,13 +51,14 @@ custom_logger.setup_logging(
 
 
 @click.command()
+@click.option("--team", default="")
 @click.option(
     "--clear",
     prompt=False,
     default=False,
     help="Clear existing database tables: True or False",
 )
-def main(clear):
+def main(clear, team):
     allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
 
     log.info(
@@ -80,9 +81,8 @@ def main(clear):
         check_row_counts.count_rows(
             connection_string=db_config["db_connection_string"],
             destination_schema=db_config["target_schema"],
-            enabled_entities=[
-                k for k, v in config.ENABLED_ENTITIES.items() if v is True
-            ],
+            enabled_entities=allowed_entities,
+            team=team,
         )
 
 
