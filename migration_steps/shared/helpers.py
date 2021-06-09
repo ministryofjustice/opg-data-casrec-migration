@@ -108,7 +108,7 @@ def get_mapping_dict(
     return mapping_dict
 
 
-def get_lookup_dict(file_name: str) -> Dict:
+def get_lookup_dict(file_name: str, include_sirius_details: bool = False) -> Dict:
 
     dirname = get_current_directory()
     file_path = os.path.join(
@@ -121,7 +121,10 @@ def get_lookup_dict(file_name: str) -> Dict:
         if len(lookup_dict) == 0:
             log.error(f"No data for lookup file {file_name}")
 
-        return {k: v["sirius_mapping"] for k, v in lookup_dict.items()}
+        if include_sirius_details:
+            return lookup_dict
+        else:
+            return {k: v["sirius_mapping"] for k, v in lookup_dict.items()}
 
 
 def get_additional_data_dict(file_name: str) -> Dict:

@@ -1,71 +1,140 @@
 {
     "0": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "1": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "3": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "11": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "15": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "21": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "22": {
-        "sirius_mapping": 2
+        "sirius_mapping": "DBS",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "27": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "30": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "31": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "32": {
-        "sirius_mapping": 3
+        "sirius_mapping": "MARSH",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "33": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "34": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "36": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "42": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "66": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "71": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "75": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "77": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "81": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "91": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "12": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     },
     "92": {
-        "sirius_mapping": 1
+        "sirius_mapping": "HOWDEN",
+        "sirius_lookup_field": "uid",
+        "sirius_result_field": "id",
+        "sirius_table": "bond_providers"
     }
 }
