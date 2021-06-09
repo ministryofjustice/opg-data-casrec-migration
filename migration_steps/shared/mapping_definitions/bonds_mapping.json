@@ -165,13 +165,13 @@
             "casrec_column_name": "Bond Discharge",
             "alias": "Bond Discharge",
             "requires_transformation": "",
-            "lookup_table": "",
+            "lookup_table": "discharge_lookup",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
         },
         "integration": {
-            "business_rules": ""
+            "business_rules": ["reindex_lookup"]
         }
     },
     "bond_provider_id": {
@@ -197,7 +197,7 @@
         },
         "integration": {
             "business_rules": [
-                "reindex_lookup_bond_providers",
+                "reindex_lookup",
                 "convert_to_int"
             ]
         }
