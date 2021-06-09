@@ -66,19 +66,19 @@ class BaseConfig:
 
     ALL_ENVIRONMENTS = ["local", "development", "preproduction", "qa"]
     ENABLED_ENTITIES = {
-        "clients": ["local", "development", "preproduction"],
-        "cases": ["local", "development", "preproduction"],
+        "clients": ["local", "development", "preproduction", "qa"],
+        "cases": ["local", "development", "preproduction", "qa"],
         "bonds": [],
-        "supervision_level": ["local", "development", "preproduction"],
-        "deputies": ["local", "development", "preproduction"],
+        "supervision_level": ["local", "development", "preproduction", "qa"],
+        "deputies": ["local", "development", "preproduction", "qa"],
         "finance": [],
-        "remarks": ["local", "development", "preproduction"],
+        "remarks": ["local", "development", "preproduction", "qa"],
         "reporting": [],
         "tasks": [],
         "visits": [],
-        "warnings": ["local", "development", "preproduction"],
+        "warnings": ["local", "development", "preproduction", "qa"],
         "additional_data": [],
-        "death": ["local", "development", "preproduction"],
+        "death": ["local", "development", "preproduction", "qa"],
     }
 
     def allowed_entities(self, env):

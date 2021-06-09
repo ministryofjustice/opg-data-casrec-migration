@@ -4,25 +4,30 @@ version: 2.1
 workflows:
   preprod:
     jobs:
-      - build:
-          name: build and unit tests
-          filters: {branches:{ignore:[master]}}
-      - infrastructure:
-          name: build infra qa
-          requires: [plan infra qa]
+#      - build:
+#          name: build and unit tests
+#          filters: {branches:{ignore:[master]}}
+#      - infrastructure:
+#          name: build infra qa
+#          requires: [build and unit tests]
+#          tf_workspace: qa
+#          tf_command: apply
+#          environment: Quality Assurance
+#          filters: {branches:{ignore:[master]}}
+#      - run_step_function:
+#          name: run the step function qa
+#          requires: [build infra qa]
+#          account: "492687888235"
+#          wait_for: "10800"
+#          tf_workspace: qa
+#          environment: Quality Assurance
+#          filters: {branches:{ignore:[master]}}
+      - run_elasticsearch_reset:
+          name: full reindex elasticsearch preprod
+#          requires: [approve full elastic reset preprod]
           tf_workspace: qa
-          tf_command: apply
-          environment: Quality Assurance
+          environment: QA
           filters: {branches:{ignore:[master]}}
-      - run_step_function:
-          name: run the step function qa
-          requires: [build infra qa]
-          account: "492687888235"
-          wait_for: "10800"
-          tf_workspace: qa
-          environment: Quality Assurance
-          filters: {branches:{ignore:[master]}}
-
 orbs:
   aws-cli: circleci/aws-cli@1.3.0
   dockerhub_helper:
@@ -185,7 +190,7 @@ jobs:
       - checkout
       - run:
           name: check log message
-          command: echo "export NO_RELOAD=false" >> $BASH_ENV
+          command: echo "export NO_RELOAD=true" >> $BASH_ENV
       - run:
           name: install requirements
           command: pip3 install -r requirements-rsf.txt
@@ -212,23 +217,6 @@ jobs:
       - run:
           name: Run behat tests
           command: ecs-runner -task behat-migration -timeout 600
-  run_elasticsearch_reset:
-    executor: terraform/terraform
-    resource_class: small
-    parameters:
-      tf_workspace:
-        description: terraform workspace
-        type: string
-        default: "development"
-    working_directory: ~/project/terraform
-    steps:
-      - checkout:
-          path: ~/project
-      - terraform/install
-      - terraform/setup_ecs_runner
-      - run:
-          name: Reset Elasticsearch
-          command: ecs-runner -task reset-elasticsearch -timeout 600
   reset_sirius:
     executor: terraform/terraform
     resource_class: small
@@ -311,6 +299,10 @@ jobs:
     executor: terraform/terraform
     resource_class: small
     parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "Development"
       tf_workspace:
         description: terraform workspace
         type: string
@@ -320,6 +312,7 @@ jobs:
         type: string
     environment:
       WORKSPACE: << parameters.tf_workspace >>
+      ENVIRONMENT: << parameters.environment >>
     working_directory: ~/project/terraform
     steps:
       - checkout:
@@ -359,3 +352,27 @@ jobs:
           root: .
           paths:
             - VERSION
+  run_elasticsearch_reset:
+    executor: terraform/terraform
+    resource_class: small
+    parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "Development"
+      tf_workspace:
+        description: terraform workspace
+        type: string
+        default: "development"
+    environment:
+      ENVIRONMENT: << parameters.environment >>
+      TF_WORKSPACE: << parameters.tf_workspace >>
+    working_directory: ~/project/terraform
+    steps:
+      - checkout:
+          path: ~/project
+      - terraform/install
+      - terraform/setup_ecs_runner
+      - run:
+          name: Reset Elasticsearch
+          command: ecs-runner -task elasticsearch-reindex -timeout 18000
