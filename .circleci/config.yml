@@ -9,9 +9,10 @@ workflows:
           filters: {branches:{ignore:[master]}}
       - infrastructure:
           name: build infra qa
-          requires: [build and unit tests]
+          requires: [plan infra qa]
           tf_workspace: qa
           tf_command: apply
+          environment: Quality Assurance
           filters: {branches:{ignore:[master]}}
       - run_step_function:
           name: run the step function qa
@@ -19,7 +20,7 @@ workflows:
           account: "492687888235"
           wait_for: "10800"
           tf_workspace: qa
-          environment: QA
+          environment: Quality Assurance
           filters: {branches:{ignore:[master]}}
 
 orbs:
@@ -184,7 +185,7 @@ jobs:
       - checkout
       - run:
           name: check log message
-          command: echo "export NO_RELOAD=true" >> $BASH_ENV
+          command: echo "export NO_RELOAD=false" >> $BASH_ENV
       - run:
           name: install requirements
           command: pip3 install -r requirements-rsf.txt
