@@ -17,8 +17,9 @@ workflows:
           name: run the step function preproduction
           requires: [build infra preproduction]
           account: "492687888235"
-          wait_for: "6000"
-          environment: preproduction
+          wait_for: "10800"
+          tf_workspace: preproduction
+          environment: Preproduction
           filters: {branches:{ignore:[master]}}
 
 orbs:
@@ -161,6 +162,10 @@ jobs:
       environment:
         description: environment for step function
         type: string
+        default: "Development"
+      tf_workspace:
+        description: terraform workspace
+        type: string
         default: "development"
       account:
         description: account to run step function in
@@ -173,6 +178,7 @@ jobs:
     environment:
       SIRIUS_ACCOUNT: << parameters.account >>
       ENVIRONMENT: << parameters.environment >>
+      TF_WORKSPACE: << parameters.tf_workspace >>
       WAIT_FOR: << parameters.wait_for >>
     steps:
       - checkout
@@ -185,7 +191,7 @@ jobs:
           working_directory: ~/project/docs/ci_scripts
       - run:
           name: run the function
-          command: python3 run_step_function.py --role sirius-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD} --environment ${ENVIRONMENT}
+          command: python3 run_step_function.py --role sirius-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD} --workspace ${TF_WORKSPACE}
           working_directory: ~/project/docs/ci_scripts
 
   run_behat_tests:
