@@ -483,11 +483,11 @@ We do this from the command line by running the following:
 
 ```
 aws-vault exec identity -- docker-compose -f docker-compose.commands.yml run --rm task_runner ./run_ecs_task.sh \
--t in720-7105668 \
+-t master-37e52fe \
 -i validation \
 -n etl5 \
 -c "validation/validate.sh" \
--l casrec-migration-preproduction
+-l casrec-migration-qa
 ```
 
 #### Running the steps (Non-dockerised):

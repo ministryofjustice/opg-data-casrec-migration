@@ -12,15 +12,22 @@ workflows:
           requires: [build and unit tests]
           tf_workspace: preproduction
           tf_command: apply
+          environment: Preproduction
           filters: {branches:{ignore:[master]}}
       - run_step_function:
           name: run the step function preproduction
           requires: [build infra preproduction]
           account: "492687888235"
-          wait_for: "6000"
-          environment: preproduction
+          wait_for: "10800"
+          tf_workspace: preproduction
+          environment: Preproduction
           filters: {branches:{ignore:[master]}}
-
+      - run_elasticsearch_reset:
+          name: full reindex elasticsearch preproduction
+          requires: [run the step function preproduction]
+          tf_workspace: preproduction
+          environment: Preproduction
+          filters: {branches:{ignore:[master]}}
 orbs:
   aws-cli: circleci/aws-cli@1.3.0
   dockerhub_helper:
@@ -101,31 +108,7 @@ orbs:
               name: login to code artifact for pip
               command: ./login_code_artifact.sh -a 288342028542 -t pip
               working_directory: ~/project/docs/ci_scripts
-      cancel_redundant_builds:
-        steps:
-          - run:
-              name: install cancel build requirements
-              command: pip3 install -r requirements.txt
-              working_directory: ~/project/docs/ci_scripts
-          - run:
-              name: cancel previous builds
-              command: |
-                python3 cancel_builds.py \
-                --circle_project_username="${CIRCLE_PROJECT_USERNAME}" \
-                --circle_project_reponame="${CIRCLE_PROJECT_REPONAME}" \
-                --circle_branch="${CIRCLE_BRANCH}" \
-                --circle_builds_token="${CIRCLE_BUILDS_TOKEN}" \
-                --terms_to_waitfor="plan infra" \
-                --prod_job_terms="build infra ,master"
-              working_directory: ~/project/docs/ci_scripts
-          - run:
-              name: wait for others builds to finish
-              command: |
-                python3 circle_job_waiter.py \
-                --circle_builds_token "${CIRCLE_BUILDS_TOKEN}" \
-                --circle_project_username "${CIRCLE_PROJECT_USERNAME}" \
-                --circle_project_reponame "${CIRCLE_PROJECT_REPONAME}"
-              working_directory: ~/project/docs/ci_scripts
+
 jobs:
   cleanup:
     executor: migration/python
@@ -133,26 +116,6 @@ jobs:
       - run:
           name: cleanup
           command: echo "running this so job passes as it's requirement to merge"
-  manage_workflow:
-    executor: migration/python
-    resource_class: small
-    steps:
-      - checkout
-      - migration/login_codeartifact
-      - migration/cancel_redundant_builds
-  kick_off_preprod:
-    executor: migration/python
-    resource_class: small
-    steps:
-      - checkout
-      - run:
-          name: kick off preprod job
-          command: |
-            curl --request POST \
-            --url https://circleci.com/api/v2/project/github/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pipeline \
-            --header "Circle-Token: ${CIRCLE_BUILDS_TOKEN}" \
-            --header 'content-type: application/json' \
-            --data '{"branch":"master", "parameters":{"run_master":false, "run_preprod":true}}'
 
   run_step_function:
     executor: migration/python
@@ -160,6 +123,10 @@ jobs:
     parameters:
       environment:
         description: environment for step function
+        type: string
+        default: "Development"
+      tf_workspace:
+        description: terraform workspace
         type: string
         default: "development"
       account:
@@ -173,6 +140,7 @@ jobs:
     environment:
       SIRIUS_ACCOUNT: << parameters.account >>
       ENVIRONMENT: << parameters.environment >>
+      TF_WORKSPACE: << parameters.tf_workspace >>
       WAIT_FOR: << parameters.wait_for >>
     steps:
       - checkout
@@ -185,81 +153,9 @@ jobs:
           working_directory: ~/project/docs/ci_scripts
       - run:
           name: run the function
-          command: python3 run_step_function.py --role sirius-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD} --environment ${ENVIRONMENT}
+          command: python3 run_step_function.py --role sirius-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD} --workspace ${TF_WORKSPACE}
           working_directory: ~/project/docs/ci_scripts
 
-  run_behat_tests:
-    executor: terraform/terraform
-    resource_class: small
-    parameters:
-      tf_workspace:
-        description: terraform workspace
-        type: string
-        default: "development"
-    working_directory: ~/project/terraform
-    steps:
-      - checkout:
-          path: ~/project
-      - terraform/install
-      - terraform/setup_ecs_runner
-      - run:
-          name: Run behat tests
-          command: ecs-runner -task behat-migration -timeout 600
-  run_elasticsearch_reset:
-    executor: terraform/terraform
-    resource_class: small
-    parameters:
-      tf_workspace:
-        description: terraform workspace
-        type: string
-        default: "development"
-    working_directory: ~/project/terraform
-    steps:
-      - checkout:
-          path: ~/project
-      - terraform/install
-      - terraform/setup_ecs_runner
-      - run:
-          name: Reset Elasticsearch
-          command: ecs-runner -task reset-elasticsearch -timeout 600
-  reset_sirius:
-    executor: terraform/terraform
-    resource_class: small
-    parameters:
-      tf_workspace:
-        description: terraform workspace
-        type: string
-        default: "development"
-    working_directory: ~/project/terraform
-    steps:
-      - checkout:
-          path: ~/project
-      - terraform/install
-      - terraform/setup_ecs_runner
-      - run:
-          name: Reset Api
-          command: ecs-runner -task reset-api -timeout 600
-      - run:
-          name: Reset Membrane
-          command: ecs-runner -task reset-membrane -timeout 600
-      - run:
-          name: Migrate Api
-          command: ecs-runner -task migrate-api -timeout 600
-      - run:
-          name: Migrate Membrane
-          command: ecs-runner -task migrate-membrane -timeout 600
-      - run:
-          name: Import Fixtures to Api
-          command: ecs-runner -task import-fixtures-api -timeout 600
-      - run:
-          name: Import Fixtures to Membrane
-          command: ecs-runner -task import-fixtures-membrane -timeout 600
-      - run:
-          name: Ingest Cases
-          command: ecs-runner -task ingest-cases -timeout 600
-      - run:
-          name: Reset Elasticsearch
-          command: ecs-runner -task reset-elasticsearch -timeout 600
   build:
     executor: migration/python
     resource_class: small
@@ -304,6 +200,10 @@ jobs:
     executor: terraform/terraform
     resource_class: small
     parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "Development"
       tf_workspace:
         description: terraform workspace
         type: string
@@ -313,6 +213,7 @@ jobs:
         type: string
     environment:
       WORKSPACE: << parameters.tf_workspace >>
+      ENVIRONMENT: << parameters.environment >>
     working_directory: ~/project/terraform
     steps:
       - checkout:
@@ -332,23 +233,45 @@ jobs:
       - run:
           name: Output
           command: terraform output -json > terraform.output.json
-  get_latest_image:
+
+  run_elasticsearch_reset:
+    executor: terraform/terraform
+    resource_class: small
+    parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "Development"
+      tf_workspace:
+        description: terraform workspace
+        type: string
+        default: "development"
+    environment:
+      ENVIRONMENT: << parameters.environment >>
+      TF_WORKSPACE: << parameters.tf_workspace >>
+    working_directory: ~/project/terraform
+    steps:
+      - checkout:
+          path: ~/project
+      - terraform/install
+      - terraform/setup_ecs_runner
+      - run:
+          name: Reset Elasticsearch
+          command: ecs-runner -task elasticsearch-reindex -timeout 18000
+
+  reset_sirius_full_restore:
     executor: migration/python
     resource_class: small
+    parameters:
+      sirius_environment:
+        description: environment for notifications
+        type: string
+        default: "casrecdmpp"
     environment:
-      AWS_REGION: eu-west-1
-      AWS_CONFIG_FILE: ~/project/aws_config
-      AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
+      SIRIUS_ENVIRONMENT: << parameters.sirius_environment >>
     steps:
       - checkout
       - run:
-          name: Install requirements
-          command: pip install boto3 click
-      - run:
-          name: Set latest version
-          command: python get_image.py --role sirius-ci >> ~/project/VERSION
+          name: run and monitor jenkins job
+          command: ./run_jenkins_job.sh -w ${SIRIUS_ENVIRONMENT} -k ${JENKINS_API_KEY}
           working_directory: ~/project/docs/ci_scripts
-      - persist_to_workspace:
-          root: .
-          paths:
-            - VERSION

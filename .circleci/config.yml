@@ -15,41 +15,80 @@ workflows:
   pull_request:
     when: << pipeline.parameters.run_master >>
     jobs:
-      - manage_workflow:
-          name: manage workflow
-          environment: Development
+      - get_latest_image:
+          name: get latest tag
+          image_tag: master
+          environment: Preproduction
           filters: {branches:{ignore:[master]}}
-      - reset_sirius:
-          name: reset the sirius fixtures development
-          requires: [manage workflow]
-          tf_workspace: development
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-      - build:
-          name: build and unit tests
-          requires: [manage workflow]
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-      - infrastructure:
-          name: plan infra development
-          requires: [build and unit tests]
-          tf_workspace: development
-          tf_command: plan
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-      - infrastructure:
-          name: build infra development
-          requires: [plan infra development]
-          tf_workspace: development
-          tf_command: apply
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-      - run_step_function:
-          name: run the step function development
-          requires: [build infra development, reset the sirius fixtures development]
-          tf_workspace: development
-          environment: Development
-          filters: {branches:{ignore:[master]}}
+#      - reset_sirius_full_restore:
+#          name: run and monitor jenkins restore job
+#          environment: Preproduction
+#          sirius_environment: casrecdmpp
+#          filters: {branches:{ignore:[master]}}
+#      - infrastructure:
+#          name: build infra preproduction
+#          requires: [get latest tag]
+#          tf_workspace: preproduction
+#          tf_command: apply
+#          environment: Preproduction
+#          filters: {branches:{ignore:[master]}}
+#      - run_step_function:
+#          name: run the step function preproduction
+#          requires: [
+#            run and monitor jenkins restore job,
+#            build infra preproduction
+#          ]
+#          account: "492687888235"
+#          wait_for: "10800"
+#          tf_workspace: preproduction
+#          environment: Preproduction
+#          filters: {branches:{ignore:[master]}}
+#      - tag_image_for_qa:
+#          name: tag image for qa
+#          requires: [run the step function preproduction]
+#          filters: {branches:{ignore:[master]}}
+#      - run_elasticsearch_reset:
+#          name: full reindex elasticsearch preprod
+#          requires: [run the step function preproduction]
+#          tf_workspace: preproduction
+#          environment: Preproduction
+#          filters: {branches:{ignore:[master]}}
+
+#      - manage_workflow:
+#          name: manage workflow
+#          environment: Development
+#          filters: {branches:{ignore:[master]}}
+#      - reset_sirius:
+#          name: reset the sirius fixtures development
+#          requires: [manage workflow]
+#          tf_workspace: development
+#          environment: Development
+#          filters: {branches:{ignore:[master]}}
+#      - build:
+#          name: build and unit tests
+#          requires: [manage workflow]
+#          environment: Development
+#          filters: {branches:{ignore:[master]}}
+#      - infrastructure:
+#          name: plan infra development
+#          requires: [build and unit tests]
+#          tf_workspace: development
+#          tf_command: plan
+#          environment: Development
+#          filters: {branches:{ignore:[master]}}
+#      - infrastructure:
+#          name: build infra development
+#          requires: [plan infra development]
+#          tf_workspace: development
+#          tf_command: apply
+#          environment: Development
+#          filters: {branches:{ignore:[master]}}
+#      - run_step_function:
+#          name: run the step function development
+#          requires: [build infra development, reset the sirius fixtures development]
+#          tf_workspace: development
+#          environment: Development
+#          filters: {branches:{ignore:[master]}}
 
   master:
     when: << pipeline.parameters.run_master >>
@@ -171,6 +210,51 @@ workflows:
           requires: [approve full elastic reset qa]
           tf_workspace: qa
           environment: Quality Assurance
+          filters: {branches:{only:[master]}}
+
+  nightly_preproduction_run:
+    triggers:
+      - schedule:
+          cron: "00 22 * * *"
+          filters: {branches:{only:[master]}}
+    jobs:
+      - get_latest_image:
+          name: get latest tag
+          image_tag: master
+          environment: Preproduction
+          filters: {branches:{only:[master]}}
+      - reset_sirius_full_restore:
+          name: run and monitor jenkins restore job
+          environment: Preproduction
+          sirius_environment: casrecdmpp
+          filters: {branches:{only:[master]}}
+      - infrastructure:
+          name: build infra preproduction
+          requires: [get latest tag]
+          tf_workspace: preproduction
+          tf_command: apply
+          environment: Preproduction
+          filters: {branches:{only:[master]}}
+      - run_step_function:
+          name: run the step function preproduction
+          requires: [
+            run and monitor jenkins restore job,
+            build infra preproduction
+          ]
+          account: "492687888235"
+          wait_for: "10800"
+          tf_workspace: preproduction
+          environment: Preproduction
+          filters: {branches:{only:[master]}}
+      - tag_image_for_qa:
+          name: tag image for qa
+          requires: [run the step function preproduction]
+          filters: {branches:{only:[master]}}
+      - run_elasticsearch_reset:
+          name: full reindex elasticsearch preprod
+          requires: [run the step function preproduction]
+          tf_workspace: preproduction
+          environment: Preproduction
           filters: {branches:{only:[master]}}
 
 orbs:
@@ -636,6 +720,7 @@ jobs:
       - terraform/setup_ecs_runner
       - run:
           name: Reset Elasticsearch
+          no_output_timeout: 240m
           command: ecs-runner -task elasticsearch-reindex -timeout 18000
       - notififications/notify_env_vars
       - notififications/notify_if_fail
@@ -817,15 +902,48 @@ jobs:
     steps:
       - checkout
       - run:
+          name: test a thing
+          command: |
+            sleep 300
+            exit 1
+          background: true
+      - run:
           name: Install requirements
           command: pip install boto3 click
       - run:
           name: Set latest version
           command: python get_image.py --role sirius-ci --image_tag ${IMAGE_TAG} >> ~/project/VERSION
           working_directory: ~/project/docs/ci_scripts
+      - run:
+          name: Show latest version
+          command: cat ~/project/VERSION
       - persist_to_workspace:
           root: .
           paths:
             - VERSION
+      - notififications/notify_env_vars
+      - notififications/notify_if_fail
+
+  reset_sirius_full_restore:
+    executor: migration/python
+    resource_class: small
+    parameters:
+      environment:
+        description: environment for notifications
+        type: string
+        default: "Development"
+      sirius_environment:
+        description: environment for notifications
+        type: string
+        default: "casrecdmpp"
+    environment:
+      ENVIRONMENT: << parameters.environment >>
+      SIRIUS_ENVIRONMENT: << parameters.sirius_environment >>
+    steps:
+      - checkout
+      - run:
+          name: run and monitor jenkins job
+          command: ./run_jenkins_job.sh -w ${SIRIUS_ENVIRONMENT} -k ${JENKINS_API_KEY}
+          working_directory: ~/project/docs/ci_scripts
       - notififications/notify_env_vars
       - notififications/notify_if_fail
