@@ -56,11 +56,20 @@ def get_mappings():
             "client_addresses",
             "client_persons",
             "client_phonenumbers",
-            "client_death_notifications"
+            "client_death_notifications",
+            "client_nodebtchase_warnings",
+            "client_saarcheck_warnings",
+            "client_special_warnings",
+            "client_violent_warnings",
         ],
         "cases": ["cases", "supervision_level_log"],
         "bonds": ["bonds"],
-        "deputies": ["deputy_persons", "deputy_death_notifications"],
+        "deputies": [
+            "deputy_persons",
+            "deputy_death_notifications",
+            "deputy_special_warnings",
+            "deputy_violent_warnings",
+        ],
     }
 
     for entity, mapping in all_mappings.items():
