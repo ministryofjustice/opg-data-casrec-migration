@@ -66,7 +66,7 @@ def get_mappings():
         "bonds": ["bonds"],
         "deputies": [
             "deputy_persons",
-            "deputy_death_notifications"
+            "deputy_death_notifications",
             "deputy_special_warnings",
             "deputy_violent_warnings",
         ],
