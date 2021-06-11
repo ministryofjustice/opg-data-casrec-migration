@@ -45,7 +45,7 @@
     },
     "closed_by": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
