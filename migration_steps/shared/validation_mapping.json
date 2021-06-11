@@ -150,6 +150,37 @@
             ]
         }
     },
+    "client_nodebtchase_warnings": {
+        "exclude": [],
+        "forced": {
+            "caserecnumber": {
+                "mapping_table": "client_persons.caserecnumber"
+            }
+        },
+        "orderby": {},
+        "casrec": {
+            "from_table": "pat",
+            "joins": [],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_nodebtchase_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "where_clauses": [
+                "casrec_csv.pat.\"Debt chase\" != ''"
+            ]
+        },
+        "sirius": {
+            "from_table": "person_warning",
+            "joins": [
+                "LEFT JOIN {target_schema}.persons ON persons.id = person_warning.person_id",
+                "LEFT JOIN {target_schema}.warnings ON warnings.id = person_warning.warning_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_nodebtchase_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "persons.type = 'actor_client'",
+                "persons.clientsource = 'CASRECMIGRATION'",
+                "warnings.warningtype = 'OTHER'",
+                "warnings.warningtext = 'No Debt to be chased'"
+            ]
+        }
+    },
     "client_persons": {
         "exclude": [
             "caserecnumber",
@@ -204,6 +235,101 @@
             "where_clauses": [
                 "persons.type = 'actor_client'",
                 "persons.clientsource = 'CASRECMIGRATION'"
+            ]
+        }
+    },
+    "client_saarcheck_warnings": {
+        "exclude": [],
+        "forced": {
+            "caserecnumber": {
+                "mapping_table": "client_persons.caserecnumber"
+            }
+        },
+        "orderby": {},
+        "casrec": {
+            "from_table": "pat",
+            "joins": [],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_saarcheck_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "where_clauses": [
+                "casrec_csv.pat.\"SAAR Check\" != ''"
+            ]
+        },
+        "sirius": {
+            "from_table": "person_warning",
+            "joins": [
+                "LEFT JOIN {target_schema}.persons ON persons.id = person_warning.person_id",
+                "LEFT JOIN {target_schema}.warnings ON warnings.id = person_warning.warning_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_saarcheck_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "persons.type = 'actor_client'",
+                "persons.clientsource = 'CASRECMIGRATION'",
+                "warnings.warningtype = 'OTHER'",
+                "warnings.warningtext = 'SAAR CHECK DONE'"
+            ]
+        }
+    },
+    "client_special_warnings": {
+        "exclude": [],
+        "forced": {
+            "caserecnumber": {
+                "mapping_table": "client_persons.caserecnumber"
+            }
+        },
+        "orderby": {},
+        "casrec": {
+            "from_table": "pat",
+            "joins": [],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_special_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "where_clauses": [
+                "casrec_csv.pat.\"SIM\" != ''"
+            ]
+        },
+        "sirius": {
+            "from_table": "person_warning",
+            "joins": [
+                "LEFT JOIN {target_schema}.persons ON persons.id = person_warning.person_id",
+                "LEFT JOIN {target_schema}.warnings ON warnings.id = person_warning.warning_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_special_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "persons.type = 'actor_client'",
+                "persons.clientsource = 'CASRECMIGRATION'",
+                "warnings.warningtype = 'OTHER'",
+                "warnings.warningtext = 'Special Interest'"
+            ]
+        }
+    },
+    "client_violent_warnings": {
+        "exclude": [],
+        "forced": {
+            "caserecnumber": {
+                "mapping_table": "client_persons.caserecnumber"
+            }
+        },
+        "orderby": {},
+        "casrec": {
+            "from_table": "pat",
+            "joins": [],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_violent_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "where_clauses": [
+                "casrec_csv.pat.\"VWM\" != ''",
+                "casrec_csv.warning_violent_lookup(casrec_csv.pat.\"VWM\") = 'Marker'",
+                "casrec_csv.warning_violent_lookup(casrec_csv.pat.\"VWM\") = 'Marker'"
+            ]
+        },
+        "sirius": {
+            "from_table": "person_warning",
+            "joins": [
+                "LEFT JOIN {target_schema}.persons ON persons.id = person_warning.person_id",
+                "LEFT JOIN {target_schema}.warnings ON warnings.id = person_warning.warning_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_violent_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "persons.type = 'actor_client'",
+                "persons.clientsource = 'CASRECMIGRATION'",
+                "warnings.warningtype = 'Marker'",
+                "warnings.warningtext = 'Marker'"
             ]
         }
     },
@@ -298,6 +424,97 @@
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
                 "persons.clientsource = 'CASRECMIGRATION'"
+            ]
+        }
+    },
+    "deputy_special_warnings": {
+        "exclude": [],
+        "forced": {
+            "caserecnumber": {
+                "mapping_table": "cases.caserecnumber"
+            }
+        },
+        "orderby": {
+            "casesubtype": {
+                "mapping_table": "cases.casesubtype",
+                "direction": "ASC"
+            },
+            "orderdate": {
+                "mapping_table": "cases.orderdate",
+                "direction": "ASC"
+            }
+        },
+        "casrec": {
+            "from_table": "deputyship",
+            "joins": [
+                "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\"",
+                "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\""
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_special_warnings exc_table ON exc_table.caserecnumber = casrec_csv.order.\"Case\"",
+            "where_clauses": [
+                "casrec_csv.deputy.\"SIM\" != ''"
+            ]
+        },
+        "sirius": {
+            "from_table": "order_deputy",
+            "joins": [
+                "LEFT JOIN {target_schema}.cases ON cases.id = order_deputy.order_id",
+                "LEFT JOIN {target_schema}.persons ON persons.id = order_deputy.deputy_id",
+                "LEFT JOIN {target_schema}.person_warning ON person_warning.person_id = order_deputy.deputy_id",
+                "LEFT JOIN {target_schema}.warnings ON person_warning.warning_id = warnings.id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_special_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "persons.type = 'actor_deputy'",
+                "persons.clientsource = 'CASRECMIGRATION'",
+                "warnings.warningtype = 'OTHER'",
+                "warnings.warningtext = 'Special Interest'"
+            ]
+        }
+    },
+    "deputy_violent_warnings": {
+        "exclude": [],
+        "forced": {
+            "caserecnumber": {
+                "mapping_table": "cases.caserecnumber"
+            }
+        },
+        "orderby": {
+            "casesubtype": {
+                "mapping_table": "cases.casesubtype",
+                "direction": "ASC"
+            },
+            "orderdate": {
+                "mapping_table": "cases.orderdate",
+                "direction": "ASC"
+            }
+        },
+        "casrec": {
+            "from_table": "deputyship",
+            "joins": [
+                "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\"",
+                "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\""
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_violent_warnings exc_table ON exc_table.caserecnumber = casrec_csv.order.\"Case\"",
+            "where_clauses": [
+                "casrec_csv.warning_violent_lookup(casrec_csv.deputy.\"VWM\") = 'Marker'",
+                "casrec_csv.warning_violent_lookup(casrec_csv.deputy.\"VWM\") = 'Marker'"
+            ]
+        },
+        "sirius": {
+            "from_table": "order_deputy",
+            "joins": [
+                "LEFT JOIN {target_schema}.cases ON cases.id = order_deputy.order_id",
+                "LEFT JOIN {target_schema}.persons ON persons.id = order_deputy.deputy_id",
+                "LEFT JOIN {target_schema}.person_warning ON person_warning.person_id = order_deputy.deputy_id",
+                "LEFT JOIN {target_schema}.warnings ON person_warning.warning_id = warnings.id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_violent_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "persons.type = 'actor_deputy'",
+                "persons.clientsource = 'CASRECMIGRATION'",
+                "warnings.warningtype = 'Marker'",
+                "warnings.warningtext = 'Marker'"
             ]
         }
     },
