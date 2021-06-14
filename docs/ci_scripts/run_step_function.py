@@ -223,6 +223,10 @@ def main(role, account, wait_for, no_reload, workspace):
     step_function_runner.get_execution_arn()
     step_function_runner.step_function_running_wait_for(int(wait_for))
 
+    # Let final logs filter in and print them
+    time.sleep(30)
+    step_function_runner.print_from_logs()
+
     if step_function_runner.last_step_function_status_response() == "SUCCEEDED":
         print("Last step successful")
     else:

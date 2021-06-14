@@ -173,6 +173,51 @@ workflows:
           environment: Quality Assurance
           filters: {branches:{only:[master]}}
 
+  nightly_preproduction_run:
+    triggers:
+      - schedule:
+          cron: "00 22 * * *"
+          filters: {branches:{only:[master]}}
+    jobs:
+      - get_latest_image:
+          name: get latest tag
+          image_tag: master
+          environment: Preproduction
+          filters: {branches:{only:[master]}}
+      - reset_sirius_full_restore:
+          name: run and monitor jenkins restore job
+          environment: Preproduction
+          sirius_environment: casrecdmpp
+          filters: {branches:{only:[master]}}
+      - infrastructure:
+          name: build infra preproduction
+          requires: [get latest tag]
+          tf_workspace: preproduction
+          tf_command: apply
+          environment: Preproduction
+          filters: {branches:{only:[master]}}
+      - run_step_function:
+          name: run the step function preproduction
+          requires: [
+            run and monitor jenkins restore job,
+            build infra preproduction
+          ]
+          account: "492687888235"
+          wait_for: "10800"
+          tf_workspace: preproduction
+          environment: Preproduction
+          filters: {branches:{only:[master]}}
+      - tag_image_for_qa:
+          name: tag image for qa
+          requires: [run the step function preproduction]
+          filters: {branches:{only:[master]}}
+      - run_elasticsearch_reset:
+          name: full reindex elasticsearch preprod
+          requires: [run the step function preproduction]
+          tf_workspace: preproduction
+          environment: Preproduction
+          filters: {branches:{only:[master]}}
+
 orbs:
   aws-cli: circleci/aws-cli@1.3.0
 
@@ -637,6 +682,14 @@ jobs:
       - run:
           name: Reset Elasticsearch
           command: ecs-runner -task elasticsearch-reindex -timeout 18000
+          background: true
+      - run:
+          name: elasticsearch
+          command: |
+            echo "We're running reindex in the background."
+            echo "We don't want to completely wait for it here."
+            echo "Sleeping for 5 mins so we can see that it has started properly. Check AWS logs for full results"
+            sleep 300
       - notififications/notify_env_vars
       - notififications/notify_if_fail
   reset_sirius:
@@ -823,9 +876,36 @@ jobs:
           name: Set latest version
           command: python get_image.py --role sirius-ci --image_tag ${IMAGE_TAG} >> ~/project/VERSION
           working_directory: ~/project/docs/ci_scripts
+      - run:
+          name: Show latest version
+          command: cat ~/project/VERSION
       - persist_to_workspace:
           root: .
           paths:
             - VERSION
+      - notififications/notify_env_vars
+      - notififications/notify_if_fail
+
+  reset_sirius_full_restore:
+    executor: migration/python
+    resource_class: small
+    parameters:
+      environment:
+        description: environment for notifications
+        type: string
+        default: "Development"
+      sirius_environment:
+        description: environment for notifications
+        type: string
+        default: "casrecdmpp"
+    environment:
+      ENVIRONMENT: << parameters.environment >>
+      SIRIUS_ENVIRONMENT: << parameters.sirius_environment >>
+    steps:
+      - checkout
+      - run:
+          name: run and monitor jenkins job
+          command: ./run_jenkins_job.sh -w ${SIRIUS_ENVIRONMENT} -k ${JENKINS_API_KEY}
+          working_directory: ~/project/docs/ci_scripts
       - notififications/notify_env_vars
       - notififications/notify_if_fail
