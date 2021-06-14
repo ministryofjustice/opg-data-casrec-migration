@@ -870,12 +870,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: test a thing
-          command: |
-            sleep 300
-            exit 1
-          background: true
-      - run:
           name: Install requirements
           command: pip install boto3 click
       - run:
