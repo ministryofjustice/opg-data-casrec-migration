@@ -15,80 +15,41 @@ workflows:
   pull_request:
     when: << pipeline.parameters.run_master >>
     jobs:
-      - get_latest_image:
-          name: get latest tag
-          image_tag: master
-          environment: Preproduction
+      - manage_workflow:
+          name: manage workflow
+          environment: Development
           filters: {branches:{ignore:[master]}}
-#      - reset_sirius_full_restore:
-#          name: run and monitor jenkins restore job
-#          environment: Preproduction
-#          sirius_environment: casrecdmpp
-#          filters: {branches:{ignore:[master]}}
-#      - infrastructure:
-#          name: build infra preproduction
-#          requires: [get latest tag]
-#          tf_workspace: preproduction
-#          tf_command: apply
-#          environment: Preproduction
-#          filters: {branches:{ignore:[master]}}
-#      - run_step_function:
-#          name: run the step function preproduction
-#          requires: [
-#            run and monitor jenkins restore job,
-#            build infra preproduction
-#          ]
-#          account: "492687888235"
-#          wait_for: "10800"
-#          tf_workspace: preproduction
-#          environment: Preproduction
-#          filters: {branches:{ignore:[master]}}
-#      - tag_image_for_qa:
-#          name: tag image for qa
-#          requires: [run the step function preproduction]
-#          filters: {branches:{ignore:[master]}}
-#      - run_elasticsearch_reset:
-#          name: full reindex elasticsearch preprod
-#          requires: [run the step function preproduction]
-#          tf_workspace: preproduction
-#          environment: Preproduction
-#          filters: {branches:{ignore:[master]}}
-
-#      - manage_workflow:
-#          name: manage workflow
-#          environment: Development
-#          filters: {branches:{ignore:[master]}}
-#      - reset_sirius:
-#          name: reset the sirius fixtures development
-#          requires: [manage workflow]
-#          tf_workspace: development
-#          environment: Development
-#          filters: {branches:{ignore:[master]}}
-#      - build:
-#          name: build and unit tests
-#          requires: [manage workflow]
-#          environment: Development
-#          filters: {branches:{ignore:[master]}}
-#      - infrastructure:
-#          name: plan infra development
-#          requires: [build and unit tests]
-#          tf_workspace: development
-#          tf_command: plan
-#          environment: Development
-#          filters: {branches:{ignore:[master]}}
-#      - infrastructure:
-#          name: build infra development
-#          requires: [plan infra development]
-#          tf_workspace: development
-#          tf_command: apply
-#          environment: Development
-#          filters: {branches:{ignore:[master]}}
-#      - run_step_function:
-#          name: run the step function development
-#          requires: [build infra development, reset the sirius fixtures development]
-#          tf_workspace: development
-#          environment: Development
-#          filters: {branches:{ignore:[master]}}
+      - reset_sirius:
+          name: reset the sirius fixtures development
+          requires: [manage workflow]
+          tf_workspace: development
+          environment: Development
+          filters: {branches:{ignore:[master]}}
+      - build:
+          name: build and unit tests
+          requires: [manage workflow]
+          environment: Development
+          filters: {branches:{ignore:[master]}}
+      - infrastructure:
+          name: plan infra development
+          requires: [build and unit tests]
+          tf_workspace: development
+          tf_command: plan
+          environment: Development
+          filters: {branches:{ignore:[master]}}
+      - infrastructure:
+          name: build infra development
+          requires: [plan infra development]
+          tf_workspace: development
+          tf_command: apply
+          environment: Development
+          filters: {branches:{ignore:[master]}}
+      - run_step_function:
+          name: run the step function development
+          requires: [build infra development, reset the sirius fixtures development]
+          tf_workspace: development
+          environment: Development
+          filters: {branches:{ignore:[master]}}
 
   master:
     when: << pipeline.parameters.run_master >>
@@ -720,8 +681,15 @@ jobs:
       - terraform/setup_ecs_runner
       - run:
           name: Reset Elasticsearch
-          no_output_timeout: 240m
           command: ecs-runner -task elasticsearch-reindex -timeout 18000
+          background: true
+      - run:
+          name: elasticsearch
+          command: |
+            echo "We're running reindex in the background."
+            echo "We don't want to completely wait for it here."
+            echo "Sleeping for 5 mins so we can see that it has started properly. Check AWS logs for full results"
+            sleep 300
       - notififications/notify_env_vars
       - notififications/notify_if_fail
   reset_sirius:
