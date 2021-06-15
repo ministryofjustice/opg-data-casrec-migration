@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 
 from rules.global_uids import insert_unique_uids
+from rules.reindex_lookups import reindex_single_lookup, reindex_lookups
 from utilities.clear_tables import clear_tables
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -52,13 +53,7 @@ custom_logger.setup_logging(
 
 @click.command()
 @click.option("--team", default="")
-@click.option(
-    "--clear",
-    prompt=False,
-    default=False,
-    help="Clear existing database tables: True or False",
-)
-def main(clear, team):
+def main(team):
     allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
 
     log.info(
@@ -72,10 +67,8 @@ def main(clear, team):
     log.info(log_title(message=f"Enabled entities: {', '.join(allowed_entities)}"))
     log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
-    if clear:
-        clear_tables(db_engine=target_db_engine, db_config=db_config)
-
     insert_unique_uids(db_config=db_config, target_db_engine=target_db_engine)
+    reindex_lookups(db_engine=target_db_engine, db_config=db_config)
 
     if environment == "local":
         check_row_counts.count_rows(

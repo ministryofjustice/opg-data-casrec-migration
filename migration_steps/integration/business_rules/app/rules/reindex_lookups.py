@@ -26,21 +26,28 @@ def get_lookups_to_reindex():
     for file in mapping_files:
         file_name = file[:-5]
         mapping_dict = get_mapping_dict(file_name=file_name, stage_name="integration")
+
         for field, details in mapping_dict.items():
             if "reindex_lookup" in details["business_rules"]:
-                lookup_table = get_mapping_dict(
+                lookup_def = get_mapping_dict(
                     file_name=file_name, stage_name="transform_casrec"
                 )[field]["lookup_table"]
                 sirius_table = get_mapping_dict(
                     file_name=file_name, stage_name="sirius_details"
                 )[field]["table_name"]
+                lookup_table = get_mapping_dict(
+                    file_name=file_name, stage_name="sirius_details"
+                )[field]["fk_parents"].split(":")[0]
 
                 if sirius_table in lookups_to_reindex:
-                    lookups_to_reindex[sirius_table].append({field: lookup_table})
+                    lookups_to_reindex[sirius_table].append(
+                        {field: {lookup_def: lookup_table}}
+                    )
                 else:
-                    lookups_to_reindex[sirius_table] = [{field: lookup_table}]
+                    lookups_to_reindex[sirius_table] = [
+                        {field: {lookup_def: lookup_table}}
+                    ]
 
-    # print(f"lookups_to_reindex: {lookups_to_reindex}")
     return lookups_to_reindex
 
 
@@ -51,29 +58,49 @@ def get_unique_val(val_name, dict):
         print(f"e: {e}")
 
 
-def get_sirius_data(query):
-    pass
+def get_sirius_lookup_data(db_config, fields_to_select, table):
+    query = f"""select {', '.join(fields_to_select)} from {db_config['sirius_schema']}.{table};"""
 
-    # try:
-    #     # sirius_data =pd.read_sql_query(sirius_query, sirius_db_connection_string)
-    #     connection_string = con
-    #     conn = psycopg2.connect(connection_string)
-    #     cursor = conn.cursor()
-    #     cursor.execute(sirius_query)
-    #     max_vals = cursor.fetchall()
-    #     print(f"max_vals: {max_vals}")
-    #
-    # except Exception as e:
-    #     print(f"e: {e}")
+    lookup_data = pd.read_sql_query(
+        sql=query, con=db_config["sirius_db_connection_string"]
+    )
+
+    return lookup_data
 
 
-def reindex_single_lookup():
-    sirius_table = "bonds"
-    field_to_reindex = "bond_provider_id"
-    lookup_table = "bond_provider_lookup"
+def generate_sirius_lookup_remap(df, lookup_field, result_field):
+
+    df = df.set_index(lookup_field)
+    lookup_remap = {k: v[result_field] for k, v in df.to_dict("index").items()}
+
+    return lookup_remap
+
+
+def generate_updates(lookup_remap, schema, table, field_to_reindex):
+    update_sirius_queries = []
+    for old_val, new_val in lookup_remap.items():
+        update_sirius_queries.append(
+            f"UPDATE {schema}.{table} set {field_to_reindex} = {new_val} where {field_to_reindex} = '{old_val}';"
+        )
+
+        log.debug(
+            f"Generating query to update {table}.{field_to_reindex} to {new_val} where {field_to_reindex} = {old_val} "
+        )
+
+    return update_sirius_queries
+
+
+def reindex_single_lookup(
+    db_engine,
+    db_config,
+    result_table,
+    lookup_table_def,
+    field_to_reindex,
+    sirius_lookup_table,
+):
 
     lookup_dict_with_sirius_details = get_lookup_dict(
-        lookup_table, include_sirius_details=True
+        lookup_table_def, include_sirius_details=True
     )
 
     sirius_lookup_field = get_unique_val(
@@ -83,23 +110,50 @@ def reindex_single_lookup():
         val_name="sirius_result_field", dict=lookup_dict_with_sirius_details
     )
 
-    sirius_schema = "blah"
-    sirius_query = f"""select {sirius_result_field}, {sirius_lookup_field} from {sirius_schema}.{sirius_table};"""
+    sirius_data_df = get_sirius_lookup_data(
+        db_config=db_config,
+        fields_to_select=[sirius_lookup_field, sirius_result_field],
+        table=sirius_lookup_table,
+    )
+    sirius_lookup_remap = generate_sirius_lookup_remap(
+        df=sirius_data_df,
+        lookup_field=sirius_lookup_field,
+        result_field=sirius_result_field,
+    )
+    update_statements = generate_updates(
+        lookup_remap=sirius_lookup_remap,
+        schema=db_config["target_schema"],
+        table=result_table,
+        field_to_reindex=field_to_reindex,
+    )
 
-    sirius_data = get_sirius_data(query=sirius_query)
+    try:
 
-    sirius_data_df = pd.DataFrame(sirius_data, columns=[x for x in sirius_data])
-    sirius_data_df = sirius_data_df.set_index(sirius_lookup_field)
-    sirius_lookup_remap = {
-        k: v[sirius_result_field] for k, v in sirius_data_df.to_dict("index").items()
-    }
+        db_engine.execute(" ".join(update_statements))
 
-    print(f"sirius_lookup_remap: {sirius_lookup_remap}")
+    except Exception as e:
 
-    update_sirius_queries = []
-    for old_val, new_val in sirius_lookup_remap.items():
-        update_sirius_queries.append(
-            f"UPDATE {sirius_table} set {field_to_reindex} = {new_val} where {field_to_reindex} = '{old_val}';"
+        log.error(
+            f"Unable to reindex {field_to_reindex} using lookup table {sirius_lookup_table}: {e}",
+            extra={
+                "file_name": "",
+                "error": helpers.format_error_message(e=e),
+            },
         )
 
-    print(f"update_sirius_query: {update_sirius_queries}")
+
+def reindex_lookups(db_engine, db_config):
+    lookups_to_reindex = get_lookups_to_reindex()
+
+    for lookup, details in lookups_to_reindex.items():
+        sirius_result_table = lookup
+        for field in details:
+            for field_to_reindex, lookup_table_def in field.items():
+                reindex_single_lookup(
+                    db_config=db_config,
+                    db_engine=db_engine,
+                    result_table=sirius_result_table,
+                    lookup_table_def=list(lookup_table_def.keys())[0],
+                    field_to_reindex=field_to_reindex,
+                    sirius_lookup_table=list(lookup_table_def.values())[0],
+                )
