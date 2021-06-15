@@ -271,7 +271,7 @@ def test_csvs(csv, create_a_session):
         csv_data = pd.read_csv(io.BytesIO(obj["Body"].read()), dtype=str)
 
         count = 0
-        # Iterate over rows in the input spreadheet
+        # Iterate over rows in the input spreadsheet
         for index, row in csv_data.iterrows():
             count = count + 1
             endpoint = row["endpoint"]
