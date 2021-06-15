@@ -165,13 +165,13 @@
             "casrec_column_name": "Bond Discharge",
             "alias": "Bond Discharge",
             "requires_transformation": "",
-            "lookup_table": "discharge_lookup",
+            "lookup_table": "discharge_date_lookup",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
         },
         "integration": {
-            "business_rules": ["reindex_lookup"]
+            "business_rules": []
         }
     },
     "bond_provider_id": {
@@ -181,7 +181,7 @@
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "bond_providers:id",
-            "data_type": "int",
+            "data_type": "str",
             "table_name": "bonds",
             "entity": "bonds"
         },

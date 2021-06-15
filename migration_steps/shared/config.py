@@ -83,7 +83,12 @@ class BaseConfig:
 
     def allowed_entities(self, env):
 
-        return [k for k, v in self.ENABLED_ENTITIES.items() if env in v]
+        allowed = [k for k, v in self.ENABLED_ENTITIES.items() if env in v]
+        if len(allowed) == 0:
+            print("No entities enabled - nothing to migrate!")
+            os._exit(1)
+        else:
+            return allowed
 
 
 class LocalConfig(BaseConfig):

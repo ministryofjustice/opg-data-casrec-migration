@@ -2,12 +2,13 @@ import os
 import sys
 from pathlib import Path
 
-from rules.global_uids import insert_unique_uids
-from rules.reindex_lookups import reindex_single_lookup, reindex_lookups
-from utilities.clear_tables import clear_tables
-
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
+
+from rules.convert_datatypes import convert_datatypes
+from rules.global_uids import insert_unique_uids
+from rules.reindex_lookups import reindex_lookups
+
 
 from quick_validation import check_row_counts
 
@@ -67,8 +68,10 @@ def main(team):
     log.info(log_title(message=f"Enabled entities: {', '.join(allowed_entities)}"))
     log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
+    # TODO make this use json defs like reindex_lookups & convert_to_int
     insert_unique_uids(db_config=db_config, target_db_engine=target_db_engine)
     reindex_lookups(db_engine=target_db_engine, db_config=db_config)
+    convert_datatypes(db_engine=target_db_engine, db_config=db_config)
 
     if environment == "local":
         check_row_counts.count_rows(

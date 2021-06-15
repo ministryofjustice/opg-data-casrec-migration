@@ -1,16 +1,9 @@
 import logging
 import os
-
-import psycopg2
 import pandas as pd
 import helpers
 from helpers import get_mapping_dict, list_all_mapping_files, get_lookup_dict
 
-parent_table = "bonds"
-parent_match_col = "bond_provider_id"
-lookup_table = "bond_providers"
-lookup_result_col = "id"
-lookup_match_col = "uid"
 
 log = logging.getLogger("root")
 environment = os.environ.get("ENVIRONMENT")
