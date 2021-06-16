@@ -181,7 +181,7 @@
         "sirius_details": {
             "is_pk": "",
             "fk_parents": "bond_providers:id",
-            "data_type": "str",
+            "data_type": "int",
             "table_name": "bonds",
             "entity": "bonds"
         },
@@ -193,7 +193,8 @@
             "lookup_table": "bond_provider_lookup",
             "default_value": "",
             "calculated": "",
-            "additional_columns": ""
+            "additional_columns": "",
+            "datatype_override": "str"
         },
         "integration": {
             "business_rules": [

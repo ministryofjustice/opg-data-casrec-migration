@@ -1,4 +1,4 @@
-from transform_data.apply_datatypes import apply_datatypes, reapply_datatypes_to_fk_cols
+from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 from utilities.basic_data_table import get_basic_data_table
 import pandas as pd
 

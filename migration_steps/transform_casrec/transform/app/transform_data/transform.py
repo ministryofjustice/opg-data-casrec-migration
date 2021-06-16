@@ -107,7 +107,18 @@ def perform_transformations(
 
     if sirius_details:
         log.debug("Applying datatypes")
+
+        for col, details in sirius_details.items():
+            try:
+                log.debug(
+                    f"Overriding datatype {details['data_type']} with {mapping_definitions[col]['datatype_override']} for field {col}"
+                )
+                details["data_type"] = mapping_definitions[col]["datatype_override"]
+            except KeyError:
+                pass
+
         final_df = apply_datatypes(mapping_details=sirius_details, df=final_df)
+
         if len(final_df) == 0:
             raise EmptyDataFrame
 
