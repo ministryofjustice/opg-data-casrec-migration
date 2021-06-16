@@ -119,8 +119,8 @@ It is a surefire way to correct any drift in sirius though...
 ```
 make clean && make dev-setup
 ```
-You can re-run make dev-setup if it fails, without doing a make-clean
 
+You can re-run make dev-setup if it fails, without doing a make-clean
 
 You should be able to view Sirius FE at http://localhost:8080
 You should also be able to log in as case.manager@opgtest.com / Password1
@@ -295,11 +295,19 @@ this is surprisingly complicated.
 
 #### How to run it
 
-From root directory, find the relevant caseref and run:
+From root directory, find the relevant caseref that you want to pull in and run:
 
 ```
-./run_ecs_task -c <caserefnnumber>
+./pull_and_anonymise_case.sh -c <caserefnnumber>
 ```
+
+Some caveats to bear in mind before running this!
+
+1) If anything doesn't work for any reason you need to reset your `/data/anon_data` by running migrate.sh
+and selecting 'y' for both rebuild and sync of local data questions.
+2) Don't rerun this script without resetting your anon_data folder first as above. It's not clever enough to not merge twice!
+3) Always, always run a local `migrate.sh` first to check that the new data either loads correctly or
+fails in the way your were expecting (if testing a failure from preprod).
 
 #### How it works
 
@@ -307,15 +315,15 @@ From root directory, find the relevant caseref and run:
 - Kicks off a container that runs an ECS task. We have added the script to do the anonymising and moving of date to s3
 to the etl0 (prepare job) and this gets called with an override.
 - ECS task pulls the relevant data, anonymises it, formats it and puts it in a folder in s3 ready for download.
-- We then kick off the synchronise script using preproduction as the environment parameter. This downloads the data locally
-and merges it with out existing local data.
+- We then kick off the synchronise script using preproduction as the environment parameter. This downloads the data locally,
+formats it and merges it without existing local data.
 
 If you are happy with the data then you can manually add the files to the dev s3 bucket. We may automate this bit but for now I'd rather
 we didn't accidentally overwrite the s3 bucket data.
 
 This process is split across 3 python tasks and a terraform task. We have had to split it this way as we are not able to access DB
 directly so have to access it through a separate ECS task.
-Everything is controlled from the `run_ecs_task.sh` shell script.
+Everything is controlled from the `pull_and_anonymise_case.sh` shell script.
 
 ## The Migration Pipeline
 

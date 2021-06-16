@@ -217,6 +217,8 @@ def anonymise_data(data):
         f"===== \n\n"
     )
 
+    df.fillna("")
+
     return df
 
 
@@ -232,15 +234,16 @@ def get_primary_keys(case_ref):
     sql = f"""
     SELECT DISTINCT
     p."Case" as case,
-    o."Order No" as order_no,
-    d."Deputy No" as deputy_no,
-    ds."Dep Addr No" as dep_addr_no
+    o."Order No"::numeric::integer as order_no,
+    d."Deputy No"::numeric::integer as deputy_no,
+    ds."Dep Addr No"::numeric::integer as dep_addr_no,
+    ds."CoP Case" as cop_case
     FROM casrec_csv.pat as p
     LEFT JOIN casrec_csv.order as o ON p."Case" = o."Case"
-    LEFT JOIN casrec_csv.deputyship  as ds ON o."Order No" = ds."Order No"
-    LEFT JOIN casrec_csv.deputy as d ON ds."Deputy No" = d."Deputy No"
-    LEFT JOIN casrec_csv.account as a ON a."Case" = p."Case"
-    LEFT JOIN casrec_csv.deputy_address as da ON da."Dep Addr No" = ds."Dep Addr No"
+    LEFT JOIN casrec_csv.remarks r ON p."Case" = r."Case"
+    LEFT JOIN casrec_csv.deputyship  as ds ON o."CoP Case" = ds."CoP Case"
+    LEFT JOIN casrec_csv.deputy as d ON ds."Deputy No"::numeric::integer = d."Deputy No"::numeric::integer
+    LEFT JOIN casrec_csv.deputy_address as da ON da."Dep Addr No"::numeric::integer = ds."Dep Addr No"::numeric::integer
     WHERE p."Case" = '{case_ref}'
     """
 
@@ -320,8 +323,9 @@ def main(verbose, caserecnumber):
     table_names = [
         {"table": "pat", "pk": "Case"},
         {"table": "order", "pk": "Order No"},
-        {"table": "deputyship", "pk": "Order No"},
+        {"table": "deputyship", "pk": "CoP Case"},
         {"table": "deputy", "pk": "Deputy No"},
+        {"table": "remarks", "pk": "Case"},
         {"table": "deputy_address", "pk": "Dep Addr No"},
     ]
     log.info("=== GETTING DATA FOR CSVs (SQL below) ===")

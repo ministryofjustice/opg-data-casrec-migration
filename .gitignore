@@ -41,7 +41,7 @@ casrec_data/do_anonymising/change_log.txt
 sirius-snapshot
 data/
 *terraform.output.json
-*terraform.output_casrec.json
+*terraform.output_casrec_migration.json
 *etl*.sql
 *integration*.sql
 migration_steps/shared/sql/temp/*.sql

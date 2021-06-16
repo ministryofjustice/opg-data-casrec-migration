@@ -29,3 +29,8 @@ resource "local_file" "output_casrec" {
   })
   filename = "${path.module}/terraform.output_casrec_migration.json"
 }
+
+output "container_definition" {
+  value       = aws_ecs_task_definition.etl0.container_definitions
+  description = "Container Definitions."
+}
