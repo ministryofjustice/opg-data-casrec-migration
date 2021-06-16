@@ -64,8 +64,9 @@ def main(audit):
     )
     log.info(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
-    if environment != "preproduction":
-        amend_dev_data(db_engine=target_db_engine)
+    # TODO remove this properly
+    # if environment != "preproduction":
+    #     amend_dev_data(db_engine=target_db_engine)
 
     tables_dict = table_helpers.get_enabled_table_details()
     tables_list = table_helpers.get_table_list(tables_dict)

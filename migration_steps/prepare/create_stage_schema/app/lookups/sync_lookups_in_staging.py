@@ -60,6 +60,8 @@ def sync_single_lookup(
     sirius_lookup_table,
 ):
 
+    log.info(f"Syncing staging schema table {sirius_lookup_table}")
+
     sirius_data_df = get_sirius_data(
         db_config=db_config,
         table=sirius_lookup_table,

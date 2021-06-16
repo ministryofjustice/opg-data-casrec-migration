@@ -25,6 +25,8 @@ def get_sirius_data(db_config, table):
 
 
 def check_single_lookup(db_config, table, lookup_file_name):
+    log.info(f"Checking mapping values for lookup def {lookup_file_name}")
+
     lookup_dict = helpers.get_lookup_dict(file_name=lookup_file_name)
     unique_vals = list(set([x for x in lookup_dict.values()]))
 

@@ -87,8 +87,6 @@ P4=$!
 wait $P1 $P2 $P3 $P4
 cat docker_load.log
 rm docker_load.log
-echo "=== Step 0 - Pre-Flight Checks ==="
-docker-compose ${COMPOSE_ARGS} run --rm integration integration/integration.sh --preflight
 echo "=== Step 1 - Transform ==="
 docker-compose ${COMPOSE_ARGS} run --rm transform_casrec transform_casrec/transform.sh --team="${LAY_TEAM}"
 echo "=== Step 2 - Integrate with Sirius ==="
