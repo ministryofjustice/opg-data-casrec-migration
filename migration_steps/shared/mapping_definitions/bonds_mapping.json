@@ -20,8 +20,8 @@
             "calculated": "",
             "additional_columns": ""
         },
-        "integration": {
-            "sync_staging": ""
+        "prepare": {
+            "sync": ""
         }
     },
     "order_id": {
@@ -45,8 +45,8 @@
             "calculated": "",
             "additional_columns": ""
         },
-        "integration": {
-            "sync_staging": ""
+        "prepare": {
+            "sync": ""
         }
     },
     "bondreferencenumber": {
@@ -70,8 +70,8 @@
             "calculated": "",
             "additional_columns": ""
         },
-        "integration": {
-            "sync_staging": ""
+        "prepare": {
+            "sync": ""
         }
     },
     "requiredbondamount": {
@@ -95,8 +95,8 @@
             "calculated": "",
             "additional_columns": ""
         },
-        "integration": {
-            "sync_staging": ""
+        "prepare": {
+            "sync": ""
         }
     },
     "bondamounttaken": {
@@ -120,8 +120,8 @@
             "calculated": "",
             "additional_columns": ""
         },
-        "integration": {
-            "sync_staging": ""
+        "prepare": {
+            "sync": ""
         }
     },
     "renewaldateofbond": {
@@ -145,8 +145,8 @@
             "calculated": "",
             "additional_columns": ""
         },
-        "integration": {
-            "sync_staging": ""
+        "prepare": {
+            "sync": ""
         }
     },
     "dischargedate": {
@@ -165,13 +165,13 @@
             "casrec_column_name": "Bond Discharge",
             "alias": "Bond Discharge",
             "requires_transformation": "",
-            "lookup_table": "discharge_date_lookup",
+            "lookup_table": "",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
         },
-        "integration": {
-            "sync_staging": []
+        "prepare": {
+            "sync": ""
         }
     },
     "bond_provider_id": {
@@ -193,13 +193,10 @@
             "lookup_table": "bond_provider_lookup",
             "default_value": "",
             "calculated": "",
-            "additional_columns": "",
-            "datatype_override": "str"
+            "additional_columns": ""
         },
-        "integration": {
-            "sync_staging": [
-                "sync_lookup"
-            ]
+        "prepare": {
+            "sync": "sync_lookup"
         }
     }
 }

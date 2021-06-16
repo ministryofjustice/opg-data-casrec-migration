@@ -19,6 +19,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "deputy_id": {
@@ -41,6 +44,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "id": {
@@ -63,6 +69,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "deputytype": {
@@ -85,6 +94,9 @@
             "default_value": "LAY",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "statusoncase": {
@@ -107,6 +119,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "relationshiptoclient": {
@@ -129,6 +144,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "statusoncaseoverride": {
@@ -151,6 +169,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "statuschangedate": {
@@ -173,6 +194,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": "Stat"
+        },
+        "prepare": {
+            "sync": ""
         }
     }
 }
