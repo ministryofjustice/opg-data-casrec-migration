@@ -316,7 +316,7 @@ fails in the way your were expecting (if testing a failure from preprod).
 to the etl0 (prepare job) and this gets called with an override.
 - ECS task pulls the relevant data, anonymises it, formats it and puts it in a folder in s3 ready for download.
 - We then kick off the synchronise script using preproduction as the environment parameter. This downloads the data locally,
-formats it and merges it without existing local data.
+formats it and merges it with our existing local data.
 
 If you are happy with the data then you can manually add the files to the dev s3 bucket. We may automate this bit but for now I'd rather
 we didn't accidentally overwrite the s3 bucket data.
