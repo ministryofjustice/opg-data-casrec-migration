@@ -61,6 +61,18 @@ def check_entity_enabled(entity_name, extra_entities=None):
         return False
 
 
+def list_all_mapping_files():
+    dirname = get_current_directory()
+    file_path = os.path.join(dirname, f"mapping_definitions")
+
+    files = []
+    for mapping_file in os.listdir(file_path):
+        mapping_file_path = os.path.join(file_path, mapping_file)
+        if os.path.isfile(mapping_file_path):
+            files.append(mapping_file)
+    return files
+
+
 @track_file_use
 def get_mapping_dict(
     file_name: str,
@@ -86,13 +98,17 @@ def get_mapping_dict(
             for k, v in mapping_dict.items()
             if v["sirius_details"]["is_pk"] is not True
         }
+
     if stage_name:
-        mapping_dict = {k: v[stage_name] for k, v in mapping_dict.items()}
+        try:
+            mapping_dict = {k: v[stage_name] for k, v in mapping_dict.items()}
+        except KeyError:
+            mapping_dict = {}
 
     return mapping_dict
 
 
-def get_lookup_dict(file_name: str) -> Dict:
+def get_lookup_dict(file_name: str, include_sirius_details: bool = False) -> Dict:
 
     dirname = get_current_directory()
     file_path = os.path.join(
@@ -105,7 +121,10 @@ def get_lookup_dict(file_name: str) -> Dict:
         if len(lookup_dict) == 0:
             log.error(f"No data for lookup file {file_name}")
 
-        return {k: v["sirius_mapping"] for k, v in lookup_dict.items()}
+        if include_sirius_details:
+            return lookup_dict
+        else:
+            return {k: v["sirius_mapping"] for k, v in lookup_dict.items()}
 
 
 def get_additional_data_dict(file_name: str) -> Dict:

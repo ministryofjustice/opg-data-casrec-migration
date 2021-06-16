@@ -19,6 +19,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "integration": {
+            "sync_staging": ""
         }
     },
     "order_id": {
@@ -41,6 +44,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "integration": {
+            "sync_staging": ""
         }
     },
     "bondreferencenumber": {
@@ -63,6 +69,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "integration": {
+            "sync_staging": ""
         }
     },
     "requiredbondamount": {
@@ -85,6 +94,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "integration": {
+            "sync_staging": ""
         }
     },
     "bondamounttaken": {
@@ -107,6 +119,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "integration": {
+            "sync_staging": ""
         }
     },
     "renewaldateofbond": {
@@ -129,6 +144,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "integration": {
+            "sync_staging": ""
         }
     },
     "dischargedate": {
@@ -147,10 +165,13 @@
             "casrec_column_name": "Bond Discharge",
             "alias": "Bond Discharge",
             "requires_transformation": "",
-            "lookup_table": "",
+            "lookup_table": "discharge_date_lookup",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "integration": {
+            "sync_staging": []
         }
     },
     "bond_provider_id": {
@@ -172,7 +193,13 @@
             "lookup_table": "bond_provider_lookup",
             "default_value": "",
             "calculated": "",
-            "additional_columns": ""
+            "additional_columns": "",
+            "datatype_override": "str"
+        },
+        "integration": {
+            "sync_staging": [
+                "sync_lookup"
+            ]
         }
     }
 }

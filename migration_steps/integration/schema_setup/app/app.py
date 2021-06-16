@@ -2,79 +2,71 @@ import os
 import sys
 from pathlib import Path
 
+
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
 
-import time
-import psycopg2
-from config import get_config
-from dotenv import load_dotenv
-from db_helpers import *
-from helpers import log_title
-import logging
-import custom_logger
-import click
+from lookups.check_lookups_in_mapping import check_lookups
+from lookups.sync_lookups_in_staging import sync_lookups
 
-env_path = current_path / "../../../../.env"
-local_sql_path = current_path / "sql"
-shared_sql_path = current_path / "../../../shared/sql"
+
+import logging
+import time
+from sqlalchemy import create_engine
+import custom_logger
+from helpers import log_title
+
+from dotenv import load_dotenv
+
+
+# set config
+current_path = Path(os.path.dirname(os.path.realpath(__file__)))
+env_path = current_path / "../../.env"
 load_dotenv(dotenv_path=env_path)
 
 environment = os.environ.get("ENVIRONMENT")
-config = get_config(environment)
+import helpers
+
+
+config = helpers.get_config(env=environment)
+
+
+# database
+db_config = {
+    "db_connection_string": config.get_db_connection_string("migration"),
+    "sirius_db_connection_string": config.get_db_connection_string("target"),
+    "target_schema": config.schemas["pre_migration"],
+    "sirius_schema": config.schemas["public"],
+    "chunk_size": config.DEFAULT_CHUNK_SIZE,
+}
+target_db_engine = create_engine(db_config["db_connection_string"])
 
 # logging
 log = logging.getLogger("root")
-log.addHandler(custom_logger.MyHandler())
-config.custom_log_level()
-verbosity_levels = config.verbosity_levels
+custom_logger.setup_logging(
+    env=environment, db_config=db_config, module_name="business rules"
+)
 
 
-def set_logging_level(verbose):
-    try:
-        log.setLevel(verbosity_levels[verbose])
-    except KeyError:
-        log.setLevel("INFO")
-        log.info(f"{verbose} is not a valid verbosity level")
+def main():
+    allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
 
-
-@click.command()
-@click.option("-v", "--verbose", count=True)
-def main(verbose):
-    set_logging_level(verbose)
-    log.info(log_title(message="Integration"))
-
-    log.info("Create an integration schema for use with this step")
-    copy_schema(
-        log=log,
-        sql_path=shared_sql_path,
-        from_config=config.db_config["migration"],
-        from_schema=config.schemas["post_transform"],
-        to_config=config.db_config["migration"],
-        to_schema=config.schemas["integration"],
+    log.info(log_title(message="Integration Step: Syncing Staging DB with Sirius"))
+    log.info(
+        log_title(
+            message=f"Target: {db_config['target_schema']}, Chunk Size: {db_config['chunk_size']}"
+        )
     )
+    log.info(log_title(message=f"Enabled entities: {', '.join(allowed_entities)}"))
+    log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
-    log.info("Modify new schema")
-    conn = psycopg2.connect(config.get_db_connection_string("migration"))
-    execute_generated_sql(
-        local_sql_path,
-        "sirius_id_cols.template.sql",
-        "{schema}",
-        config.schemas["integration"],
-        conn,
-    )
-    conn.close()
+    # sync_lookups(db_engine=target_db_engine, db_config=db_config)
+    check_lookups(db_config=db_config)
 
 
 if __name__ == "__main__":
     t = time.process_time()
 
-    log.setLevel(1)
-    log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
-
-    if environment in ("local", "development", "preproduction"):
-        main()
-    else:
-        log.warning("Skipping step not designed to run on environment %s", environment)
+    main()
 
     print(f"Total time: {round(time.process_time() - t, 2)}")
