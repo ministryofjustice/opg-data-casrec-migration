@@ -10,7 +10,6 @@ current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 
 
 def operator_session(environment):
-
     account = {"development": "288342028542", "preproduction": "492687888235"}
     client = boto3.client("sts")
 
@@ -59,17 +58,47 @@ def clear_folder(folder):
     print("Cleared folder")
 
 
+def csv_formatting(path, file_name):
+    full_file_name = f"{path}/{file_name}"
+    with open(full_file_name, "r") as file:
+        file_data = file.read()
+
+    # Replace things we need to replace
+    file_data = file_data.replace(" 00:00:00", "")
+
+    # Write the file out again
+    with open(full_file_name, "w") as file:
+        file.write(file_data)
+
+
 def merge_edge_cases_locally(edge_data_path, local_data_path):
     for filename in os.listdir(edge_data_path):
-        edge_data = pd.read_csv(edge_data_path / filename)
+        csv_formatting(edge_data_path, filename)
+        edge_data = pd.read_csv(edge_data_path / filename, dtype=str)
+
+        edge_data = edge_data.replace("NaT", "")
+        edge_data = edge_data.replace(" 00:00:00", "")
+
         original_csv = local_data_path / filename.replace("_anon", "")
         max_id = pd.read_csv(original_csv)["rct"].max()
 
+        edge_data[edge_data.columns[0]] = edge_data[edge_data.columns[0]].astype(int)
         edge_data[edge_data.columns[0]] += max_id + 1
         edge_data.insert(1, "rct", edge_data[edge_data.columns[0]], True)
+
         if filename == "pat_anon.csv":
             edge_data.insert(2, "by", "MIG", True)
+        elif filename in [
+            "order_anon.csv",
+            "deputy_anon.csv",
+            "deputyship_anon.csv",
+            "remarks_anon.csv",
+            "deputy_address_anon.csv",
+        ]:
+            edge_data.insert(2, "create", "2021-06-01", True)
+
         print(f"Adding data to {original_csv}")
+
         add_new_lines(original_csv)
         edge_data.to_csv(original_csv, mode="a", header=False, index=False)
 

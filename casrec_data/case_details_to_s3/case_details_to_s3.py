@@ -9,7 +9,7 @@ def operator_session(environment):
     account = {"development": "288342028542", "preproduction": "492687888235"}
     client = boto3.client("sts")
 
-    role_to_assume = f"arn:aws:iam::{account[environment]}:role/breakglass"
+    role_to_assume = f"arn:aws:iam::{account[environment]}:role/migration-pull-case-role.{environment}"
     response = client.assume_role(
         RoleArn=role_to_assume, RoleSessionName="assumed_role"
     )
@@ -24,7 +24,7 @@ def operator_session(environment):
 
 
 def run_ecs_task(client, caserecnumber):
-    with open("/terraform/terraform.output_casrec.json") as json_file:
+    with open("/terraform/terraform.output_casrec_migration.json") as json_file:
         data = json.load(json_file)
 
     response = client.run_task(

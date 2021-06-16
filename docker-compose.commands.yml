@@ -2,7 +2,7 @@ version: '3.6'
 services:
   case_to_s3:
     build:
-      context: ./casrec_data/run_ecs_task
+      context: casrec_data/case_details_to_s3
       dockerfile: Dockerfile
     environment:
       AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
@@ -10,7 +10,7 @@ services:
       AWS_SESSION_TOKEN: $AWS_SESSION_TOKEN
       ENVIRONMENT: preproduction
     volumes:
-      - ./casrec_data/run_ecs_task/run_ecs_task.py:/run_ecs_task.py
+      - ./casrec_data/case_details_to_s3/case_details_to_s3.py:/case_details_to_s3.py
       - ./terraform:/terraform
   task_runner:
     build:
