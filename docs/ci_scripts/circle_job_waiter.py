@@ -20,12 +20,14 @@ def get_running_jobs(
         for job in running_jobs_json:
             if job["status"] == "queued" or job["status"] == "running":
                 if job["workflows"]["workflow_id"] != current_workflow_id:
-                    if job["workflows"]["job_name"] != "kick off preprod":
-                        if "preproduction" not in job["workflows"]["job_name"]:
-                            print(
-                                f"Job: \"{job['workflows']['job_name']}\", Status: \"{job['status']}\""
-                            )
-                            running_jobs.append(job["workflows"]["job_name"])
+                    if (
+                        "preprod" not in job["workflows"]["job_name"]
+                        and "qa" not in job["workflows"]["job_name"]
+                    ):
+                        print(
+                            f"Job: \"{job['workflows']['job_name']}\", Status: \"{job['status']}\""
+                        )
+                        running_jobs.append(job["workflows"]["job_name"])
         return running_jobs
     else:
         print(f"API call to circle failed with status code: {response.status_code}")

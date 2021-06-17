@@ -75,13 +75,13 @@ workflows:
     when: << pipeline.parameters.run_preprod >>
     jobs:
       - get_latest_image:
-          name: get latest tag
+          name: get latest tag preproduction
           image_tag: master
           environment: Preproduction
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra preproduction
-          requires: [get latest tag]
+          requires: [get latest tag preproduction]
           tf_workspace: preproduction
           tf_command: plan
           environment: Preproduction
@@ -134,13 +134,13 @@ workflows:
     when: << pipeline.parameters.run_qa >>
     jobs:
       - get_latest_image:
-          name: get latest tag
+          name: get latest tag qa
           image_tag: qa
           environment: Quality Assurance
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra qa
-          requires: [get latest tag]
+          requires: [get latest tag qa]
           tf_workspace: qa
           tf_command: plan
           environment: Quality Assurance
@@ -176,11 +176,11 @@ workflows:
   nightly_preproduction_run:
     triggers:
       - schedule:
-          cron: "00 18 * * *"
+          cron: "10 03 * * *"
           filters: {branches:{only:[master]}}
     jobs:
       - get_latest_image:
-          name: get latest tag
+          name: get latest tag preproduction
           image_tag: master
           environment: Preproduction
           filters: {branches:{only:[master]}}
@@ -191,7 +191,7 @@ workflows:
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: build infra preproduction
-          requires: [get latest tag]
+          requires: [get latest tag preproduction]
           tf_workspace: preproduction
           tf_command: apply
           environment: Preproduction
@@ -552,7 +552,7 @@ jobs:
           command: echo ${VERSION}
       - run:
           name: ECR login
-          command: aws ecr get-login-password --region $AWS_REGION --profile sirius-ci | docker login --username AWS --password-stdin $AWS_REGISTRY
+          command: aws ecr get-login-password --region $AWS_REGION --profile integrations-ci | docker login --username AWS --password-stdin $AWS_REGISTRY
       - run:
           name: Pull images
           command: docker-compose -f docker-compose.ci.yml pull
@@ -627,7 +627,7 @@ jobs:
           working_directory: ~/project/docs/ci_scripts
       - run:
           name: run the function
-          command: python3 run_step_function.py --role sirius-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD} --workspace ${TF_WORKSPACE}
+          command: python3 run_step_function.py --role integrations-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD} --workspace ${TF_WORKSPACE}
           working_directory: ~/project/docs/ci_scripts
       - notififications/notify_env_vars
       - notififications/notify_if_fail
@@ -788,7 +788,7 @@ jobs:
             python3 -m pytest migration_steps/shared/shared_tests
       - run:
           name: Docker login
-          command: aws ecr get-login-password --region $AWS_REGION --profile sirius-ci | docker login --username AWS --password-stdin $AWS_REGISTRY
+          command: aws ecr get-login-password --region $AWS_REGION --profile integrations-ci | docker login --username AWS --password-stdin $AWS_REGISTRY
       - run:
           name: Build base image
           command: docker build base_image -t opg_casrec_migration_base_image:latest
@@ -874,7 +874,7 @@ jobs:
           command: pip install boto3 click
       - run:
           name: Set latest version
-          command: python get_image.py --role sirius-ci --image_tag ${IMAGE_TAG} >> ~/project/VERSION
+          command: python get_image.py --role integrations-ci --image_tag ${IMAGE_TAG} >> ~/project/VERSION
           working_directory: ~/project/docs/ci_scripts
       - run:
           name: Show latest version

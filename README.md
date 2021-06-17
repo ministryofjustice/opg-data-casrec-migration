@@ -487,15 +487,49 @@ docker-compose run --rm validation validation/validate.sh
 
 We can kick off individual tasks if we so desire. This can be very useful for just running the API tests for example.
 
-We do this from the command line by running the following:
+#### Example of running API tests against PreProduction
+
+Initially we may want to trial data changes against PreProduction.
+
+If you have modifications to scripts rather than just the data then you will have to push up the ECR image with your modifications to
+ECR. To do this the simplest way is to do it yourself from the command line...
+
+Login to ECR
+```
+aws-vault exec management -- aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 311462405659.dkr.ecr.eu-west-1.amazonaws.com
+```
+
+Set your version and aws registry
+
+```
+export AWS_REGISTRY=311462405659.dkr.ecr.eu-west-1.amazonaws.com
+export VERSION=whatever-tag-you-want-to-create
+```
+
+Build the image locally and tag it (comment out extra images if you like):
+
+```
+docker-compose -f docker-compose.ci.yml build
+```
+
+Push the image to ECR:
+
+```
+docker-compose -f docker-compose.ci.yml push
+```
+
+We can now use the tagged image to run whatever we like from the command line. Remember that you only need to do this if changing the scripts.
+If you're just adding some new data to Pre API tests that you want to check works then you can skip that entire first bit.
+
+Get the tag of the ECR task you want to run. This is generally the commit tag. You can find this on last build to Preproduction in CircleCi.
 
 ```
 aws-vault exec identity -- docker-compose -f docker-compose.commands.yml run --rm task_runner ./run_ecs_task.sh \
--t master-37e52fe \
+-t ecr-tag-you-want-to-use \
 -i validation \
 -n etl5 \
--c "validation/validate.sh" \
--l casrec-migration-qa
+-c "validation/api_tests.sh" \
+-l casrec-migration-preproduction
 ```
 
 #### Running the steps (Non-dockerised):

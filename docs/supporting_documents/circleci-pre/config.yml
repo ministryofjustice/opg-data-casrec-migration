@@ -188,7 +188,7 @@ jobs:
           working_directory: ~/project/docs/ci_scripts
       - run:
           name: run the function
-          command: python3 run_step_function.py --role sirius-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD}
+          command: python3 run_step_function.py --role integrations-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD}
           working_directory: ~/project/docs/ci_scripts
 
   run_behat_tests:
@@ -293,7 +293,7 @@ jobs:
           command: echo ${VERSION}
       - run:
           name: Docker login
-          command: aws ecr get-login-password --region $AWS_REGION --profile sirius-ci | docker login --username AWS --password-stdin $AWS_REGISTRY
+          command: aws ecr get-login-password --region $AWS_REGION --profile integrations-ci | docker login --username AWS --password-stdin $AWS_REGISTRY
       - run:
           name: Build base image
           command: docker build base_image -t opg_casrec_migration_base_image:latest
@@ -349,7 +349,7 @@ jobs:
           command: pip install boto3 click
       - run:
           name: Set latest version
-          command: python get_image.py --role sirius-ci >> ~/project/VERSION
+          command: python get_image.py --role integrations-ci >> ~/project/VERSION
           working_directory: ~/project/docs/ci_scripts
       - persist_to_workspace:
           root: .
