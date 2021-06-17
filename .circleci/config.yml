@@ -75,13 +75,13 @@ workflows:
     when: << pipeline.parameters.run_preprod >>
     jobs:
       - get_latest_image:
-          name: get latest tag
+          name: get latest tag preproduction
           image_tag: master
           environment: Preproduction
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra preproduction
-          requires: [get latest tag]
+          requires: [get latest tag preproduction]
           tf_workspace: preproduction
           tf_command: plan
           environment: Preproduction
@@ -134,13 +134,13 @@ workflows:
     when: << pipeline.parameters.run_qa >>
     jobs:
       - get_latest_image:
-          name: get latest tag
+          name: get latest tag qa
           image_tag: qa
           environment: Quality Assurance
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra qa
-          requires: [get latest tag]
+          requires: [get latest tag qa]
           tf_workspace: qa
           tf_command: plan
           environment: Quality Assurance
@@ -176,11 +176,11 @@ workflows:
   nightly_preproduction_run:
     triggers:
       - schedule:
-          cron: "00 18 * * *"
+          cron: "10 03 * * *"
           filters: {branches:{only:[master]}}
     jobs:
       - get_latest_image:
-          name: get latest tag
+          name: get latest tag preproduction
           image_tag: master
           environment: Preproduction
           filters: {branches:{only:[master]}}
@@ -191,7 +191,7 @@ workflows:
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: build infra preproduction
-          requires: [get latest tag]
+          requires: [get latest tag preproduction]
           tf_workspace: preproduction
           tf_command: apply
           environment: Preproduction

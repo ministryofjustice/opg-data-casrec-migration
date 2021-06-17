@@ -22,8 +22,8 @@ environment = os.environ.get("ENVIRONMENT")
 account_name = os.environ.get("ACCOUNT_NAME")
 bucket_name = f"casrec-migration-{account_name.lower()}"
 entities = {
-    "local": ["clients", "orders"],
-    "development": ["clients", "orders"],
+    "local": ["clients", "orders", "deputies", "supervision_level"],
+    "development": ["clients", "orders", "deputies", "supervision_level"],
     "preproduction": ["clients"],
     "qa": [],
     "production": [],

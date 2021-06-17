@@ -17,8 +17,8 @@ services:
       context: ./casrec_data/ecs_task_runner
       dockerfile: Dockerfile
     environment:
-      ENVIRONMENT: qa
-      WORKSPACE: qa
+      ENVIRONMENT: preproduction
+      WORKSPACE: preproduction
       AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
       AWS_SESSION_TOKEN: $AWS_SESSION_TOKEN
