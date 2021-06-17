@@ -19,6 +19,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "email": {
@@ -41,6 +44,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "dateofdeath": {
@@ -63,6 +69,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": "Stat"
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "salutation": {
@@ -85,6 +94,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "firstname": {
@@ -107,6 +119,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "middlenames": {
@@ -129,6 +144,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "correspondencebypost": {
@@ -151,6 +169,9 @@
             "default_value": false,
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "correspondencebyphone": {
@@ -173,6 +194,9 @@
             "default_value": false,
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "correspondencebyemail": {
@@ -195,6 +219,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "uid": {
@@ -217,6 +244,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "type": {
@@ -239,6 +269,9 @@
             "default_value": "actor_deputy",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "systemstatus": {
@@ -261,6 +294,9 @@
             "default_value": true,
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "isreplacementattorney": {
@@ -283,6 +319,9 @@
             "default_value": false,
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "istrustcorporation": {
@@ -305,6 +344,9 @@
             "default_value": false,
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "previousnames": {
@@ -327,6 +369,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "correspondencebywelsh": {
@@ -349,6 +394,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "newsletter": {
@@ -371,6 +419,9 @@
             "default_value": false,
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "specialcorrespondencerequirements_audiotape": {
@@ -393,6 +444,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "specialcorrespondencerequirements_largeprint": {
@@ -415,6 +469,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "specialcorrespondencerequirements_hearingimpaired": {
@@ -437,6 +494,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "specialcorrespondencerequirements_spellingofnamerequirescare": {
@@ -459,6 +519,9 @@
             "default_value": false,
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "isorganisation": {
@@ -481,6 +544,9 @@
             "default_value": false,
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "deputytype": {
@@ -503,6 +569,9 @@
             "default_value": "LAY",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "supervisioncaseowner_id": {
@@ -525,6 +594,9 @@
             "default_value": 10,
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "clientsource": {
@@ -547,6 +619,9 @@
             "default_value": "CASRECMIGRATION",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "updateddate": {
@@ -569,6 +644,9 @@
             "default_value": "",
             "calculated": "current_date",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     }
 }
