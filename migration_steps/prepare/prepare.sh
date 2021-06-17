@@ -14,3 +14,4 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 python3 "${DIR}/prepare_target/app/app.py" --preserve_schemas="${SCHEMAS}"
 python3 "${DIR}/create_stage_schema/app/app.py"
+

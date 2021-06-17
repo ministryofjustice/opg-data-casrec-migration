@@ -7,6 +7,5 @@ COPY integration/fixtures /integration/fixtures
 COPY integration/reindex_ids /integration/reindex_ids
 COPY integration/business_rules /integration/business_rules
 COPY integration/load_to_staging /integration/load_to_staging
-COPY integration/schema_setup /integration/schema_setup
 COPY shared /shared
 CMD ["echo", "NO_OP"]
