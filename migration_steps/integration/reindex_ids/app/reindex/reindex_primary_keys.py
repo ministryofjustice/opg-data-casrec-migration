@@ -6,6 +6,8 @@ import psycopg2
 from decorators import timer
 import os
 
+from helpers import format_error_message
+
 log = logging.getLogger("root")
 
 
@@ -40,7 +42,6 @@ def get_max_pk_dict(db_connection_string, max_val_query):
 
         for i in max_vals:
             result_dict[i[0]] = {i[1]: i[2] if i[2] else 0}
-
     except Exception as e:
         log.debug(e)
         os._exit(1)
@@ -82,8 +83,13 @@ def update_pks(db_config, table_details):
 
     try:
         cursor.execute(update_query)
+    except psycopg2.DatabaseError as e:
+        log.error(
+            f"error reindexing PK for table {table} - table probably doesn't exist",
+            extra={"error": format_error_message(e=e)},
+        )
     except Exception as e:
-        log.debug(e)
+        log.debug(e, extra={"error": format_error_message(e=e)})
         os._exit(1)
     finally:
         cursor.close()

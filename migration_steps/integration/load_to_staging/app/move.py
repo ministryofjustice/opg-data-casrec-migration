@@ -1,10 +1,7 @@
-import json
 import os
-import sys
 import logging
 
-import psycopg2
-from psycopg2 import errors
+from helpers import format_error_message
 
 log = logging.getLogger("root")
 
@@ -137,9 +134,7 @@ def generate_inserts(db_config, db_engine, tables, extra_tables=None):
                 f"Not completed tables: {', '.join(list(set(tables_list) - set(completed_tables)))}"
             )
         except Exception as e:
-            print(e)
             log.error(
-                f"There was an error inserting {source_table} into {db_config['target_schema']}"
+                f"There was an error inserting {source_table} into {db_config['target_schema']} - table probably doesn't exist",
+                extra={"error": format_error_message(e=e)},
             )
-            log.debug(e)
-            os._exit(1)

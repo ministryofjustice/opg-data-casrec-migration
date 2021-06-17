@@ -3,13 +3,12 @@ import sys
 import threading
 from pathlib import Path
 
+current_path = Path(os.path.dirname(os.path.realpath(__file__)))
+sys.path.insert(0, str(current_path) + "/../../../shared")
 from clear_database import empty_target_tables
 from move import generate_inserts, completed_tables
 from setup import insert_base_data
 
-
-current_path = Path(os.path.dirname(os.path.realpath(__file__)))
-sys.path.insert(0, str(current_path) + "/../../../shared")
 
 from quick_validation import check_row_counts
 

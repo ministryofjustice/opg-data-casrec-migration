@@ -68,7 +68,12 @@ def count_rows(connection_string, destination_schema, enabled_entities, team="")
                                 f"expected {expected_row_count}, actual {row_count}"
                             )
                         except psycopg2.DatabaseError as e:
-                            log.error(e)
+                            log.error(
+                                f"error checking row counts for {entity_name} - table probably doesn't exist",
+                                extra={"error": helpers.format_error_message(e=e)},
+                            )
                         except (Exception) as e:
-                            log.error(e)
+                            log.error(
+                                e, extra={"error": helpers.format_error_message(e=e)}
+                            )
         log.info("All row counts checked")

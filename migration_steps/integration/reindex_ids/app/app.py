@@ -5,14 +5,15 @@ import logging
 import time
 import click
 from sqlalchemy import create_engine
+
+current_path = Path(os.path.dirname(os.path.realpath(__file__)))
+sys.path.insert(0, str(current_path) + "/../../../shared")
 from existing_data.match_existing_data import match_existing_data
 from reindex.move_by_table import move_all_tables, create_schema
 from reindex.reindex_foreign_keys import update_fks
 from reindex.reindex_primary_keys import update_pks
 from utilities.clear_database import clear_tables
 
-current_path = Path(os.path.dirname(os.path.realpath(__file__)))
-sys.path.insert(0, str(current_path) + "/../../../shared")
 
 from quick_validation import check_row_counts
 

@@ -159,7 +159,7 @@ def insert_data_into_target(
                     "error": format_error_message(e=e),
                 },
             )
-            os._exit(1)
+            # os._exit(1)
 
         offset += chunk_size
         log.debug(f"doing offset {offset} for table {table_name}")
