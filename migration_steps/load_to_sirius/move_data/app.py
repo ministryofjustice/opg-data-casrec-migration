@@ -3,6 +3,7 @@ import os
 import sys
 from pathlib import Path
 
+from dev_data_fixes import amend_dev_data
 from move import insert_data_into_target
 from move import update_data_in_target
 
@@ -62,6 +63,10 @@ def main(audit):
         )
     )
     log.info(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
+
+    # TODO remove this properly
+    # if environment != "preproduction":
+    #     amend_dev_data(db_engine=target_db_engine)
 
     tables_dict = table_helpers.get_enabled_table_details()
     tables_list = table_helpers.get_table_list(tables_dict)
