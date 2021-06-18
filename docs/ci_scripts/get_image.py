@@ -22,16 +22,7 @@ def assume_aws_session(account, role):
     return session
 
 
-@click.command()
-@click.option("--role", default="operator")
-@click.option("--image_tag", default="master")
-def main(role, image_tag):
-    account = "311462405659"
-    region = "eu-west-1"
-    ecr_session = assume_aws_session(account, role)
-    client = ecr_session.client("ecr", region_name=region)
-    response = client.describe_images(repositoryName="casrec-migration/etl0")
-    latest = None
+def get_latest_per_page(image_tag, response, latest=None, image=None):
     for images in response["imageDetails"]:
         if "imageTags" in images:
             for each_image in images["imageTags"]:
@@ -42,7 +33,41 @@ def main(role, image_tag):
                     elif images["imagePushedAt"] > latest:
                         latest = images["imagePushedAt"]
                         image = each_image
-    print(image)
+    return latest, image
+
+
+def get_next_token(response):
+    if "nextToken" in response:
+        next_token = response["nextToken"]
+    else:
+        next_token = None
+
+    return next_token
+
+
+@click.command()
+@click.option("--role", default="operator")
+@click.option("--image_tag", default="master")
+def main(role, image_tag):
+    account = "311462405659"
+    region = "eu-west-1"
+    ecr_session = assume_aws_session(account, role)
+    client = ecr_session.client("ecr", region_name=region)
+
+    response = client.describe_images(repositoryName="casrec-migration/etl0")
+    next_token = get_next_token(response)
+    latest_time, image_id = get_latest_per_page(image_tag, response)
+
+    while next_token is not None:
+        response = client.describe_images(
+            repositoryName="casrec-migration/etl0", nextToken=next_token
+        )
+        next_token = get_next_token(response)
+        latest_time, image_id = get_latest_per_page(
+            image_tag, response, latest_time, image_id
+        )
+
+    print(image_id)
 
 
 if __name__ == "__main__":
