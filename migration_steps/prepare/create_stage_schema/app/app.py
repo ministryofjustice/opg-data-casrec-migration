@@ -2,11 +2,13 @@ import os
 import sys
 from pathlib import Path
 
+
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
 
 from lookups.check_lookups_in_mapping import check_lookups
 from lookups.sync_lookups_in_staging import sync_lookups
+from lookups.dev_data_fixes import amend_dev_data
 
 
 import time
@@ -34,12 +36,12 @@ db_config = {
     "chunk_size": config.DEFAULT_CHUNK_SIZE,
 }
 target_db_engine = create_engine(db_config["db_connection_string"])
+sirius_db_engine = create_engine(db_config["sirius_db_connection_string"])
+
 
 # logging
 log = logging.getLogger("root")
-custom_logger.setup_logging(
-    env=environment, db_config=db_config, module_name="business rules"
-)
+custom_logger.setup_logging(env=environment, db_config=db_config, module_name="prepare")
 
 
 def main():
@@ -54,6 +56,9 @@ def main():
         to_schema=config.schemas["pre_migration"],
         structure_only=True,
     )
+
+    if environment != "preproduction":
+        amend_dev_data(db_engine=sirius_db_engine)
 
     check_lookups(db_config=db_config)
     sync_lookups(db_engine=target_db_engine, db_config=db_config)
