@@ -135,4 +135,13 @@ for file in os.listdir(anon_data_dir):
     s3_file_path = f"anon/{file}"
     upload_file(bucket_name, file_path, s3_client, s3_file_path)
 
+fees_dir_suffix = os.getenv("FEES_DIR_SUFFIX")
+print(f"fees dir set to {fees_dir_suffix}")
+fees_data_dir = current_path / fees_dir_suffix
+if os.path.isdir(fees_data_dir):
+    for file in os.listdir(fees_data_dir):
+        file_path = f"{fees_data_dir}/{file}"
+        s3_file_path = f"fees/{file}"
+        upload_file(bucket_name, file_path, s3_client, s3_file_path)
+
 list_bucket_contents(bucket_name, s3_client)

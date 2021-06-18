@@ -32,7 +32,7 @@ def delete_all_schemas(log, conn, preserve_schemas):
         information_schema.schemata
         WHERE
         schema_name not like 'pg_%'
-        and schema_name not in ({preserve_schemas}'public', 'information_schema');
+        and schema_name not in ({preserve_schemas}'public', 'information_schema', 'fees');
     """
     cursor.execute(get_schemas_statement)
     schemas = ""
@@ -143,18 +143,14 @@ def copy_schema(
     with fileinput.FileInput(str(schema_dump), inplace=True) as file:
         for line in file:
             print(
-                line.replace(
-                    f'TO {from_config["user"]}',
-                    f'TO {to_config["user"]}',
-                ),
+                line.replace(f'TO {from_config["user"]}', f'TO {to_config["user"]}',),
                 end="",
             )
     with fileinput.FileInput(str(schema_dump), inplace=True) as file:
         for line in file:
             print(
                 line.replace(
-                    f'Owner: {from_config["user"]}',
-                    f'Owner: {to_config["user"]}',
+                    f'Owner: {from_config["user"]}', f'Owner: {to_config["user"]}',
                 ),
                 end="",
             )

@@ -28,4 +28,4 @@ echo "----- CREATING TEMPLATE FILE TO RUN EXTRACT JOB -----"
 terraform apply -input=false -auto-approve -target=local_file.output_casrec
 cd /
 echo "----- RUNNING ECS TASK -----"
-python3 run_ecs_task.py -i $ID -n $NAME -c $CMD -l $LOG
+python3 run_ecs_task.py -i "${ID}" -n "${NAME}" -c "${CMD}" -l "${LOG}"

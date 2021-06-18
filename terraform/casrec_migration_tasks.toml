@@ -20,7 +20,67 @@
                         ]
                     }
                 },
-                "TaskDefinition":"${task-definition-pull-case}"
+                "TaskDefinition":"${task-definition-prepare}"
+            },
+            "prepare":{
+                "Cluster":"${cluster}",
+                "LaunchType":"FARGATE",
+                "NetworkConfiguration":{
+                    "AwsvpcConfiguration":{
+                        "SecurityGroups":[
+                            "${sec_group}"
+                        ],
+                        "Subnets":[
+                            ${subnets}
+                        ]
+                    }
+                },
+                "TaskDefinition":"${task-definition-prepare}"
+            },
+            "load-casrec":{
+                "Cluster":"${cluster}",
+                "LaunchType":"FARGATE",
+                "NetworkConfiguration":{
+                    "AwsvpcConfiguration":{
+                        "SecurityGroups":[
+                            "${sec_group}"
+                        ],
+                        "Subnets":[
+                            ${subnets}
+                        ]
+                    }
+                },
+                "TaskDefinition":"${task-definition-load-casrec}"
+            },
+            "transform":{
+                "Cluster":"${cluster}",
+                "LaunchType":"FARGATE",
+                "NetworkConfiguration":{
+                    "AwsvpcConfiguration":{
+                        "SecurityGroups":[
+                            "${sec_group}"
+                        ],
+                        "Subnets":[
+                            ${subnets}
+                        ]
+                    }
+                },
+                "TaskDefinition":"${task-definition-transform}"
+            },
+            "integration":{
+                "Cluster":"${cluster}",
+                "LaunchType":"FARGATE",
+                "NetworkConfiguration":{
+                    "AwsvpcConfiguration":{
+                        "SecurityGroups":[
+                            "${sec_group}"
+                        ],
+                        "Subnets":[
+                            ${subnets}
+                        ]
+                    }
+                },
+                "TaskDefinition":"${task-definition-integration}"
             },
             "validation":{
                 "Cluster":"${cluster}",

@@ -24,7 +24,8 @@ services:
 
   load_casrec:
     volumes:
-      - ./migration_steps/load_casrec/app:/app
+      - ./migration_steps/load_casrec/app:/load_casrec/app
+      - ./migration_steps/load_fees/app:/load_fees/app
 
   transform_casrec:
     volumes:
