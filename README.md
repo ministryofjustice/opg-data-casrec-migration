@@ -525,7 +525,7 @@ Get the tag of the ECR task you want to run. This is generally the commit tag. Y
 
 ```
 aws-vault exec identity -- docker-compose -f docker-compose.commands.yml run --rm task_runner ./run_ecs_task.sh \
--t master-bf3f623 \
+-t ecr-tag-you-want-to-use \
 -i validation \
 -n etl5 \
 -c "validation/api_tests.sh" \

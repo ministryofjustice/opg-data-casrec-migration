@@ -73,7 +73,7 @@ class BaseConfig:
 
     DEFAULT_CHUNK_SIZE = 20000
 
-    ALL_ENVIRONMENTS = ["local", "development"]
+    ALL_ENVIRONMENTS = ["local", "development", "preproduction", "qa"]
     ENABLED_ENTITIES = {
         "clients": ["local", "development"],
         "cases": ["local", "development"],
@@ -91,7 +91,7 @@ class BaseConfig:
     }
 
     def allowed_entities(self, env):
-        if env in ["development", "preproduction", "qa", "production"]:
+        if env in ["preproduction", "qa", "production"]:
             return get_enabled_entities_from_param_store(env)
         else:
             return [k for k, v in self.ENABLED_ENTITIES.items() if env in v]
