@@ -2,6 +2,9 @@ import logging
 
 from utilities.basic_data_table import get_basic_data_table
 
+from custom_errors import EmptyDataFrame
+from helpers import get_mapping_dict
+
 log = logging.getLogger("root")
 
 definition = {
@@ -35,6 +38,16 @@ def insert_persons_deputies(db_config, target_db):
             )
             offset += chunk_size
             chunk_no += 1
+        except EmptyDataFrame:
+            sirius_details = get_mapping_dict(
+                file_name=mapping_file_name,
+                stage_name="sirius_details",
+                only_complete_fields=False,
+            )
+
+            target_db.create_empty_table(sirius_details=sirius_details)
+
+            break
         except Exception as e:
             log.debug(f"End of insert_persons_deputies: {e}")
             break

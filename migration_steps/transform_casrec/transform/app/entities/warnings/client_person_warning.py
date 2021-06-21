@@ -2,6 +2,7 @@ import logging
 
 import pandas as pd
 
+from custom_errors import EmptyDataFrame
 from helpers import get_mapping_dict, format_error_message
 
 log = logging.getLogger("root")
@@ -57,6 +58,15 @@ def insert_client_person_warning(db_config, target_db):
             df=client_warning_df,
             sirius_details=sirius_details,
         )
+    except EmptyDataFrame:
+        sirius_details = get_mapping_dict(
+            file_name=mapping_file_name,
+            stage_name="sirius_details",
+            only_complete_fields=False,
+        )
+
+        target_db.create_empty_table(sirius_details=sirius_details)
+
     except Exception as e:
         log.debug(
             "No data to insert",

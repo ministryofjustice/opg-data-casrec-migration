@@ -1,6 +1,7 @@
 import logging
 
-from helpers import format_error_message
+from custom_errors import EmptyDataFrame
+from helpers import format_error_message, get_mapping_dict
 from transform_data.unique_id import add_unique_id
 from utilities.basic_data_table import get_basic_data_table
 import pandas as pd
@@ -100,6 +101,16 @@ def insert_order_deputies(db_config, target_db):
             df=deputyship_persons_order_df,
             sirius_details=sirius_details,
         )
+
+    except EmptyDataFrame:
+        sirius_details = get_mapping_dict(
+            file_name=mapping_file_name,
+            stage_name="sirius_details",
+            only_complete_fields=False,
+        )
+
+        target_db.create_empty_table(sirius_details=sirius_details)
+
     except Exception as e:
         log.debug(
             "No data to insert",
