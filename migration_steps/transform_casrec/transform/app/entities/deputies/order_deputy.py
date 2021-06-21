@@ -1,6 +1,7 @@
 import logging
 
-from helpers import format_error_message
+from custom_errors import EmptyDataFrame
+from helpers import format_error_message, get_mapping_dict
 from transform_data.unique_id import add_unique_id
 from utilities.basic_data_table import get_basic_data_table
 import pandas as pd
@@ -18,11 +19,18 @@ mapping_file_name = "order_deputy_mapping"
 
 
 def insert_order_deputies(db_config, target_db):
+    sirius_details = get_mapping_dict(
+        file_name=mapping_file_name,
+        stage_name="sirius_details",
+        only_complete_fields=False,
+    )
 
     # Get the standard data from casrec 'deputy' table
-    sirius_details, person_df = get_basic_data_table(
+
+    person_df = get_basic_data_table(
         db_config=db_config,
         mapping_file_name=mapping_file_name,
+        sirius_details=sirius_details,
         table_definition=definition,
     )
 
@@ -100,6 +108,11 @@ def insert_order_deputies(db_config, target_db):
             df=deputyship_persons_order_df,
             sirius_details=sirius_details,
         )
+
+    except EmptyDataFrame:
+
+        target_db.create_empty_table(sirius_details=sirius_details)
+
     except Exception as e:
         log.debug(
             "No data to insert",
