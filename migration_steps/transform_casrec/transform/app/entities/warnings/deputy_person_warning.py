@@ -4,6 +4,7 @@ import pandas as pd
 import psycopg2
 from psycopg2 import errors
 
+from custom_errors import EmptyDataFrame
 from helpers import get_mapping_dict, format_error_message
 from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 
@@ -62,6 +63,10 @@ def insert_deputy_person_warning(db_config, target_db):
             df=deputy_warning_df,
             sirius_details=sirius_details,
         )
+    except EmptyDataFrame:
+
+        target_db.create_empty_table(sirius_details=sirius_details)
+
     except Exception as e:
         log.debug(
             "No data to insert",

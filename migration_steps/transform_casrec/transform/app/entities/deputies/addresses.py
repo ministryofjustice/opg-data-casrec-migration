@@ -1,3 +1,5 @@
+from custom_errors import EmptyDataFrame
+from helpers import get_mapping_dict
 from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 from utilities.basic_data_table import get_basic_data_table
 import pandas as pd
@@ -39,12 +41,18 @@ def insert_addresses_deputies(db_config, target_db):
     offset = 0
     chunk_no = 1
 
+    sirius_details = get_mapping_dict(
+        file_name=mapping_file_name,
+        stage_name="sirius_details",
+        only_complete_fields=False,
+    )
     while True:
         try:
-            sirius_details, addresses_df = get_basic_data_table(
+            addresses_df = get_basic_data_table(
                 db_config=db_config,
                 mapping_file_name=mapping_file_name,
                 table_definition=definition,
+                sirius_details=sirius_details,
                 chunk_details={"chunk_size": chunk_size, "offset": offset},
             )
 
@@ -104,5 +112,10 @@ def insert_addresses_deputies(db_config, target_db):
             )
             offset += chunk_size
             chunk_no += 1
+        except EmptyDataFrame:
+
+            target_db.create_empty_table(sirius_details=sirius_details)
+
+            break
         except Exception:
             break

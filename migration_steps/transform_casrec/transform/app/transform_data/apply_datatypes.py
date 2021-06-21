@@ -16,6 +16,7 @@ datatype_remap = {
     "datetime": "datetime64[ns]",
     "dict": "str",
     "Decimal": "float",
+    "text": "str",
 }
 
 

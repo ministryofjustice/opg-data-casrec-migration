@@ -39,7 +39,7 @@ class InsertData:
         return statement
 
     def _create_table_statement_with_datatype(
-        self, df: pd.DataFrame, mapping_details: Dict, table_name: str
+        self, mapping_details: Dict, table_name: str, df: pd.DataFrame = None
     ) -> str:
         log.debug(f"Generating table create statement for {table_name}")
         statement = f"CREATE TABLE IF NOT EXISTS {self.schema}.{table_name} (\n"
@@ -53,7 +53,10 @@ class InsertData:
             )
             columns.append(f"{col} {details['data_type']}")
 
-        columns_from_df = self._list_table_columns(df=df)
+        try:
+            columns_from_df = self._list_table_columns(df=df)
+        except Exception:
+            columns_from_df = []
         columns_from_mapping = mapping_details.keys()
         temp_colums = list(set(columns_from_df) - set(columns_from_mapping))
         for col in temp_colums:
@@ -224,6 +227,23 @@ class InsertData:
         else:
             log.error("Multiple dest tables")
             return ""
+
+    def create_empty_table(self, sirius_details):
+        table_name = self._get_dest_table(mapping_dict=sirius_details)
+        if self._check_table_exists(table_name=table_name):
+            pass
+        else:
+            create_statement = self._create_table_statement_with_datatype(
+                mapping_details=sirius_details, table_name=table_name
+            )
+
+            try:
+
+                self.db_engine.execute(create_statement)
+            except Exception:
+
+                log.error(f"There was a problem creating empty table {table_name}")
+                os._exit(1)
 
     def insert_data(self, df, table_name=None, sirius_details=None, chunk_no=None):
         if len(df) == 0:
