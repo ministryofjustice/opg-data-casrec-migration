@@ -20,13 +20,13 @@ csv_path = current_path / "csvs"
 responses_path = current_path / "responses"
 load_dotenv(dotenv_path=env_path)
 
-environment = os.environ.get("ENVIRONMENT")
+ci = os.getenv("CI")
+environment = "development" if ci == "True" else os.environ["ENVIRONMENT"]
+account = "development" if ci == "True" else os.environ["SIRIUS_ACCOUNT"]
 config = get_config(environment)
 
 session = boto3.session.Session()
 host = os.environ.get("DB_HOST")
-ci = os.getenv("CI")
-account = os.environ["SIRIUS_ACCOUNT"]
 account_name = os.environ.get("ACCOUNT_NAME")
 bucket_name = f"casrec-migration-{account_name.lower()}"
 

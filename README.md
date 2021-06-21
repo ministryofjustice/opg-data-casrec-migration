@@ -536,7 +536,7 @@ Another example of running a task (this one uploads the fees to preprod):
 
 ```
 aws-vault exec identity -- docker-compose -f docker-compose.commands.yml run --rm task_runner ./run_ecs_task.sh \
--t jimmytest \
+-t ecr-tag-you-want-to-use \
 -i load-casrec \
 -n etl1 \
 -c python3,load_fees/app/app.py \
