@@ -532,6 +532,17 @@ aws-vault exec identity -- docker-compose -f docker-compose.commands.yml run --r
 -l casrec-migration-preproduction
 ```
 
+Another example of running a task (this one uploads the fees to preprod):
+
+```
+aws-vault exec identity -- docker-compose -f docker-compose.commands.yml run --rm task_runner ./run_ecs_task.sh \
+-t jimmytest \
+-i load-casrec \
+-n etl1 \
+-c python3,load_fees/app/app.py \
+-l casrec-migration-preproduction
+```
+
 #### Running the steps (Non-dockerised):
 
 Note - the steps rely on data passed forward by the chain, so your safest bet is to run ./migrate  - but for debugging.

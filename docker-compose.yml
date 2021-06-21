@@ -23,6 +23,7 @@ services:
       dockerfile: load_s3-dockerfile
     environment:
       CSV_DIR_SUFFIX: ./data/anon_data
+      FEES_DIR_SUFFIX: ./data/fees
       LOCALSTACK_URL: localstack
     volumes:
       - ./data:/data

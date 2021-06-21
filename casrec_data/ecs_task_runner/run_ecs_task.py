@@ -108,7 +108,6 @@ class TaskRunner:
         )
 
     def run_ecs_task(self, task_identifier, task_name, command):
-
         with open("/terraform/terraform.output_casrec_migration.json") as json_file:
             data = json.load(json_file)
 
@@ -129,7 +128,7 @@ class TaskRunner:
                 }
             },
             overrides={
-                "containerOverrides": [{"name": task_name, "command": command,},],
+                "containerOverrides": [{"name": task_name, "command": command}],
             },
         )
         return response
@@ -168,9 +167,10 @@ def main(task_identifier, task_name, task_command, log_group):
     task_runner.set_log_group(log_group)
     task_runner.create_session_runner()
     task_runner.create_session_logs()
-    response = task_runner.run_ecs_task(
-        task_identifier, task_name, task_command.split(", ")
-    )
+
+    task_list = task_command.split(",")
+
+    response = task_runner.run_ecs_task(task_identifier, task_name, task_list)
 
     task_arn = response["tasks"][0]["containers"][0]["taskArn"]
     cluster_arn = response["tasks"][0]["clusterArn"]

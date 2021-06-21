@@ -112,19 +112,39 @@ class StepFunctionRunner:
             print("Starting step function in 'no reload' mode")
             input_json = {
                 "prep": ["prepare/prepare.sh", "-i", "casrec_csv"],
-                "load1": ["python3", "app.py", "--skip_load=true"],
-                "load2": ["python3", "app.py", "--skip_load=true"],
-                "load3": ["python3", "app.py", "--skip_load=true"],
-                "load4": ["python3", "app.py", "--skip_load=true"],
+                "load1": ["python3", "load_casrec/app/app.py", "--skip_load=true"],
+                "load2": ["python3", "load_casrec/app/app.py", "--skip_load=true"],
+                "load3": ["python3", "load_casrec/app/app.py", "--skip_load=true"],
+                "load4": ["python3", "load_casrec/app/app.py", "--skip_load=true"],
             }
         else:
             print("Starting step function in 'reload' (normal) mode")
             input_json = {
                 "prep": ["prepare/prepare.sh"],
-                "load1": ["python3", "app.py", "--skip_load=false", "--delay=0"],
-                "load2": ["python3", "app.py", "--skip_load=false", "--delay=2"],
-                "load3": ["python3", "app.py", "--skip_load=false", "--delay=3"],
-                "load4": ["python3", "app.py", "--skip_load=false", "--delay=4"],
+                "load1": [
+                    "python3",
+                    "load_casrec/app/app.py",
+                    "--skip_load=false",
+                    "--delay=0",
+                ],
+                "load2": [
+                    "python3",
+                    "load_casrec/app/app.py",
+                    "--skip_load=false",
+                    "--delay=2",
+                ],
+                "load3": [
+                    "python3",
+                    "load_casrec/app/app.py",
+                    "--skip_load=false",
+                    "--delay=3",
+                ],
+                "load4": [
+                    "python3",
+                    "load_casrec/app/app.py",
+                    "--skip_load=false",
+                    "--delay=4",
+                ],
             }
         response = self.auto_refresh_session_step_func.start_execution(
             stateMachineArn=self.sf_arn, input=str(json.dumps(input_json))
