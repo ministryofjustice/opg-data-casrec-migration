@@ -67,25 +67,16 @@ def insert_caseitem_note(db_config, target_db):
                 columns=["note_id", "caseitem_id"], df=notes_caseitem_df
             )
 
-            if len(notes_caseitem_df) > 0:
-                log.debug(f"df size - notes_caseitem_df: {len(notes_caseitem_df)}")
-                target_db.insert_data(
-                    table_name=definition["destination_table_name"],
-                    df=notes_caseitem_df,
-                    sirius_details=sirius_details,
-                    chunk_no=chunk_no,
-                )
+            target_db.insert_data(
+                table_name=definition["destination_table_name"],
+                df=notes_caseitem_df,
+                sirius_details=sirius_details,
+                chunk_no=chunk_no,
+            )
             offset += chunk_size
             chunk_no += 1
-            if len(notes_caseitem_df) < chunk_size:
-                break
-    except EmptyDataFrame:
-        sirius_details = get_mapping_dict(
-            file_name=mapping_file_name,
-            stage_name="sirius_details",
-            only_complete_fields=False,
-        )
 
+    except EmptyDataFrame:
         target_db.create_empty_table(sirius_details=sirius_details)
 
     except Exception as e:

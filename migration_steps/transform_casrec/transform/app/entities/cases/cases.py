@@ -27,12 +27,18 @@ def insert_cases(db_config, target_db):
 
     persons_df = persons_df[["id", "caserecnumber"]]
 
+    sirius_details = get_mapping_dict(
+        file_name=mapping_file_name,
+        stage_name="sirius_details",
+        only_complete_fields=False,
+    )
     while True:
         try:
-            sirius_details, cases_df = get_basic_data_table(
+            cases_df = get_basic_data_table(
                 db_config=db_config,
                 mapping_file_name=mapping_file_name,
                 table_definition=definition,
+                sirius_details=sirius_details,
                 chunk_details={"chunk_size": chunk_size, "offset": offset},
             )
 
@@ -58,11 +64,6 @@ def insert_cases(db_config, target_db):
             offset += chunk_size
             chunk_no += 1
         except EmptyDataFrame:
-            sirius_details = get_mapping_dict(
-                file_name=mapping_file_name,
-                stage_name="sirius_details",
-                only_complete_fields=False,
-            )
 
             target_db.create_empty_table(sirius_details=sirius_details)
 

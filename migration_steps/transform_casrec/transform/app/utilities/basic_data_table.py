@@ -27,7 +27,7 @@ def get_source_table(mapping_dict):
 
 
 def get_basic_data_table(
-    mapping_file_name, table_definition, db_config, chunk_details=None
+    mapping_file_name, table_definition, db_config, sirius_details, chunk_details=None
 ):
     log.debug(f"Getting basic data using {mapping_file_name}")
 
@@ -37,11 +37,11 @@ def get_basic_data_table(
 
     source_table = get_source_table(mapping_dict=mapping_dict)
 
-    sirius_details = get_mapping_dict(
-        file_name=mapping_file_name,
-        stage_name="sirius_details",
-        only_complete_fields=False,
-    )
+    # sirius_details = get_mapping_dict(
+    #     file_name=mapping_file_name,
+    #     stage_name="sirius_details",
+    #     only_complete_fields=False,
+    # )
 
     source_data_query = generate_select_string_from_mapping(
         mapping=mapping_dict,
@@ -85,4 +85,4 @@ def get_basic_data_table(
 
     log.debug(f"Basic data for {mapping_file_name} has {len(result_df)} rows")
 
-    return sirius_details, result_df
+    return result_df

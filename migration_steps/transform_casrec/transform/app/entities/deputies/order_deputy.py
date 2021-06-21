@@ -19,11 +19,18 @@ mapping_file_name = "order_deputy_mapping"
 
 
 def insert_order_deputies(db_config, target_db):
+    sirius_details = get_mapping_dict(
+        file_name=mapping_file_name,
+        stage_name="sirius_details",
+        only_complete_fields=False,
+    )
 
     # Get the standard data from casrec 'deputy' table
-    sirius_details, person_df = get_basic_data_table(
+
+    person_df = get_basic_data_table(
         db_config=db_config,
         mapping_file_name=mapping_file_name,
+        sirius_details=sirius_details,
         table_definition=definition,
     )
 
@@ -103,11 +110,6 @@ def insert_order_deputies(db_config, target_db):
         )
 
     except EmptyDataFrame:
-        sirius_details = get_mapping_dict(
-            file_name=mapping_file_name,
-            stage_name="sirius_details",
-            only_complete_fields=False,
-        )
 
         target_db.create_empty_table(sirius_details=sirius_details)
 
