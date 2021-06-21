@@ -230,17 +230,20 @@ class InsertData:
 
     def create_empty_table(self, sirius_details):
         table_name = self._get_dest_table(mapping_dict=sirius_details)
-        create_statement = self._create_table_statement_with_datatype(
-            mapping_details=sirius_details, table_name=table_name
-        )
+        if self._check_table_exists(table_name=table_name):
+            pass
+        else:
+            create_statement = self._create_table_statement_with_datatype(
+                mapping_details=sirius_details, table_name=table_name
+            )
 
-        try:
+            try:
 
-            self.db_engine.execute(create_statement)
-        except Exception:
+                self.db_engine.execute(create_statement)
+            except Exception:
 
-            log.error(f"There was a problem creating empty table {table_name}")
-            os._exit(1)
+                log.error(f"There was a problem creating empty table {table_name}")
+                os._exit(1)
 
     def insert_data(self, df, table_name=None, sirius_details=None, chunk_no=None):
         if len(df) == 0:
