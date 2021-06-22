@@ -70,6 +70,7 @@ def get_mappings():
             "deputy_special_warnings",
             "deputy_violent_warnings",
         ],
+        "remarks": ["notes"]
     }
 
     for entity, mapping in all_mappings.items():
