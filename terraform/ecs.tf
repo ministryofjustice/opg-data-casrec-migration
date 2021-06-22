@@ -72,7 +72,7 @@ data "aws_iam_policy_document" "task_role_assume_policy" {
   }
 }
 
-data "aws_iam_policy_document" "ecs_task_s3" {
+data "aws_iam_policy_document" "etl_task" {
   statement {
     effect    = "Allow"
     resources = ["*"]
@@ -88,11 +88,19 @@ data "aws_iam_policy_document" "ecs_task_s3" {
       "s3:PutObjectAcl"
     ]
   }
+  statement {
+    effect    = "Allow"
+    resources = [aws_ssm_parameter.allowed_entities.arn]
+
+    actions = [
+      "ssm:GetParameter*"
+    ]
+  }
 }
 
-resource "aws_iam_role_policy" "etl_task_s3" {
+resource "aws_iam_role_policy" "etl_task" {
   name   = "casrec-migration-task-logs.${local.environment}"
-  policy = data.aws_iam_policy_document.ecs_task_s3.json
+  policy = data.aws_iam_policy_document.etl_task.json
   role   = aws_iam_role.etl.id
 }
 

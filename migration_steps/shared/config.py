@@ -1,5 +1,6 @@
 import logging
 import os
+import boto3
 from pathlib import Path
 from deprecated import deprecated
 from dotenv import load_dotenv
@@ -9,6 +10,14 @@ def load_env_vars():
     current_path = Path(os.path.dirname(os.path.realpath(__file__)))
     env_path = current_path / "../.env"
     load_dotenv(dotenv_path=env_path)
+
+
+def get_enabled_entities_from_param_store(env):
+    session = boto3.session.Session()
+    ssm = session.client("ssm", region_name="eu-west-1")
+    parameter = ssm.get_parameter(Name=f"{env}-allowed-entities")
+
+    return parameter["Parameter"]["Value"].split(",")
 
 
 class BaseConfig:
@@ -66,24 +75,26 @@ class BaseConfig:
 
     ALL_ENVIRONMENTS = ["local", "development", "preproduction", "qa"]
     ENABLED_ENTITIES = {
-        "clients": ["local", "development", "preproduction"],
-        "cases": ["local", "development", "preproduction"],
-        "bonds": ["local", "development", "preproduction"],
-        "supervision_level": ["local", "development", "preproduction"],
-        "deputies": ["local", "development", "preproduction"],
+        "clients": ["local", "development"],
+        "cases": ["local", "development"],
+        "bonds": ["local", "development"],
+        "supervision_level": ["local", "development"],
+        "deputies": ["local", "development"],
         "finance": [],
-        "remarks": ["local", "development", "preproduction"],
+        "remarks": ["local", "development"],
         "reporting": [],
         "tasks": [],
         "visits": [],
-        "warnings": ["local", "development", "preproduction"],
+        "warnings": ["local", "development"],
         "additional_data": [],
-        "death": ["local", "development", "preproduction"],
+        "death": ["local", "development"],
     }
 
     def allowed_entities(self, env):
-
-        return [k for k, v in self.ENABLED_ENTITIES.items() if env in v]
+        if env in ["preproduction", "qa", "production"]:
+            return get_enabled_entities_from_param_store(env)
+        else:
+            return [k for k, v in self.ENABLED_ENTITIES.items() if env in v]
 
 
 class LocalConfig(BaseConfig):

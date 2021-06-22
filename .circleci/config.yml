@@ -341,6 +341,14 @@ orbs:
               working_directory: ~/project
       notify_if_success:
         steps:
+          - run:
+              name: set entities environment variables
+              when: always
+              command: |
+                python3 get_environment_entities.py --environment ${TF_WORKSPACE} --role integrations-ci >> ENTITIES
+                ENTITIES=$(cat ENTITIES)
+                echo "export ENTITIES=\"${ENTITIES}\"" >> $BASH_ENV
+              working_directory: ~/project/docs/ci_scripts
           - slack/notify:
               channel: opg-migration-builds
               event: pass
@@ -358,14 +366,14 @@ orbs:
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": "*Branch*: ${CIRCLE_BRANCH}\n\n*Commit Message*: ${COMMIT_MESSAGE}\n\n*"
+                                "text": "*Branch*: ${CIRCLE_BRANCH}\n\n*Commit Message*: ${COMMIT_MESSAGE}\n\n"
                             }
                         },
                         {
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": "Kicked off by *${CIRCLE_USERNAME}*"
+                                "text": "*Kicked off by:* ${CIRCLE_USERNAME}\n\n*Entities*: ${ENTITIES}\n"
                             }
                         },
                         {
