@@ -78,6 +78,7 @@ class BaseConfig:
         "clients": ["local", "development"],
         "cases": ["local", "development"],
         "bonds": ["local", "development"],
+        "crec": ["local", "development"],
         "supervision_level": ["local", "development"],
         "deputies": ["local", "development"],
         "finance": [],
