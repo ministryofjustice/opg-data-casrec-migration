@@ -1,4 +1,5 @@
 import pandas as pd
+import pytest
 
 from pytest_cases import parametrize_with_cases
 
@@ -13,6 +14,7 @@ from transform_data_tests.apply_conditions.cases_convert_to_timestamp import (
 )
 
 
+@pytest.mark.skip(reason="been refactored into separate methods")
 @parametrize_with_cases(
     ("test_data_df", "conditions", "expected_result_data_data_df"),
     cases=[

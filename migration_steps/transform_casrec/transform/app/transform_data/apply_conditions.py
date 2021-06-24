@@ -14,46 +14,18 @@ environment = os.environ.get("ENVIRONMENT")
 config = helpers.get_config(env=environment)
 
 
-# def convert_to_timestamp(source_date, source_time):
-#     date = datetime.strptime(source_date, '%Y-%m-%d')
-#     print(f"date: {date}")
-#     return datetime.combine(date=date, time=source_time)
-
-
 def format_additional_col_alias(original_column_name: str) -> str:
     return f"c_{original_column_name.lower().replace(' ', '_').replace('.','')}"
 
 
 def source_conditions(df, conditions):
-    empty_date = ["", "NaT", "nan"]
 
-    try:
-
-        source_date = format_additional_col_alias(
-            conditions["convert_to_timestamp"]["date"]
-        )
-        source_time = format_additional_col_alias(
-            conditions["convert_to_timestamp"]["time"]
-        )
-
-        df["timestamp"] = (
-            df[[source_date, source_time]]
-            .astype(str)
-            .apply(
-                lambda x: dt.datetime.strptime(
-                    x[source_date] + x[source_time].split(".")[0], "%Y-%m-%d%H:%M:%S"
-                )
-                if x[source_date] not in empty_date
-                else "",
-                axis=1,
-            )
-        )
-
-        df = df.astype({"timestamp": "datetime64[ns]"})
-
-        conditions.pop("convert_to_timestamp", None)
-    except KeyError:
-        pass
+    convert_to_timestamp_cols = {
+        k: v for k, v in conditions.items() if k == "convert_to_timestamp"
+    }
+    df = convert_to_timestamp(df, convert_to_timestamp_cols)
+    for col in convert_to_timestamp_cols:
+        conditions.pop(col, None)
 
     not_null_cols = [k for k, v in conditions.items() if v == "not null"]
     df = remove_empty_rows(df, not_null_cols)
@@ -82,14 +54,48 @@ def source_conditions(df, conditions):
     return df
 
 
+def convert_to_timestamp(df, cols):
+
+    empty_date = ["", "NaT", "nan"]
+
+    source_date = format_additional_col_alias(cols["convert_to_timestamp"]["date"])
+    source_time = format_additional_col_alias(cols["convert_to_timestamp"]["time"])
+
+    df["c_timestamp"] = (
+        df[[source_date, source_time]]
+        .astype(str)
+        .apply(
+            lambda x: dt.datetime.strptime(
+                x[source_date] + x[source_time].split(".")[0], "%Y-%m-%d%H:%M:%S"
+            )
+            if x[source_date] not in empty_date
+            else "",
+            axis=1,
+        )
+    )
+
+    df = df.astype({"c_timestamp": "datetime64[ns]"})
+
+    log.log(
+        config.VERBOSE,
+        f"Dataframe size after converting {source_date} and {source_time} to timestamp: {len(df)}",
+    )
+
+    return df
+
+
 def select_latest(df, latest_cols):
 
-    col = latest_cols["latest"]["col"]
+    col = format_additional_col_alias(latest_cols["latest"]["col"])
     per = format_additional_col_alias(latest_cols["latest"]["per"])
 
     log.debug(f"Selecting latest '{col}' per '{per}'")
 
     final_df = df.sort_values(col).groupby(per).tail(1)
+    log.log(
+        config.VERBOSE,
+        f"Dataframe size after selecting latest {col} per {per}: {len(final_df)}",
+    )
 
     return final_df
 

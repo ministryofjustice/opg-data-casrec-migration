@@ -107,6 +107,29 @@ class InsertData:
 
             return table_exists
 
+    def _create_update_statement(self, table_name, fields_to_update, join_column, df):
+
+        df = df.set_index(join_column)
+        new_data = df.to_dict("index")
+
+        update_statements = []
+
+        for join_value, data in new_data.items():
+
+            s = f"""update "{self.schema}"."{table_name}" set """
+
+            for i, field in enumerate(fields_to_update):
+                s += f"{field} = {data[field]}"
+                if i + 1 == len(fields_to_update):
+                    s += " "
+                else:
+                    s = +", "
+
+            s += f"where {join_column} = {join_value};"
+            update_statements.append(s)
+
+        return update_statements
+
     def _create_insert_statement(self, table_name, df):
         columns = self._list_table_columns(df=df)
         insert_statement = f'INSERT INTO "{self.schema}"."{table_name}" ('
@@ -245,20 +268,71 @@ class InsertData:
                 log.error(f"There was a problem creating empty table {table_name}")
                 os._exit(1)
 
-    def insert_data(self, df, table_name=None, sirius_details=None, chunk_no=None):
+    def update_data(
+        self,
+        df,
+        table_name=None,
+        sirius_details=None,
+        fields_to_update=None,
+        join_column=None,
+        chunk_no=None,
+    ):
         if len(df) == 0:
-            log.info(f"0 records to insert into '{table_name}' table")
+            log.info(f"0 records to update in '{table_name}' table")
             raise EmptyDataFrame
-
-        if sirius_details:
-            table_name = self._get_dest_table(mapping_dict=sirius_details)
 
         if not self._check_datatypes(mapping_details=sirius_details, df=df):
             log.error("Datatypes do not match")
             os._exit(1)
 
+        if chunk_no:
+            log.debug(f"Updating {table_name} - chunk {chunk_no} into database....")
+        else:
+            log.debug(f"Updating {table_name} into database....")
+
+        if self._check_table_exists(table_name=table_name):
+            col_diff = self._check_columns_exist(table_name, df)
+            if len(col_diff) > 0:
+
+                add_missing_colums_statement = self._add_missing_columns_with_datatypes(
+                    table_name, col_diff, mapping_details=sirius_details
+                )
+
+                self.db_engine.execute(add_missing_colums_statement)
+        else:
+            log.error("Target table does not exist - can't update")
+            os._exit(1)
+
+        update_statements = self._create_update_statement(
+            table_name=table_name,
+            fields_to_update=fields_to_update,
+            join_column=join_column,
+            df=df,
+        )
+
+        try:
+            for statement in update_statements:
+                self.db_engine.execute(statement)
+        except Exception as e:
+            print(e)
+            log.error(f"OI There was a problem updating into {table_name}: {e}")
+            os._exit(1)
+        updated_count = len(df)
+        log.info(f"Updated {updated_count} records into '{table_name}' table")
+
+    def insert_data(self, df, table_name=None, sirius_details=None, chunk_no=None):
         if len(df) == 0:
-            log.error("No data in dataframe, there is a problem!")
+            log.info(f"0 records to insert into '{table_name}' table")
+            raise EmptyDataFrame
+
+        # if sirius_details:
+        #     table_name = self._get_dest_table(mapping_dict=sirius_details)
+
+        if not table_name:
+            table_name = self._get_dest_table(mapping_dict=sirius_details)
+
+        if not self._check_datatypes(mapping_details=sirius_details, df=df):
+            log.error("Datatypes do not match")
             os._exit(1)
 
         if chunk_no:

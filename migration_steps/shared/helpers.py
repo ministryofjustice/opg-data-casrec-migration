@@ -79,6 +79,7 @@ def get_mapping_dict(
     stage_name: str = "",
     only_complete_fields: bool = False,
     include_pk: bool = True,
+    include_fks: bool = True,
 ) -> Dict:
     dirname = get_current_directory()
     file_path = os.path.join(dirname, f"mapping_definitions/{file_name}.json")
@@ -97,6 +98,13 @@ def get_mapping_dict(
             k: v
             for k, v in mapping_dict.items()
             if v["sirius_details"]["is_pk"] is not True
+        }
+
+    if not include_fks:
+        mapping_dict = {
+            k: v
+            for k, v in mapping_dict.items()
+            if v["sirius_details"]["fk_parents"] == ""
         }
 
     if stage_name:
