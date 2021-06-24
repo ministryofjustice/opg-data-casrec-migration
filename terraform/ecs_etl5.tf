@@ -59,7 +59,8 @@ locals {
       },
       {
         name  = "SIRIUS_DB_HOST",
-        value = local.account.name == "production" ? "NOT_SET" : data.aws_rds_cluster.sirius.endpoint
+        value = "api-dev.cluster-ro-cbefazahqdfa.eu-west-1.rds.amazonaws.com"
+        //        value = local.account.name == "production" ? "NOT_SET" : data.aws_rds_cluster.sirius.endpoint
       },
       {
         name  = "SIRIUS_DB_PORT",
