@@ -1,7 +1,5 @@
 FROM opg_casrec_migration_base_image:latest
 RUN apt-get install -y postgresql-client
-COPY /requirements.txt /requirements.txt
-RUN pip3 install -r requirements.txt
 COPY integration/integration.sh /integration/integration.sh
 COPY integration/fixtures /integration/fixtures
 COPY integration/reindex_ids /integration/reindex_ids
