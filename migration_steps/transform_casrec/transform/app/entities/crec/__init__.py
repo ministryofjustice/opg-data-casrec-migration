@@ -1,6 +1,6 @@
 import logging
 
-
+from entities.crec.persons import insert_crec_persons
 from helpers import log_title, check_entity_enabled
 
 log = logging.getLogger("root")
@@ -10,7 +10,7 @@ def runner(target_db, db_config):
     """
     | Name      | Running Order | Requires |
     | --------- | ------------- | -------- |
-    |           |               |          |
+    |  crec     | 1             | persons  |
     |           |               |          |
     |           |               |          |
 
@@ -22,7 +22,11 @@ def runner(target_db, db_config):
 
     log.info(log_title(message=entity_name))
 
-    log.debug("Not currently implemented")
+    log.info("Inserting crec_persons")
+    insert_crec_persons(
+        target_db=target_db,
+        db_config=db_config,
+    )
 
 
 if __name__ == "__main__":
