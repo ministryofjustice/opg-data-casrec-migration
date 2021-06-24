@@ -21,7 +21,6 @@ from decorators import timer, mem_tracker
 
 from dotenv import load_dotenv
 
-from run_data_tests import run_data_tests
 from entities import (
     clients,
     cases,
@@ -37,6 +36,7 @@ from entities import (
     teams,
     visits,
     warnings,
+    crec,
 )
 from utilities.clear_database import clear_tables
 from utilities.db_insert import InsertData
@@ -129,6 +129,7 @@ def main(clear, team, chunk_size):
     teams.runner(target_db=target_db, db_config=db_config)
     visits.runner(target_db=target_db, db_config=db_config)
     warnings.runner(target_db=target_db, db_config=db_config)
+    crec.runner(target_db=target_db, db_config=db_config)
 
     if environment == "local":
         check_row_counts.count_rows(

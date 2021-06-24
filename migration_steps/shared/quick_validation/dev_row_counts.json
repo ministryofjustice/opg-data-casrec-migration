@@ -176,8 +176,8 @@
   {
     "crec": [
       {
-        "table_name": "persons",
-        "query": "select count(*) from {schema}.persons where crec is not null;",
+        "table_name": "persons_crec",
+        "query": "select count(*) from {schema}.persons_crec;",
         "row_counts": {
           "all": 754,
           "team_2": 0

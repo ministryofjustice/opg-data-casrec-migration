@@ -8,10 +8,18 @@ from transform_tests.transform_data_tests.apply_conditions import (
     cases_condition_with_value,
 )
 
+from transform_data_tests.apply_conditions.cases_convert_to_timestamp import (
+    case_convert_to_timestamp,
+)
+
 
 @parametrize_with_cases(
     ("test_data_df", "conditions", "expected_result_data_data_df"),
-    cases=[cases_not_null_condition, cases_condition_with_value],
+    cases=[
+        cases_not_null_condition,
+        cases_condition_with_value,
+        case_convert_to_timestamp,
+    ],
 )
 def test_apply_conditions(test_data_df, conditions, expected_result_data_data_df):
 

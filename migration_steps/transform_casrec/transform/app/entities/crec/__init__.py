@@ -1,6 +1,6 @@
 import logging
 
-from entities.crec.persons import insert_crec_persons
+from entities.crec.persons import insert_persons_crec
 from helpers import log_title, check_entity_enabled
 
 log = logging.getLogger("root")
@@ -23,7 +23,7 @@ def runner(target_db, db_config):
     log.info(log_title(message=entity_name))
 
     log.info("Inserting crec_persons")
-    insert_crec_persons(
+    insert_persons_crec(
         target_db=target_db,
         db_config=db_config,
     )

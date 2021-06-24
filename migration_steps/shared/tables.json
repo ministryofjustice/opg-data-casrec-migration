@@ -238,5 +238,16 @@
 		"table_type": "join",
 		"sequences": [],
 		"order_by": ["person_id", "warning_id"]
+	},
+	"persons_crec": {
+		"entities": {
+			"base_entities": ["crec"],
+			"relies_on": [""]
+		},
+		"pk": "",
+		"fks": [],
+		"table_type": "data",
+		"sequences": [],
+		"order_by": []
 	}
 }
