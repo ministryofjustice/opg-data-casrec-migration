@@ -11,6 +11,10 @@ parameters:
   run_qa:
     type: boolean
     default: false
+  run_production:
+    type: boolean
+    default: false
+
 workflows:
   pull_request:
     when: << pipeline.parameters.run_master >>
@@ -101,8 +105,10 @@ workflows:
           tf_workspace: preproduction
           environment: Preproduction
           filters: {branches:{only:[master]}}
-      - tag_image_for_qa:
+      - tag_image_for_environment:
           name: tag image for qa
+          environment: Preproduction
+          environment_tag: qa
           requires: [run the step function preproduction]
           filters: {branches:{only:[master]}}
       - approve:
@@ -160,6 +166,12 @@ workflows:
           tf_workspace: qa
           environment: Quality Assurance
           filters: {branches:{only:[master]}}
+      - tag_image_for_environment:
+          name: tag image for production
+          environment: Quality Assurance
+          environment_tag: production
+          requires: [run the step function qa]
+          filters: {branches:{only:[master]}}
       - approve:
           name: approve full elastic reset qa
           type: approval
@@ -171,6 +183,29 @@ workflows:
           requires: [approve full elastic reset qa]
           tf_workspace: qa
           environment: Quality Assurance
+          filters: {branches:{only:[master]}}
+
+  production:
+    when: << pipeline.parameters.run_production >>
+    jobs:
+      - get_latest_image:
+          name: get latest tag production
+          image_tag: production
+          environment: Production
+          filters: {branches:{only:[master]}}
+      - infrastructure:
+          name: plan infra production
+          requires: [get latest tag production]
+          tf_workspace: production
+          tf_command: plan
+          environment: production
+          filters: {branches:{only:[master]}}
+      - infrastructure:
+          name: build infra production
+          requires: [plan infra production]
+          tf_workspace: production
+          tf_command: apply
+          environment: production
           filters: {branches:{only:[master]}}
 
   nightly_preproduction_run:
@@ -207,8 +242,10 @@ workflows:
           tf_workspace: preproduction
           environment: Preproduction
           filters: {branches:{only:[master]}}
-      - tag_image_for_qa:
+      - tag_image_for_environment:
           name: tag image for qa
+          environment: Preproduction
+          environment_tag: qa
           requires: [run the step function preproduction]
           filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
@@ -533,7 +570,7 @@ jobs:
       - notififications/notify_env_vars
       - notififications/notify_if_fail
 
-  tag_image_for_qa:
+  tag_image_for_environment:
     executor: migration/python
     resource_class: small
     parameters:
@@ -541,11 +578,16 @@ jobs:
         description: environment for step function
         type: string
         default: "Development"
+      environment_tag:
+        description: environment tag for where image can be used
+        type: string
+        default: "development"
     environment:
       AWS_REGION: eu-west-1
       AWS_CONFIG_FILE: ~/project/aws_config
       AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
       ENVIRONMENT: << parameters.environment >>
+      ENVIRONMENT_TAG: << parameters.environment_tag >>
     working_directory: ~/project
     steps:
       - checkout
@@ -567,7 +609,7 @@ jobs:
       - run:
           name: Set new tag
           command: |
-            NEW_TAG=qa-`echo ${VERSION} | awk '-F-' '{print $2}'`
+            NEW_TAG="${ENVIRONMENT_TAG}"-`echo ${VERSION} | awk '-F-' '{print $2}'`
             echo "export NEW_TAG=${NEW_TAG}" >> $BASH_ENV
       - run:
           name: Retag images
@@ -786,7 +828,7 @@ jobs:
           name: Run transform_casrec unit tests
           command: |
             export PYTHONPATH=~/project/migration_steps/transform_casrec:~/project/migration_steps/transform_casrec/transform/app
-            pip3 install -r migration_steps/requirements.txt
+            pip3 install -r base_image/requirements.txt
             python3 -m pytest migration_steps/transform_casrec/transform/transform_tests --cov-fail-under=85
       - run:
           name: Run shared utilities unit tests

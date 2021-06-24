@@ -78,15 +78,16 @@ resource "aws_iam_role_policy" "state_machine" {
   role   = aws_iam_role.state_machine.id
 }
 
-locals {
-  subnets_string = join(",", [for s in data.aws_subnet_ids.private.ids : format("%q", s)])
-}
 
 resource "aws_sfn_state_machine" "casrec_migration" {
-  name     = "casrec-mig-state-machine-${local.account.name}"
-  role_arn = aws_iam_role.state_machine.arn
+  name       = "casrec-mig-state-machine-${local.account.name}"
+  role_arn   = aws_iam_role.state_machine.arn
+  definition = local.account.name == "production" ? local.short_definition : local.standard_definition
+}
 
-  definition = <<EOF
+locals {
+  subnets_string      = join(",", [for s in data.aws_subnet_ids.private.ids : format("%q", s)])
+  standard_definition = <<EOF
 {
     "StartAt": "Prepare For Migration",
     "States": {
@@ -348,6 +349,179 @@ resource "aws_sfn_state_machine" "casrec_migration" {
                     "ContainerOverrides": [{
                         "Name": "etl5",
                         "Command": ["validation/validate.sh"]
+                    }]
+                }
+            }
+        }
+    }
+}
+EOF
+  short_definition    = <<EOF
+{
+    "StartAt": "Prepare For Migration",
+    "States": {
+        "Prepare For Migration": {
+            "Type": "Task",
+            "Next": "Parrallel Load Casrec",
+            "OutputPath": "$$.Execution.Input",
+            "Resource": "arn:aws:states:::ecs:runTask.sync",
+            "Parameters": {
+                "LaunchType": "FARGATE",
+                "PlatformVersion": "1.4.0",
+                "Cluster": "${aws_ecs_cluster.migration.arn}",
+                "TaskDefinition": "${aws_ecs_task_definition.etl0.arn}",
+                "NetworkConfiguration": {
+                    "AwsvpcConfiguration": {
+                        "Subnets": [${local.subnets_string}],
+                        "SecurityGroups": ["${aws_security_group.etl.id}"],
+                        "AssignPublicIp": "DISABLED"
+                    }
+                },
+                "Overrides": {
+                    "ContainerOverrides": [{
+                        "Name": "etl0",
+                        "Command.$": "$.prep"
+                    }]
+                }
+            }
+        },
+        "Parrallel Load Casrec": {
+            "Type": "Parallel",
+            "Next": "Run Transform Casrec",
+            "Branches": [
+                {
+                    "StartAt": "Run Load Casrec Task 1",
+                    "States": {
+                        "Run Load Casrec Task 1": {
+                            "Type": "Task",
+                            "Resource": "arn:aws:states:::ecs:runTask.sync",
+                            "Parameters": {
+                                "LaunchType": "FARGATE",
+                                "Cluster": "${aws_ecs_cluster.migration.arn}",
+                                "TaskDefinition": "${aws_ecs_task_definition.etl1.arn}",
+                                "NetworkConfiguration": {
+                                    "AwsvpcConfiguration": {
+                                        "Subnets": [${local.subnets_string}],
+                                        "SecurityGroups": ["${aws_security_group.etl.id}"],
+                                        "AssignPublicIp": "DISABLED"
+                                    }
+                                },
+                                "Overrides": {
+                                    "ContainerOverrides": [{
+                                        "Name": "etl1",
+                                        "Command.$": "$.load1"
+                                    }]
+                                }
+                            },
+                            "End": true
+                        }
+                    }
+                },
+                {
+                    "StartAt": "Run Load Casrec Task 2",
+                    "States": {
+                        "Run Load Casrec Task 2": {
+                            "Type": "Task",
+                            "Resource": "arn:aws:states:::ecs:runTask.sync",
+                            "Parameters": {
+                                "LaunchType": "FARGATE",
+                                "Cluster": "${aws_ecs_cluster.migration.arn}",
+                                "TaskDefinition": "${aws_ecs_task_definition.etl1.arn}",
+                                "NetworkConfiguration": {
+                                    "AwsvpcConfiguration": {
+                                        "Subnets": [${local.subnets_string}],
+                                        "SecurityGroups": ["${aws_security_group.etl.id}"],
+                                        "AssignPublicIp": "DISABLED"
+                                    }
+                                },
+                                "Overrides": {
+                                    "ContainerOverrides": [{
+                                        "Name": "etl1",
+                                        "Command.$": "$.load2"
+                                    }]
+                                }
+                            },
+                            "End": true
+                        }
+                    }
+                },
+                {
+                    "StartAt": "Run Load Casrec Task 3",
+                    "States": {
+                        "Run Load Casrec Task 3": {
+                            "Type": "Task",
+                            "Resource": "arn:aws:states:::ecs:runTask.sync",
+                            "Parameters": {
+                                "LaunchType": "FARGATE",
+                                "Cluster": "${aws_ecs_cluster.migration.arn}",
+                                "TaskDefinition": "${aws_ecs_task_definition.etl1.arn}",
+                                "NetworkConfiguration": {
+                                    "AwsvpcConfiguration": {
+                                        "Subnets": [${local.subnets_string}],
+                                        "SecurityGroups": ["${aws_security_group.etl.id}"],
+                                        "AssignPublicIp": "DISABLED"
+                                    }
+                                },
+                                "Overrides": {
+                                    "ContainerOverrides": [{
+                                        "Name": "etl1",
+                                        "Command.$": "$.load3"
+                                    }]
+                                }
+                            },
+                            "End": true
+                        }
+                    }
+                },
+                {
+                    "StartAt": "Run Load Casrec Task 4",
+                    "States": {
+                        "Run Load Casrec Task 4": {
+                            "Type": "Task",
+                            "Resource": "arn:aws:states:::ecs:runTask.sync",
+                            "Parameters": {
+                                "LaunchType": "FARGATE",
+                                "Cluster": "${aws_ecs_cluster.migration.arn}",
+                                "TaskDefinition": "${aws_ecs_task_definition.etl1.arn}",
+                                "NetworkConfiguration": {
+                                    "AwsvpcConfiguration": {
+                                        "Subnets": [${local.subnets_string}],
+                                        "SecurityGroups": ["${aws_security_group.etl.id}"],
+                                        "AssignPublicIp": "DISABLED"
+                                    }
+                                },
+                                "Overrides": {
+                                    "ContainerOverrides": [{
+                                        "Name": "etl1",
+                                        "Command.$": "$.load4"
+                                    }]
+                                }
+                            },
+                            "End": true
+                        }
+                    }
+                }
+            ]
+        },
+        "Run Transform Casrec": {
+            "Type": "Task",
+            "End": true,
+            "Resource": "arn:aws:states:::ecs:runTask.sync",
+            "Parameters": {
+                "LaunchType": "FARGATE",
+                "Cluster": "${aws_ecs_cluster.migration.arn}",
+                "TaskDefinition": "${aws_ecs_task_definition.etl2.arn}",
+                "NetworkConfiguration": {
+                    "AwsvpcConfiguration": {
+                        "Subnets": [${local.subnets_string}],
+                        "SecurityGroups": ["${aws_security_group.etl.id}"],
+                        "AssignPublicIp": "DISABLED"
+                    }
+                },
+                "Overrides": {
+                    "ContainerOverrides": [{
+                        "Name": "etl2",
+                        "Command": ["transform_casrec/transform.sh"]
                     }]
                 }
             }

@@ -469,6 +469,28 @@ Images are tagged with QA on successful completion of preproduction run.
 Circle doesn't have nice drop downs for selecting builds unfortunately so if we want selectable image builds then we will have to develop a
 tiny script to kick off the job with a passed in param of the build number.
 
+## Production environment
+
+Production runs should not be kicked off automatically but we do want to make sure that the infra is deploying correctly
+into prod before we try to run an actual migration there. As such, we have a Circle job that builds the infra in production albeit
+with a cut down step function that only runs up until the transform stage.
+
+There are some other 'safety features' that will need turning off when running the full real migration on prod:
+
+- Switch out the short step function definition for the standard one.
+- Turn on the SG rules for sirius DB and frontend by removing the `count` row on them which turns them off in production.
+- Make sure the latest QA run has been tagged with `production` (this happens as final step of a successful QA run)
+- Remove the `if` clauses in the `integration`, `sirius_load` and `validation` main shell scripts that prevent them from being run on production.
+- Remove the check against `SIRIUS_DB_HOST` and `SIRIUS_FRONT_URL` that sets them to 'NOT_SET' in production
+- In prepare step, take out the check against prod in the `prepare.sh` file
+
+This is the full list of steps and these must be *CHECKED OFF* before running the real migration!!
+
+The circle job to deploy will be kicked off from the command line to avoid people mis-clicking!
+
+Adding the safe short step function to the prod pipeline will be done as a separate tiny ticket as
+we want to check it all looks good before we run it. Once run, this bit of the README needs updating!
+
 ### Running Migration steps individually
 
 Commands to run each step individually, still  via docker compose:

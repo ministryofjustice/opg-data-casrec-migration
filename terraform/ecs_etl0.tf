@@ -55,7 +55,7 @@ locals {
       },
       {
         name  = "SIRIUS_DB_HOST",
-        value = data.aws_rds_cluster.sirius.endpoint
+        value = local.account.name == "production" ? "NOT_SET" : data.aws_rds_cluster.sirius.endpoint
       },
       {
         name  = "SIRIUS_DB_PORT",
