@@ -518,6 +518,44 @@
             ]
         }
     },
+    "notes": {
+        "exclude": [
+            "createdtime",
+            "upload_id",
+            "document_id"
+        ],
+        "forced": {
+            "caserecnumber": {
+                "mapping_table": "client_persons.caserecnumber"
+            },
+            "createdtime": {
+                "casrec": "CAST(CONCAT(remarks.\"Logdate\", ' ', LEFT(remarks.\"Logtime\", 8)) AS TIMESTAMP(0))",
+                "sirius": "notes.createdtime"
+            }
+        },
+        "orderby": {},
+        "casrec": {
+            "from_table": "remarks",
+            "joins": [
+                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.remarks.\"Case\""
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_notes exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "where_clauses": []
+        },
+        "sirius": {
+            "from_table": "caseitem_note",
+            "joins": [
+                "LEFT JOIN {target_schema}.cases ON cases.id = caseitem_note.caseitem_id",
+                "LEFT JOIN {target_schema}.notes ON notes.id = caseitem_note.note_id",
+                "LEFT JOIN {target_schema}.persons ON persons.id = cases.client_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_notes exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "persons.type = 'actor_client'",
+                "persons.clientsource = 'CASRECMIGRATION'"
+            ]
+        }
+    },
     "supervision_level_log": {
         "exclude": [
             "order_id"
