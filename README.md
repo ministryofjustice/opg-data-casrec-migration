@@ -482,6 +482,7 @@ There are some other 'safety features' that will need turning off when running t
 - Make sure the latest QA run has been tagged with `production` (this happens as final step of a successful QA run)
 - Remove the `if` clauses in the `integration`, `sirius_load` and `validation` main shell scripts that prevent them from being run on production.
 - Remove the check against `SIRIUS_DB_HOST` and `SIRIUS_FRONT_URL` that sets them to 'NOT_SET' in production
+- In prepare step, take out the check against prod in the `prepare.sh` file
 
 This is the full list of steps and these must be *CHECKED OFF* before running the real migration!!
 
