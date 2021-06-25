@@ -120,17 +120,38 @@ resource "aws_security_group" "etl" {
   )
 }
 
-//REPLACE THIS AND LOCK DOWN
-resource "aws_security_group_rule" "etl_to_all_egress" {
-  type              = "egress"
-  protocol          = "-1"
-  from_port         = 0
-  to_port           = 0
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.etl.id
-  description       = "Outbound ETL"
+//RULES FOR APP ACCESS
+resource "aws_security_group_rule" "etl_to_api_egress" {
+  type                     = "egress"
+  protocol                 = "tcp"
+  from_port                = 80
+  to_port                  = 80
+  security_group_id        = aws_security_group.etl.id
+  source_security_group_id = data.aws_security_group.sirius_ecs_api.id
+  description              = "Outbound ETL to Sirius API"
 }
 
+resource "aws_security_group_rule" "etl_to_frontend_egress" {
+  type                     = "egress"
+  protocol                 = "tcp"
+  from_port                = 80
+  to_port                  = 80
+  security_group_id        = aws_security_group.etl.id
+  source_security_group_id = data.aws_security_group.sirius_frontend.id
+  description              = "Outbound ETL to Sirius Frontend"
+}
+
+resource "aws_security_group_rule" "etl_to_membrane_egress" {
+  type                     = "egress"
+  protocol                 = "tcp"
+  from_port                = 80
+  to_port                  = 80
+  security_group_id        = aws_security_group.etl.id
+  source_security_group_id = data.aws_security_group.sirius_membrane.id
+  description              = "Outbound ETL to Sirius Membrane"
+}
+
+//RULES FOR DB ACCESS
 resource "aws_security_group_rule" "etl_to_db_egress" {
   type                     = "egress"
   protocol                 = "tcp"
@@ -138,6 +159,7 @@ resource "aws_security_group_rule" "etl_to_db_egress" {
   to_port                  = 5432
   security_group_id        = aws_security_group.etl.id
   source_security_group_id = aws_security_group.db.id
+  description              = "Outbound ETL to Casrec Migration DB"
 }
 
 resource "aws_security_group_rule" "etl_to_sirius_db_egress" {
@@ -147,6 +169,33 @@ resource "aws_security_group_rule" "etl_to_sirius_db_egress" {
   to_port                  = 5432
   security_group_id        = aws_security_group.etl.id
   source_security_group_id = data.aws_security_group.sirius_db.id
+  description              = "Outbound ETL to Sirius DB"
+}
+
+//RULES FOR ENDPOINTS ACCESS
+
+resource "aws_security_group_rule" "etl_to_ecr_api_egress" {
+  type                     = "egress"
+  protocol                 = "tcp"
+  from_port                = 443
+  to_port                  = 443
+  security_group_id        = aws_security_group.etl.id
+  source_security_group_id = data.aws_security_group.vpc_endpoints.id
+  description              = "Outbound ETL to ECR API Endpoint"
+}
+
+//locals {
+//  vpc_endpoints = [for i in local.account.s3_vpc_endpoint_ids : data.aws_vpc_endpoint.s3_endpoint[i].prefix_list_id]
+//}
+
+resource "aws_security_group_rule" "etl_to_s3_egress" {
+  type              = "egress"
+  protocol          = "tcp"
+  from_port         = 443
+  to_port           = 443
+  security_group_id = aws_security_group.etl.id
+  prefix_list_ids   = toset([for i in local.account.s3_vpc_endpoint_ids : data.aws_vpc_endpoint.s3_endpoint[i].prefix_list_id])
+  description       = "Outbound ETL to Secrets Endpoint"
 }
 
 data "aws_security_group" "sirius_db" {
