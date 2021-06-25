@@ -82,9 +82,13 @@ def get_mapping_dict(
 ) -> Dict:
     dirname = get_current_directory()
     file_path = os.path.join(dirname, f"mapping_definitions/{file_name}.json")
+    log.debug(f"file_path: {file_path}")
 
     with open(file_path) as mapping_json:
         mapping_dict = json.load(mapping_json)
+
+        log.debug("MAPPING DICT FROM HELPERS")
+        log.debug(mapping_dict)
 
     if only_complete_fields:
         mapping_dict = {
