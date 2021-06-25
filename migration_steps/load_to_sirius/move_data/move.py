@@ -20,13 +20,16 @@ completed_tables = []
 
 log = logging.getLogger("root")
 
-SPECIAL_CASES = ["addresses"]
+SPECIAL_CASES = ["addresses", "persons"]
 
 
 def handle_special_cases(table_name, df):
     if table_name == "addresses":
         log.debug("Reformatting 'address_lines' to json")
         df["address_lines"] = df["address_lines"].apply(json.dumps)
+    if table_name == "persons":
+        log.debug("Converting 'risk_score' to int")
+        df["risk_score"] = df["risk_score"].astype("Int64")
     return df
 
 
@@ -35,6 +38,7 @@ def replace_with_sql_friendly_chars(row_as_list):
         str(
             x.replace("'", "''")
             .replace("NaT", "")
+            .replace("<NA>", "")
             .replace("nan", "")
             .replace("None", "")
             .replace("&", "and")

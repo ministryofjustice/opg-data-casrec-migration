@@ -35,7 +35,9 @@ def squash_columns(
     else:
         df[new_col] = df[cols_to_squash].values.tolist()
 
-    df[new_col] = df[new_col].apply(lambda x: json.dumps([x]))
+    df[new_col] = df[new_col].apply(
+        lambda x: json.dumps([x]) if isinstance(x, Dict) else json.dumps(x)
+    )
 
     if drop_original_cols:
         df = df.drop(columns=cols_to_squash)

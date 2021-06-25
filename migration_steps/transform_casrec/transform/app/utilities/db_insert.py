@@ -24,7 +24,7 @@ class InsertData:
     def __init__(self, db_engine, schema):
         self.db_engine = db_engine
         self.schema = schema
-        self.standard_columns = {"casrec_details": "jsonb"}
+        self.standard_columns = {"casrec_details": "jsonb not null default '{}'::jsonb"}
         self.datatype_remap = {
             "str": "text",
             "date": "date",
