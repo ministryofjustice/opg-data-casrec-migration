@@ -1,9 +1,14 @@
+import logging
+
 import pandas as pd
 
 from custom_errors import EmptyDataFrame
 from helpers import get_mapping_dict
 from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 from utilities.basic_data_table import get_basic_data_table
+import json
+
+log = logging.getLogger("root")
 
 definition = {
     "source_table_name": "pat",
@@ -31,6 +36,9 @@ def insert_addresses_clients(db_config, target_db):
         stage_name="sirius_details",
         only_complete_fields=False,
     )
+
+    log.debug(f"sirius_details: \n{json.dumps(sirius_details, indent=4)}")
+
     while True:
         try:
             addresses_df = get_basic_data_table(
