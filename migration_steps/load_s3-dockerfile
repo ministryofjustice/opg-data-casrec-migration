@@ -1,6 +1,4 @@
 FROM opg_casrec_migration_base_image:latest
-COPY /requirements.txt /requirements.txt
-RUN pip3 install -r requirements.txt
 COPY load_s3/load_s3_local.py /load_s3_local.py
 COPY load_s3/synchronise_s3.py /synchronise_s3.py
 CMD ["echo", "NO_OP"]

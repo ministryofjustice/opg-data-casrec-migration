@@ -1,4 +1,5 @@
 resource "aws_ecs_task_definition" "behat" {
+  count                    = local.account.name == "production" ? 0 : 1
   family                   = "behat-migration-${local.account.sirius_env}"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
