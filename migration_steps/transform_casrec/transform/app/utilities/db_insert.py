@@ -48,12 +48,12 @@ class InsertData:
         columns = []
 
         for col, details in mapping_details.items():
-            details["data_type"] = (
+            details["remapped_data_type"] = (
                 self.datatype_remap[details["data_type"].lower()]
                 if details["data_type"] in self.datatype_remap
                 else details["data_type"]
             )
-            columns.append(f"{col} {details['data_type']}")
+            columns.append(f"{col} {details['remapped_data_type']}")
 
         try:
             columns_from_df = self._list_table_columns(df=df)
