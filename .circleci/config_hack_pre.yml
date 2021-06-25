@@ -22,12 +22,12 @@ workflows:
           tf_workspace: preproduction
           environment: Preproduction
           filters: {branches:{ignore:[master]}}
-      - run_elasticsearch_reset:
-          name: full reindex elasticsearch preproduction
-          requires: [run the step function preproduction]
-          tf_workspace: preproduction
-          environment: Preproduction
-          filters: {branches:{ignore:[master]}}
+#      - run_elasticsearch_reset:
+#          name: full reindex elasticsearch preproduction
+#          requires: [run the step function preproduction]
+#          tf_workspace: preproduction
+#          environment: Preproduction
+#          filters: {branches:{ignore:[master]}}
 orbs:
   aws-cli: circleci/aws-cli@1.3.0
   dockerhub_helper:

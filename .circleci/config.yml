@@ -1,102 +1,19 @@
 ---
 version: 2.1
 
-parameters:
-  run_master:
-    type: boolean
-    default: true
-  run_preprod:
-    type: boolean
-    default: false
-  run_qa:
-    type: boolean
-    default: false
-  run_production:
-    type: boolean
-    default: false
-
 workflows:
-  pull_request:
-    when: << pipeline.parameters.run_master >>
+  preprod:
     jobs:
-      - manage_workflow:
-          name: manage workflow
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-      - reset_sirius:
-          name: reset the sirius fixtures development
-          requires: [manage workflow]
-          tf_workspace: development
-          environment: Development
-          filters: {branches:{ignore:[master]}}
       - build:
           name: build and unit tests
-          requires: [manage workflow]
-          environment: Development
           filters: {branches:{ignore:[master]}}
       - infrastructure:
-          name: plan infra development
+          name: build infra preproduction
           requires: [build and unit tests]
-          tf_workspace: development
-          tf_command: plan
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-      - infrastructure:
-          name: build infra development
-          requires: [plan infra development]
-          tf_workspace: development
-          tf_command: apply
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-      - run_step_function:
-          name: run the step function development
-          requires: [build infra development, reset the sirius fixtures development]
-          tf_workspace: development
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-
-  master:
-    when: << pipeline.parameters.run_master >>
-    jobs:
-      - build:
-          name: build and unit tests master
-          environment: Development on Main
-          filters: {branches:{only:[master]}}
-      - approve:
-          name: approve preproduction kick off
-          type: approval
-          requires: [build and unit tests master]
-          environment: Development on Main
-          filters: {branches:{only:[master]}}
-      - kick_off_environment:
-          name: kick off preproduction
-          workspace: preproduction
-          requires: [approve preproduction kick off]
-          environment: Development on Main
-          filters: {branches:{only:[master]}}
-
-  preprod:
-    when: << pipeline.parameters.run_preprod >>
-    jobs:
-      - get_latest_image:
-          name: get latest tag preproduction
-          image_tag: master
-          environment: Preproduction
-          filters: {branches:{only:[master]}}
-      - infrastructure:
-          name: plan infra preproduction
-          requires: [get latest tag preproduction]
-          tf_workspace: preproduction
-          tf_command: plan
-          environment: Preproduction
-          filters: {branches:{only:[master]}}
-      - infrastructure:
-          name: build infra preproduction
-          requires: [plan infra preproduction]
           tf_workspace: preproduction
           tf_command: apply
           environment: Preproduction
-          filters: {branches:{only:[master]}}
+          filters: {branches:{ignore:[master]}}
       - run_step_function:
           name: run the step function preproduction
           requires: [build infra preproduction]
@@ -104,160 +21,15 @@ workflows:
           wait_for: "10800"
           tf_workspace: preproduction
           environment: Preproduction
-          filters: {branches:{only:[master]}}
-      - tag_image_for_environment:
-          name: tag image for qa
-          environment: Preproduction
-          environment_tag: qa
-          requires: [run the step function preproduction]
-          filters: {branches:{only:[master]}}
-      - approve:
-          name: approve full elastic reset preprod
-          type: approval
-          requires: [build infra preproduction]
-          environment: Preproduction
-          filters: {branches:{only:[master]}}
-      - run_elasticsearch_reset:
-          name: full reindex elasticsearch preprod
-          requires: [approve full elastic reset preprod]
-          tf_workspace: preproduction
-          environment: Preproduction
-          filters: {branches:{only:[master]}}
-      - approve:
-          name: approve qa kick off
-          type: approval
-          requires: [tag image for qa]
-          environment: Preproduction
-          filters: {branches:{only:[master]}}
-      - kick_off_environment:
-          name: kick off qa
-          workspace: qa
-          requires: [approve qa kick off]
-          environment: Preproduction
-          filters: {branches:{only:[master]}}
-
-  qa:
-    when: << pipeline.parameters.run_qa >>
-    jobs:
-      - get_latest_image:
-          name: get latest tag qa
-          image_tag: qa
-          environment: Quality Assurance
-          filters: {branches:{only:[master]}}
-      - infrastructure:
-          name: plan infra qa
-          requires: [get latest tag qa]
-          tf_workspace: qa
-          tf_command: plan
-          environment: Quality Assurance
-          filters: {branches:{only:[master]}}
-      - infrastructure:
-          name: build infra qa
-          requires: [plan infra qa]
-          tf_workspace: qa
-          tf_command: apply
-          environment: Quality Assurance
-          filters: {branches:{only:[master]}}
-      - run_step_function:
-          name: run the step function qa
-          requires: [build infra qa]
-          account: "492687888235"
-          wait_for: "10800"
-          tf_workspace: qa
-          environment: Quality Assurance
-          filters: {branches:{only:[master]}}
-      - tag_image_for_environment:
-          name: tag image for production
-          environment: Quality Assurance
-          environment_tag: production
-          requires: [run the step function qa]
-          filters: {branches:{only:[master]}}
-      - approve:
-          name: approve full elastic reset qa
-          type: approval
-          requires: [build infra qa]
-          environment: Quality Assurance
-          filters: {branches:{only:[master]}}
-      - run_elasticsearch_reset:
-          name: full reindex elasticsearch qa
-          requires: [approve full elastic reset qa]
-          tf_workspace: qa
-          environment: Quality Assurance
-          filters: {branches:{only:[master]}}
-
-  production:
-    when: << pipeline.parameters.run_production >>
-    jobs:
-      - get_latest_image:
-          name: get latest tag production
-          image_tag: production
-          environment: Production
-          filters: {branches:{only:[master]}}
-      - infrastructure:
-          name: plan infra production
-          requires: [get latest tag production]
-          tf_workspace: production
-          tf_command: plan
-          environment: production
-          filters: {branches:{only:[master]}}
-      - infrastructure:
-          name: build infra production
-          requires: [plan infra production]
-          tf_workspace: production
-          tf_command: apply
-          environment: production
-          filters: {branches:{only:[master]}}
-
-  nightly_preproduction_run:
-    triggers:
-      - schedule:
-          cron: "10 03 * * *"
-          filters: {branches:{only:[master]}}
-    jobs:
-      - get_latest_image:
-          name: get latest tag preproduction
-          image_tag: master
-          environment: Preproduction
-          filters: {branches:{only:[master]}}
-      - reset_sirius_full_restore:
-          name: run and monitor jenkins restore job
-          environment: Preproduction
-          sirius_environment: casrecdmpp
-          filters: {branches:{only:[master]}}
-      - infrastructure:
-          name: build infra preproduction
-          requires: [get latest tag preproduction]
-          tf_workspace: preproduction
-          tf_command: apply
-          environment: Preproduction
-          filters: {branches:{only:[master]}}
-      - run_step_function:
-          name: run the step function preproduction
-          requires: [
-            run and monitor jenkins restore job,
-            build infra preproduction
-          ]
-          account: "492687888235"
-          wait_for: "10800"
-          tf_workspace: preproduction
-          environment: Preproduction
-          filters: {branches:{only:[master]}}
-      - tag_image_for_environment:
-          name: tag image for qa
-          environment: Preproduction
-          environment_tag: qa
-          requires: [run the step function preproduction]
-          filters: {branches:{only:[master]}}
-      - run_elasticsearch_reset:
-          name: full reindex elasticsearch preprod
-          requires: [run the step function preproduction]
-          tf_workspace: preproduction
-          environment: Preproduction
-          filters: {branches:{only:[master]}}
-
+          filters: {branches:{ignore:[master]}}
+#      - run_elasticsearch_reset:
+#          name: full reindex elasticsearch preproduction
+#          requires: [run the step function preproduction]
+#          tf_workspace: preproduction
+#          environment: Preproduction
+#          filters: {branches:{ignore:[master]}}
 orbs:
   aws-cli: circleci/aws-cli@1.3.0
-
   dockerhub_helper:
     orbs:
       docker: circleci/docker@1.4.0
@@ -299,7 +71,6 @@ orbs:
           - run:
               name: Install Terraform
               command: sudo unzip terraform_${TF_VERSION}_linux_amd64.zip -d /bin
-
       setup_ecs_runner:
         steps:
           - run:
@@ -318,7 +89,6 @@ orbs:
                 sudo tar -xvf $HOME/opg-ecs-helper.tar.gz -C /usr/local/bin
                 sudo chmod +x /usr/local/bin/ecs-stabilizer
                 sudo chmod +x /usr/local/bin/ecs-runner
-
   migration:
     executors:
       python:
@@ -338,299 +108,14 @@ orbs:
               name: login to code artifact for pip
               command: ./login_code_artifact.sh -a 288342028542 -t pip
               working_directory: ~/project/docs/ci_scripts
-      cancel_redundant_builds:
-        steps:
-          - run:
-              name: install cancel build requirements
-              command: pip3 install -r requirements.txt
-              working_directory: ~/project/docs/ci_scripts
-          - run:
-              name: cancel previous builds
-              command: |
-                python3 cancel_builds.py \
-                --circle_project_username="${CIRCLE_PROJECT_USERNAME}" \
-                --circle_project_reponame="${CIRCLE_PROJECT_REPONAME}" \
-                --circle_branch="${CIRCLE_BRANCH}" \
-                --circle_builds_token="${CIRCLE_BUILDS_TOKEN}" \
-                --terms_to_waitfor="plan infra" \
-                --prod_job_terms="build infra ,master"
-              working_directory: ~/project/docs/ci_scripts
-          - run:
-              name: wait for others builds to finish
-              command: |
-                python3 circle_job_waiter.py \
-                --circle_builds_token "${CIRCLE_BUILDS_TOKEN}" \
-                --circle_project_username "${CIRCLE_PROJECT_USERNAME}" \
-                --circle_project_reponame "${CIRCLE_PROJECT_REPONAME}"
-              working_directory: ~/project/docs/ci_scripts
-  notififications:
-    orbs:
-      slack: circleci/slack@4.1
-    commands:
-      notify_env_vars:
-        steps:
-          - run:
-              name: set environment variables
-              when: always
-              command: |
-                COMMIT_MESSAGE=`git log --oneline -1`
-                echo "export COMMIT_MESSAGE=\"${COMMIT_MESSAGE}\"" >> $BASH_ENV
-              working_directory: ~/project
-      notify_if_success:
-        steps:
-          - run:
-              name: set entities environment variables
-              when: always
-              command: |
-                python3 get_environment_entities.py --environment ${TF_WORKSPACE} --role integrations-ci >> ENTITIES
-                ENTITIES=$(cat ENTITIES)
-                echo "export ENTITIES=\"${ENTITIES}\"" >> $BASH_ENV
-              working_directory: ~/project/docs/ci_scripts
-          - slack/notify:
-              channel: opg-migration-builds
-              event: pass
-              custom: |
-                {
-                    "blocks": [
-                        {
-                            "type": "section",
-                            "text": {
-                                "type": "mrkdwn",
-                                "text": ":github-tick: *Build to ${ENVIRONMENT} successful*"
-                            }
-                        },
-                        {
-                            "type": "section",
-                            "text": {
-                                "type": "mrkdwn",
-                                "text": "*Branch*: ${CIRCLE_BRANCH}\n\n*Commit Message*: ${COMMIT_MESSAGE}\n\n"
-                            }
-                        },
-                        {
-                            "type": "section",
-                            "text": {
-                                "type": "mrkdwn",
-                                "text": "*Kicked off by:* ${CIRCLE_USERNAME}\n\n*Entities*: ${ENTITIES}\n"
-                            }
-                        },
-                        {
-                            "type": "divider"
-                        },
-                        {
-                            "type": "actions",
-                            "elements": [
-                                {
-                                    "type": "button",
-                                    "text": {
-                                        "type": "plain_text",
-                                        "text": "Go to Pull Request",
-                                        "emoji": true
-                                    },
-                                    "value": "github_pr",
-                                    "url": "${CI_PULL_REQUEST}"
-                                },
-                                {
-                                    "type": "button",
-                                    "text": {
-                                        "type": "plain_text",
-                                        "text": "Go to Circle Job",
-                                        "emoji": true
-                                    },
-                                    "value": "circle_job",
-                                    "url": "${CIRCLE_BUILD_URL}"
-                                }
-                            ]
-                        }
-                    ]
-                }
-      notify_if_fail:
-        steps:
-          - slack/notify:
-              channel: opg-migration-builds
-              event: fail
-              custom: |
-                {
-                    "blocks": [
-                        {
-                            "type": "section",
-                            "text": {
-                                "type": "mrkdwn",
-                                "text": ":x::dancebadger: *Build to ${ENVIRONMENT} failed*"
-                            }
-                        },
-                        {
-                            "type": "section",
-                            "text": {
-                                "type": "mrkdwn",
-                                "text": "*Branch*: ${CIRCLE_BRANCH}\n\n*Commit Message*: ${COMMIT_MESSAGE}\n\n*Stage Failed*: ${CIRCLE_STAGE}"
-                            }
-                        },
-                        {
-                            "type": "section",
-                            "text": {
-                                "type": "mrkdwn",
-                                "text": "Kicked off by *${CIRCLE_USERNAME}*\n\n"
-                            }
-                        },
-                        {
-                            "type": "divider"
-                        },
-                        {
-                            "type": "actions",
-                            "elements": [
-                                {
-                                    "type": "button",
-                                    "text": {
-                                        "type": "plain_text",
-                                        "text": "Go to Pull Request",
-                                        "emoji": true
-                                    },
-                                    "value": "github_pr",
-                                    "url": "${CI_PULL_REQUEST}"
-                                },
-                                {
-                                    "type": "button",
-                                    "text": {
-                                        "type": "plain_text",
-                                        "text": "Go to Circle Job",
-                                        "emoji": true
-                                    },
-                                    "value": "circle_job",
-                                    "url": "${CIRCLE_BUILD_URL}"
-                                }
-                            ]
-                        }
-                    ]
-                }
 
 jobs:
-  manage_workflow:
+  cleanup:
     executor: migration/python
-    resource_class: small
-    parameters:
-      environment:
-        description: environment for step function
-        type: string
-        default: "Development"
-      tf_workspace:
-        description: workspace to use
-        type: string
-        default: "development"
-    environment:
-      TF_WORKSPACE: << parameters.tf_workspace >>
-      ENVIRONMENT: << parameters.environment >>
     steps:
-      - checkout
-      - migration/login_codeartifact
-      - migration/cancel_redundant_builds
-      - notififications/notify_env_vars
-      - notififications/notify_if_fail
-  kick_off_environment:
-    executor: migration/python
-    resource_class: small
-    parameters:
-      environment:
-        description: environment for step function
-        type: string
-        default: "Development"
-      workspace:
-        description: workspace to use
-        type: string
-        default: "development"
-    environment:
-      WORKSPACE: << parameters.workspace >>
-      ENVIRONMENT: << parameters.environment >>
-    steps:
-      - checkout
       - run:
-          name: set environment variables
-          command: |
-            if [ ${WORKSPACE} == "preproduction" ]
-            then
-              RUN_PREPROD="true"
-              RUN_QA="false"
-            elif [ ${WORKSPACE} == "qa" ]
-            then
-              RUN_PREPROD="false"
-              RUN_QA="true"
-            else
-              RUN_PREPROD="false"
-              RUN_QA="false"
-            fi
-            echo "export RUN_PREPROD=${RUN_PREPROD}" >> $BASH_ENV
-            echo "export RUN_QA=${RUN_QA}" >> $BASH_ENV
-      - run:
-          name: kick off << parameters.workspace >> job
-          command: |
-            curl --request POST \
-            --url https://circleci.com/api/v2/project/github/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pipeline \
-            --header "Circle-Token: ${CIRCLE_BUILDS_TOKEN}" \
-            --header 'content-type: application/json' \
-            --data "{\"branch\":\"master\", \"parameters\":{\"run_master\": false, \"run_preprod\": $RUN_PREPROD, \"run_qa\": $RUN_QA}}"
-      - notififications/notify_env_vars
-      - notififications/notify_if_fail
-
-  tag_image_for_environment:
-    executor: migration/python
-    resource_class: small
-    parameters:
-      environment:
-        description: environment for step function
-        type: string
-        default: "Development"
-      environment_tag:
-        description: environment tag for where image can be used
-        type: string
-        default: "development"
-    environment:
-      AWS_REGION: eu-west-1
-      AWS_CONFIG_FILE: ~/project/aws_config
-      AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
-      ENVIRONMENT: << parameters.environment >>
-      ENVIRONMENT_TAG: << parameters.environment_tag >>
-    working_directory: ~/project
-    steps:
-      - checkout
-      - attach_workspace: {at: ~/project}
-      - aws-cli/install
-      - setup_remote_docker
-      - run:
-          name: Set environment
-          command: ~/project/.circleci/set_env.sh >> $BASH_ENV
-      - run:
-          name: Show version before tagging
-          command: echo ${VERSION}
-      - run:
-          name: ECR login
-          command: aws ecr get-login-password --region $AWS_REGION --profile integrations-ci | docker login --username AWS --password-stdin $AWS_REGISTRY
-      - run:
-          name: Pull images
-          command: docker-compose -f docker-compose.ci.yml pull
-      - run:
-          name: Set new tag
-          command: |
-            NEW_TAG="${ENVIRONMENT_TAG}"-`echo ${VERSION} | awk '-F-' '{print $2}'`
-            echo "export NEW_TAG=${NEW_TAG}" >> $BASH_ENV
-      - run:
-          name: Retag images
-          command: |
-            for i in `docker image ls | grep master- | awk '{print $1":"$2}'`
-            do
-              docker tag $i `echo $i | awk '-F:' '{print $1":"}'`${NEW_TAG}
-            done
-      - run:
-          name: Update tag to push
-          command: echo "export VERSION=${NEW_TAG}" >> $BASH_ENV
-      - run:
-          name: Push images
-          command: |
-            echo $VERSION
-            echo $NEW_TAG
-            echo ${AWS_REGISTRY}/casrec-migration/etl0:${VERSION}
-            docker image ls
-            docker-compose -f docker-compose.ci.yml push
-      - notififications/notify_env_vars
-      - notififications/notify_if_fail
+          name: cleanup
+          command: echo "running this so job passes as it's requirement to merge"
 
   run_step_function:
     executor: migration/python
@@ -661,16 +146,7 @@ jobs:
       - checkout
       - run:
           name: check log message
-          command: |
-            git log -1 --oneline
-            if [ `git log -1 --oneline | grep ~nr | wc -l` -gt 0 ]
-            then
-              echo "Detected noreload flag, not running reload steps"
-              echo "export NO_RELOAD=true" >> $BASH_ENV
-            else
-              echo "Running full job normally"
-              echo "export NO_RELOAD=false" >> $BASH_ENV
-            fi
+          command: echo "export NO_RELOAD=true" >> $BASH_ENV
       - run:
           name: install requirements
           command: pip3 install -r requirements-rsf.txt
@@ -679,130 +155,14 @@ jobs:
           name: run the function
           command: python3 run_step_function.py --role integrations-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD} --workspace ${TF_WORKSPACE}
           working_directory: ~/project/docs/ci_scripts
-      - notififications/notify_env_vars
-      - notififications/notify_if_fail
-      - notififications/notify_if_success
-  run_behat_tests:
-    executor: terraform/terraform
-    resource_class: small
-    parameters:
-      environment:
-        description: environment for step function
-        type: string
-        default: "Development"
-      tf_workspace:
-        description: terraform workspace
-        type: string
-        default: "development"
-    environment:
-      ENVIRONMENT: << parameters.environment >>
-      TF_WORKSPACE: << parameters.tf_workspace >>
-    working_directory: ~/project/terraform
-    steps:
-      - checkout:
-          path: ~/project
-      - terraform/install
-      - terraform/setup_ecs_runner
-      - run:
-          name: Run behat tests
-          command: ecs-runner -task behat-migration -timeout 600
-      - notififications/notify_env_vars
-      - notififications/notify_if_fail
-  run_elasticsearch_reset:
-    executor: terraform/terraform
-    resource_class: small
-    parameters:
-      environment:
-        description: environment for step function
-        type: string
-        default: "Development"
-      tf_workspace:
-        description: terraform workspace
-        type: string
-        default: "development"
-    environment:
-      ENVIRONMENT: << parameters.environment >>
-      TF_WORKSPACE: << parameters.tf_workspace >>
-    working_directory: ~/project/terraform
-    steps:
-      - checkout:
-          path: ~/project
-      - terraform/install
-      - terraform/setup_ecs_runner
-      - run:
-          name: Reset Elasticsearch
-          command: ecs-runner -task elasticsearch-reindex -timeout 18000
-          background: true
-      - run:
-          name: elasticsearch
-          command: |
-            echo "We're running reindex in the background."
-            echo "We don't want to completely wait for it here."
-            echo "Sleeping for 5 mins so we can see that it has started properly. Check AWS logs for full results"
-            sleep 300
-      - notififications/notify_env_vars
-      - notififications/notify_if_fail
-  reset_sirius:
-    executor: terraform/terraform
-    resource_class: small
-    parameters:
-      environment:
-        description: environment for step function
-        type: string
-        default: "Development"
-      tf_workspace:
-        description: terraform workspace
-        type: string
-        default: "development"
-    environment:
-      ENVIRONMENT: << parameters.environment >>
-      TF_WORKSPACE: << parameters.tf_workspace >>
-    working_directory: ~/project/terraform
-    steps:
-      - checkout:
-          path: ~/project
-      - terraform/install
-      - terraform/setup_ecs_runner
-      - run:
-          name: Reset Api
-          command: ecs-runner -task reset-api -timeout 600
-      - run:
-          name: Reset Membrane
-          command: ecs-runner -task reset-membrane -timeout 600
-      - run:
-          name: Migrate Api
-          command: ecs-runner -task migrate-api -timeout 600
-      - run:
-          name: Migrate Membrane
-          command: ecs-runner -task migrate-membrane -timeout 600
-      - run:
-          name: Import Fixtures to Api
-          command: ecs-runner -task import-fixtures-api -timeout 600
-      - run:
-          name: Import Fixtures to Membrane
-          command: ecs-runner -task import-fixtures-membrane -timeout 600
-      - run:
-          name: Ingest Cases
-          command: ecs-runner -task ingest-cases -timeout 600
-      - run:
-          name: Reset Elasticsearch
-          command: ecs-runner -task reset-elasticsearch -timeout 600
-      - notififications/notify_env_vars
-      - notififications/notify_if_fail
 
   build:
     executor: migration/python
     resource_class: small
-    parameters:
-      environment:
-        description: environment for step function
-        type: string
-        default: "Development"
     environment:
       AWS_REGION: eu-west-1
       AWS_CONFIG_FILE: ~/project/aws_config
       AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
-      ENVIRONMENT: << parameters.environment >>
     steps:
       - dockerhub_helper/dockerhub_login
       - setup_remote_docker
@@ -825,18 +185,6 @@ jobs:
           name: Show version
           command: echo ${VERSION}
       - run:
-          name: Run transform_casrec unit tests
-          command: |
-            export PYTHONPATH=~/project/migration_steps/transform_casrec:~/project/migration_steps/transform_casrec/transform/app
-            pip3 install -r base_image/requirements.txt
-            python3 -m pytest migration_steps/transform_casrec/transform/transform_tests --cov-fail-under=85
-      - run:
-          name: Run shared utilities unit tests
-          command: |
-            export PYTHONPATH=~/project/migration_steps/shared:~/project/migration_steps/shared/shared_tests
-            pip3 install -r migration_steps/shared/shared_tests/requirements.txt
-            python3 -m pytest migration_steps/shared/shared_tests
-      - run:
           name: Docker login
           command: aws ecr get-login-password --region $AWS_REGION --profile integrations-ci | docker login --username AWS --password-stdin $AWS_REGISTRY
       - run:
@@ -846,19 +194,8 @@ jobs:
           name: Build images
           command: docker-compose -f docker-compose.ci.yml build --parallel
       - run:
-          name: Full local run through
-          command: |
-            echo "Switching override so we do not use volume mounts"
-            rm docker-compose.override.yml
-            mv docker-compose.override.ci.yml docker-compose.override.yml
-            echo "Running migrate.sh"
-            ./migrate.sh
-      - run:
           name: Push images
           command: docker-compose -f docker-compose.ci.yml push
-      - notififications/notify_env_vars
-      - notififications/notify_if_fail
-
   infrastructure:
     executor: terraform/terraform
     resource_class: small
@@ -896,60 +233,41 @@ jobs:
       - run:
           name: Output
           command: terraform output -json > terraform.output.json
-      - notififications/notify_env_vars
-      - notififications/notify_if_fail
 
-  get_latest_image:
-    executor: migration/python
+  run_elasticsearch_reset:
+    executor: terraform/terraform
     resource_class: small
     parameters:
       environment:
         description: environment for step function
         type: string
         default: "Development"
-      image_tag:
-        description: image tag to use
+      tf_workspace:
+        description: terraform workspace
         type: string
-        default: "master"
+        default: "development"
     environment:
-      AWS_REGION: eu-west-1
-      AWS_CONFIG_FILE: ~/project/aws_config
-      AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
-      IMAGE_TAG: << parameters.image_tag >>
       ENVIRONMENT: << parameters.environment >>
+      TF_WORKSPACE: << parameters.tf_workspace >>
+    working_directory: ~/project/terraform
     steps:
-      - checkout
+      - checkout:
+          path: ~/project
+      - terraform/install
+      - terraform/setup_ecs_runner
       - run:
-          name: Install requirements
-          command: pip install boto3 click
-      - run:
-          name: Set latest version
-          command: python get_image.py --role integrations-ci --image_tag ${IMAGE_TAG} >> ~/project/VERSION
-          working_directory: ~/project/docs/ci_scripts
-      - run:
-          name: Show latest version
-          command: cat ~/project/VERSION
-      - persist_to_workspace:
-          root: .
-          paths:
-            - VERSION
-      - notififications/notify_env_vars
-      - notififications/notify_if_fail
+          name: Reset Elasticsearch
+          command: ecs-runner -task elasticsearch-reindex -timeout 18000
 
   reset_sirius_full_restore:
     executor: migration/python
     resource_class: small
     parameters:
-      environment:
-        description: environment for notifications
-        type: string
-        default: "Development"
       sirius_environment:
         description: environment for notifications
         type: string
         default: "casrecdmpp"
     environment:
-      ENVIRONMENT: << parameters.environment >>
       SIRIUS_ENVIRONMENT: << parameters.sirius_environment >>
     steps:
       - checkout
@@ -957,5 +275,3 @@ jobs:
           name: run and monitor jenkins job
           command: ./run_jenkins_job.sh -w ${SIRIUS_ENVIRONMENT} -k ${JENKINS_API_KEY}
           working_directory: ~/project/docs/ci_scripts
-      - notififications/notify_env_vars
-      - notififications/notify_if_fail
