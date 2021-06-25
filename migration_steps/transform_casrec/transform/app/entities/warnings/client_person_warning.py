@@ -51,7 +51,6 @@ def insert_client_person_warning(db_config, target_db):
         client_warning_df = client_warning_df.rename(
             columns={"id_warning": "warning_id", "id_client": "person_id"}
         )
-        client_warning_df["casrec_details"] = None
 
         target_db.insert_data(
             table_name=definition["destination_table_name"],

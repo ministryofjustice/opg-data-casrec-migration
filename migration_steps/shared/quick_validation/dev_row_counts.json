@@ -177,7 +177,7 @@
     "crec": [
       {
         "table_name": "persons_crec",
-        "query": "select count(*) from {schema}.persons_crec;",
+        "query": "select count(*) from {schema}.persons where risk_score is not null;",
         "row_counts": {
           "all": 754,
           "team_2": 0

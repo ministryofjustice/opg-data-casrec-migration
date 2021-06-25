@@ -23,19 +23,22 @@ def source_conditions(df, conditions):
     convert_to_timestamp_cols = {
         k: v for k, v in conditions.items() if k == "convert_to_timestamp"
     }
-    df = convert_to_timestamp(df, convert_to_timestamp_cols)
-    for col in convert_to_timestamp_cols:
-        conditions.pop(col, None)
+    if convert_to_timestamp_cols:
+        df = convert_to_timestamp(df, convert_to_timestamp_cols)
+        for col in convert_to_timestamp_cols:
+            conditions.pop(col, None)
 
     not_null_cols = [k for k, v in conditions.items() if v == "not null"]
-    df = remove_empty_rows(df, not_null_cols)
-    for col in not_null_cols:
-        conditions.pop(col, None)
+    if not_null_cols:
+        df = remove_empty_rows(df, not_null_cols)
+        for col in not_null_cols:
+            conditions.pop(col, None)
 
     latest_cols = {k: v for k, v in conditions.items() if k == "latest"}
-    df = select_latest(df, latest_cols)
-    for col in latest_cols:
-        conditions.pop(col, None)
+    if latest_cols:
+        df = select_latest(df, latest_cols)
+        for col in latest_cols:
+            conditions.pop(col, None)
 
     df_cols = {k: v for k, v in conditions.items() if k in df.columns.tolist()}
     additional_cols = {

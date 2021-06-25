@@ -24,6 +24,7 @@ class InsertData:
     def __init__(self, db_engine, schema):
         self.db_engine = db_engine
         self.schema = schema
+        self.standard_columns = {"casrec_details": "jsonb"}
         self.datatype_remap = {
             "str": "text",
             "date": "date",
@@ -45,6 +46,7 @@ class InsertData:
         statement = f"CREATE TABLE IF NOT EXISTS {self.schema}.{table_name} (\n"
 
         columns = []
+
         for col, details in mapping_details.items():
             details["data_type"] = (
                 self.datatype_remap[details["data_type"].lower()]
@@ -57,10 +59,14 @@ class InsertData:
             columns_from_df = self._list_table_columns(df=df)
         except Exception:
             columns_from_df = []
+
         columns_from_mapping = mapping_details.keys()
-        temp_colums = list(set(columns_from_df) - set(columns_from_mapping))
-        for col in temp_colums:
-            columns.append(f"{col} text")
+        temp_columns = list(set(columns_from_df) - set(columns_from_mapping))
+        for col in temp_columns:
+            if col in self.standard_columns:
+                columns.append(f"{col} {self.standard_columns[col]}")
+            else:
+                columns.append(f"{col} text")
 
         statement += ", ".join(columns)
 
@@ -107,6 +113,7 @@ class InsertData:
 
             return table_exists
 
+    @timer
     def _create_update_statement(self, table_name, fields_to_update, join_column, df):
 
         df = df.set_index(join_column)
@@ -263,11 +270,18 @@ class InsertData:
             try:
 
                 self.db_engine.execute(create_statement)
-            except Exception:
+            except Exception as e:
 
-                log.error(f"There was a problem creating empty table {table_name}")
+                log.error(
+                    f"There was a problem creating empty table {table_name}",
+                    extra={
+                        "file_name": "",
+                        "error": helpers.format_error_message(e=e),
+                    },
+                )
                 os._exit(1)
 
+    @timer
     def update_data(
         self,
         df,
@@ -277,20 +291,16 @@ class InsertData:
         join_column=None,
         chunk_no=None,
     ):
-        if len(df) == 0:
-            log.info(f"0 records to update in '{table_name}' table")
-            raise EmptyDataFrame
+        temp_table = f"{table_name}_temp"
+        self.insert_data(
+            df=df,
+            table_name=temp_table,
+            sirius_details=sirius_details,
+            chunk_no=chunk_no,
+        )
 
-        if not self._check_datatypes(mapping_details=sirius_details, df=df):
-            log.error("Datatypes do not match")
-            os._exit(1)
-
-        if chunk_no:
-            log.debug(f"Updating {table_name} - chunk {chunk_no} into database....")
-        else:
-            log.debug(f"Updating {table_name} into database....")
-
-        if self._check_table_exists(table_name=table_name):
+        for field in fields_to_update:
+            log.debug(f"Updating {field} on {table_name} using temp table {temp_table}")
             col_diff = self._check_columns_exist(table_name, df)
             if len(col_diff) > 0:
 
@@ -299,34 +309,62 @@ class InsertData:
                 )
 
                 self.db_engine.execute(add_missing_colums_statement)
-        else:
-            log.error("Target table does not exist - can't update")
-            os._exit(1)
 
-        update_statements = self._create_update_statement(
-            table_name=table_name,
-            fields_to_update=fields_to_update,
-            join_column=join_column,
-            df=df,
-        )
+            update_statement = f"""
+                update {self.schema}.{table_name}
+                set {field} = {temp_table}.{field}, """
+
+            for i, (standard_col, datatype) in enumerate(self.standard_columns.items()):
+                if datatype == "jsonb":
+                    update_statement += f"""
+                        {standard_col} = {table_name}.{standard_col} || {temp_table}.{standard_col}::jsonb
+                    """
+                else:
+                    update_statement += f"""
+                        {standard_col} = {temp_table}.{standard_col}
+                    """
+
+                if i + 1 < len(self.standard_columns):
+                    update_statement += ", "
+
+            update_statement += f"""
+                from {self.schema}.{temp_table}
+                where {table_name}.{join_column} = {temp_table}.{join_column};
+            """
+
+            try:
+
+                self.db_engine.execute(update_statement)
+            except Exception as e:
+                log.error(
+                    f"There was a problem updating {field} on {table_name} using {temp_table}",
+                    extra={
+                        "file_name": "",
+                        "error": helpers.format_error_message(e=e),
+                    },
+                )
+                os._exit(1)
 
         try:
-            for statement in update_statements:
-                self.db_engine.execute(statement)
+            drop_table_statement = f"""
+            DROP TABLE {self.schema}.{temp_table};
+            """
+            self.db_engine.execute(drop_table_statement)
         except Exception as e:
-            print(e)
-            log.error(f"OI There was a problem updating into {table_name}: {e}")
+            log.error(
+                f"There was a problem dropping {temp_table}",
+                extra={
+                    "file_name": "",
+                    "error": helpers.format_error_message(e=e),
+                },
+            )
             os._exit(1)
-        updated_count = len(df)
-        log.info(f"Updated {updated_count} records into '{table_name}' table")
 
     def insert_data(self, df, table_name=None, sirius_details=None, chunk_no=None):
+
         if len(df) == 0:
             log.info(f"0 records to insert into '{table_name}' table")
             raise EmptyDataFrame
-
-        # if sirius_details:
-        #     table_name = self._get_dest_table(mapping_dict=sirius_details)
 
         if not table_name:
             table_name = self._get_dest_table(mapping_dict=sirius_details)
@@ -364,9 +402,14 @@ class InsertData:
         try:
 
             self.db_engine.execute(insert_statement)
-        except Exception:
-
-            log.error(f"There was a problem inserting into {table_name}")
+        except Exception as e:
+            log.error(
+                f"There was a problem inserting into {table_name}",
+                extra={
+                    "file_name": "",
+                    "error": helpers.format_error_message(e=e),
+                },
+            )
             os._exit(1)
         inserted_count = len(df)
         log.info(f"Inserted {inserted_count} records into '{table_name}' table")

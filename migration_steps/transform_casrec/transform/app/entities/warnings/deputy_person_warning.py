@@ -52,7 +52,6 @@ def insert_deputy_person_warning(db_config, target_db):
         deputy_warning_df = deputy_warning_df.rename(
             columns={"id_warning": "warning_id", "id_deputy": "person_id"}
         )
-        deputy_warning_df["casrec_details"] = None
 
         deputy_warning_df = reapply_datatypes_to_fk_cols(
             columns=["person_id", "warning_id"], df=deputy_warning_df
