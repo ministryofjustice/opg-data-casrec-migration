@@ -385,13 +385,6 @@ orbs:
                 python3 get_environment_entities.py --environment ${TF_WORKSPACE} --role integrations-ci >> ENTITIES
                 ENTITIES=$(cat ENTITIES)
                 echo "export ENTITIES=\"${ENTITIES}\"" >> $BASH_ENV
-          - run:
-              name: set channel environment variables
-              when: always
-              command: |
-                python3 get_environment_entities.py --environment ${TF_WORKSPACE} --role integrations-ci >> ENTITIES
-                ENTITIES=$(cat ENTITIES)
-                echo "export ENTITIES=\"${ENTITIES}\"" >> $BASH_ENV
               working_directory: ~/project/docs/ci_scripts
           - slack/notify:
               channel: opg-migration-builds

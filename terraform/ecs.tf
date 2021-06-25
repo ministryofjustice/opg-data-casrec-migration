@@ -180,49 +180,13 @@ resource "aws_security_group_rule" "etl_to_ecr_api_egress" {
   from_port                = 443
   to_port                  = 443
   security_group_id        = aws_security_group.etl.id
-  source_security_group_id = aws_security_group.ecr_api_endpoint.id
+  source_security_group_id = data.aws_security_group.vpc_endpoints.id
   description              = "Outbound ETL to ECR API Endpoint"
 }
 
-resource "aws_security_group_rule" "etl_to_ecr_egress" {
-  type                     = "egress"
-  protocol                 = "tcp"
-  from_port                = 443
-  to_port                  = 443
-  security_group_id        = aws_security_group.etl.id
-  source_security_group_id = aws_security_group.ecr_endpoint.id
-  description              = "Outbound ETL to ECR Endpoint"
-}
-
-resource "aws_security_group_rule" "etl_to_logs_egress" {
-  type                     = "egress"
-  protocol                 = "tcp"
-  from_port                = 443
-  to_port                  = 443
-  security_group_id        = aws_security_group.etl.id
-  source_security_group_id = aws_security_group.logs_endpoint.id
-  description              = "Outbound ETL to Logs Endpoint"
-}
-
-resource "aws_security_group_rule" "etl_to_ssm_egress" {
-  type                     = "egress"
-  protocol                 = "tcp"
-  from_port                = 443
-  to_port                  = 443
-  security_group_id        = aws_security_group.etl.id
-  source_security_group_id = aws_security_group.ssm_endpoint.id
-  description              = "Outbound ETL to SSM Endpoint"
-}
-
-resource "aws_security_group_rule" "etl_to_secrets_egress" {
-  type                     = "egress"
-  protocol                 = "tcp"
-  from_port                = 443
-  to_port                  = 443
-  security_group_id        = aws_security_group.etl.id
-  source_security_group_id = aws_security_group.secrets_endpoint.id
-  description              = "Outbound ETL to Secrets Endpoint"
-}
+//locals {
+//  vpc_endpoints = [for i in local.account.s3_vpc_endpoint_ids : data.aws_vpc_endpoint.s3_endpoint[i].prefix_list_id]
+//}
 
 resource "aws_security_group_rule" "etl_to_s3_egress" {
   type              = "egress"
@@ -230,7 +194,7 @@ resource "aws_security_group_rule" "etl_to_s3_egress" {
   from_port         = 443
   to_port           = 443
   security_group_id = aws_security_group.etl.id
-  prefix_list_ids   = [data.aws_vpc_endpoint.s3_endpoint.prefix_list_id]
+  prefix_list_ids   = toset([for i in local.account.s3_vpc_endpoint_ids : data.aws_vpc_endpoint.s3_endpoint[i].prefix_list_id])
   description       = "Outbound ETL to Secrets Endpoint"
 }
 
