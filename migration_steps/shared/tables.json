@@ -1,7 +1,8 @@
 {
 	"persons": {
+		"sirius_tables": ["persons"],
 		"entities": {
-			"base_entities": ["clients", "deputies"]
+			"base_entities": ["clients", "deputies", "crec"]
 		},
 		"table_type": "data",
 		"pk": "id",
@@ -18,6 +19,7 @@
 		"order_by": ["id"]
 	},
 	"addresses": {
+		"sirius_tables": ["addresses"],
 		"entities": {
 			"base_entities": ["clients", "deputies"]
 		},
@@ -37,6 +39,7 @@
 		"order_by": ["id"]
 	},
 	"phonenumbers": {
+		"sirius_tables": ["phonenumbers"],
 		"entities": {
 			"base_entities": ["clients", "deputies"]
 		},
@@ -56,6 +59,7 @@
 		"order_by": ["id"]
 	},
 	"cases": {
+		"sirius_tables": ["cases"],
 		"entities": {
 			"base_entities": ["cases"],
 			"relies_on": ["clients"]
@@ -79,6 +83,7 @@
 		"order_by": ["id"]
 	},
 	"person_caseitem": {
+		"sirius_tables": ["person_caseitem"],
 		"entities": {
 			"base_entities": ["cases"],
 			"relies_on": ["clients"]
@@ -99,6 +104,7 @@
 		"order_by": ["person_id", "caseitem_id"]
 	},
 	"supervision_level_log": {
+		"sirius_tables": ["supervison_level_log"],
 		"entities": {
 			"base_entities": ["supervision_level"],
 			"relies_on": ["cases"]
@@ -119,6 +125,7 @@
 		"order_by": ["id"]
 	},
 	"bonds": {
+		"sirius_tables": ["bonds"],
 		"entities": {
 			"base_entities": ["bonds"],
 			"relies_on": ["cases"]
@@ -139,6 +146,7 @@
 		"order_by": ["id"]
 	},
 	"order_deputy": {
+		"sirius_tables": ["order_deputy"],
 		"entities": {
 			"base_entities": ["deputies"],
 			"relies_on": ["cases"]
@@ -159,6 +167,7 @@
 		"order_by": ["id"]
 	},
 	"notes": {
+		"sirius_tables": ["notes"],
 		"entities": {
 			"base_entities": ["remarks"]
 		},
@@ -173,6 +182,7 @@
 		"order_by": ["id"]
 	},
 	"caseitem_note": {
+		"sirius_tables": ["caseitem_note"],
 		"entities": {
 			"base_entities": ["remarks"],
 			"relies_on": ["cases"]
@@ -193,6 +203,7 @@
 		"order_by": ["note_id", "caseitem_id"]
 	},
 	"death_notifications": {
+		"sirius_tables": ["death_notifications"],
 		"entities": {
 			"base_entities": ["death"],
 			"relies_on": ["clients", "deputies"]
@@ -209,6 +220,7 @@
 		"order_by": ["id"]
 	},
 	"warnings": {
+		"sirius_tables": ["warnings"],
 		"entities": {
 			"base_entities": ["warnings"],
 			"relies_on": []
@@ -220,6 +232,7 @@
 		"order_by": ["id"]
 	},
 	"person_warning": {
+		"sirius_tables": ["person_warning"],
 		"entities": {
 			"base_entities": ["warnings"],
 			"relies_on": ["clients"]

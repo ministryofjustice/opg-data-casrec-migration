@@ -61,11 +61,11 @@ def insert_caseitem_note(db_config, target_db):
                 notes_caseitem_df["caseitem_id"].notna()
             ]
 
-            notes_caseitem_df["casrec_details"] = None
-
             notes_caseitem_df = reapply_datatypes_to_fk_cols(
                 columns=["note_id", "caseitem_id"], df=notes_caseitem_df
             )
+
+            notes_caseitem_df["casrec_details"] = "{}"
 
             target_db.insert_data(
                 table_name=definition["destination_table_name"],

@@ -1,5 +1,7 @@
 import logging
 import os
+import datetime as dt
+
 import numpy as np
 
 import helpers
@@ -17,6 +19,27 @@ def format_additional_col_alias(original_column_name: str) -> str:
 
 
 def source_conditions(df, conditions):
+
+    convert_to_timestamp_cols = {
+        k: v for k, v in conditions.items() if k == "convert_to_timestamp"
+    }
+    if convert_to_timestamp_cols:
+        df = convert_to_timestamp(df, convert_to_timestamp_cols)
+        for col in convert_to_timestamp_cols:
+            conditions.pop(col, None)
+
+    not_null_cols = [k for k, v in conditions.items() if v == "not null"]
+    if not_null_cols:
+        df = remove_empty_rows(df, not_null_cols)
+        for col in not_null_cols:
+            conditions.pop(col, None)
+
+    latest_cols = {k: v for k, v in conditions.items() if k == "latest"}
+    if latest_cols:
+        df = select_latest(df, latest_cols)
+        for col in latest_cols:
+            conditions.pop(col, None)
+
     df_cols = {k: v for k, v in conditions.items() if k in df.columns.tolist()}
     additional_cols = {
         format_additional_col_alias(original_column_name=k): v
@@ -25,18 +48,59 @@ def source_conditions(df, conditions):
     }
     renamed_conditions = {**df_cols, **additional_cols}
 
-    not_null_cols = [k for k, v in conditions.items() if v == "not null"]
-
-    df = remove_empty_rows(df, not_null_cols)
-
     for column, value in renamed_conditions.items():
-        if column not in not_null_cols:
-            df = df.loc[df[column] == value]
+        df = df.loc[df[column] == value]
 
     df = df.reset_index(drop=True)
     log.log(config.VERBOSE, f"Dataframe size after applying conditions: {len(df)}")
 
     return df
+
+
+def convert_to_timestamp(df, cols):
+
+    empty_date = ["", "NaT", "nan"]
+
+    source_date = format_additional_col_alias(cols["convert_to_timestamp"]["date"])
+    source_time = format_additional_col_alias(cols["convert_to_timestamp"]["time"])
+
+    df["c_timestamp"] = (
+        df[[source_date, source_time]]
+        .astype(str)
+        .apply(
+            lambda x: dt.datetime.strptime(
+                x[source_date] + x[source_time].split(".")[0], "%Y-%m-%d%H:%M:%S"
+            )
+            if x[source_date] not in empty_date
+            else "",
+            axis=1,
+        )
+    )
+
+    df = df.astype({"c_timestamp": "datetime64[ns]"})
+
+    log.log(
+        config.VERBOSE,
+        f"Dataframe size after converting {source_date} and {source_time} to timestamp: {len(df)}",
+    )
+
+    return df
+
+
+def select_latest(df, latest_cols):
+
+    col = format_additional_col_alias(latest_cols["latest"]["col"])
+    per = format_additional_col_alias(latest_cols["latest"]["per"])
+
+    log.debug(f"Selecting latest '{col}' per '{per}'")
+
+    final_df = df.sort_values(col).groupby(per).tail(1)
+    log.log(
+        config.VERBOSE,
+        f"Dataframe size after selecting latest {col} per {per}: {len(final_df)}",
+    )
+
+    return final_df
 
 
 def remove_empty_rows(df, not_null_cols, how="all"):

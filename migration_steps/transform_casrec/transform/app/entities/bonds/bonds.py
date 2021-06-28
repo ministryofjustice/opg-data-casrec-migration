@@ -26,7 +26,7 @@ def insert_bonds(target_db, db_config):
     existing_cases_df = pd.read_sql_query(
         existing_cases_query, db_config["db_connection_string"]
     )
-    existing_cases_df = existing_cases_df.loc[existing_cases_df["c_bond_no"].notnull()]
+    # existing_cases_df = existing_cases_df.loc[existing_cases_df["c_bond_no"].notnull()]
 
     sirius_details = get_mapping_dict(
         file_name=mapping_file_name,
