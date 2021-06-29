@@ -41,7 +41,11 @@ def apply_datatypes(mapping_details: Dict, df: pd.DataFrame) -> pd.DataFrame:
 def reapply_datatypes_to_fk_cols(columns, df):
     log.debug("Reapplying fk datatypes")
     for col in columns:
-        log.debug(f"Changing {col} to int64")
-        df[col] = df[col].astype("Int64")
-
+        try:
+            log.debug(f"Changing {col} to int64")
+            df[col] = df[col].astype("float")
+            df[col] = df[col].astype("Int64")
+        except Exception as e:
+            log.error(f"Error reapplying datatypes to fks: {e}")
+            os._exit(1)
     return df
