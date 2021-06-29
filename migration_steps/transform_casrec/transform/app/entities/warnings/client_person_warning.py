@@ -4,6 +4,7 @@ import pandas as pd
 
 from custom_errors import EmptyDataFrame
 from helpers import get_mapping_dict, format_error_message
+from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 
 log = logging.getLogger("root")
 
@@ -53,6 +54,13 @@ def insert_client_person_warning(db_config, target_db):
         )
         client_warning_df["casrec_details"] = "{}"
 
+        print(f"len(client_warning_df): {len(client_warning_df)}")
+
+        client_warning_df = reapply_datatypes_to_fk_cols(
+            columns=["person_id", "warning_id"], df=client_warning_df
+        )
+        print(f"len(client_warning_df): {len(client_warning_df)}")
+
         target_db.insert_data(
             table_name=definition["destination_table_name"],
             df=client_warning_df,
@@ -63,6 +71,7 @@ def insert_client_person_warning(db_config, target_db):
         target_db.create_empty_table(sirius_details=sirius_details)
 
     except Exception as e:
+        print(e)
         log.debug(
             "No data to insert",
             extra={
