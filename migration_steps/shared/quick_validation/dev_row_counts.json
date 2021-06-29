@@ -184,6 +184,26 @@
         }
       }
     ]
+  },
+    {
+    "reporting": [
+      {
+        "table_name": "annual_report_log",
+        "query": "select count(*) from {schema}.annual_report_log;",
+        "row_counts": {
+          "all": 11288,
+          "team_2": 0
+        }
+      },
+      {
+        "table_name": "annual_report_log",
+        "query": "select count(*) from {schema}.annual_report_lodging_details;",
+        "row_counts": {
+          "all": 11288,
+          "team_2": 0
+        }
+      }
+    ]
   }
   ]
 

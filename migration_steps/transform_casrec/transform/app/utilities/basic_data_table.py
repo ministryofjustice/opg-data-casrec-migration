@@ -37,12 +37,6 @@ def get_basic_data_table(
 
     source_table = get_source_table(mapping_dict=mapping_dict)
 
-    # sirius_details = get_mapping_dict(
-    #     file_name=mapping_file_name,
-    #     stage_name="sirius_details",
-    #     only_complete_fields=False,
-    # )
-
     source_data_query = generate_select_string_from_mapping(
         mapping=mapping_dict,
         source_table_name=source_table,
