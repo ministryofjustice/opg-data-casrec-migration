@@ -57,10 +57,11 @@ def get_random_address_lines(db_config, min, max, number_of_lines):
         lines = cursor.fetchall()
         if lines:
             log.debug(f"{number_of_lines} lines retrieved")
-
             return lines
         else:
-            log.debug(f"No data for address lines with ids {', '.join(ids_to_check)}")
+            log.debug(
+                f"No data for address lines with ids {', '.join([str(x) for x in ids_to_check])}"
+            )
             return 0
 
         cursor.close()
