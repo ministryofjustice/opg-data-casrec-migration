@@ -529,7 +529,7 @@
                 "mapping_table": "client_persons.caserecnumber"
             },
             "createdtime": {
-                "casrec": "CAST(CONCAT(remarks.\"Logdate\", ' ', LEFT(remarks.\"Logtime\", 8)) AS TIMESTAMP(0))",
+                "casrec": "TO_TIMESTAMP(CONCAT(remarks.\"Logdate\", ' ', LEFT(remarks.\"Logtime\", 8)), 'YYYY-MM-DD HH24:MI:SS')",
                 "sirius": "notes.createdtime"
             }
         },

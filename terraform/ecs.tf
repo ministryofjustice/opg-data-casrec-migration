@@ -181,12 +181,8 @@ resource "aws_security_group_rule" "etl_to_ecr_api_egress" {
   to_port                  = 443
   security_group_id        = aws_security_group.etl.id
   source_security_group_id = data.aws_security_group.vpc_endpoints.id
-  description              = "Outbound ETL to ECR API Endpoint"
+  description              = "Outbound ETL to ECR API Endpoints SG"
 }
-
-//locals {
-//  vpc_endpoints = [for i in local.account.s3_vpc_endpoint_ids : data.aws_vpc_endpoint.s3_endpoint[i].prefix_list_id]
-//}
 
 resource "aws_security_group_rule" "etl_to_s3_egress" {
   type              = "egress"
@@ -195,7 +191,7 @@ resource "aws_security_group_rule" "etl_to_s3_egress" {
   to_port           = 443
   security_group_id = aws_security_group.etl.id
   prefix_list_ids   = toset([for i in local.account.s3_vpc_endpoint_ids : data.aws_vpc_endpoint.s3_endpoint[i].prefix_list_id])
-  description       = "Outbound ETL to Secrets Endpoint"
+  description       = "Outbound ETL to S3 Endpoint"
 }
 
 data "aws_security_group" "sirius_db" {

@@ -94,7 +94,7 @@ docker-compose ${COMPOSE_ARGS} run --rm integration integration/integration.sh -
 echo "=== Step 3 - Validate Staging ==="
 docker-compose ${COMPOSE_ARGS} run --rm validation python3 /validation/validate_db/app/app.py --staging
 echo "=== Step 4 - Load to Sirius ==="
-docker-compose ${COMPOSE_ARGS} run --rm load_to_target  load_to_sirius/load_to_sirius.sh
+docker-compose ${COMPOSE_ARGS} run --rm load_to_target load_to_sirius/load_to_sirius.sh
 echo "=== Step 5 - Validate Sirius ==="
 docker-compose ${COMPOSE_ARGS} run --rm validation validation/validate.sh "$@"
 if [ "${GENERATE_DOCS}" == "true" ]

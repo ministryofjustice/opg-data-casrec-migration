@@ -69,8 +69,10 @@ def get_mappings():
             "deputy_death_notifications",
             "deputy_special_warnings",
             "deputy_violent_warnings",
-        ],
-        "remarks": ["notes"]
+        ]
+        # The following is being removed for now!
+        # ,
+        # "remarks": ["notes"]
     }
 
     for entity, mapping in all_mappings.items():
@@ -92,6 +94,8 @@ bucket_name = f"casrec-migration-{account_name.lower()}"
 account = os.environ["SIRIUS_ACCOUNT"]
 session = boto3.session.Session()
 sql_lines = []
+sql_statement_lines = []
+statement_count = 0
 
 
 def get_validation_dict():
@@ -225,7 +229,10 @@ def get_wrapped_casrec_col(col, col_definition):
     datatype = col_definition["sirius_details"]["data_type"]
     calculated = col_definition["transform_casrec"]["calculated"]
 
-    if datatype not in ["bool", "int"] and col_definition["transform_casrec"]["lookup_table"] == "":
+    if (
+        datatype not in ["bool", "int"]
+        and col_definition["transform_casrec"]["lookup_table"] == ""
+    ):
         col = f"NULLIF(TRIM({col}), '')"
 
     # wrap fransform
@@ -424,9 +431,11 @@ def build_validation_statements(mapping_name):
 
 def sql_add(sql, indent_level=0, line_breaks=1):
     global sql_lines
+    global sql_statement_lines
     indent = "    " * indent_level
     breaks = "\n" * line_breaks
     sql_lines.append(f"{indent}{sql}{breaks}")
+    sql_statement_lines.append(f"{indent}{sql}{breaks}")
 
 
 def write_column_validation_sql(
@@ -518,7 +527,7 @@ def build_column_validation_statements(mapping_name):
         0,
         2,
     )
-
+    output_statement_to_file()
     # test overridden columns
     for mapped_item_name, mapped_item in validation_dict[mapping_name][
         "forced"
@@ -529,6 +538,7 @@ def build_column_validation_statements(mapping_name):
             casrec_wrap(mapped_item),
             sirius_wrap(mapped_item),
         )
+        output_statement_to_file()
 
     # test regular columns
     for mapped_item_name in mapping_dict.keys():
@@ -539,6 +549,7 @@ def build_column_validation_statements(mapping_name):
                 casrec_wrap(mapped_item_name),
                 sirius_wrap(mapped_item_name),
             )
+            output_statement_to_file()
 
 
 def write_validation_sql():
@@ -590,6 +601,30 @@ def write_get_exception_count_sql():
     sql_file.close()
 
 
+def output_statement_to_file():
+    global statement_count
+    global sql_statement_lines
+    statement_count += 1
+    statement_file_name = (
+        f"{sql_path_temp}/validation_statement_{str(statement_count).zfill(3)}.sql"
+    )
+    validation_sql_file = open(statement_file_name, "w")
+    validation_sql_file.writelines(sql_statement_lines)
+    validation_sql_file.close()
+    log.debug(f"Saved to file: {statement_file_name}")
+    sql_statement_lines = []
+
+
+def clear_local_temp_sql():
+    if os.path.exists(sql_path_temp):
+        for file in os.listdir(sql_path_temp):
+            file_path = f"{sql_path_temp}/{file}"
+            if "validation.sql" or "validation_statement" in file:
+                os.remove(file_path)
+    else:
+        os.mkdir(sql_path_temp)
+
+
 def pre_validation():
     if is_staging is False:
         log.info(f"Validating with SIRIUS")
@@ -606,6 +641,9 @@ def pre_validation():
         log.info(f"Validating with STAGING schema")
 
     log.info(f"INSTALL TRANSFORMATION ROUTINES")
+
+    clear_local_temp_sql()
+
     execute_sql_file(
         sql_path, transformations_sqlfile, conn_target, config.schemas["public"]
     )
@@ -614,8 +652,11 @@ def pre_validation():
 
     log.info("- Lookup Functions")
     build_lookup_functions()
+    output_statement_to_file()
+
     log.info("- Drop Exception Tables")
     drop_exception_tables()
+    output_statement_to_file()
 
     global mapping_dict
 
@@ -630,9 +671,11 @@ def pre_validation():
 
         log.info("- Exception Table")
         build_exception_table(mapping_name)
+        output_statement_to_file()
 
         log.info("- Table Validation Statement")
         build_validation_statements(mapping_name)
+        output_statement_to_file()
 
         log.info("- Column Validation Statements")
         build_column_validation_statements(mapping_name)
@@ -692,13 +735,6 @@ def main(staging):
 
     pre_validation()
 
-    log.info("RUN VALIDATION")
-    execute_sql_file(
-        sql_path_temp, validation_sqlfile, conn_target, config.schemas["public"]
-    )
-
-    post_validation()
-
     log.info("Adding sql files to bucket...\n")  #
     s3 = get_s3_session(session, environment, host)
     if ci != "true":
@@ -707,6 +743,16 @@ def main(staging):
             s3_file_path = f"validation/sql/{file}"
             if file.endswith(".sql"):
                 upload_file(bucket_name, file_path, s3, log, s3_file_path)
+
+    log.info("RUN VALIDATION")
+
+    for file in sorted(os.listdir(sql_path_temp)):
+        if file.startswith("validation_statement_"):
+            log.debug(f" Running {file}")
+            execute_sql_file(sql_path_temp, file, conn_target, config.schemas["public"])
+
+    log.info("RUN POST VALIDATION")
+    post_validation()
 
     if get_exception_count() > 0:
         log.info("Exceptions WERE found: override / continue anyway\n")

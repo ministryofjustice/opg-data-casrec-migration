@@ -269,7 +269,7 @@ def upload_file(bucket, file_name, s3, log, object_name=None):
         StorageClass="STANDARD",
     )
 
-    log.info(f"Uploaded {file_name.split('/')[-1]}")
+    log.debug(f"Uploaded {file_name.split('/')[-1]}")
 
 
 def sirius_session(account):

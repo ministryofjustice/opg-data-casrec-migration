@@ -82,7 +82,7 @@ class BaseConfig:
         "supervision_level": ["local", "development"],
         "deputies": ["local", "development"],
         "finance": [],
-        "remarks": ["local", "development"],
+        "remarks": [],
         "reporting": [],
         "tasks": [],
         "visits": [],
