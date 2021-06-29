@@ -62,8 +62,8 @@
         },
         "transform_casrec": {
             "casrec_table": "Account",
-            "casrec_column_name": "End Date",
-            "alias": "End Date",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
             "lookup_table": "",
             "default_value": "",
@@ -87,8 +87,8 @@
         },
         "transform_casrec": {
             "casrec_table": "Account",
-            "casrec_column_name": "Revise Date",
-            "alias": "Revise Date",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
             "lookup_table": "",
             "default_value": "",
@@ -251,7 +251,7 @@
     },
     "receiveddate": {
         "mapping_status": {
-            "is_complete": true
+            "is_complete": false
         },
         "sirius_details": {
             "is_pk": "",
@@ -262,23 +262,9 @@
         },
         "transform_casrec": {
             "casrec_table": "Account",
-            "casrec_column_name": [
-                "Rcvd Date1",
-                "Rcvd Date2",
-                "Rcvd Date3",
-                "Rcvd Date4",
-                "Rcvd Date5",
-                "Rcvd Date6"
-            ],
-            "alias": [
-                "Rcvd Date1",
-                "Rcvd Date2",
-                "Rcvd Date3",
-                "Rcvd Date4",
-                "Rcvd Date5",
-                "Rcvd Date6"
-            ],
-            "requires_transformation": "get_max_col",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -376,8 +362,8 @@
         },
         "transform_casrec": {
             "casrec_table": "Account",
-            "casrec_column_name": "Rev Stat",
-            "alias": "Rev Stat",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
             "lookup_table": "revstatus_lookup",
             "default_value": "",
@@ -476,8 +462,8 @@
         },
         "transform_casrec": {
             "casrec_table": "Account",
-            "casrec_column_name": "Review Date",
-            "alias": "Review Date",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
             "lookup_table": "",
             "default_value": "",
