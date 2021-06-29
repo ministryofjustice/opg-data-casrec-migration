@@ -137,37 +137,12 @@
         },
         "transform_casrec": {
             "casrec_table": "PAT",
-            "casrec_column_name": "",
-            "alias": "",
+            "casrec_column_name": "VWM",
+            "alias": "VWM 2",
             "requires_transformation": "",
             "lookup_table": "warning_violent_lookup",
             "default_value": "",
             "calculated": "current_date",
-            "additional_columns": ""
-        },
-        "prepare": {
-            "sync": ""
-        }
-    },
-    "dateclosed": {
-        "mapping_status": {
-            "is_complete": false
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "datetime",
-            "table_name": "warnings",
-            "entity": "warnings"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": "",
-            "default_value": "",
-            "calculated": "",
             "additional_columns": ""
         },
         "prepare": {
