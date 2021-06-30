@@ -29,7 +29,8 @@ def insert_base_data(db_config, db_engine):
                 (185,'Howden',21000.00,null,null,'https://www.howdendeputybonds.co.uk','HOWDEN_dev'),
                 (186,'Deputy Bond Services (DBS)',21000.00,null,null,'https://www.deputybondservices.co.uk','DBS_dev'),
                 (187,'Marsh',16000.00,null,null,null,'MARSH_dev'),
-                (43745,'OTHER',null,null,null,null,'OTHER_dev');
+                (43745,'OTHER',null,null,null,null,'OTHER_dev'),
+                (43757,'OTHER',null,null,null,null,'OTHER2_dev');
         """,
     }
     for name, statement in base_data.items():

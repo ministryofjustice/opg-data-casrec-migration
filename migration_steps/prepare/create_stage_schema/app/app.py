@@ -61,7 +61,7 @@ def main():
         amend_dev_data(db_engine=sirius_db_engine)
 
     check_lookups(db_config=db_config)
-    sync_lookups(db_engine=target_db_engine, db_config=db_config)
+    # sync_lookups(db_engine=target_db_engine, db_config=db_config)
 
 
 if __name__ == "__main__":
