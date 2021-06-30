@@ -151,7 +151,7 @@
         }
     },
     "client_nodebtchase_warnings": {
-        "exclude": ["closed_by"],
+        "exclude": [],
         "forced": {
             "caserecnumber": {
                 "mapping_table": "client_persons.caserecnumber"
@@ -239,7 +239,7 @@
         }
     },
     "client_saarcheck_warnings": {
-        "exclude": ["closed_by"],
+        "exclude": [],
         "forced": {
             "caserecnumber": {
                 "mapping_table": "client_persons.caserecnumber"
@@ -270,7 +270,7 @@
         }
     },
     "client_special_warnings": {
-        "exclude": ["closed_by"],
+        "exclude": [],
         "forced": {
             "caserecnumber": {
                 "mapping_table": "client_persons.caserecnumber"
@@ -301,7 +301,7 @@
         }
     },
     "client_violent_warnings": {
-        "exclude": ["closed_by"],
+        "exclude": [],
         "forced": {
             "caserecnumber": {
                 "mapping_table": "client_persons.caserecnumber"
@@ -428,7 +428,7 @@
         }
     },
     "deputy_special_warnings": {
-        "exclude": ["closed_by"],
+        "exclude": [],
         "forced": {
             "caserecnumber": {
                 "mapping_table": "cases.caserecnumber"
@@ -473,7 +473,7 @@
         }
     },
     "deputy_violent_warnings": {
-        "exclude": ["closed_by"],
+        "exclude": [],
         "forced": {
             "caserecnumber": {
                 "mapping_table": "cases.caserecnumber"
