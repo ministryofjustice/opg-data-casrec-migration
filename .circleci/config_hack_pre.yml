@@ -1,0 +1,277 @@
+---
+version: 2.1
+
+workflows:
+  preprod:
+    jobs:
+      - build:
+          name: build and unit tests
+          filters: {branches:{ignore:[master]}}
+      - infrastructure:
+          name: build infra preproduction
+          requires: [build and unit tests]
+          tf_workspace: preproduction
+          tf_command: apply
+          environment: Preproduction
+          filters: {branches:{ignore:[master]}}
+      - run_step_function:
+          name: run the step function preproduction
+          requires: [build infra preproduction]
+          account: "492687888235"
+          wait_for: "10800"
+          tf_workspace: preproduction
+          environment: Preproduction
+          filters: {branches:{ignore:[master]}}
+      - run_elasticsearch_reset:
+          name: full reindex elasticsearch preproduction
+          requires: [run the step function preproduction]
+          tf_workspace: preproduction
+          environment: Preproduction
+          filters: {branches:{ignore:[master]}}
+orbs:
+  aws-cli: circleci/aws-cli@1.3.0
+  dockerhub_helper:
+    orbs:
+      docker: circleci/docker@1.4.0
+    commands:
+      dockerhub_login:
+        steps:
+          - docker/install-docker-credential-helper
+          - docker/check:
+              docker-password: DOCKER_ACCESS_TOKEN # pragma: allowlist secret
+              docker-username: DOCKER_USER
+  terraform:
+    executors:
+      terraform:
+        docker:
+          - image: circleci/golang:1.12
+            auth:
+              username: $DOCKER_USER
+              password: $DOCKER_ACCESS_TOKEN
+        resource_class: small
+        environment:
+          TF_VERSION: 0.14.11
+          TF_SHA256SUM: 171ef5a4691b6f86eab524feaf9a52d5221c875478bd63dd7e55fef3939f7fd4 # pragma: allowlist secret
+          TF_CLI_ARGS_plan: -input=false -lock=false
+          TF_CLI_ARGS_apply: -input=false -auto-approve
+          TF_CLI_ARGS_destroy: -input=false -auto-approve
+          TF_CLI_ARGS_init: -input=false -upgrade=true -reconfigure
+    commands:
+      install:
+        steps:
+          - run:
+              name: Download Terraform
+              command: curl -sfSO https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
+          - run:
+              name: Add Terraform SHA256SUM
+              command: echo "${TF_SHA256SUM} terraform_${TF_VERSION}_linux_amd64.zip" > SHA256SUMS
+          - run:
+              name: Check Terraform SHA256SUM
+              command: sha256sum -c --status SHA256SUMS
+          - run:
+              name: Install Terraform
+              command: sudo unzip terraform_${TF_VERSION}_linux_amd64.zip -d /bin
+      setup_ecs_runner:
+        steps:
+          - run:
+              name: Initialize
+              command: terraform init
+          - run:
+              name: Get template file
+              command: |
+                # Image tag is not important but is needed for build
+                export TF_VAR_image_tag=fake-tag
+                terraform apply -target=local_file.output
+          - run:
+              name: Install ecs-runner
+              command: |
+                wget https://github.com/ministryofjustice/opg-ecs-helper/releases/download/v0.2.0/opg-ecs-helper_Linux_x86_64.tar.gz -O $HOME/opg-ecs-helper.tar.gz
+                sudo tar -xvf $HOME/opg-ecs-helper.tar.gz -C /usr/local/bin
+                sudo chmod +x /usr/local/bin/ecs-stabilizer
+                sudo chmod +x /usr/local/bin/ecs-runner
+  migration:
+    executors:
+      python:
+        docker:
+          - image: circleci/python:3
+            auth:
+              username: $DOCKER_USER
+              password: $DOCKER_ACCESS_TOKEN
+    commands:
+      login_codeartifact:
+        steps:
+          - run:
+              name: install aws cli
+              command: |
+                pip3 install awscli --upgrade --user
+          - run:
+              name: login to code artifact for pip
+              command: ./login_code_artifact.sh -a 288342028542 -t pip
+              working_directory: ~/project/docs/ci_scripts
+
+jobs:
+  cleanup:
+    executor: migration/python
+    steps:
+      - run:
+          name: cleanup
+          command: echo "running this so job passes as it's requirement to merge"
+
+  run_step_function:
+    executor: migration/python
+    resource_class: small
+    parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "Development"
+      tf_workspace:
+        description: terraform workspace
+        type: string
+        default: "development"
+      account:
+        description: account to run step function in
+        type: string
+        default: "288342028542"
+      wait_for:
+        description: how long to wait for step function to finish
+        type: string
+        default: "1800"
+    environment:
+      SIRIUS_ACCOUNT: << parameters.account >>
+      ENVIRONMENT: << parameters.environment >>
+      TF_WORKSPACE: << parameters.tf_workspace >>
+      WAIT_FOR: << parameters.wait_for >>
+    steps:
+      - checkout
+      - run:
+          name: check log message
+          command: echo "export NO_RELOAD=false" >> $BASH_ENV
+      - run:
+          name: install requirements
+          command: pip3 install -r requirements-rsf.txt
+          working_directory: ~/project/docs/ci_scripts
+      - run:
+          name: run the function
+          command: python3 run_step_function.py --role integrations-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD} --workspace ${TF_WORKSPACE}
+          working_directory: ~/project/docs/ci_scripts
+
+  build:
+    executor: migration/python
+    resource_class: small
+    environment:
+      AWS_REGION: eu-west-1
+      AWS_CONFIG_FILE: ~/project/aws_config
+      AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
+    steps:
+      - dockerhub_helper/dockerhub_login
+      - setup_remote_docker
+      - aws-cli/install
+      - checkout
+      - run:
+          name: Set environment
+          command: ~/project/.circleci/set_env.sh >> $BASH_ENV
+      - run:
+          name: Set version
+          command: |
+            export VERSION=${TF_WORKSPACE}-${CIRCLE_SHA1:0:7}
+            echo "export VERSION=${VERSION}" >> $BASH_ENV
+            echo "$VERSION" >> ~/project/VERSION
+      - persist_to_workspace:
+          root: .
+          paths:
+            - VERSION
+      - run:
+          name: Show version
+          command: echo ${VERSION}
+      - run:
+          name: Docker login
+          command: aws ecr get-login-password --region $AWS_REGION --profile integrations-ci | docker login --username AWS --password-stdin $AWS_REGISTRY
+      - run:
+          name: Build base image
+          command: docker build base_image -t opg_casrec_migration_base_image:latest
+      - run:
+          name: Build images
+          command: docker-compose -f docker-compose.ci.yml build --parallel
+      - run:
+          name: Push images
+          command: docker-compose -f docker-compose.ci.yml push
+  infrastructure:
+    executor: terraform/terraform
+    resource_class: small
+    parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "Development"
+      tf_workspace:
+        description: terraform workspace
+        type: string
+        default: ""
+      tf_command:
+        description: terraform command
+        type: string
+    environment:
+      WORKSPACE: << parameters.tf_workspace >>
+      ENVIRONMENT: << parameters.environment >>
+    working_directory: ~/project/terraform
+    steps:
+      - checkout:
+          path: ~/project
+      - terraform/install
+      - attach_workspace: {at: ~/project}
+      - run:
+          name: Initialize
+          command: terraform init
+      - run:
+          name: Set environment
+          command: |
+            ~/project/.circleci/set_env.sh >> $BASH_ENV
+      - run:
+          name: Run << parameters.tf_command >>
+          command: terraform << parameters.tf_command >>
+      - run:
+          name: Output
+          command: terraform output -json > terraform.output.json
+
+  run_elasticsearch_reset:
+    executor: terraform/terraform
+    resource_class: small
+    parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "Development"
+      tf_workspace:
+        description: terraform workspace
+        type: string
+        default: "development"
+    environment:
+      ENVIRONMENT: << parameters.environment >>
+      TF_WORKSPACE: << parameters.tf_workspace >>
+    working_directory: ~/project/terraform
+    steps:
+      - checkout:
+          path: ~/project
+      - terraform/install
+      - terraform/setup_ecs_runner
+      - run:
+          name: Reset Elasticsearch
+          command: ecs-runner -task elasticsearch-reindex -timeout 18000
+
+  reset_sirius_full_restore:
+    executor: migration/python
+    resource_class: small
+    parameters:
+      sirius_environment:
+        description: environment for notifications
+        type: string
+        default: "casrecdmpp"
+    environment:
+      SIRIUS_ENVIRONMENT: << parameters.sirius_environment >>
+    steps:
+      - checkout
+      - run:
+          name: run and monitor jenkins job
+          command: ./run_jenkins_job.sh -w ${SIRIUS_ENVIRONMENT} -k ${JENKINS_API_KEY}
+          working_directory: ~/project/docs/ci_scripts
