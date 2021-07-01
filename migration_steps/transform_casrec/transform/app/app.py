@@ -110,8 +110,6 @@ def main(clear, team, chunk_size):
     db_config["chunk_size"] = chunk_size if chunk_size else 10000
     log.info(f"Chunking data at {chunk_size} rows")
 
-    print(f"allowed_entities: {allowed_entities}")
-
     if clear:
         clear_tables(db_config=db_config)
 
