@@ -2,7 +2,7 @@
 	"persons": {
 		"sirius_tables": ["persons"],
 		"entities": {
-			"base_entities": ["clients", "deputies", "crec"]
+			"base_entities": ["clients", "deputies"]
 		},
 		"table_type": "data",
 		"pk": "id",
