@@ -19,6 +19,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "duedate": {
@@ -33,14 +36,17 @@
             "entity": "reporting"
         },
         "transform_casrec": {
-            "casrec_table": "",
+            "casrec_table": "Account",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": "calculate_duedate",
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "reportingperiodenddate": {
@@ -55,14 +61,17 @@
             "entity": "reporting"
         },
         "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
+            "casrec_table": "Account",
+            "casrec_column_name": "End Date",
+            "alias": "End Date",
             "requires_transformation": "",
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "revisedduedate": {
@@ -77,14 +86,17 @@
             "entity": "reporting"
         },
         "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
+            "casrec_table": "Account",
+            "casrec_column_name": "Revise Date",
+            "alias": "Revise Date",
             "requires_transformation": "",
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "numberofchaseletters": {
@@ -107,6 +119,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "lodgingchecklistdocument_id": {
@@ -129,6 +144,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "reportduereminderdate": {
@@ -143,14 +161,17 @@
             "entity": "reporting"
         },
         "transform_casrec": {
-            "casrec_table": "",
+            "casrec_table": "Account",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": "calculate_reminderdate",
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "reportingperiodstartdate": {
@@ -165,14 +186,17 @@
             "entity": "reporting"
         },
         "transform_casrec": {
-            "casrec_table": "",
+            "casrec_table": "Account",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": "calculate_startdate",
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "client_id": {
@@ -195,6 +219,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "status": {
@@ -217,11 +244,14 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "receiveddate": {
         "mapping_status": {
-            "is_complete": false
+            "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
@@ -231,14 +261,31 @@
             "entity": "reporting"
         },
         "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
+            "casrec_table": "Account",
+            "casrec_column_name": [
+                "Rcvd Date1",
+                "Rcvd Date2",
+                "Rcvd Date3",
+                "Rcvd Date4",
+                "Rcvd Date5",
+                "Rcvd Date6"
+            ],
+            "alias": [
+                "Rcvd Date1",
+                "Rcvd Date2",
+                "Rcvd Date3",
+                "Rcvd Date4",
+                "Rcvd Date5",
+                "Rcvd Date6"
+            ],
+            "requires_transformation": "get_max_col",
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "abandoneddate": {
@@ -261,6 +308,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "reasonforabandonment": {
@@ -283,6 +333,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "casesupervisionlevel": {
@@ -305,6 +358,9 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "reviewstatus": {
@@ -319,14 +375,17 @@
             "entity": "reporting"
         },
         "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
+            "casrec_table": "Account",
+            "casrec_column_name": "Rev Stat",
+            "alias": "Rev Stat",
             "requires_transformation": "",
-            "lookup_table": "",
+            "lookup_table": "revstatus_lookup",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     },
     "reasonforreviewstatuschange": {
@@ -349,6 +408,134 @@
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
+    "reviewdecision": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str",
+            "table_name": "annual_report_logs",
+            "entity": "reporting"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
+    "reasonforfinaldecision": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str",
+            "table_name": "annual_report_logs",
+            "entity": "reporting"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
+    "reviewdate": {
+        "mapping_status": {
+            "is_complete": false
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "date",
+            "table_name": "annual_report_logs",
+            "entity": "reporting"
+        },
+        "transform_casrec": {
+            "casrec_table": "Account",
+            "casrec_column_name": "Review Date",
+            "alias": "Review Date",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
+    "order_id": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "cases:id",
+            "data_type": "int",
+            "table_name": "annual_report_logs",
+            "entity": "reporting"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
+    "reviewedby_id": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "assignees:id",
+            "data_type": "int",
+            "table_name": "annual_report_logs",
+            "entity": "reporting"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
         }
     }
 }

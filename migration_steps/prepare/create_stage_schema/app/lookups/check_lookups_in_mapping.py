@@ -36,8 +36,14 @@ def check_single_lookup(db_config, table, lookup_file_name):
     )
 
     sirius_values = sirius_data_df["id"].tolist()
+    log.debug(f"unique_vals: {unique_vals}")
+    log.debug(f"sirius_values: {sirius_values}")
 
-    return all(x in sirius_values for x in unique_vals)
+    if all(x in sirius_values for x in unique_vals):
+        return True
+    else:
+        missing_in_sirius = [str(x) for x in unique_vals if x not in sirius_values]
+        log.error(f"lookup values missing from sirius: {', '.join(missing_in_sirius)}")
 
 
 def check_lookups(db_config):

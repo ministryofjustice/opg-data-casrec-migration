@@ -18,7 +18,7 @@ workflows:
           name: run the step function preproduction
           requires: [build infra preproduction]
           account: "492687888235"
-          wait_for: "10800"
+          wait_for: "18000"
           tf_workspace: preproduction
           environment: Preproduction
           filters: {branches:{ignore:[master]}}
@@ -146,7 +146,7 @@ jobs:
       - checkout
       - run:
           name: check log message
-          command: echo "export NO_RELOAD=true" >> $BASH_ENV
+          command: echo "export NO_RELOAD=false" >> $BASH_ENV
       - run:
           name: install requirements
           command: pip3 install -r requirements-rsf.txt

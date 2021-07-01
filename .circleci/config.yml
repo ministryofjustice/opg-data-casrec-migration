@@ -101,7 +101,7 @@ workflows:
           name: run the step function preproduction
           requires: [build infra preproduction]
           account: "492687888235"
-          wait_for: "10800"
+          wait_for: "18000"
           tf_workspace: preproduction
           environment: Preproduction
           filters: {branches:{only:[master]}}
@@ -162,7 +162,7 @@ workflows:
           name: run the step function qa
           requires: [build infra qa]
           account: "492687888235"
-          wait_for: "10800"
+          wait_for: "18000"
           tf_workspace: qa
           environment: Quality Assurance
           filters: {branches:{only:[master]}}
@@ -238,7 +238,7 @@ workflows:
             build infra preproduction
           ]
           account: "492687888235"
-          wait_for: "10800"
+          wait_for: "18000"
           tf_workspace: preproduction
           environment: Preproduction
           filters: {branches:{only:[master]}}

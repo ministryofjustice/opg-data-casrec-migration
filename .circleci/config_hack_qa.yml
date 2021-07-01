@@ -18,7 +18,7 @@ workflows:
           name: run the step function qa
           requires: [build infra qa]
           account: "492687888235"
-          wait_for: "10800"
+          wait_for: "18000"
           tf_workspace: qa
           environment: Quality Assurance
           filters: {branches:{ignore:[master]}}
