@@ -3,6 +3,7 @@ set -e
 
 RELOAD="y"
 RESYNC="y"
+SYNC_DEFS="n"
 SKIP_LOAD="false"
 PRESERVE_SCHEMAS=""
 LAY_TEAM=""
@@ -25,6 +26,9 @@ then
     PRESERVE_SCHEMAS="casrec_csv"
     SKIP_LOAD="true"
   fi
+  read -p "Sync mapping defs from s3? (y/n) [n]: " SYNC_DEFS
+  SYNC_DEFS=${SYNC_DEFS:-n}
+  echo $SYNC_DEFS
   read -p "Migrate specific Lay Team? (1-9) [All]: " LAY_TEAM
   if [ "${LAY_TEAM}" == "" ]
   then
@@ -42,6 +46,11 @@ then
 fi
 
 START_TIME=`date +%s`
+
+if [ "${SYNC_DEFS}" == "y"  ]
+then
+  aws-vault exec identity -- python3 import_mapping_definitions.py
+fi
 
 # Docker compose file for circle build
 docker-compose ${COMPOSE_ARGS} up --no-deps -d casrec_db localstack
