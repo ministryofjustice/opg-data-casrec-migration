@@ -251,5 +251,17 @@
 		"table_type": "join",
 		"sequences": [],
 		"order_by": ["person_id", "warning_id"]
+	},
+	"visits": {
+		"sirius_tables": ["visits"],
+		"entities": {
+			"base_entities": ["visits"],
+			"relies_on": []
+		},
+		"pk": "id",
+		"fks": [],
+		"table_type": "data",
+		"sequences": [],
+		"order_by": ["id"]
 	}
 }

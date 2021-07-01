@@ -212,9 +212,11 @@ def get_all_mapped_fields(
 def get_json_version():
     dirname = get_current_directory()
     file_path = os.path.join(dirname, f"mapping_definitions/summary/version.json")
-    with open(file_path, "r") as version_file:
-
-        return json.load(version_file)
+    try:
+        with open(file_path, "r") as version_file:
+            return json.load(version_file)
+    except Exception:
+        return {"version_id": "", "last_modified": ""}
 
 
 def get_config(env="local"):
