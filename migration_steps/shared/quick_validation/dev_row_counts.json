@@ -184,6 +184,18 @@
         }
       }
     ]
+  },
+  {
+    "visits": [
+      {
+        "table_name": "visits",
+        "query": "select count(*) from {schema}.visits;",
+        "row_counts": {
+          "all": 999,
+          "team_2": 0
+        }
+      }
+    ]
   }
   ]
 

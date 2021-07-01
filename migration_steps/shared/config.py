@@ -85,7 +85,7 @@ class BaseConfig:
         "remarks": [],
         "reporting": [],
         "tasks": [],
-        "visits": [],
+        "visits": ["local", "development"],
         "warnings": ["local", "development"],
         "additional_data": [],
         "death": ["local", "development"],
