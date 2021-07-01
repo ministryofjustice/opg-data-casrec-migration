@@ -39,10 +39,10 @@
             "casrec_table": "Account",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": "calculate_duedate",
             "lookup_table": "",
-            "default_value": "1983-08-20",
-            "calculated": "",
+            "default_value": "",
+            "calculated": "current_date",
             "additional_columns": ""
         },
         "prepare": {
@@ -66,8 +66,8 @@
             "alias": "End Date",
             "requires_transformation": "",
             "lookup_table": "",
-            "default_value": "1983-08-20",
-            "calculated": "",
+            "default_value": "",
+            "calculated": "current_date",
             "additional_columns": ""
         },
         "prepare": {
@@ -116,7 +116,7 @@
             "alias": "",
             "requires_transformation": "",
             "lookup_table": "",
-            "default_value": "0",
+            "default_value": 0.0,
             "calculated": "",
             "additional_columns": ""
         },
@@ -191,8 +191,8 @@
             "alias": "",
             "requires_transformation": "calculate_startdate",
             "lookup_table": "",
-            "default_value": "1983-08-20",
-            "calculated": "",
+            "default_value": "",
+            "calculated": "current_date",
             "additional_columns": ""
         },
         "prepare": {
