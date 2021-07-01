@@ -35,8 +35,6 @@ def check_single_lookup(db_config, table, lookup_file_name):
         table=table,
     )
 
-    log.debug(sirius_data_df.to_markdown())
-
     sirius_values = sirius_data_df["id"].tolist()
     log.debug(f"unique_vals: {unique_vals}")
     log.debug(f"sirius_values: {sirius_values}")
