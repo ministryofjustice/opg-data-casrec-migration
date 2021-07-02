@@ -45,6 +45,7 @@ conn_target = None
 target_schema = None
 source_schema = config.schemas["pre_transform"]
 mapping_dict = None
+validation_dict = None
 
 
 def get_mappings():
@@ -98,10 +99,10 @@ sql_statement_lines = []
 statement_count = 0
 
 
-def get_validation_dict():
+def get_validation_dict(mapping_name):
     file_path = shared_path / "validation_mapping.json"
     validation_dict = json.load(open(file_path))
-    return validation_dict
+    return validation_dict[mapping_name]
 
 
 def get_mapping_report_df():
@@ -132,19 +133,19 @@ def drop_exception_tables():
 
 
 def build_exception_table(mapping_name):
-    exclude_cols = validation_dict[mapping_name]["exclude"] + list(
-        validation_dict[mapping_name]["orderby"].keys()
+    exclude_cols = validation_dict["exclude"] + list(
+        validation_dict["orderby"].keys()
     )
 
     sql_add(f"-- {mapping_name}")
     sql_add(f"CREATE TABLE {get_exception_table(mapping_name)}(")
 
     # overridden cols (normally run through plsql transform routines)
-    for col in list(validation_dict[mapping_name]["forced"].keys()):
+    for col in list(validation_dict["add_columns"].keys()):
         sql_add(f"{col} text default NULL,", 1)
 
-    # forced order cols
-    for col in list(validation_dict[mapping_name]["orderby"].keys()):
+    # add_columns order cols
+    for col in list(validation_dict["orderby"].keys()):
         sql_add(f"{col} text default NULL,", 1)
 
     # other columns
@@ -321,11 +322,11 @@ def casrec_wrap(mapped_item):
 
 
 def build_validation_statements(mapping_name):
-    exclude_cols = validation_dict[mapping_name]["exclude"] + list(
-        validation_dict[mapping_name]["orderby"].keys()
+    exclude_cols = validation_dict["exclude"] + list(
+        validation_dict["orderby"].keys()
     )
     order_by = ",\n        ".join(
-        ["caserecnumber ASC"] + list(validation_dict[mapping_name]["orderby"].keys())
+        ["caserecnumber ASC"] + list(validation_dict["orderby"].keys())
     )
     col_separator = ",\n"
 
@@ -338,14 +339,14 @@ def build_validation_statements(mapping_name):
     # overridden cols(eg run through transformations or inserting casrec no. as first column)
     for overridden_mapped_item_name, overridden_mapped_item in validation_dict[
         mapping_name
-    ]["forced"].items():
+    ]["add_columns"].items():
         sql_add(
             f"{casrec_wrap(overridden_mapped_item)} AS {overridden_mapped_item_name},",
             3,
         )
 
-    # forced order cols
-    for order_mapped_item_name, order_mapped_item in validation_dict[mapping_name][
+    # add_columns order cols
+    for order_mapped_item_name, order_mapped_item in validation_dict[
         "orderby"
     ].items():
         sql_add(f"{casrec_wrap(order_mapped_item)} AS {order_mapped_item_name},", 3)
@@ -363,15 +364,15 @@ def build_validation_statements(mapping_name):
 
     # FROM, with JOINs
     sql_add(
-        f"FROM {source_schema}.{validation_dict[mapping_name]['casrec']['from_table']}",
+        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}",
         2,
     )
-    for join in validation_dict[mapping_name]["casrec"]["joins"]:
+    for join in validation_dict["casrec"]["joins"]:
         sql_add(f"{join}", 2)
 
     # WHERE
     sql_add("WHERE True", 2)
-    for where_clause in validation_dict[mapping_name]["casrec"]["where_clauses"]:
+    for where_clause in validation_dict["casrec"]["where_clauses"]:
         sql_add(f"AND {where_clause}", 2)
 
     # ORDER
@@ -386,14 +387,14 @@ def build_validation_statements(mapping_name):
     # overridden cols(eg run through transformations or inserting casrec no. as first column)
     for overridden_mapped_item_name, overridden_mapped_item in validation_dict[
         mapping_name
-    ]["forced"].items():
+    ]["add_columns"].items():
         sql_add(
             f"{sirius_wrap(overridden_mapped_item)} AS {overridden_mapped_item_name},",
             3,
         )
 
-    # forced order cols
-    for order_mapped_item_name, order_mapped_item in validation_dict[mapping_name][
+    # add_columns order cols
+    for order_mapped_item_name, order_mapped_item in validation_dict[
         "orderby"
     ].items():
         sql_add(f"{sirius_wrap(order_mapped_item)} AS {order_mapped_item_name},", 3)
@@ -411,16 +412,16 @@ def build_validation_statements(mapping_name):
 
     # FROM, with JOINs
     sql_add(
-        f"FROM {target_schema}.{validation_dict[mapping_name]['sirius']['from_table']}",
+        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}",
         2,
     )
-    for join in validation_dict[mapping_name]["sirius"]["joins"]:
+    for join in validation_dict["sirius"]["joins"]:
         join = join.replace("{target_schema}", str(target_schema))
         sql_add(f"{join}", 2)
 
     # WHERE
     sql_add("WHERE True", 2)
-    for where_clause in validation_dict[mapping_name]["sirius"]["where_clauses"]:
+    for where_clause in validation_dict["sirius"]["where_clauses"]:
         sql_add(f"AND {where_clause}", 2)
 
     # ORDER
@@ -443,7 +444,7 @@ def write_column_validation_sql(
 ):
     order_by = ",\n        ".join(
         ["exc_caserecnumber ASC"]
-        + list(validation_dict[mapping_name]["orderby"].keys())
+        + list(validation_dict["orderby"].keys())
     )
 
     sql_add(f"-- {mapping_name} / {mapped_item_name}")
@@ -458,25 +459,25 @@ def write_column_validation_sql(
     # caserecnumber
     sql_add("exc_table.caserecnumber AS exc_caserecnumber,", 4)
     # forced order cols
-    for order_mapped_item_name, order_mapped_item in validation_dict[mapping_name][
+    for order_mapped_item_name, order_mapped_item in validation_dict[
         "orderby"
     ].items():
         sql_add(f"{casrec_wrap(order_mapped_item)} AS {order_mapped_item_name},", 4)
     # tested column
     sql_add(f"{col_source_casrec} AS {mapped_item_name}", 4)
     sql_add(
-        f"FROM {source_schema}.{validation_dict[mapping_name]['casrec']['from_table']}",
+        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}",
         3,
     )
-    for join in validation_dict[mapping_name]["casrec"]["joins"]:
+    for join in validation_dict["casrec"]["joins"]:
         sql_add(f"{join}", 3)
-    exception_table_join = validation_dict[mapping_name]["casrec"][
+    exception_table_join = validation_dict["casrec"][
         "exception_table_join"
     ]
     sql_add(f"{exception_table_join}", 3)
     # WHERE
     sql_add("WHERE exc_table.caserecnumber IS NOT NULL", 3)
-    for where_clause in validation_dict[mapping_name]["casrec"]["where_clauses"]:
+    for where_clause in validation_dict["casrec"]["where_clauses"]:
         sql_add(f"AND {where_clause}", 4)
 
     sql_add(f"ORDER BY {order_by}", 3)
@@ -490,26 +491,26 @@ def write_column_validation_sql(
     # caserecnumber
     sql_add("exc_table.caserecnumber AS exc_caserecnumber,", 4)
     # forced order cols
-    for order_mapped_item_name, order_mapped_item in validation_dict[mapping_name][
+    for order_mapped_item_name, order_mapped_item in validation_dict[
         "orderby"
     ].items():
         sql_add(f"{sirius_wrap(order_mapped_item)} AS {order_mapped_item_name},", 4)
     # tested column
     sql_add(f"{col_source_sirius} AS {mapped_item_name}", 4)
     sql_add(
-        f"FROM {target_schema}.{validation_dict[mapping_name]['sirius']['from_table']}",
+        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}",
         3,
     )
-    for join in validation_dict[mapping_name]["sirius"]["joins"]:
+    for join in validation_dict["sirius"]["joins"]:
         join = join.replace("{target_schema}", str(target_schema))
         sql_add(f"{join}", 3)
-    exception_table_join = validation_dict[mapping_name]["sirius"][
+    exception_table_join = validation_dict["sirius"][
         "exception_table_join"
     ]
     sql_add(f"{exception_table_join}", 3)
     # WHERE
     sql_add("WHERE exc_table.caserecnumber IS NOT NULL", 3)
-    for where_clause in validation_dict[mapping_name]["sirius"]["where_clauses"]:
+    for where_clause in validation_dict["sirius"]["where_clauses"]:
         sql_add(f"AND {where_clause}", 4)
     sql_add(f"ORDER BY {order_by}", 3)
     sql_add(") as sirius_data", 2)
@@ -528,9 +529,9 @@ def build_column_validation_statements(mapping_name):
         2,
     )
     output_statement_to_file()
-    # test overridden columns
-    for mapped_item_name, mapped_item in validation_dict[mapping_name][
-        "forced"
+    # test add_columns
+    for mapped_item_name, mapped_item in validation_dict[
+        "add_columns"
     ].items():
         write_column_validation_sql(
             mapping_name,
@@ -542,7 +543,7 @@ def build_column_validation_statements(mapping_name):
 
     # test regular columns
     for mapped_item_name in mapping_dict.keys():
-        if mapped_item_name not in validation_dict[mapping_name]["exclude"]:
+        if mapped_item_name not in validation_dict["exclude"]:
             write_column_validation_sql(
                 mapping_name,
                 mapped_item_name,
@@ -667,6 +668,8 @@ def pre_validation():
             include_pk=False,
         )
 
+        validation_dict = get_validation_dict(mapping_name)
+
         log.info(mapping_name)
 
         log.info("- Exception Table")
@@ -766,8 +769,6 @@ if __name__ == "__main__":
 
     log.setLevel(1)
     log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
-
-    validation_dict = get_validation_dict()
 
     main()
 
