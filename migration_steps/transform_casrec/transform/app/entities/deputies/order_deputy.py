@@ -1,7 +1,7 @@
 import logging
 
 from custom_errors import EmptyDataFrame
-from helpers import format_error_message, get_mapping_dict
+from helpers import format_error_message, get_mapping_dict, get_table_def
 from transform_data.unique_id import add_unique_id
 from utilities.basic_data_table import get_basic_data_table
 import pandas as pd
@@ -9,16 +9,11 @@ from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 
 log = logging.getLogger("root")
 
-definition = {
-    "source_table_name": "deputy",
-    "source_table_additional_columns": ["Deputy No", "Stat"],
-    "destination_table_name": "order_deputy",
-}
 
-mapping_file_name = "order_deputy_mapping"
+def insert_order_deputies(db_config, target_db, mapping_file):
 
-
-def insert_order_deputies(db_config, target_db):
+    mapping_file_name = f"{mapping_file}_mapping"
+    table_definition = get_table_def(mapping_name=mapping_file)
     sirius_details = get_mapping_dict(
         file_name=mapping_file_name,
         stage_name="sirius_details",
@@ -31,7 +26,7 @@ def insert_order_deputies(db_config, target_db):
         db_config=db_config,
         mapping_file_name=mapping_file_name,
         sirius_details=sirius_details,
-        table_definition=definition,
+        table_definition=table_definition,
     )
 
     try:
@@ -95,7 +90,7 @@ def insert_order_deputies(db_config, target_db):
         deputyship_persons_order_df = add_unique_id(
             db_conn_string=db_config["db_connection_string"],
             db_schema=db_config["target_schema"],
-            table_definition=definition,
+            table_definition=table_definition,
             source_data_df=deputyship_persons_order_df,
         )
 
@@ -104,7 +99,7 @@ def insert_order_deputies(db_config, target_db):
         )
 
         target_db.insert_data(
-            table_name=definition["destination_table_name"],
+            table_name=table_definition["destination_table_name"],
             df=deputyship_persons_order_df,
             sirius_details=sirius_details,
         )

@@ -5,22 +5,24 @@ import psycopg2
 from psycopg2 import errors
 
 from custom_errors import EmptyDataFrame
-from helpers import get_mapping_dict, format_error_message
+from helpers import get_mapping_dict, format_error_message, get_table_def
 from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 
 log = logging.getLogger("root")
 
-definition = {
-    "destination_table_name": "person_warning",
-    "source_table_name": "",
-    "source_table_additional_columns": [],
-}
+# definition = {
+#     "destination_table_name": "person_warning",
+#     "source_table_name": "",
+#     "source_table_additional_columns": [],
+# }
+#
+# mapping_file_name = "person_warning_mapping"
 
-mapping_file_name = "person_warning_mapping"
 
+def insert_deputy_person_warning(db_config, target_db, mapping_file):
 
-def insert_deputy_person_warning(db_config, target_db):
-
+    mapping_file_name = f"{mapping_file}_mapping"
+    table_definition = get_table_def(mapping_name=mapping_file)
     sirius_details = get_mapping_dict(
         file_name=mapping_file_name,
         stage_name="sirius_details",
@@ -64,7 +66,7 @@ def insert_deputy_person_warning(db_config, target_db):
         )
 
         target_db.insert_data(
-            table_name=definition["destination_table_name"],
+            table_name=table_definition["destination_table_name"],
             df=deputy_warning_df,
             sirius_details=sirius_details,
         )

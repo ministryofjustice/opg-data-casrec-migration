@@ -19,11 +19,8 @@ definition = {
     "destination_table_name": "persons",
 }
 
-mapping_file_name = "crec_persons_mapping"
 
-
-def insert_persons_crec(db_config, target_db):
-    print("insert_persons_crec")
+def insert_persons_crec(db_config, target_db, mapping_file):
 
     chunk_size = db_config["chunk_size"]
     offset = 0
@@ -36,6 +33,8 @@ def insert_persons_crec(db_config, target_db):
     persons_df = pd.read_sql_query(persons_query, db_config["db_connection_string"])
 
     persons_df = persons_df[["id", "caserecnumber"]]
+
+    mapping_file_name = f"{mapping_file}_mapping"
 
     sirius_details = get_mapping_dict(
         file_name=mapping_file_name,

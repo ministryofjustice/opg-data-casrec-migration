@@ -159,6 +159,16 @@ def get_all_additional_data_files():
     return all_files
 
 
+def get_table_def(mapping_name: str = None) -> Dict:
+    dirname = get_current_directory()
+    file_path = os.path.join(dirname, f"mapping_definitions/table_definitions.json")
+
+    with open(file_path) as table_data:
+        table_data_dict = json.load(table_data)
+
+    return table_data_dict[mapping_name]
+
+
 def get_all_lookup_dicts() -> Dict[str, List[str]]:
     dirname = get_current_directory()
     file_path = os.path.join(dirname, f"mapping_definitions/lookups")
@@ -212,9 +222,11 @@ def get_all_mapped_fields(
 def get_json_version():
     dirname = get_current_directory()
     file_path = os.path.join(dirname, f"mapping_definitions/summary/version.json")
-    with open(file_path, "r") as version_file:
-
-        return json.load(version_file)
+    try:
+        with open(file_path, "r") as version_file:
+            return json.load(version_file)
+    except Exception:
+        return {"version_id": "", "last_modified": ""}
 
 
 def get_config(env="local"):
