@@ -3,9 +3,7 @@
         "exclude": [
             "order_id"
         ],
-        "add_columns": {
-            "caserecnumber": "client_persons.caserecnumber"
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {
             "casesubtype": {
                 "mapping_table": "cases.casesubtype",
@@ -51,9 +49,7 @@
             "person_id",
             "uid"
         ],
-        "add_columns": {
-            "caserecnumber": "client_persons.caserecnumber"
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {
             "casesubtype": {
                 "mapping_table": "cases.casesubtype",
@@ -92,9 +88,7 @@
             "person_id",
             "address_lines"
         ],
-        "add_columns": {
-            "caserecnumber": "client_persons.caserecnumber"
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
         "casrec": {
             "from_table": "pat",
@@ -124,9 +118,7 @@
         "exclude": [
             "person_id"
         ],
-        "add_columns": {
-            "caserecnumber": "client_persons.caserecnumber"
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
         "casrec": {
             "from_table": "pat",
@@ -152,9 +144,7 @@
     },
     "client_nodebtchase_warnings": {
         "exclude": [],
-        "add_columns": {
-            "caserecnumber": "client_persons.caserecnumber"
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
         "casrec": {
             "from_table": "pat",
@@ -188,9 +178,7 @@
             "middlenames",
             "uid"
         ],
-        "add_columns": {
-            "caserecnumber": "client_persons.caserecnumber"
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
         "casrec": {
             "from_table": "pat",
@@ -214,9 +202,7 @@
         "exclude": [
             "person_id"
         ],
-        "add_columns": {
-            "caserecnumber": "client_persons.caserecnumber"
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
         "casrec": {
             "from_table": "pat",
@@ -240,9 +226,7 @@
     },
     "client_saarcheck_warnings": {
         "exclude": [],
-        "add_columns": {
-            "caserecnumber": "client_persons.caserecnumber"
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
         "casrec": {
             "from_table": "pat",
@@ -271,9 +255,7 @@
     },
     "client_special_warnings": {
         "exclude": [],
-        "add_columns": {
-            "caserecnumber": "client_persons.caserecnumber"
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
         "casrec": {
             "from_table": "pat",
@@ -302,9 +284,7 @@
     },
     "client_violent_warnings": {
         "exclude": [],
-        "add_columns": {
-            "caserecnumber": "client_persons.caserecnumber"
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
         "casrec": {
             "from_table": "pat",
@@ -337,9 +317,7 @@
         "exclude": [
             "person_id"
         ],
-        "add_columns": {
-            "caserecnumber": "cases.caserecnumber"
-        },
+        "casenumber_source": "cases.caserecnumber",
         "orderby": {
             "casesubtype": {
                 "mapping_table": "cases.casesubtype",
@@ -388,6 +366,7 @@
             "middlenames",
             "uid"
         ],
+        "casenumber_source": "cases.caserecnumber",
         "orderby": {
             "casesubtype": {
                 "mapping_table": "cases.casesubtype",
@@ -397,9 +376,6 @@
                 "mapping_table": "cases.orderdate",
                 "direction": "ASC"
             }
-        },
-        "add_columns": {
-            "caserecnumber": "cases.caserecnumber"
         },
         "casrec": {
             "from_table": "deputyship",
@@ -429,9 +405,7 @@
     },
     "deputy_special_warnings": {
         "exclude": [],
-        "add_columns": {
-            "caserecnumber": "cases.caserecnumber"
-        },
+        "casenumber_source": "cases.caserecnumber",
         "orderby": {
             "casesubtype": {
                 "mapping_table": "cases.casesubtype",
@@ -474,9 +448,7 @@
     },
     "deputy_violent_warnings": {
         "exclude": [],
-        "add_columns": {
-            "caserecnumber": "cases.caserecnumber"
-        },
+        "casenumber_source": "cases.caserecnumber",
         "orderby": {
             "casesubtype": {
                 "mapping_table": "cases.casesubtype",
@@ -524,9 +496,7 @@
             "upload_id",
             "document_id"
         ],
-        "add_columns": {
-            "caserecnumber": "client_persons.caserecnumber"
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
         "casrec": {
             "from_table": "remarks",
@@ -558,9 +528,7 @@
         "exclude": [
             "order_id"
         ],
-        "add_columns": {
-            "caserecnumber": "client_persons.caserecnumber"
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
         "casrec": {
             "from_table": "order",
@@ -579,6 +547,48 @@
                 "LEFT JOIN {target_schema}.persons ON persons.id = cases.client_id"
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_supervision_level_log exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": []
+        }
+    },
+    "visits": {
+        "exclude": [
+            "client_id"
+        ],
+        "casenumber_source": "client_persons.caserecnumber",
+        "orderby": {
+            "firstname": {
+                "mapping_table": "client_persons.firstname",
+                "direction": "ASC"
+            },
+            "surname": {
+                "mapping_table": "client_persons.surname",
+                "direction": "ASC"
+            }
+        },
+        "casrec": {
+            "from_table": "REPVIS",
+            "transform": {},
+            "joins": [
+                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.REPVIS.\"Case\""
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_visits exc_table ON exc_table.caserecnumber = REPVIS.\"Case\"",
+            "where_clauses": []
+        },
+        "sirius": {
+            "from_table": "visits",
+            "transform": {
+                "visitcreateddate": "to_char({col}, 'DD/MM/YY')",
+                "visitreportduedate": "to_char({col}, 'DD/MM/YY')",
+                "visitcompleteddate": "to_char({col}, 'DD/MM/YY')",
+                "visitreportrevieweddate": "to_char({col}, 'DD/MM/YY')",
+                "visitcommissiondate": "to_char({col}, 'DD/MM/YY')",
+                "firstextendedvisitreportduedate": "to_char({col}, 'DD/MM/YY')",
+                "secondextendedvisitreportduedate": "to_char({col}, 'DD/MM/YY')"
+            },
+            "joins": [
+                "LEFT JOIN {target_schema}.persons ON persons.id = visits.client_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_visits exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": []
         }
     }
