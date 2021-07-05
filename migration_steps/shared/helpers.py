@@ -274,7 +274,7 @@ def upload_file(bucket, file_name, s3, log, object_name=None):
 
 def sirius_session(account):
     client = boto3.client("sts")
-    role_to_assume = f"arn:aws:iam::{account}:role/integrations-ci"
+    role_to_assume = f"arn:aws:iam::{account}:role/migrations-ci"
     response = client.assume_role(
         RoleArn=role_to_assume, RoleSessionName="assumed_role"
     )

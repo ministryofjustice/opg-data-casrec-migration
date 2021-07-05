@@ -1,9 +1,9 @@
 variable "default_role" {
-  default = "integrations-ci"
+  default = "migrations-ci"
 }
 
 variable "management_role" {
-  default = "integrations-ci"
+  default = "migrations-ci"
 }
 
 variable "image_tag" {}
