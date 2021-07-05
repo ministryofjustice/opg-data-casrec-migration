@@ -70,7 +70,7 @@ def get_entity_ids(session, entity, search_field, search_value, csv_type):
     ids = []
 
     if search_result["hits"]["total"] > 0:
-        if csv_type in ["clients", "bonds", "death_notifications"]:
+        if csv_type in ["clients", "bonds", "death_notifications", "warnings", "crec"]:
             entity_id = search_result["hits"]["hits"][0]["_id"]
 
             print(entity_id)
@@ -262,7 +262,17 @@ death_notifications_headers = [
     '["person"]["dateOfDeath"]',
 ]
 
-csvs = ["death_notifications"]
+warnings_headers = [
+    '[0]["warningType"]',
+    '[0]["warningText"]',
+    '[0]["systemStatus"]',
+]
+
+crec_headers = [
+    '["riskScore"]',
+]
+
+csvs = ["crec"]
 
 search_headers = [
     "endpoint",
@@ -294,6 +304,7 @@ for csv in csvs:
         entity_ref = row["entity_ref"]
         search_entity = row["search_entity"]
         search_field = row["search_field"]
+
         entity_ids = get_entity_ids(conn, search_entity, search_field, entity_ref, csv)
 
         line_struct = {}

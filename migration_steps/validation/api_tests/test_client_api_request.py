@@ -29,6 +29,8 @@ entities = {
         "supervision_level",
         "bonds",
         "death_notifications",
+        "warnings",
+        "crec",
     ],
     "development": [
         "clients",
@@ -37,6 +39,8 @@ entities = {
         "supervision_level",
         "bonds",
         "death_notifications",
+        "warnings",
+        "crec",
     ],
     "preproduction": ["clients"],
     "qa": [],
@@ -133,7 +137,7 @@ def get_entity_ids(session, entity, search_field, search_value, csv_type):
     ids = []
 
     if search_result["hits"]["total"] > 0:
-        if csv_type in ["clients", "bonds", "death_notifications"]:
+        if csv_type in ["clients", "bonds", "death_notifications", "warnings", "crec"]:
             entity_id = search_result["hits"]["hits"][0]["_id"]
             if csv_type == "bonds":
                 bonds = get_bond_entity_ids(session, entity_id)
@@ -281,6 +285,8 @@ def flat_dict(d, ignore_list):
         "deputies",
         "supervision_level",
         "death_notifications",
+        "warnings",
+        "crec",
     ],
 )
 def test_csvs(csv, create_a_session):
