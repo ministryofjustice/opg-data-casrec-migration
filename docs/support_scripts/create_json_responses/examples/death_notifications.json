@@ -1,0 +1,16 @@
+{
+	"id": 1,
+	"proofOfDeathReceived": true,
+	"dateLetterSentOut": "05\/01\/2017",
+	"dateDeathCertificateReceived": "10\/01\/2017",
+	"dateNotified": "01\/01\/2017",
+	"notifiedBy": {
+		"handle": "DEPUTY",
+		"label": "Deputy"
+	},
+	"notificationMethod": "Phone",
+	"notes": "<p>Note Text<\/p>",
+	"person": {
+		"dateOfDeath": "01\/01\/2017"
+	}
+}

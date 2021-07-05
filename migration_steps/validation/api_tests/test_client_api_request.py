@@ -22,8 +22,22 @@ environment = os.environ.get("ENVIRONMENT")
 account_name = os.environ.get("ACCOUNT_NAME")
 bucket_name = f"casrec-migration-{account_name.lower()}"
 entities = {
-    "local": ["clients", "orders", "deputies", "supervision_level"],
-    "development": ["clients", "orders", "deputies", "supervision_level"],
+    "local": [
+        "clients",
+        "orders",
+        "deputies",
+        "supervision_level",
+        "bonds",
+        "death_notifications",
+    ],
+    "development": [
+        "clients",
+        "orders",
+        "deputies",
+        "supervision_level",
+        "bonds",
+        "death_notifications",
+    ],
     "preproduction": ["clients"],
     "qa": [],
     "production": [],
@@ -119,7 +133,7 @@ def get_entity_ids(session, entity, search_field, search_value, csv_type):
     ids = []
 
     if search_result["hits"]["total"] > 0:
-        if csv_type in ["clients", "bonds"]:
+        if csv_type in ["clients", "bonds", "death_notifications"]:
             entity_id = search_result["hits"]["hits"][0]["_id"]
             if csv_type == "bonds":
                 bonds = get_bond_entity_ids(session, entity_id)
@@ -186,7 +200,6 @@ def get_bond_entity_ids(conn, entity_id):
     bonds = []
     for case in cases:
 
-        print(case["bond"])
         try:
             order_id = case["id"]
         except Exception:
@@ -260,7 +273,15 @@ def flat_dict(d, ignore_list):
 
 
 @pytest.mark.parametrize(
-    "csv", ["clients", "orders", "bonds", "deputies", "supervision_level"]
+    "csv",
+    [
+        "clients",
+        "orders",
+        "bonds",
+        "deputies",
+        "supervision_level",
+        "death_notifications",
+    ],
 )
 def test_csvs(csv, create_a_session):
     if csv in entities[environment]:
@@ -302,7 +323,7 @@ def test_csvs(csv, create_a_session):
             # Because some of our searches may bring back multiple entities we need an object to aggregate them
             response_struct = {}
             for entity_id in entity_ids:
-                endpoint_final = str(endpoint).replace("{id}", str(entity_id))
+                endpoint_final = get_endpoint_final(entity_id, endpoint, csv)
                 print(f"Checking responses from: {endpoint_final}")
                 response = create_a_session["sess"].get(
                     f'{create_a_session["base_url"]}{endpoint_final}',
@@ -337,7 +358,9 @@ def test_csvs(csv, create_a_session):
                     content_decoded = json.loads(content_object["Body"].read().decode())
                     actual_response = flat_dict(json_obj, ignore_list)
                     expected_response = flat_dict(content_decoded, ignore_list)
-                    assert actual_response == expected_response
+                    assert (
+                        str(actual_response).lower() == str(expected_response).lower()
+                    )
 
             # Where we have multiple entity_ids we need rationalise the grouped responses
             for header in headers_to_check:
@@ -345,7 +368,10 @@ def test_csvs(csv, create_a_session):
                 response_struct[header] = col_restruct_text
             # Check through each value in spreadsheet for that row against each value in our response struct
             for header in headers_to_check:
-                assert response_struct[header] == str(row[header]).replace("nan", "")
+                assert (
+                    str(response_struct[header]).lower()
+                    == str(row[header]).replace("nan", "").lower()
+                )
 
         print(f"Ran happy path tests against {count} cases in {csv}")
     else:

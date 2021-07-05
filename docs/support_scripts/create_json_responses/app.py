@@ -12,8 +12,8 @@ from helpers import *
 
 env_path = current_path / "../../../migration_steps/.env"
 load_dotenv(dotenv_path=env_path)
-base_url = os.environ.get("SIRIUS_FRONT_URL")
-password = os.environ.get("API_TEST_PASSWORD")
+base_url = "http://localhost:8080"
+password = "Password1"  # pragma: allowlist secret
 environment = os.environ.get("ENVIRONMENT")
 
 
@@ -29,10 +29,8 @@ def get_session(base_url, user, password):
         return s, headers_dict, p.status_code
 
 
-def create_a_session():
-    base_url = os.environ.get("SIRIUS_FRONT_URL")
+def create_a_session(base_url, password):
     user = "case.manager@opgtest.com"
-    password = os.environ.get("API_TEST_PASSWORD")
     sess, headers_dict, status_code = get_session(base_url, user, password)
     session = {
         "sess": sess,
@@ -72,7 +70,7 @@ def get_entity_ids(session, entity, search_field, search_value, csv_type):
     ids = []
 
     if search_result["hits"]["total"] > 0:
-        if csv_type in ["clients", "bonds"]:
+        if csv_type in ["clients", "bonds", "death_notifications"]:
             entity_id = search_result["hits"]["hits"][0]["_id"]
 
             print(entity_id)
@@ -224,7 +222,6 @@ clients_headers = [
     '["maritalStatus"]',
 ]
 
-
 deputies_headers = [
     '["email"]',
     '["addressLine1"]',
@@ -258,7 +255,14 @@ supervision_level_headers = [
     '["latestSupervisionLevel"]["assetLevel"]["handle"]',
 ]
 
-csvs = ["bonds"]
+death_notifications_headers = [
+    '["dateLetterSentOut"]',
+    '["dateDeathCertificateReceived"]',
+    '["notifiedBy"]["handle"]',
+    '["person"]["dateOfDeath"]',
+]
+
+csvs = ["death_notifications"]
 
 search_headers = [
     "endpoint",
@@ -282,10 +286,7 @@ for csv in csvs:
 
     csv_data = pd.read_csv(f"{csv}.csv", dtype=str)
     columns = csv_data.columns.tolist()
-    conn = create_a_session()
-
-    #     response = conn["sess"].get('http://localhost:8080/api/v1/deputies/43', headers=conn["headers_dict"])
-    #     print(response.text)
+    conn = create_a_session(base_url, password)
 
     # Iterate over rows
     for index, row in csv_data.iterrows():
