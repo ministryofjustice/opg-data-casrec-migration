@@ -262,7 +262,7 @@ def sirius_session(account):
     account_id = client.get_caller_identity()["Account"]
     log.info(f"Current users account: {account_id}")
 
-    role_to_assume = f"arn:aws:iam::{account}:role/integrations-ci"
+    role_to_assume = f"arn:aws:iam::{account}:role/migrations-ci"
     response = client.assume_role(
         RoleArn=role_to_assume, RoleSessionName="assumed_role"
     )

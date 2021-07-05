@@ -2,7 +2,7 @@
   "Role": {
     "sensitive": false,
     "type": "string",
-    "value": "arn:aws:iam::${account}:role/integrations-ci"
+    "value": "arn:aws:iam::${account}:role/migrations-ci"
   },
   "Tasks": {
     "sensitive": false,

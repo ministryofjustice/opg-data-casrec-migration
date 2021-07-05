@@ -4,7 +4,7 @@ set -e
 DEVELOPMENT_ACCOUNT="288342028542"
 
 export SECRET_STRING=$(aws sts assume-role \
---role-arn "arn:aws:iam::${DEVELOPMENT_ACCOUNT}:role/integrations-ci" \
+--role-arn "arn:aws:iam::${DEVELOPMENT_ACCOUNT}:role/migrations-ci" \
 --role-session-name AWSCLI-Session | \
 jq -r '.Credentials.SessionToken + " " + .Credentials.SecretAccessKey + " " + .Credentials.AccessKeyId')
 
