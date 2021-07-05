@@ -30,6 +30,12 @@ def do_simple_transformations(
             transformed_df = standard_transformations.convert_to_bool(
                 t["original_columns"], t["aggregate_col"], transformed_df
             )
+    if "get_max_col" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: get_max_col")
+        for t in transformations["get_max_col"]:
+            transformed_df = standard_transformations.get_max_col(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
     if "date_format_standard" in transformations:
         log.log(config.VERBOSE, "Applying transformation: date_format_standard")
         for t in transformations["date_format_standard"]:

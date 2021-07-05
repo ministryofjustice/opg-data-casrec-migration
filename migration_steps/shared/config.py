@@ -83,7 +83,7 @@ class BaseConfig:
         "deputies": ["local", "development"],
         "finance": [],
         "remarks": [],
-        "reporting": [],
+        "reporting": ["local", "development"],
         "tasks": [],
         "visits": [],
         "warnings": ["local", "development"],

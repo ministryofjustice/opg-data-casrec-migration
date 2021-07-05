@@ -96,3 +96,20 @@ def round_column(
     df = df.drop(columns=[original_col])
 
     return df
+
+
+def get_max_col(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+
+    try:
+        df[original_cols] = df[original_cols].astype("float64")
+    except Exception:
+        pass
+
+    df["temp"] = df[original_cols].values.tolist()
+    df["temp"] = df[original_cols].values.tolist()
+    df[result_col] = df["temp"].apply(lambda x: max(x))
+
+    df = df.drop(columns=original_cols)
+    df = df.drop(columns=["temp"])
+
+    return df
