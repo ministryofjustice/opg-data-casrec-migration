@@ -251,5 +251,33 @@
 		"table_type": "join",
 		"sequences": [],
 		"order_by": ["person_id", "warning_id"]
+	},
+	"annual_report_logs": {
+		"sirius_tables": ["annual_report_logs"],
+		"entities": {
+			"base_entities": ["reporting"],
+			"relies_on": ["clients"]
+		},
+		"pk": "id",
+		"fks": [{
+			"column": "client_id",
+			"parent_table": "persons",
+			"parent_column": "id"
+		}],
+		"table_type": "data",
+		"sequences": [],
+		"order_by": ["id"]
+	},
+	"annual_report_lodging_details": {
+		"sirius_tables": ["annual_report_lodging_details"],
+		"entities": {
+			"base_entities": ["reporting"],
+			"relies_on": []
+		},
+		"pk": "id",
+		"fks": [],
+		"table_type": "data",
+		"sequences": [],
+		"order_by": ["id"]
 	}
 }
