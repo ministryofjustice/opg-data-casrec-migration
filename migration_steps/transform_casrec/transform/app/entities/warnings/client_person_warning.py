@@ -33,16 +33,18 @@ def insert_client_person_warning(db_config, target_db):
         )
         clients_df = pd.read_sql_query(clients_query, db_config["db_connection_string"])
 
-        client_warning_query = (
-            f'select "id", "c_case" from {db_config["target_schema"]}.warnings;'
-        )
+        client_warning_query = f'select * from {db_config["target_schema"]}.warnings;'
         client_warning_df = pd.read_sql_query(
             client_warning_query, db_config["db_connection_string"]
         )
+        if len(client_warning_df) == 0:
+            raise EmptyDataFrame
+
+        client_warning_df = client_warning_df[["id", "c_case"]]
 
         client_warning_df = client_warning_df.merge(
             clients_df,
-            how="left",
+            how="inner",
             left_on="c_case",
             right_on="caserecnumber",
             suffixes=["_warning", "_client"],

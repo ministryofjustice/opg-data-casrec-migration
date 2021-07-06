@@ -5,6 +5,7 @@ import os
 import pandas as pd
 
 from helpers import get_mapping_dict
+from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 
 log = logging.getLogger("root")
 
@@ -48,7 +49,7 @@ def insert_annual_report_logs(db_config, target_db):
 
             annual_report_log_joined_df = annual_report_log_df.merge(
                 persons_df,
-                how="left",
+                how="inner",
                 left_on="c_case",
                 right_on="caserecnumber",
             )
@@ -61,6 +62,10 @@ def insert_annual_report_logs(db_config, target_db):
             )
             annual_report_log_joined_df = annual_report_log_joined_df.rename(
                 columns={"id_x": "id"}
+            )
+
+            annual_report_log_joined_df = reapply_datatypes_to_fk_cols(
+                columns=["client_id"], df=annual_report_log_joined_df
             )
 
             if len(annual_report_log_joined_df) > 0:
