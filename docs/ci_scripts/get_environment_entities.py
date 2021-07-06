@@ -30,6 +30,7 @@ def main(role, environment):
         "development": "288342028542",
         "preproduction": "492687888235",
         "qa": "492687888235",
+        "production": "649098267436",
     }
     session = assume_aws_session(account[environment], role)
     ssm = session.client("ssm", region_name="eu-west-1")

@@ -1,0 +1,4 @@
+endpoint,entity_ref,search_entity,search_field,full_check,["riskScore"]
+/api/v1/clients/{id},10109006,persons,caseRecNumber,FALSE,3
+/api/v1/clients/{id},10109755,persons,caseRecNumber,FALSE,
+/api/v1/clients/{id},1011017T,persons,caseRecNumber,FALSE,1
