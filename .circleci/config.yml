@@ -17,43 +17,54 @@ parameters:
 
 workflows:
   pull_request:
-    when: << pipeline.parameters.run_master >>
+#    when: << pipeline.parameters.run_master >>
+#    triggers:
+#      - schedule:
+#          cron: "* * * * *"
+#          filters: {branches:{ignore:[master]}}
     jobs:
-      - manage_workflow:
-          name: manage workflow
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-      - reset_sirius:
-          name: reset the sirius fixtures development
-          requires: [manage workflow]
-          tf_workspace: development
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-      - build:
-          name: build and unit tests
-          requires: [manage workflow]
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-      - infrastructure:
-          name: plan infra development
-          requires: [build and unit tests]
-          tf_workspace: development
-          tf_command: plan
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-      - infrastructure:
-          name: build infra development
-          requires: [plan infra development]
-          tf_workspace: development
-          tf_command: apply
-          environment: Development
-          filters: {branches:{ignore:[master]}}
       - run_step_function:
-          name: run the step function development
-          requires: [build infra development, reset the sirius fixtures development]
-          tf_workspace: development
-          environment: Development
+          name: run the step function preproduction
+          account: "492687888235"
+          wait_for: "18000"
+          tf_workspace: preproduction
+          environment: Preproduction
           filters: {branches:{ignore:[master]}}
+#      - manage_workflow:
+#          name: manage workflow
+#          environment: Development
+#          filters: {branches:{ignore:[master]}}
+#      - reset_sirius:
+#          name: reset the sirius fixtures development
+#          requires: [manage workflow]
+#          tf_workspace: development
+#          environment: Development
+#          filters: {branches:{ignore:[master]}}
+#      - build:
+#          name: build and unit tests
+#          requires: [manage workflow]
+#          environment: Development
+#          filters: {branches:{ignore:[master]}}
+#      - infrastructure:
+#          name: plan infra development
+#          requires: [build and unit tests]
+#          tf_workspace: development
+#          tf_command: plan
+#          environment: Development
+#          filters: {branches:{ignore:[master]}}
+#      - infrastructure:
+#          name: build infra development
+#          requires: [plan infra development]
+#          tf_workspace: development
+#          tf_command: apply
+#          environment: Development
+#          filters: {branches:{ignore:[master]}}
+#      - run_step_function:
+#          name: run the step function development
+#          requires: [build infra development, reset the sirius fixtures development]
+#          tf_workspace: development
+#          environment: Development
+#          filters: {branches:{ignore:[master]}}
 
   master:
     when: << pipeline.parameters.run_master >>
@@ -385,6 +396,7 @@ orbs:
                 python3 get_environment_entities.py --environment ${TF_WORKSPACE} --role migrations-ci >> ENTITIES
                 ENTITIES=$(cat ENTITIES)
                 echo "export ENTITIES=\"${ENTITIES}\"" >> $BASH_ENV
+                echo $ENVIRONMENT
               working_directory: ~/project/docs/ci_scripts
           - slack/notify:
               channel: opg-migration-builds
@@ -677,7 +689,8 @@ jobs:
           working_directory: ~/project/docs/ci_scripts
       - run:
           name: run the function
-          command: python3 run_step_function.py --role migrations-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD} --workspace ${TF_WORKSPACE}
+          command: exit 1
+#          command: python3 run_step_function.py --role migrations-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD} --workspace ${TF_WORKSPACE}
           working_directory: ~/project/docs/ci_scripts
       - notififications/notify_env_vars
       - notififications/notify_if_fail
