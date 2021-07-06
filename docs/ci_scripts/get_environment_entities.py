@@ -26,7 +26,11 @@ def assume_aws_session(account, role):
 @click.option("--role", default="operator")
 @click.option("--environment", default="development")
 def main(role, environment):
-    account = {"development": "288342028542", "preproduction": "492687888235"}
+    account = {
+        "development": "288342028542",
+        "preproduction": "492687888235",
+        "qa": "492687888235",
+    }
     session = assume_aws_session(account[environment], role)
     ssm = session.client("ssm", region_name="eu-west-1")
     parameter = ssm.get_parameter(Name=f"{environment}-allowed-entities")
