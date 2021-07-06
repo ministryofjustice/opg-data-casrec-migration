@@ -5,6 +5,8 @@ from pathlib import Path
 from deprecated import deprecated
 from dotenv import load_dotenv
 
+log = logging.getLogger("root")
+
 
 def load_env_vars():
     current_path = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -93,9 +95,17 @@ class BaseConfig:
 
     def allowed_entities(self, env):
         if env in ["preproduction", "qa", "production"]:
-            return get_enabled_entities_from_param_store(env)
+            enabled_entity_list = get_enabled_entities_from_param_store(env)
         else:
-            return [k for k, v in self.ENABLED_ENTITIES.items() if env in v]
+            enabled_entity_list = [
+                k for k, v in self.ENABLED_ENTITIES.items() if env in v
+            ]
+
+        if len(enabled_entity_list) > 0:
+            return enabled_entity_list
+        else:
+            log.error("No entities enabled")
+            os._exit(1)
 
 
 class LocalConfig(BaseConfig):
