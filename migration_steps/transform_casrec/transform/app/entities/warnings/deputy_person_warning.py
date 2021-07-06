@@ -35,11 +35,16 @@ def insert_deputy_person_warning(db_config, target_db):
         deputys_df = pd.read_sql_query(deputys_query, db_config["db_connection_string"])
 
         deputy_warning_query = f"""
-                select "id", "c_deputy_no" from {db_config["target_schema"]}.warnings
+                select * from {db_config["target_schema"]}.warnings
                 where casrec_mapping_file_name = 'deputy_violent_warnings_mapping';"""
         deputy_warning_df = pd.read_sql_query(
             deputy_warning_query, db_config["db_connection_string"]
         )
+
+        if len(deputy_warning_df) == 0:
+            raise EmptyDataFrame
+
+        deputy_warning_df = deputy_warning_df[["id", "c_deputy_no"]]
 
         deputy_warning_df = deputy_warning_df.merge(
             deputys_df,
