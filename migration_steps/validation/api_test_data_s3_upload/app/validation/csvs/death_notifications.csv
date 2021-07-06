@@ -1,0 +1,3 @@
+endpoint,entity_ref,search_entity,search_field,full_check,["dateLetterSentOut"],["dateDeathCertificateReceived"],["notifiedBy"]["handle"],["person"]["dateOfDeath"]
+/api/v1/persons/{id}/death-notification,10076428,persons,caseRecNumber,FALSE,08/04/2019,,EXECUTOR,31/12/2018
+/api/v1/persons/{id}/death-notification,10264188,persons,caseRecNumber,FALSE,09/05/2017,,DEPUTY,16/04/2017
