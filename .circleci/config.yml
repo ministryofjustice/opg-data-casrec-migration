@@ -385,6 +385,12 @@ orbs:
                 python3 get_environment_entities.py --environment ${TF_WORKSPACE} --role migrations-ci >> ENTITIES
                 ENTITIES=$(cat ENTITIES)
                 echo "export ENTITIES=\"${ENTITIES}\"" >> $BASH_ENV
+                echo $CIRCLE_BRANCH
+                echo $COMMIT_MESSAGE
+                echo $CIRCLE_USERNAME
+                echo $ENTITIES
+                echo $CI_PULL_REQUEST
+                echo $CIRCLE_BUILD_URL
               working_directory: ~/project/docs/ci_scripts
           - slack/notify:
               channel: opg-migration-builds
