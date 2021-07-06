@@ -25,12 +25,11 @@ def runner(db_config, target_db):
     log.info(log_title(message=entity_name))
 
     log.debug("insert_cases")
-    insert_cases(target_db=target_db, db_config=db_config)
+    insert_cases(target_db=target_db, db_config=db_config, mapping_file="cases")
 
     log.debug("insert_person_caseitem")
     insert_person_caseitem(
-        target_db=target_db,
-        db_config=db_config,
+        target_db=target_db, db_config=db_config, mapping_file="person_caseitem"
     )
 
 
