@@ -3,11 +3,7 @@
         "exclude": [
             "order_id"
         ],
-        "forced": {
-            "caserecnumber": {
-                "mapping_table": "client_persons.caserecnumber"
-            }
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {
             "casesubtype": {
                 "mapping_table": "cases.casesubtype",
@@ -20,6 +16,7 @@
         },
         "casrec": {
             "from_table": "order",
+            "transform": {},
             "joins": [
                 "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\""
             ],
@@ -30,6 +27,7 @@
         },
         "sirius": {
             "from_table": "bonds",
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.cases ON cases.id = bonds.order_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = cases.client_id"
@@ -51,11 +49,7 @@
             "person_id",
             "uid"
         ],
-        "forced": {
-            "caserecnumber": {
-                "mapping_table": "client_persons.caserecnumber"
-            }
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {
             "casesubtype": {
                 "mapping_table": "cases.casesubtype",
@@ -68,6 +62,7 @@
         },
         "casrec": {
             "from_table": "order",
+            "transform": {},
             "joins": [
                 "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\""
             ],
@@ -76,6 +71,7 @@
         },
         "sirius": {
             "from_table": "cases",
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = cases.client_id"
             ],
@@ -92,24 +88,22 @@
             "person_id",
             "address_lines"
         ],
-        "forced": {
-            "caserecnumber": {
-                "mapping_table": "client_persons.caserecnumber"
-            },
-            "address_lines": {
-                "casrec": "CONCAT(\"Adrs1\", ',', \"Adrs2\")",
-                "sirius": "array_to_string(ARRAY(SELECT json_array_elements_text(addresses.address_lines)), ',')"
-            }
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
         "casrec": {
             "from_table": "pat",
+            "transform": {
+                "address_lines": "CONCAT(\"Adrs1\", ',', \"Adrs2\")"
+            },
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_addresses exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": []
         },
         "sirius": {
             "from_table": "addresses",
+            "transform": {
+                "address_lines": "array_to_string(ARRAY(SELECT json_array_elements_text(addresses.address_lines)), ',')"
+            },
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = addresses.person_id"
             ],
@@ -124,14 +118,11 @@
         "exclude": [
             "person_id"
         ],
-        "forced": {
-            "caserecnumber": {
-                "mapping_table": "client_persons.caserecnumber"
-            }
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
         "casrec": {
             "from_table": "pat",
+            "transform": {},
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_death_notifications exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
@@ -140,6 +131,7 @@
         },
         "sirius": {
             "from_table": "death_notifications",
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = death_notifications.person_id"
             ],
@@ -152,14 +144,11 @@
     },
     "client_nodebtchase_warnings": {
         "exclude": [],
-        "forced": {
-            "caserecnumber": {
-                "mapping_table": "client_persons.caserecnumber"
-            }
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
         "casrec": {
             "from_table": "pat",
+            "transform": {},
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_nodebtchase_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
@@ -168,6 +157,7 @@
         },
         "sirius": {
             "from_table": "person_warning",
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = person_warning.person_id",
                 "LEFT JOIN {target_schema}.warnings ON warnings.id = person_warning.warning_id"
@@ -188,20 +178,18 @@
             "middlenames",
             "uid"
         ],
-        "forced": {
-            "caserecnumber": {
-                "mapping_table": "client_persons.caserecnumber"
-            }
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
         "casrec": {
             "from_table": "pat",
+            "transform": {},
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_persons exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": []
         },
         "sirius": {
             "from_table": "persons",
+            "transform": {},
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_persons exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
@@ -214,20 +202,18 @@
         "exclude": [
             "person_id"
         ],
-        "forced": {
-            "caserecnumber": {
-                "mapping_table": "client_persons.caserecnumber"
-            }
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
         "casrec": {
             "from_table": "pat",
+            "transform": {},
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_phonenumbers exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": []
         },
         "sirius": {
             "from_table": "phonenumbers",
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = phonenumbers.person_id"
             ],
@@ -240,14 +226,11 @@
     },
     "client_saarcheck_warnings": {
         "exclude": [],
-        "forced": {
-            "caserecnumber": {
-                "mapping_table": "client_persons.caserecnumber"
-            }
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
         "casrec": {
             "from_table": "pat",
+            "transform": {},
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_saarcheck_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
@@ -256,6 +239,7 @@
         },
         "sirius": {
             "from_table": "person_warning",
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = person_warning.person_id",
                 "LEFT JOIN {target_schema}.warnings ON warnings.id = person_warning.warning_id"
@@ -271,14 +255,11 @@
     },
     "client_special_warnings": {
         "exclude": [],
-        "forced": {
-            "caserecnumber": {
-                "mapping_table": "client_persons.caserecnumber"
-            }
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
         "casrec": {
             "from_table": "pat",
+            "transform": {},
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_special_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
@@ -287,6 +268,7 @@
         },
         "sirius": {
             "from_table": "person_warning",
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = person_warning.person_id",
                 "LEFT JOIN {target_schema}.warnings ON warnings.id = person_warning.warning_id"
@@ -302,14 +284,11 @@
     },
     "client_violent_warnings": {
         "exclude": [],
-        "forced": {
-            "caserecnumber": {
-                "mapping_table": "client_persons.caserecnumber"
-            }
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
         "casrec": {
             "from_table": "pat",
+            "transform": {},
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_violent_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
@@ -320,6 +299,7 @@
         },
         "sirius": {
             "from_table": "person_warning",
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = person_warning.person_id",
                 "LEFT JOIN {target_schema}.warnings ON warnings.id = person_warning.warning_id"
@@ -337,11 +317,7 @@
         "exclude": [
             "person_id"
         ],
-        "forced": {
-            "caserecnumber": {
-                "mapping_table": "cases.caserecnumber"
-            }
-        },
+        "casenumber_source": "cases.caserecnumber",
         "orderby": {
             "casesubtype": {
                 "mapping_table": "cases.casesubtype",
@@ -358,6 +334,7 @@
         },
         "casrec": {
             "from_table": "deputy",
+            "transform": {},
             "joins": [
                 "LEFT JOIN casrec_csv.deputyship ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\"",
                 "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\""
@@ -369,6 +346,7 @@
         },
         "sirius": {
             "from_table": "death_notifications",
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = death_notifications.person_id",
                 "LEFT JOIN {target_schema}.order_deputy ON order_deputy.deputy_id = death_notifications.person_id",
@@ -388,6 +366,7 @@
             "middlenames",
             "uid"
         ],
+        "casenumber_source": "cases.caserecnumber",
         "orderby": {
             "casesubtype": {
                 "mapping_table": "cases.casesubtype",
@@ -398,13 +377,9 @@
                 "direction": "ASC"
             }
         },
-        "forced": {
-            "caserecnumber": {
-                "mapping_table": "cases.caserecnumber"
-            }
-        },
         "casrec": {
             "from_table": "deputyship",
+            "transform": {},
             "joins": [
                 "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\"",
                 "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\"",
@@ -415,6 +390,7 @@
         },
         "sirius": {
             "from_table": "order_deputy",
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.cases ON cases.id = order_deputy.order_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = order_deputy.deputy_id",
@@ -429,11 +405,7 @@
     },
     "deputy_special_warnings": {
         "exclude": [],
-        "forced": {
-            "caserecnumber": {
-                "mapping_table": "cases.caserecnumber"
-            }
-        },
+        "casenumber_source": "cases.caserecnumber",
         "orderby": {
             "casesubtype": {
                 "mapping_table": "cases.casesubtype",
@@ -446,6 +418,7 @@
         },
         "casrec": {
             "from_table": "deputyship",
+            "transform": {},
             "joins": [
                 "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\"",
                 "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\""
@@ -457,6 +430,7 @@
         },
         "sirius": {
             "from_table": "order_deputy",
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.cases ON cases.id = order_deputy.order_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = order_deputy.deputy_id",
@@ -474,11 +448,7 @@
     },
     "deputy_violent_warnings": {
         "exclude": [],
-        "forced": {
-            "caserecnumber": {
-                "mapping_table": "cases.caserecnumber"
-            }
-        },
+        "casenumber_source": "cases.caserecnumber",
         "orderby": {
             "casesubtype": {
                 "mapping_table": "cases.casesubtype",
@@ -491,6 +461,7 @@
         },
         "casrec": {
             "from_table": "deputyship",
+            "transform": {},
             "joins": [
                 "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\"",
                 "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\""
@@ -503,6 +474,7 @@
         },
         "sirius": {
             "from_table": "order_deputy",
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.cases ON cases.id = order_deputy.order_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = order_deputy.deputy_id",
@@ -524,18 +496,13 @@
             "upload_id",
             "document_id"
         ],
-        "forced": {
-            "caserecnumber": {
-                "mapping_table": "client_persons.caserecnumber"
-            },
-            "createdtime": {
-                "casrec": "TO_TIMESTAMP(CONCAT(remarks.\"Logdate\", ' ', LEFT(remarks.\"Logtime\", 8)), 'YYYY-MM-DD HH24:MI:SS')",
-                "sirius": "notes.createdtime"
-            }
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
         "casrec": {
             "from_table": "remarks",
+            "transform": {
+                "createdtime": "TO_TIMESTAMP(CONCAT(remarks.\"Logdate\", ' ', LEFT(remarks.\"Logtime\", 8)), 'YYYY-MM-DD HH24:MI:SS')"
+            },
             "joins": [
                 "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.remarks.\"Case\""
             ],
@@ -544,6 +511,7 @@
         },
         "sirius": {
             "from_table": "caseitem_note",
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.cases ON cases.id = caseitem_note.caseitem_id",
                 "LEFT JOIN {target_schema}.notes ON notes.id = caseitem_note.note_id",
@@ -560,14 +528,11 @@
         "exclude": [
             "order_id"
         ],
-        "forced": {
-            "caserecnumber": {
-                "mapping_table": "client_persons.caserecnumber"
-            }
-        },
+        "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
         "casrec": {
             "from_table": "order",
+            "transform": {},
             "joins": [
                 "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\""
             ],
@@ -576,11 +541,45 @@
         },
         "sirius": {
             "from_table": "supervision_level_log",
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.cases ON cases.id = supervision_level_log.order_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = cases.client_id"
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_supervision_level_log exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": []
+        }
+    },
+    "visits": {
+        "exclude": [
+            "client_id"
+        ],
+        "casenumber_source": "client_persons.caserecnumber",
+        "orderby": {},
+        "casrec": {
+            "from_table": "REPVIS",
+            "transform": {},
+            "joins": [
+                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.REPVIS.\"Case\""
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_visits exc_table ON exc_table.caserecnumber = REPVIS.\"Case\"",
+            "where_clauses": []
+        },
+        "sirius": {
+            "from_table": "visits",
+            "transform": {
+                "visitcreateddate": "to_char({col}, 'DD/MM/YY')",
+                "visitreportduedate": "to_char({col}, 'DD/MM/YY')",
+                "visitcompleteddate": "to_char({col}, 'DD/MM/YY')",
+                "visitreportrevieweddate": "to_char({col}, 'DD/MM/YY')",
+                "visitcommissiondate": "to_char({col}, 'DD/MM/YY')",
+                "firstextendedvisitreportduedate": "to_char({col}, 'DD/MM/YY')",
+                "secondextendedvisitreportduedate": "to_char({col}, 'DD/MM/YY')"
+            },
+            "joins": [
+                "LEFT JOIN {target_schema}.persons ON persons.id = visits.client_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_visits exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": []
         }
     }
