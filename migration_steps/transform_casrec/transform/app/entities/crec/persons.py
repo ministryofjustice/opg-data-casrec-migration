@@ -5,6 +5,7 @@ import os
 import pandas as pd
 
 from helpers import get_mapping_dict
+from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 
 log = logging.getLogger("root")
 
@@ -63,7 +64,9 @@ def insert_persons_crec(db_config, target_db):
 
             crec_joined_df = crec_joined_df.rename(columns={"id_persons": "id"})
 
-            # print(crec_joined_df.sample(10).to_markdown())
+            crec_joined_df = reapply_datatypes_to_fk_cols(
+                columns=["id"], df=crec_joined_df
+            )
 
             fields_to_update = [
                 x

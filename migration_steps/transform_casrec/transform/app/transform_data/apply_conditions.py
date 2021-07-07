@@ -129,7 +129,9 @@ def remove_empty_rows(df, not_null_cols, how="all"):
     except Exception as e:
         log.debug(f"Problems removing null rows: {e}")
 
-    log.log(config.VERBOSE, f"Dataframe size after removing empty rows: {len(df)}")
+    log.log(
+        config.VERBOSE, f"Dataframe size after removing empty rows: {len(final_df)}"
+    )
 
     if len(final_df) == 0:
         raise EmptyDataFrame
