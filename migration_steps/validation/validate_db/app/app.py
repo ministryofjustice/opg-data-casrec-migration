@@ -50,24 +50,24 @@ def get_mappings():
 
     allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
     all_mappings = {
-        "clients": [
-            "client_addresses",
-            "client_persons",
-            "client_phonenumbers",
-            "client_death_notifications",
-            "client_nodebtchase_warnings",
-            "client_saarcheck_warnings",
-            "client_special_warnings",
-            "client_violent_warnings",
-        ],
-        "cases": ["cases", "supervision_level_log"],
-        "bonds": ["bonds"],
-        "deputies": [
-            "deputy_persons",
-            "deputy_death_notifications",
-            "deputy_special_warnings",
-            "deputy_violent_warnings",
-        ],
+        # "clients": [
+        #     "client_addresses",
+        #     "client_persons",
+        #     "client_phonenumbers",
+        #     "client_death_notifications",
+        #     "client_nodebtchase_warnings",
+        #     "client_saarcheck_warnings",
+        #     "client_special_warnings",
+        #     "client_violent_warnings",
+        # ],
+        # "cases": ["cases", "supervision_level_log"],
+        # "bonds": ["bonds"],
+        # "deputies": [
+        #     "deputy_persons",
+        #     "deputy_death_notifications",
+        #     "deputy_special_warnings",
+        #     "deputy_violent_warnings",
+        # ],
         "visits": ["visits"]
         # "remarks": ["notes"]
     }
@@ -136,11 +136,9 @@ def build_exception_table(mapping_name):
     sql_add(f"-- {mapping_name}")
     sql_add(f"CREATE TABLE {get_exception_table(mapping_name)}(")
 
-    # overridden cols (normally run through plsql transform routines)
-    for col in list(validation_dict["add_columns"].keys()):
-        sql_add(f"{col} text default NULL,", 1)
+    sql_add(f'caserecnumber text default NULL,', 1)
 
-    # add_columns order cols
+    # for SELECT DISTINCT, ORDER BY expressions must appear in select list
     for col in list(validation_dict["orderby"].keys()):
         sql_add(f"{col} text default NULL,", 1)
 
@@ -194,18 +192,16 @@ def build_lookup_functions():
     sql_add("")
 
 
-def wrap_override_sql(mapped_item, side, item):
+def wrap_override_sql(mapped_item_key: str, side, item):
     transform_cols = validation_dict[side]["transform"]
-    if mapped_item in transform_cols.keys():
-        item = validation_dict['sirius']["transform"][mapped_item].replace("{col}", str(item))
+    if mapped_item_key in transform_cols.keys():
+        item = validation_dict['sirius']["transform"][mapped_item_key].replace("{col}", str(item))
     return item
 
 
-def wrap_sirius_col(mapped_item, col_definition):
-    col_table = col_definition["sirius_details"]["table_name"]
-
+def wrap_sirius_col(mapped_item_key: str, col, col_definition):
     # first wrap override, if any
-    col = wrap_override_sql(mapped_item, 'sirius', col_table)
+    col = wrap_override_sql(mapped_item_key, 'sirius', col)
 
     # other wrapping based on data type
     datatype = col_definition["sirius_details"]["data_type"]
@@ -216,9 +212,9 @@ def wrap_sirius_col(mapped_item, col_definition):
     return col
 
 
-def wrap_casrec_col(mapped_item, col, col_definition):
+def wrap_casrec_col(mapped_item_key: str, col, col_definition):
     # first wrap override, if any
-    col = wrap_override_sql(mapped_item, 'casrec', col)
+    col = wrap_override_sql(mapped_item_key, 'casrec', col)
 
     # other wrapping based on data type
     datatype = col_definition["sirius_details"]["data_type"]
@@ -233,7 +229,7 @@ def wrap_casrec_col(mapped_item, col, col_definition):
         transform_func = col_definition["transform_casrec"]["requires_transformation"]
         col = f"transf_{transform_func}({col})"
 
-    calculated = col_definition["transform_casrec"]["calculated"]
+    # calculated = col_definition["transform_casrec"]["calculated"]
     # cast to datatype - why are we casting casrec side to anything at all??
     # if datatype in ["date"]:
     #     col = f"CAST(NULLIF(NULLIF(TRIM({col}), 'NaT'), '') AS DATE)"
@@ -248,9 +244,9 @@ def wrap_casrec_col(mapped_item, col, col_definition):
     return col
 
 
-def get_casrec_default_value(mapped_item):
-    default_value = mapping_dict[mapped_item]["transform_casrec"]["default_value"]
-    data_type = mapping_dict[mapped_item]["sirius_details"]["data_type"]
+def get_casrec_default_value(mapped_item_key: str):
+    default_value = mapping_dict[mapped_item_key]["transform_casrec"]["default_value"]
+    data_type = mapping_dict[mapped_item_key]["sirius_details"]["data_type"]
 
     if data_type in ["date", "datetime", "str"]:
         default_value = f"'{default_value}'"
@@ -260,16 +256,16 @@ def get_casrec_default_value(mapped_item):
     return default_value
 
 
-def get_casrec_calculated_value(mapped_item):
+def get_casrec_calculated_value(mapped_item_key: str):
     callables = {
         "current_date": "'"
         + datetime.now().strftime("%Y-%m-%d")
         + "'"  # just do today's date
     }
-    return callables.get(mapping_dict[mapped_item]["transform_casrec"]["calculated"])
+    return callables.get(mapping_dict[mapped_item_key]["transform_casrec"]["calculated"])
 
 
-def get_col_definition(mapped_item_key: str):
+def get_mapping_config_for_column(mapped_item_key: str):
     pieces = mapped_item_key.split(".")
     if len(pieces) == 1:
         col_definition = mapping_dict[mapped_item_key]
@@ -284,7 +280,18 @@ def get_col_definition(mapped_item_key: str):
     return col_definition
 
 
-def get_casrec_col_source(mapped_item, col_definition):
+def get_sirius_col_source(mapped_item_key: str, col_definition):
+    pieces = mapped_item_key.split(".")
+    if len(pieces) == 1:
+        col_name = pieces[0]
+    else:
+        col_name = pieces[1]
+    table = col_definition["sirius_details"]["table_name"]
+    col = f"{table}.{col_name}"
+    return col
+
+
+def get_casrec_col_source(mapped_item_key: str, col_definition):
     col = ""
     col_definition = col_definition["transform_casrec"]
     if col_definition["casrec_table"]:
@@ -295,23 +302,24 @@ def get_casrec_col_source(mapped_item, col_definition):
             db_lookup_func = col_definition["lookup_table"]
             col = f"{source_schema}.{db_lookup_func}({col})"
     elif "" != col_definition["default_value"]:
-        col = get_casrec_default_value(mapped_item)
+        col = get_casrec_default_value(mapped_item_key)
     elif "" != col_definition["calculated"]:
-        col = get_casrec_calculated_value(mapped_item)
+        col = get_casrec_calculated_value(mapped_item_key)
 
     return col
 
 
-def casrec_wrap(mapped_item: str):
-    col_definition = get_col_definition(mapped_item)
-    col = get_casrec_col_source(mapped_item, col_definition)
-    col = wrap_casrec_col(mapped_item, col, col_definition)
+def casrec_wrap(mapped_item_key: str):
+    col_definition = get_mapping_config_for_column(mapped_item_key)
+    col = get_casrec_col_source(mapped_item_key, col_definition)
+    col = wrap_casrec_col(mapped_item_key, col, col_definition)
     return col
 
 
-def sirius_wrap(mapped_item: str):
-    col_definition = get_col_definition(mapped_item)
-    col = wrap_sirius_col(mapped_item, col_definition)
+def sirius_wrap(mapped_item_key: str):
+    col_definition = get_mapping_config_for_column(mapped_item_key)
+    col = get_sirius_col_source(mapped_item_key, col_definition)
+    col = wrap_sirius_col(mapped_item_key, col, col_definition)
     return col
 
 
@@ -512,17 +520,6 @@ def build_column_validation_statements(mapping_name):
         2,
     )
     output_statement_to_file()
-    # test add_columns
-    for mapped_item_name, mapped_item in validation_dict[
-        "add_columns"
-    ].items():
-        write_column_validation_sql(
-            mapping_name,
-            mapped_item_name,
-            casrec_wrap(mapped_item),
-            sirius_wrap(mapped_item),
-        )
-        output_statement_to_file()
 
     # test regular columns
     for mapped_item_name in mapping_dict.keys():
@@ -547,19 +544,22 @@ def write_validation_sql():
 
 
 def write_results_sql():
+    global validation_dict
     sql_file = open(sql_path_temp / results_sqlfile, "w")
+    print(sql_path_temp / results_sqlfile)
     results_rows = []
-    for mapping in mappings_to_run:
-        casrec_table_name = validation_dict[mapping]["casrec"]["from_table"]
+    for mapping_name in mappings_to_run:
+        validation_dict = get_validation_dict(mapping_name)
+        casrec_table_name = validation_dict["casrec"]["from_table"]
         results_rows.append(
-            f"SELECT '{mapping}' AS mapping,\n"
+            f"SELECT '{mapping_name}' AS mapping,\n"
             f"(SELECT COUNT(*) FROM {source_schema}.{casrec_table_name}) as attempted,\n"
-            f"(SELECT COUNT(*) FROM {get_exception_table(mapping)}),\n"
+            f"(SELECT COUNT(*) FROM {get_exception_table(mapping_name)}),\n"
             f"(SELECT CONCAT( CAST( CAST( (\n"
-            f"    (SELECT COUNT(*) FROM {get_exception_table(mapping)}) / \n"
+            f"    (SELECT COUNT(*) FROM {get_exception_table(mapping_name)}) / \n"
             f"    (SELECT COUNT(*) FROM {source_schema}.{casrec_table_name})::FLOAT) * 100 AS NUMERIC) AS TEXT), '%')),\n"
             f"CAST((SELECT json_agg(vary) AS affected_columns FROM (\n"
-            f"    SELECT DISTINCT unnest(vary_columns) as vary FROM {get_exception_table(mapping)}\n"
+            f"    SELECT DISTINCT unnest(vary_columns) as vary FROM {get_exception_table(mapping_name)}\n"
             f") t1) AS TEXT)\n"
         )
     separator = "UNION\n"

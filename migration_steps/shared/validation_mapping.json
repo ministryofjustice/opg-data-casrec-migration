@@ -555,16 +555,7 @@
             "client_id"
         ],
         "casenumber_source": "client_persons.caserecnumber",
-        "orderby": {
-            "firstname": {
-                "mapping_table": "client_persons.firstname",
-                "direction": "ASC"
-            },
-            "surname": {
-                "mapping_table": "client_persons.surname",
-                "direction": "ASC"
-            }
-        },
+        "orderby": {},
         "casrec": {
             "from_table": "REPVIS",
             "transform": {},
