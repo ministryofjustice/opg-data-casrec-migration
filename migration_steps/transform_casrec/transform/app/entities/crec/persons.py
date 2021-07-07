@@ -4,20 +4,11 @@ import logging
 import os
 import pandas as pd
 
+from helpers import get_mapping_dict, get_table_def
 from helpers import get_mapping_dict
 from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 
 log = logging.getLogger("root")
-
-definition = {
-    "source_table_name": "crec",
-    "source_table_additional_columns": ["Modify", "at.1", "Case"],
-    "source_conditions": {
-        "convert_to_timestamp": {"date": "Modify", "time": "at.1"},
-        "latest": {"col": "timestamp", "per": "Case"},
-    },
-    "destination_table_name": "persons",
-}
 
 
 def insert_persons_crec(db_config, target_db, mapping_file):
@@ -35,7 +26,7 @@ def insert_persons_crec(db_config, target_db, mapping_file):
     persons_df = persons_df[["id", "caserecnumber"]]
 
     mapping_file_name = f"{mapping_file}_mapping"
-
+    table_definition = get_table_def(mapping_name=mapping_file)
     sirius_details = get_mapping_dict(
         file_name=mapping_file_name,
         stage_name="sirius_details",
@@ -46,7 +37,7 @@ def insert_persons_crec(db_config, target_db, mapping_file):
             crec_df = get_basic_data_table(
                 db_config=db_config,
                 mapping_file_name=mapping_file_name,
-                table_definition=definition,
+                table_definition=table_definition,
                 sirius_details=sirius_details,
                 chunk_details={"chunk_size": chunk_size, "offset": offset},
             )
@@ -85,7 +76,7 @@ def insert_persons_crec(db_config, target_db, mapping_file):
             crec_joined_df = crec_joined_df[fields_to_select]
 
             target_db.update_data(
-                table_name=definition["destination_table_name"],
+                table_name=table_definition["destination_table_name"],
                 df=crec_joined_df,
                 fields_to_update=fields_to_update,
                 join_column=join_col,
