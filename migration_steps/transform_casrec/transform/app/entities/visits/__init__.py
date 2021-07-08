@@ -22,8 +22,9 @@ def runner(target_db, db_config):
 
     log.info(log_title(message=entity_name))
 
-    log.debug("insert_persons_clients")
+    log.debug("insert_visits")
     insert_visits(
+        mapping_file="visits",
         target_db=target_db,
         db_config=db_config,
     )

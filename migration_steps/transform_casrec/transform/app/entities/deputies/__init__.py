@@ -30,26 +30,32 @@ def runner(target_db, db_config):
     log.info(log_title(message=entity_name))
 
     log.debug("insert_persons_deputies")
-    insert_persons_deputies(target_db=target_db, db_config=db_config)
+    insert_persons_deputies(
+        target_db=target_db, db_config=db_config, mapping_file="deputy_persons"
+    )
 
     log.debug("insert_phonenumbers_deputies")
     insert_phonenumbers_deputies_daytime(
+        mapping_file="deputy_daytime_phonenumbers",
         target_db=target_db,
         db_config=db_config,
     )
     insert_phonenumbers_deputies_evening(
+        mapping_file="deputy_evening_phonenumbers",
         target_db=target_db,
         db_config=db_config,
     )
 
     log.debug("insert_addresses_deputies")
     insert_addresses_deputies(
+        mapping_file="deputy_addresses",
         target_db=target_db,
         db_config=db_config,
     )
 
     log.debug("insert_order_deputies")
     insert_order_deputies(
+        mapping_file="order_deputy",
         target_db=target_db,
         db_config=db_config,
     )

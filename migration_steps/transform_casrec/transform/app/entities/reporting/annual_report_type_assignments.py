@@ -6,17 +6,17 @@ import os
 from helpers import get_mapping_dict
 
 log = logging.getLogger("root")
+#
+# definition = {
+#     "source_table_name": "account",
+#     "source_table_additional_columns": [],
+#     "destination_table_name": "annual_report_log",
+# }
+#
+# mapping_file_name = "annual_report_type_assignments"
 
-definition = {
-    "source_table_name": "account",
-    "source_table_additional_columns": [],
-    "destination_table_name": "annual_report_log",
-}
 
-mapping_file_name = "annual_report_type_assignments"
-
-
-def insert_annual_report_type_assignments(db_config, target_db):
+def insert_annual_report_type_assignments(db_config, target_db, mapping_file):
 
     pass
 

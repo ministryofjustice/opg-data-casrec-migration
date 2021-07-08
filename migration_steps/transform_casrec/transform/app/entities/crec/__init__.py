@@ -24,6 +24,7 @@ def runner(target_db, db_config):
 
     log.info("Inserting crec_persons")
     insert_persons_crec(
+        mapping_file="crec_persons",
         target_db=target_db,
         db_config=db_config,
     )
