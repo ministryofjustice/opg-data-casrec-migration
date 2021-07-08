@@ -168,6 +168,7 @@ def get_table_def(mapping_name: str = None) -> Dict:
     with open(file_path) as table_data:
         table_data_dict = json.load(table_data)
 
+    log.debug(json.dumps(table_data_dict[mapping_name], indent=4))
     return table_data_dict[mapping_name]
 
 

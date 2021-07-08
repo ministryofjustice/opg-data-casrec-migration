@@ -8,14 +8,6 @@ from custom_errors import EmptyDataFrame
 from helpers import get_mapping_dict, get_table_def
 
 log = logging.getLogger("root")
-# definition = {
-#     "source_table_name": "deputy",
-#     "source_table_additional_columns": ["Deputy No"],
-#     "source_conditions": {"SIM": "not null"},
-#     "destination_table_name": "warnings",
-# }
-#
-# mapping_file_name = "deputy_special_warnings_mapping"
 
 
 def insert_deputy_special_warnings(db_config, target_db, mapping_file):

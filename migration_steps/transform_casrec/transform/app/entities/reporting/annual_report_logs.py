@@ -5,18 +5,9 @@ import os
 import pandas as pd
 
 from helpers import get_mapping_dict, get_table_def
-from helpers import get_mapping_dict
 from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 
 log = logging.getLogger("root")
-
-# definition = {
-#     "source_table_name": "account",
-#     "source_table_additional_columns": ["Case"],
-#     "destination_table_name": "annual_report_logs",
-# }
-#
-# mapping_file_name = "annual_report_logs_mapping"
 
 
 def insert_annual_report_logs(db_config, target_db, mapping_file):

@@ -9,15 +9,6 @@ from helpers import get_mapping_dict, get_table_def
 
 log = logging.getLogger("root")
 
-# definition = {
-#     "source_table_name": "pat",
-#     "source_table_additional_columns": ["Case"],
-#     "source_conditions": {"VWM": "not null"},
-#     "destination_table_name": "warnings",
-# }
-#
-# mapping_file_name = "client_violent_warnings_mapping"
-
 
 def insert_client_violent_warnings(db_config, target_db, mapping_file):
 
