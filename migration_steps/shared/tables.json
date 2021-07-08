@@ -259,7 +259,11 @@
 			"relies_on": []
 		},
 		"pk": "id",
-		"fks": [],
+		"fks": [{
+			"column": "client_id",
+			"parent_table": "persons",
+			"parent_column": "id"
+		}],
 		"table_type": "data",
 		"sequences": [],
 		"order_by": ["id"]
