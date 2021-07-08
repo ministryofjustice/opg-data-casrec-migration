@@ -1,1 +1,1 @@
-endpoint,search_entity,search_field,entity_ref,full_check/api/v1/orders/{id}/bonds/{id},persons,caseRecNumber,10000884,FALSE/api/v1/orders/{id}/bonds/{id},persons,caseRecNumber,10001403,FALSE/api/v1/orders/{id}/bonds/{id},persons,caseRecNumber,10001668,FALSE
+endpoint,entity_ref,full_check/api/v1/orders/{id}/bonds/{id},10000884,FALSE/api/v1/orders/{id}/bonds/{id},10001403,FALSE/api/v1/orders/{id}/bonds/{id},10001668,FALSE
