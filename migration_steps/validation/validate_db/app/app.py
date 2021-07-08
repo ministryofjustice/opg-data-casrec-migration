@@ -220,7 +220,6 @@ def wrap_casrec_col(mapped_item_key: str, col, col_definition):
     datatype = col_definition["sirius_details"]["data_type"]
     if (
         datatype not in ["bool", "int"]
-        and col_definition["transform_casrec"]["lookup_table"] == ""
     ):
         col = f"NULLIF(TRIM({col}), '')"
 
