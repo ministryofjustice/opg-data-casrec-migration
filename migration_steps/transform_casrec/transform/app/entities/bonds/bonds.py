@@ -1,20 +1,12 @@
 from custom_errors import EmptyDataFrame
-from helpers import get_mapping_dict
+from helpers import get_mapping_dict, get_table_def
 from transform_data.apply_datatypes import apply_datatypes, reapply_datatypes_to_fk_cols
 from utilities.basic_data_table import get_basic_data_table
 import pandas as pd
 
-definition = {
-    "source_table_name": "order",
-    "source_table_additional_columns": ["CoP Case"],
-    "source_conditions": {"Bond No.": "not null"},
-    "destination_table_name": "bonds",
-}
 
-mapping_file_name = "bonds_mapping"
+def insert_bonds(target_db, db_config, mapping_file):
 
-
-def insert_bonds(target_db, db_config):
     chunk_size = db_config["chunk_size"]
     offset = 0
     chunk_no = 1
@@ -26,7 +18,9 @@ def insert_bonds(target_db, db_config):
     existing_cases_df = pd.read_sql_query(
         existing_cases_query, db_config["db_connection_string"]
     )
-    # existing_cases_df = existing_cases_df.loc[existing_cases_df["c_bond_no"].notnull()]
+
+    mapping_file_name = f"{mapping_file}_mapping"
+    table_definition = get_table_def(mapping_name=mapping_file)
 
     sirius_details = get_mapping_dict(
         file_name=mapping_file_name,
@@ -38,7 +32,7 @@ def insert_bonds(target_db, db_config):
             bonds_df = get_basic_data_table(
                 db_config=db_config,
                 mapping_file_name=mapping_file_name,
-                table_definition=definition,
+                table_definition=table_definition,
                 sirius_details=sirius_details,
                 chunk_details={"chunk_size": chunk_size, "offset": offset},
             )
@@ -57,12 +51,9 @@ def insert_bonds(target_db, db_config):
             bonds_cases_joined_df = reapply_datatypes_to_fk_cols(
                 columns=["order_id"], df=bonds_cases_joined_df
             )
-            # bonds_cases_joined_df = bonds_cases_joined_df.loc[
-            #     bonds_cases_joined_df["bondreferencenumber"] != ""
-            # ]
 
             target_db.insert_data(
-                table_name=definition["destination_table_name"],
+                table_name=table_definition["destination_table_name"],
                 df=bonds_cases_joined_df,
                 sirius_details=sirius_details,
                 chunk_no=chunk_no,

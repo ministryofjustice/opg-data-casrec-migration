@@ -26,12 +26,14 @@ def runner(target_db, db_config):
 
     log.info("Inserting client_death_notifications")
     insert_client_death_notifications(
+        mapping_file="client_death_notifications",
         target_db=target_db,
         db_config=db_config,
     )
 
     log.info("Inserting deputy_death_notifications")
     insert_deputy_death_notifications(
+        mapping_file="deputy_death_notifications",
         target_db=target_db,
         db_config=db_config,
     )

@@ -159,6 +159,19 @@ def get_all_additional_data_files():
     return all_files
 
 
+def get_table_def(mapping_name: str = None) -> Dict:
+    dirname = get_current_directory()
+    file_path = os.path.join(
+        dirname, f"mapping_definitions/tables/table_definitions.json"
+    )
+
+    with open(file_path) as table_data:
+        table_data_dict = json.load(table_data)
+
+    log.debug(json.dumps(table_data_dict[mapping_name], indent=4))
+    return table_data_dict[mapping_name]
+
+
 def get_all_lookup_dicts() -> Dict[str, List[str]]:
     dirname = get_current_directory()
     file_path = os.path.join(dirname, f"mapping_definitions/lookups")
@@ -187,24 +200,27 @@ def get_all_mapped_fields(
     for json_file in os.listdir(file_path):
         json_file_path = os.path.join(file_path, json_file)
         if os.path.isfile(json_file_path):
-            with open(json_file_path, "r") as definition_json:
-                def_dict = json.load(definition_json)
+            if "table_definition" in json_file_path:
+                pass
+            else:
+                with open(json_file_path, "r") as definition_json:
+                    def_dict = json.load(definition_json)
 
-                key_name = json_file.replace("_mapping.json", "")
-                if include_keys:
-                    all_mapping_dicts[key_name] = [
-                        k
-                        for k, v in def_dict.items()
-                        if v["mapping_status"]["is_complete"] is complete
-                    ]
-                else:
-                    all_mapping_dicts[key_name] = [
-                        k
-                        for k, v in def_dict.items()
-                        if v["mapping_status"]["is_complete"] is complete
-                        and v["sirius_details"]["is_pk"] is not True
-                        and len(v["sirius_details"]["fk_parents"]) == 0
-                    ]
+                    key_name = json_file.replace("_mapping.json", "")
+                    if include_keys:
+                        all_mapping_dicts[key_name] = [
+                            k
+                            for k, v in def_dict.items()
+                            if v["mapping_status"]["is_complete"] is complete
+                        ]
+                    else:
+                        all_mapping_dicts[key_name] = [
+                            k
+                            for k, v in def_dict.items()
+                            if v["mapping_status"]["is_complete"] is complete
+                            and v["sirius_details"]["is_pk"] is not True
+                            and len(v["sirius_details"]["fk_parents"]) == 0
+                        ]
 
     return all_mapping_dicts
 
@@ -212,9 +228,11 @@ def get_all_mapped_fields(
 def get_json_version():
     dirname = get_current_directory()
     file_path = os.path.join(dirname, f"mapping_definitions/summary/version.json")
-    with open(file_path, "r") as version_file:
-
-        return json.load(version_file)
+    try:
+        with open(file_path, "r") as version_file:
+            return json.load(version_file)
+    except Exception:
+        return {"version_id": "", "last_modified": ""}
 
 
 def get_config(env="local"):

@@ -22,6 +22,7 @@ def additional_cols(additional_columns: list) -> list:
     return [
         {"casrec_column_name": x, "alias": format_additional_col_alias(x)}
         for x in additional_columns
+        if x != ""
     ]
 
 

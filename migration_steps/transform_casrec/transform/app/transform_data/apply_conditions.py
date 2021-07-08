@@ -49,7 +49,7 @@ def source_conditions(df, conditions):
     renamed_conditions = {**df_cols, **additional_cols}
 
     for column, value in renamed_conditions.items():
-        df = df.loc[df[column] == value]
+        df = df.loc[df[column] == str(value)]
 
     df = df.reset_index(drop=True)
     log.log(config.VERBOSE, f"Dataframe size after applying conditions: {len(df)}")

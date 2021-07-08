@@ -1,22 +1,24 @@
 import pandas as pd
 
 from custom_errors import EmptyDataFrame
-from helpers import get_mapping_dict, format_error_message
+from helpers import get_mapping_dict, format_error_message, get_table_def
 import logging
 
 log = logging.getLogger("root")
 
-definition = {
-    "destination_table_name": "person_caseitem",
-    "source_table_name": "",
-    "source_table_additional_columns": [],
-}
+# definition = {
+#     "destination_table_name": "person_caseitem",
+#     "source_table_name": "",
+#     "source_table_additional_columns": [],
+# }
+#
+# mapping_file_name = "person_caseitem_mapping"
 
-mapping_file_name = "person_caseitem_mapping"
 
+def insert_person_caseitem(db_config, target_db, mapping_file):
 
-def insert_person_caseitem(db_config, target_db):
-
+    mapping_file_name = f"{mapping_file}_mapping"
+    table_definition = get_table_def(mapping_name=mapping_file)
     sirius_details = get_mapping_dict(
         file_name=mapping_file_name,
         stage_name="sirius_details",
@@ -51,7 +53,7 @@ def insert_person_caseitem(db_config, target_db):
         person_caseitem_df["casrec_details"] = "{}"
 
         target_db.insert_data(
-            table_name=definition["destination_table_name"],
+            table_name=table_definition["destination_table_name"],
             df=person_caseitem_df,
             sirius_details=sirius_details,
         )

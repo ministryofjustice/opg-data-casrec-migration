@@ -27,12 +27,14 @@ def runner(target_db, db_config):
 
     log.debug("insert_annual_report_logs")
     insert_annual_report_logs(
+        mapping_file="annual_report_logs",
         target_db=target_db,
         db_config=db_config,
     )
 
     log.debug("insert_annual_report_lodging_details")
     insert_annual_report_lodging_details(
+        mapping_file="annual_report_lodging_details",
         target_db=target_db,
         db_config=db_config,
     )
