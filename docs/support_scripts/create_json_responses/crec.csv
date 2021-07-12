@@ -1,1 +1,1 @@
-endpoint,search_entity,search_field,entity_ref,full_check/api/v1/clients/{id},persons,caseRecNumber,10109006,FALSE/api/v1/clients/{id},persons,caseRecNumber,10109755,FALSE/api/v1/clients/{id},persons,caseRecNumber,1011017T,FALSE
+endpoint,entity_ref,full_check/api/v1/clients/{id},10109006,FALSE/api/v1/clients/{id},10109755,FALSE/api/v1/clients/{id},1011017T,FALSE

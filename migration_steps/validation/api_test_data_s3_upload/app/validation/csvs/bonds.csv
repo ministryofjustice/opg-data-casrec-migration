@@ -1,4 +1,4 @@
-endpoint,entity_ref,search_entity,search_field,full_check,["bondProvider"]["name"],["requiredBondAmount"],["referenceNumber"]
-/api/v1/orders/{id}/bonds/{id},10000884,persons,caseRecNumber,FALSE,Marsh,15000,C2124
-/api/v1/orders/{id}/bonds/{id},10001403,persons,caseRecNumber,FALSE,dbs|marsh|other,10000|27500|475000,BVLE08598|DBS/5033534|W13123
-/api/v1/orders/{id}/bonds/{id},10001668,persons,caseRecNumber,FALSE,dbs,475000,DBS/5033534
+endpoint,entity_ref,full_check,["bondProvider"]["name"],["requiredBondAmount"],["referenceNumber"]
+/api/v1/orders/{id}/bonds/{id},10000884,FALSE,Marsh,15000,C2124
+/api/v1/orders/{id}/bonds/{id},10001403,FALSE,dbs|marsh|other,10000|27500|475000,BVLE08598|DBS/5033534|W13123
+/api/v1/orders/{id}/bonds/{id},10001668,FALSE,dbs,475000,DBS/5033534

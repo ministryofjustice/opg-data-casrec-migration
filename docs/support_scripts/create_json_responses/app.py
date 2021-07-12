@@ -5,15 +5,16 @@ import os
 import sys
 from pathlib import Path
 from dotenv import load_dotenv
+from sqlalchemy import create_engine
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../migration_steps/shared")
-from helpers import *
+from helpers import get_config, get_s3_session
 
 env_path = current_path / "../../../migration_steps/.env"
 load_dotenv(dotenv_path=env_path)
-base_url = "http://localhost:8080"
-password = "Password1"  # pragma: allowlist secret
+base_url = os.environ.get("SIRIUS_FRONT_URL")
+password = os.environ.get("API_TEST_PASSWORD")
 environment = os.environ.get("ENVIRONMENT")
 
 
@@ -42,55 +43,53 @@ def create_a_session(base_url, password):
     return session
 
 
-def get_entity_ids(session, entity, search_field, search_value, csv_type):
-    extra_headers = {"content-type": "application/json"}
-    full_headers = {**session["headers_dict"], **extra_headers}
+def get_entity_ids(csv_type, caserecnumber, engine, conn):
+    person_id_sql = f"""
+        SELECT id
+        FROM persons
+        WHERE caserecnumber = '{caserecnumber}'
+        AND clientsource = 'CASRECMIGRATION'"""
 
-    data_raw = {
-        "from": 0,
-        "index": entity,
-        "query": {
-            "simple_query_string": {
-                "query": search_value,
-                "fields": ["searchable", search_field],
-                "default_operator": "AND",
-            }
-        },
-        "size": 5,
-    }
-
-    response = session["sess"].post(
-        f'{session["base_url"]}/api/advanced-search',
-        headers=full_headers,
-        data=json.dumps(data_raw),
-    )
-
-    search_result = json.loads(response.text)
+    order_id_sql = f"""
+        SELECT c.id
+        FROM persons p
+        INNER join cases c
+        on c.client_id = p.id
+        WHERE p.caserecnumber = '{caserecnumber}'
+        AND p.clientsource = 'CASRECMIGRATION'
+        and c.casetype = 'ORDER'"""
 
     ids = []
 
-    if search_result["hits"]["total"] > 0:
-        if csv_type in ["clients", "bonds", "death_notifications", "warnings", "crec"]:
-            entity_id = search_result["hits"]["hits"][0]["_id"]
-
+    if csv_type in ["clients", "bonds", "death_notifications", "warnings", "crec"]:
+        entity_ids = engine.execute(person_id_sql)
+        if entity_ids.rowcount > 1:
+            print(f"Too many matching rows for {caserecnumber}")
+        elif entity_ids.rowcount < 1:
+            print(f"No matching rows for {caserecnumber}")
+        else:
+            entity_id = entity_ids.one().values()[0]
             print(entity_id)
-
             if csv_type == "bonds":
-                bonds = get_bond_entity_ids(session, entity_id)
+                bonds = get_bond_entity_ids(entity_id, conn)
                 for bond in bonds:
                     ids.append(bond)
             else:
                 ids.append(entity_id)
-        elif csv_type in ["orders", "supervision_level", "deputies"]:
-            cases = search_result["hits"]["hits"][0]["_source"]["cases"]
-            for case in cases:
-                if case["caseType"] == "ORDER":
-                    if csv_type == "deputies":
-                        deputies = get_deputy_entity_ids(session, case["id"])
-                        for deputy in deputies:
-                            ids.append(deputy)
-                    else:
-                        ids.append(case["id"])
+    elif csv_type in ["orders", "supervision_level", "deputies"]:
+        entity_ids = engine.execute(order_id_sql)
+        if entity_ids.rowcount < 1:
+            print(f"No matching rows for {caserecnumber}")
+        else:
+            for entity_id_row in entity_ids:
+                entity_id = entity_id_row.values()[0]
+                if csv_type == "deputies":
+                    deputies = get_deputy_entity_ids(entity_id, conn)
+                    for deputy in deputies:
+                        ids.append(deputy)
+                else:
+                    ids.append(entity_id)
+
     return ids
 
 
@@ -129,7 +128,7 @@ def restructure_text(col):
     return col_restructured_text
 
 
-def get_bond_entity_ids(conn, entity_id):
+def get_bond_entity_ids(entity_id, conn):
     response = conn["sess"].get(
         f'{conn["base_url"]}/api/v1/clients/{entity_id}/orders',
         headers=conn["headers_dict"],
@@ -163,7 +162,7 @@ def get_bond_entity_ids(conn, entity_id):
     return bonds
 
 
-def get_deputy_entity_ids(conn, entity_id):
+def get_deputy_entity_ids(entity_id, conn):
     response = conn["sess"].get(
         f'{conn["base_url"]}/api/v1/orders/{entity_id}', headers=conn["headers_dict"],
     )
@@ -198,28 +197,8 @@ def get_endpoint_final(entity_id, endpoint, csv):
 
 
 clients_headers = [
-    '["firstname"]',
-    '["surname"]',
-    '["otherNames"]',
-    '["addressLine1"]',
-    '["addressLine2"]',
-    '["addressLine3"]',
-    '["town"]',
-    '["county"]',
-    '["postcode"]',
-    '["country"]',
-    '["phoneNumber"]',
-    '["correspondenceByPost"]',
-    '["correspondenceByPhone"]',
-    '["correspondenceByEmail"]',
-    '["personType"]',
-    '["clientStatus"]["handle"]',
-    '["clientStatus"]["label"]',
     '["clientAccommodation"]["handle"]',
-    '["clientAccommodation"]["label"]',
-    '["supervisionCaseOwner"]["name"]',
-    '["supervisionCaseOwner"]["phoneNumber"]',
-    '["maritalStatus"]',
+    '["salutation"]',
 ]
 
 deputies_headers = [
@@ -272,17 +251,21 @@ crec_headers = [
     '["riskScore"]',
 ]
 
-csvs = ["crec"]
+csvs = ["bonds"]
 
 search_headers = [
     "endpoint",
     "entity_ref",
-    "search_entity",
-    "search_field",
     "full_check",
 ]
 
+print(environment)
+
 for csv in csvs:
+    config = get_config(environment)
+    db_conn_string = config.get_db_connection_string("target")
+    engine = create_engine(db_conn_string)
+
     head_line = ""
     for header in search_headers:
         head_line = head_line + header + ","
@@ -302,10 +285,8 @@ for csv in csvs:
     for index, row in csv_data.iterrows():
         endpoint = row["endpoint"]
         entity_ref = row["entity_ref"]
-        search_entity = row["search_entity"]
-        search_field = row["search_field"]
 
-        entity_ids = get_entity_ids(conn, search_entity, search_field, entity_ref, csv)
+        entity_ids = get_entity_ids(csv, entity_ref, engine, conn)
 
         line_struct = {}
         line = ""

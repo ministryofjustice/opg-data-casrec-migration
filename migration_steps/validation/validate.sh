@@ -21,7 +21,7 @@ if [ "${ENVIRONMENT}" == "local" ] \
   then
     cd "${DIR}/api_tests"
     echo "== Running API tests =="
-    pytest -s .
+    python3 app.py
     echo $?
     echo "== Finished API tests =="
   fi
