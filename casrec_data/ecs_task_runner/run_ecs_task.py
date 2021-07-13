@@ -10,7 +10,11 @@ from datetime import datetime, timedelta
 
 class TaskRunner:
     role = "breakglass"
-    account = {"development": "288342028542", "preproduction": "492687888235"}
+    account = {
+        "development": "288342028542",
+        "preproduction": "492687888235",
+        "qa": "492687888235",
+    }
     sts_client = ""
     region = ""
     auto_refresh_session_task_runner = ""

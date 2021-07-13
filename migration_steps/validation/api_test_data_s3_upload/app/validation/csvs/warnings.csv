@@ -1,4 +1,4 @@
-endpoint,entity_ref,full_check,[0]["warningType"],[0]["warningText"],[0]["systemStatus"]
-/api/v1/persons/{id}/warnings,10194709,FALSE,Marker,Marker,True
-/api/v1/persons/{id}/warnings,13323382,FALSE,OTHER,No Debt to be chased,True
-/api/v1/persons/{id}/warnings,10198244,FALSE,SAAR,SAAR,True
+endpoint,entity_ref,test_purpose,full_check,[0]["warningType"],[0]["warningText"],[0]["systemStatus"]
+/api/v1/persons/{id}/warnings,10194709,dev_api_tests,FALSE,Marker,Marker,True
+/api/v1/persons/{id}/warnings,13323382,dev_api_tests,FALSE,OTHER,No Debt to be chased,True
+/api/v1/persons/{id}/warnings,10198244,dev_api_tests,FALSE,SAAR,SAAR,True
