@@ -1,3 +1,3 @@
-endpoint,entity_ref,full_check,["dateLetterSentOut"],["dateDeathCertificateReceived"],["notifiedBy"]["handle"],["person"]["dateOfDeath"]
-/api/v1/persons/{id}/death-notification,10076428,FALSE,08/04/2019,,EXECUTOR,31/12/2018
-/api/v1/persons/{id}/death-notification,10264188,FALSE,09/05/2017,,DEPUTY,16/04/2017
+endpoint,entity_ref,test_purpose,full_check,["dateLetterSentOut"],["dateDeathCertificateReceived"],["notifiedBy"]["handle"],["person"]["dateOfDeath"]
+/api/v1/persons/{id}/death-notification,10076428,dev_api_tests,FALSE,08/04/2019,,EXECUTOR,31/12/2018
+/api/v1/persons/{id}/death-notification,10264188,dev_api_tests,FALSE,09/05/2017,,DEPUTY,16/04/2017

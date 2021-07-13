@@ -13,6 +13,7 @@ from helpers import get_config, get_s3_session
 
 env_path = current_path / "../../../migration_steps/.env"
 load_dotenv(dotenv_path=env_path)
+print_extra_info = False
 base_url = os.environ.get("SIRIUS_FRONT_URL")
 password = os.environ.get("API_TEST_PASSWORD")
 environment = os.environ.get("ENVIRONMENT")
@@ -31,7 +32,14 @@ def get_session(base_url, user, password):
 
 
 def create_a_session(base_url, password):
-    user = "case.manager@opgtest.com"
+    env_users = {
+        "local": "case.manager@opgtest.com",
+        "development": "case.manager@opgtest.com",
+        "preproduction": "opg+siriussmoketest@digital.justice.gov.uk",
+        "qa": "opg+siriussmoketest@digital.justice.gov.uk",
+        "production": "opg+siriussmoketest@digital.justice.gov.uk",
+    }
+    user = env_users[environment]
     sess, headers_dict, status_code = get_session(base_url, user, password)
     session = {
         "sess": sess,
@@ -69,21 +77,20 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
             print(f"No matching rows for {caserecnumber}")
         else:
             entity_id = entity_ids.one().values()[0]
-            print(entity_id)
             if csv_type == "bonds":
                 bonds = get_bond_entity_ids(entity_id, conn)
                 for bond in bonds:
                     ids.append(bond)
             else:
                 ids.append(entity_id)
-    elif csv_type in ["orders", "supervision_level", "deputies"]:
+    elif csv_type in ["orders", "supervision_level", "deputies", "deputy_clients"]:
         entity_ids = engine.execute(order_id_sql)
         if entity_ids.rowcount < 1:
             print(f"No matching rows for {caserecnumber}")
         else:
             for entity_id_row in entity_ids:
                 entity_id = entity_id_row.values()[0]
-                if csv_type == "deputies":
+                if csv_type in ["deputies", "deputy_clients"]:
                     deputies = get_deputy_entity_ids(entity_id, conn)
                     for deputy in deputies:
                         ids.append(deputy)
@@ -99,7 +106,7 @@ def rationalise_var(v, json_obj):
         if response_var is None:
             response_var = ""
         else:
-            response_var = str(response_var)
+            response_var = str(response_var).replace(",", "")
     except IndexError:
         response_var = ""
         pass
@@ -134,17 +141,12 @@ def get_bond_entity_ids(entity_id, conn):
         headers=conn["headers_dict"],
     )
 
-    print(response.text)
-
     json_obj = json.loads(str(response.text))
-    print(json_obj)
 
     cases = json_obj["cases"]
 
     bonds = []
     for case in cases:
-
-        print(case["bond"])
         try:
             order_id = case["id"]
         except Exception:
@@ -202,9 +204,39 @@ clients_headers = [
 ]
 
 deputies_headers = [
+    '["correspondenceByPost"]',
+    '["correspondenceByPhone"]',
+    '["correspondenceByEmail"]',
+    '["correspondenceByWelsh"]',
+    '["specialCorrespondenceRequirements"]["audioTape"]',
+    '["specialCorrespondenceRequirements"]["largePrint"]',
+    '["specialCorrespondenceRequirements"]["hearingImpaired"]',
+    '["specialCorrespondenceRequirements"]["spellingOfNameRequiresCare"]',
+    '["deputyStatus"]',
+    '["workPhoneNumber"]["id"]',
+    '["workPhoneNumber"]["phoneNumber"]',
+    '["workPhoneNumber"]["type"]',
+    '["workPhoneNumber"]["default"]',
+    '["homePhoneNumber"]["id"]',
+    '["homePhoneNumber"]["phoneNumber"]',
+    '["homePhoneNumber"]["type"]',
+    '["homePhoneNumber"]["default"]',
     '["email"]',
+    '["dob"]',
+    '["dateOfDeath"]',
+    '["salutation"]',
+    '["firstname"]',
+    '["surname"]',
+    '["otherNames"]',
     '["addressLine1"]',
+    '["addressLine2"]',
+    '["addressLine3"]',
+    '["town"]',
+    '["county"]',
     '["postcode"]',
+    '["country"]',
+    '["isAirmailRequired"]',
+    '["phoneNumber"]',
 ]
 
 orders_headers = [
@@ -251,15 +283,22 @@ crec_headers = [
     '["riskScore"]',
 ]
 
-csvs = ["bonds"]
+deputy_clients_headers = [
+    '["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"]'
+]
+
+deputy_client_count = []
+
+csvs = ["deputy_client_count"]
 
 search_headers = [
     "endpoint",
     "entity_ref",
+    "test_purpose",
     "full_check",
 ]
 
-print(environment)
+print(f"You are running this script against: {environment}")
 
 for csv in csvs:
     config = get_config(environment)
@@ -286,22 +325,23 @@ for csv in csvs:
         endpoint = row["endpoint"]
         entity_ref = row["entity_ref"]
 
+        print(f"Case Reference: {entity_ref}")
         entity_ids = get_entity_ids(csv, entity_ref, engine, conn)
-
         line_struct = {}
         line = ""
 
         for entity_id in entity_ids:
 
             endpoint_final = get_endpoint_final(entity_id, endpoint, csv)
-            print(endpoint_final)
+            print(f"Endpoint: {endpoint_final}")
 
             response = conn["sess"].get(
                 f'{conn["base_url"]}{endpoint_final}', headers=conn["headers_dict"],
             )
-            print(f'{conn["base_url"]}{endpoint_final}')
-            print(response.text)
-            print(response.status_code)
+
+            if print_extra_info:
+                print(response.text)
+                print(response.status_code)
 
             json_obj = json.loads(response.text)
 

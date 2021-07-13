@@ -1,3 +1,3 @@
-endpoint,entity_ref,full_check,["email"],["addressLine1"],["postcode"]
-/api/v1/deputies/{id},10000037,FALSE,rmartin@yahoo.co.uk,24 Singh manor,SM15 9HQ
-/api/v1/deputies/{id},10000884,FALSE,jamesdennis@dennis-hall.com,9 Sheppard cliffs,S49 3WT
+endpoint,entity_ref,test_purpose,full_check,["email"],["addressLine1"],["postcode"]
+/api/v1/deputies/{id},10000037,dev_api_tests,FALSE,rmartin@yahoo.co.uk,24 Singh manor,SM15 9HQ
+/api/v1/deputies/{id},10000884,dev_api_tests,FALSE,jamesdennis@dennis-hall.com,9 Sheppard cliffs,S49 3WT
