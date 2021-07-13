@@ -193,6 +193,15 @@ class ApiTests:
                 ids.append(entity_id)
         return ids
 
+    def enhance_api_user_permissions(self):
+        roles = '{"OPG User":"OPG User","System Admin":"System Admin"}'
+        sql = f"""
+            UPDATE assignees
+            SET roles = '{roles}'
+            WHERE email = '{self.user}'
+            """
+        self.engine.execute(sql)
+
     def get_entity_ids_from_order_source(self, sql, caserecnumber):
         ids = []
         entity_ids = self.engine.execute(sql)
@@ -545,6 +554,7 @@ def main():
 
     api_tests = ApiTests()
     api_tests.create_a_session()
+    api_tests.enhance_api_user_permissions()
     for csv in csvs:
         api_tests.csv = csv
         api_tests.run_success_tests()
