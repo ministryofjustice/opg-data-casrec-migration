@@ -30,12 +30,17 @@ def apply_datatypes(mapping_details: Dict, df: pd.DataFrame) -> pd.DataFrame:
         if k in df.columns
     }
 
-    try:
-        result_df = df.astype({k: v for k, v in cols_with_datatype.items()})
-        return result_df
-    except Exception as e:
-        log.error(f"Error applying datatypes: {e}")
-        os._exit(1)
+    for col, datatype in cols_with_datatype.items():
+        try:
+            if datatype == "datetime64[ns]":
+                df[col] = pd.to_datetime(df[col], errors="ignore")
+            else:
+                df[col] = df[col].astype(datatype)
+        except Exception as e:
+            log.error(f"Error converting {col} to datatype {datatype}: {e}")
+            os._exit(1)
+
+    return df
 
 
 def reapply_datatypes_to_fk_cols(columns, df):
