@@ -108,13 +108,13 @@ orbs:
           - run:
               name: login to code artifact for pip
               command: ./login_code_artifact.sh -a 288342028542 -t pip
-              working_directory: ~/project/docs/ci_scripts
+              working_directory: ~/project/scripts/ci_scripts
       cancel_redundant_builds:
         steps:
           - run:
               name: install cancel build requirements
               command: pip3 install -r requirements.txt
-              working_directory: ~/project/docs/ci_scripts
+              working_directory: ~/project/scripts/ci_scripts
           - run:
               name: cancel previous builds
               command: |
@@ -125,7 +125,7 @@ orbs:
                 --circle_builds_token="${CIRCLE_BUILDS_TOKEN}" \
                 --terms_to_waitfor="plan infra" \
                 --prod_job_terms="build infra ,master"
-              working_directory: ~/project/docs/ci_scripts
+              working_directory: ~/project/scripts/ci_scripts
           - run:
               name: wait for others builds to finish
               command: |
@@ -133,7 +133,7 @@ orbs:
                 --circle_builds_token "${CIRCLE_BUILDS_TOKEN}" \
                 --circle_project_username "${CIRCLE_PROJECT_USERNAME}" \
                 --circle_project_reponame "${CIRCLE_PROJECT_REPONAME}"
-              working_directory: ~/project/docs/ci_scripts
+              working_directory: ~/project/scripts/ci_scripts
 jobs:
   cleanup:
     executor: migration/python
@@ -185,11 +185,11 @@ jobs:
       - run:
           name: install requirements
           command: pip3 install -r requirements-rsf.txt
-          working_directory: ~/project/docs/ci_scripts
+          working_directory: ~/project/scripts/ci_scripts
       - run:
           name: run the function
           command: python3 run_step_function.py --role migrations-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD}
-          working_directory: ~/project/docs/ci_scripts
+          working_directory: ~/project/scripts/ci_scripts
 
   run_behat_tests:
     executor: terraform/terraform
@@ -350,7 +350,7 @@ jobs:
       - run:
           name: Set latest version
           command: python get_image.py --role migrations-ci >> ~/project/VERSION
-          working_directory: ~/project/docs/ci_scripts
+          working_directory: ~/project/scripts/ci_scripts
       - persist_to_workspace:
           root: .
           paths:

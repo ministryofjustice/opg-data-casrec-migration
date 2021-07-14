@@ -82,6 +82,21 @@
                 },
                 "TaskDefinition":"${task-definition-integration}"
             },
+            "load-sirius":{
+                "Cluster":"${cluster}",
+                "LaunchType":"FARGATE",
+                "NetworkConfiguration":{
+                    "AwsvpcConfiguration":{
+                        "SecurityGroups":[
+                            "${sec_group}"
+                        ],
+                        "Subnets":[
+                            ${subnets}
+                        ]
+                    }
+                },
+                "TaskDefinition":"${task-definition-load-sirius}"
+            },
             "validation":{
                 "Cluster":"${cluster}",
                 "LaunchType":"FARGATE",

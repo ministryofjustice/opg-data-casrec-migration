@@ -1,3 +1,0 @@
-endpoint,entity_ref,test_purpose,full_check,["persons"][0]["id"],["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"]
-/api/v1/deputies/{id}/clients,10000037,dev_api_tests,FALSE,76,Parent of Client
-/api/v1/deputies/{id}/clients,10000884,dev_api_tests,FALSE,77,Sibling

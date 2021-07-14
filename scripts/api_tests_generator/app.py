@@ -8,10 +8,10 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
-sys.path.insert(0, str(current_path) + "/../../../migration_steps/shared")
+sys.path.insert(0, str(current_path) + "/../../migration_steps/shared")
 from helpers import get_config, get_s3_session
 
-env_path = current_path / "../../../migration_steps/.env"
+env_path = current_path / "../../migration_steps/.env"
 load_dotenv(dotenv_path=env_path)
 print_extra_info = False
 base_url = os.environ.get("SIRIUS_FRONT_URL")

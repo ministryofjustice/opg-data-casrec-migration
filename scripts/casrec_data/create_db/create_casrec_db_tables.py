@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 
-anon_data_dir = "../anon_data"
+anon_data_dir = "../../anon_data"
 sql_out = open("create_tables.sql", "w")
 
 for file in os.listdir(anon_data_dir):
