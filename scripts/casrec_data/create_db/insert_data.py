@@ -7,7 +7,7 @@ conn = psycopg2.connect(
 )
 cur = conn.cursor()
 
-anon_data_dir = "../anon_data"
+anon_data_dir = "../../anon_data"
 
 for file in os.listdir(anon_data_dir):
 

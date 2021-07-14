@@ -21,64 +21,28 @@ try:
 except OSError:
     pass
 
-log_file = open(
-    "change_log.txt",
-    "a",
-)
+log_file = open("change_log.txt", "a",)
 
 id = {
-    "first_name": {
-        "include": ["forename", "firstname", "aka"],
-        "exclude": [],
-    },
-    "surname": {
-        "include": ["surname", "lastname", "last_name"],
-        "exclude": [],
-    },
-    "full_name": {
-        "include": ["name"],
-        "exclude": [],
-    },
-    "title": {
-        "include": ["title"],
-        "exclude": [],
-    },
-    "initial": {
-        "include": ["init"],
-        "exclude": ["Rev_Init"],
-    },
-    "dob": {
-        "include": ["dob"],
-        "exclude": [],
-    },
-    "birth_year": {
-        "include": ["birth_yr"],
-        "exclude": [],
-    },
-    "email": {
-        "include": ["email"],
-        "exclude": ["by_Email"],
-    },
+    "first_name": {"include": ["forename", "firstname", "aka"], "exclude": [],},
+    "surname": {"include": ["surname", "lastname", "last_name"], "exclude": [],},
+    "full_name": {"include": ["name"], "exclude": [],},
+    "title": {"include": ["title"], "exclude": [],},
+    "initial": {"include": ["init"], "exclude": ["Rev_Init"],},
+    "dob": {"include": ["dob"], "exclude": [],},
+    "birth_year": {"include": ["birth_yr"], "exclude": [],},
+    "email": {"include": ["email"], "exclude": ["by_Email"],},
     "phone": {
         "include": ["phone", "mobile", "tele"],
         "exclude": ["Papers_to_Phone", "Papers to Phone", "Assrc_Tele_Comp"],
     },
-    "address": {
-        "include": ["adrs"],
-        "exclude": [],
-    },
-    "postcode": {
-        "include": ["postcode"],
-        "exclude": [],
-    },
+    "address": {"include": ["adrs"], "exclude": [],},
+    "postcode": {"include": ["postcode"], "exclude": [],},
     "free_text": {
         "include": ["comment", "note", "remarks", "sup_desc", "sup desc"],
         "exclude": [],
     },
-    "documents": {
-        "include": ["docid"],
-        "exclude": [],
-    },
+    "documents": {"include": ["docid"], "exclude": [],},
     "payslip": {"include": ["payslip"], "exclude": []},
     "solicitor_name": {
         "include": ["sender_co", "sender co", "pathfinder", "pathfinder"],
@@ -148,50 +112,20 @@ for file in os.listdir(data_dir):
     for index in df.index:
 
         replacements = [
-            {
-                "col_list": titles,
-                "fake_data": fake.prefix_nonbinary(),
-            },
-            {
-                "col_list": first_names,
-                "fake_data": fake.first_name_nonbinary(),
-            },
-            {
-                "col_list": surnames,
-                "fake_data": fake.last_name_nonbinary(),
-            },
-            {
-                "col_list": full_names,
-                "fake_data": fake.name(),
-            },
-            {
-                "col_list": dobs,
-                "fake_data": fake.date(pattern="%Y-%m-%d %H:%M:%S"),
-            },
-            {
-                "col_list": emails,
-                "fake_data": fake.email(),
-            },
-            {
-                "col_list": phones,
-                "fake_data": fake.phone_number(),
-            },
-            {
-                "col_list": postcodes,
-                "fake_data": fake.postcode(),
-            },
-            {
-                "col_list": free_text_fields,
-                "fake_data": fake.catch_phrase(),
-            },
+            {"col_list": titles, "fake_data": fake.prefix_nonbinary(),},
+            {"col_list": first_names, "fake_data": fake.first_name_nonbinary(),},
+            {"col_list": surnames, "fake_data": fake.last_name_nonbinary(),},
+            {"col_list": full_names, "fake_data": fake.name(),},
+            {"col_list": dobs, "fake_data": fake.date(pattern="%Y-%m-%d %H:%M:%S"),},
+            {"col_list": emails, "fake_data": fake.email(),},
+            {"col_list": phones, "fake_data": fake.phone_number(),},
+            {"col_list": postcodes, "fake_data": fake.postcode(),},
+            {"col_list": free_text_fields, "fake_data": fake.catch_phrase(),},
             {
                 "col_list": solicitor_names,
                 "fake_data": f"{fake.company()} {fake.company_suffix()}",
             },
-            {
-                "col_list": payslips,
-                "fake_data": random.randint(100000, 1000000),
-            },
+            {"col_list": payslips, "fake_data": random.randint(100000, 1000000),},
         ]
 
         # simple replacements

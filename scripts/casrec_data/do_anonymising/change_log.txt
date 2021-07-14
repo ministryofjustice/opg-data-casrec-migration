@@ -1,0 +1,6 @@
+===== Starting file repvis =====
+Email, Outcome Comment, Recomm Comment, Recomm Comment2, Comments, Comments2
+===== Finished anonymising 999 rows in repvis in 2.25 secs =====
+
+
+Total time: 2.298224925994873

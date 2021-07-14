@@ -337,13 +337,13 @@ orbs:
           - run:
               name: login to code artifact for pip
               command: ./login_code_artifact.sh -a 288342028542 -t pip
-              working_directory: ~/project/docs/ci_scripts
+              working_directory: ~/project/scripts/ci_scripts
       cancel_redundant_builds:
         steps:
           - run:
               name: install cancel build requirements
               command: pip3 install -r requirements.txt
-              working_directory: ~/project/docs/ci_scripts
+              working_directory: ~/project/scripts/ci_scripts
           - run:
               name: cancel previous builds
               command: |
@@ -354,7 +354,7 @@ orbs:
                 --circle_builds_token="${CIRCLE_BUILDS_TOKEN}" \
                 --terms_to_waitfor="plan infra" \
                 --prod_job_terms="build infra ,master"
-              working_directory: ~/project/docs/ci_scripts
+              working_directory: ~/project/scripts/ci_scripts
           - run:
               name: wait for others builds to finish
               command: |
@@ -362,7 +362,7 @@ orbs:
                 --circle_builds_token "${CIRCLE_BUILDS_TOKEN}" \
                 --circle_project_username "${CIRCLE_PROJECT_USERNAME}" \
                 --circle_project_reponame "${CIRCLE_PROJECT_REPONAME}"
-              working_directory: ~/project/docs/ci_scripts
+              working_directory: ~/project/scripts/ci_scripts
   notififications:
     orbs:
       slack: circleci/slack@4.1
@@ -375,8 +375,12 @@ orbs:
               command: |
                 COMMIT_MESSAGE=`git log --oneline -1`
                 echo "export COMMIT_MESSAGE=\"${COMMIT_MESSAGE}\"" >> $BASH_ENV
-                if [ ${#CIRCLE_USERNAME} -eq 0 ]; then echo "export CIRCLE_USERNAME=\"scheduled_user\" >> $BASH_ENV; fi
-                if [ ${#CI_PULL_REQUEST} -eq 0 ]; then echo "export CI_PULL_REQUEST=\"${CIRCLE_BUILD_URL}\" >> $BASH_ENV; fi
+                if [ ${#CIRCLE_USERNAME} -eq 0 ]
+                  then echo "export CIRCLE_USERNAME=\"scheduled_user\"" >> $BASH_ENV
+                fi
+                if [ ${#CI_PULL_REQUEST} -eq 0 ]
+                  then echo "export CI_PULL_REQUEST=\"${CIRCLE_BUILD_URL}\"" >> $BASH_ENV
+                fi
               working_directory: ~/project
       notify_if_success:
         steps:
@@ -387,7 +391,7 @@ orbs:
                 python3 get_environment_entities.py --environment ${TF_WORKSPACE} --role migrations-ci >> ENTITIES
                 ENTITIES=$(cat ENTITIES)
                 echo "export ENTITIES=\"${ENTITIES}\"" >> $BASH_ENV
-              working_directory: ~/project/docs/ci_scripts
+              working_directory: ~/project/scripts/ci_scripts
           - slack/notify:
               channel: opg-migration-builds
               event: pass
@@ -676,11 +680,11 @@ jobs:
       - run:
           name: install requirements
           command: pip3 install -r requirements-rsf.txt
-          working_directory: ~/project/docs/ci_scripts
+          working_directory: ~/project/scripts/ci_scripts
       - run:
           name: run the function
           command: python3 run_step_function.py --role migrations-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD} --workspace ${TF_WORKSPACE}
-          working_directory: ~/project/docs/ci_scripts
+          working_directory: ~/project/scripts/ci_scripts
       - notififications/notify_env_vars
       - notififications/notify_if_fail
       - notififications/notify_if_success
@@ -927,7 +931,7 @@ jobs:
       - run:
           name: Set latest version
           command: python get_image.py --role migrations-ci --image_tag ${IMAGE_TAG} >> ~/project/VERSION
-          working_directory: ~/project/docs/ci_scripts
+          working_directory: ~/project/scripts/ci_scripts
       - run:
           name: Show latest version
           command: cat ~/project/VERSION
@@ -958,6 +962,6 @@ jobs:
       - run:
           name: run and monitor jenkins job
           command: ./run_jenkins_job.sh -w ${SIRIUS_ENVIRONMENT} -k ${JENKINS_API_KEY}
-          working_directory: ~/project/docs/ci_scripts
+          working_directory: ~/project/scripts/ci_scripts
       - notififications/notify_env_vars
       - notififications/notify_if_fail

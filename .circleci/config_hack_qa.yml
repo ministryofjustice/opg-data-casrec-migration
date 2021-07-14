@@ -107,7 +107,7 @@ orbs:
           - run:
               name: login to code artifact for pip
               command: ./login_code_artifact.sh -a 288342028542 -t pip
-              working_directory: ~/project/docs/ci_scripts
+              working_directory: ~/project/scripts/ci_scripts
 
 jobs:
   cleanup:
@@ -150,11 +150,11 @@ jobs:
       - run:
           name: install requirements
           command: pip3 install -r requirements-rsf.txt
-          working_directory: ~/project/docs/ci_scripts
+          working_directory: ~/project/scripts/ci_scripts
       - run:
           name: run the function
           command: python3 run_step_function.py --role migrations-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD} --workspace ${TF_WORKSPACE}
-          working_directory: ~/project/docs/ci_scripts
+          working_directory: ~/project/scripts/ci_scripts
 
   build:
     executor: migration/python
@@ -274,4 +274,4 @@ jobs:
       - run:
           name: run and monitor jenkins job
           command: ./run_jenkins_job.sh -w ${SIRIUS_ENVIRONMENT} -k ${JENKINS_API_KEY}
-          working_directory: ~/project/docs/ci_scripts
+          working_directory: ~/project/scripts/ci_scripts

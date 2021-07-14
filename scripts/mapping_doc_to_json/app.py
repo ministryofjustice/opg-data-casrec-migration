@@ -4,7 +4,7 @@ import os
 from mapping_all_sheets import Mapping
 
 
-steps_root = "../../../migration_steps/"
+steps_root = "../../migration_steps/"
 folder_name = "mapping_definitions"
 steps_to_copy_to = ["transform_casrec", "acquire_target_ids"]
 

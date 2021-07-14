@@ -17,8 +17,9 @@ config = helpers.get_config(env=environment)
 
 
 def copy_table(
-    engine_from, engine_to, schema_from, schema_to, table_from, table_to, pk
+    engine_from, engine_to, schema_from, schema_to, table_from, table_to, pk, log
 ):
+    log.info(f"Copying {table_from}")
     chunk_size = config.DEFAULT_CHUNK_SIZE
     offset = 0
     while True:
@@ -39,6 +40,7 @@ def copy_table(
             dtype={col_name: sqlalchemy.types.TEXT for col_name in df},
         )
 
+        log.info(f"Copied {offset + len(df)} rows")
         offset += chunk_size
         if len(df) < chunk_size:
             break
@@ -137,6 +139,7 @@ def run_audit(sirius_engine, casrec_engine, command, log, tables_list):
                 table,
                 f"{table}_before",
                 pk,
+                log,
             )
             log.info(f"Audit - Copied {table} before update to {table}_before")
     elif command == "after":
@@ -150,6 +153,7 @@ def run_audit(sirius_engine, casrec_engine, command, log, tables_list):
                 table,
                 f"{table}_after",
                 pk,
+                log,
             )
             log.info(f"Audit - Copied {table} after update to {table}_after")
             diff_old_new(casrec_engine, casrec_schema, table, pk, log)

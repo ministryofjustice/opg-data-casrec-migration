@@ -8,7 +8,7 @@ For example, We are considering `clients` and `deputies` as two seperate entitie
 
 We can do this as much as we need, as long as each sheet has a unique name. You can also remove sheets if you want to but it doesn't matter to the mapping - if they are not populated with mapping info then they are not exported.
 
-If something goes wrong with a sheet, we can recreate them using the little script in `docs/support_scripts/generate_mapping_doc`
+If something goes wrong with a sheet, we can recreate them using the little script in `scripts/generate_mapping_doc`
 
 ## Worksheet format
 
@@ -84,7 +84,7 @@ If something goes wrong with a sheet, we can recreate them using the little scri
 Assuming you have a venv up and running as per usual:
 
 ```bash
-cd docs/support_scripts/mapping_doc_to_json
+cd scripts/mapping_doc_to_json
 python3 app.py
 ```
 

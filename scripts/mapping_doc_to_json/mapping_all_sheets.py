@@ -37,10 +37,7 @@ class Mapping:
         self.summary = {
             "worksheets": {},
             "total": {
-                "worksheets": {
-                    "total_sheets": 0,
-                    "total_complete": 0,
-                },
+                "worksheets": {"total_sheets": 0, "total_complete": 0,},
                 "fields": {
                     "total_fields": 0,
                     "total_unmapped": 0,
