@@ -62,11 +62,11 @@
         },
         "transform_casrec": {
             "casrec_table": "PAT",
-            "casrec_column_name": "SAAR Check",
-            "alias": "SAAR Check",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
-            "lookup_table": "warning_violent_lookup",
-            "default_value": "OTHER",
+            "lookup_table": "",
+            "default_value": "Other",
             "calculated": "",
             "additional_columns": ""
         },
@@ -87,11 +87,11 @@
         },
         "transform_casrec": {
             "casrec_table": "PAT",
-            "casrec_column_name": "SAAR Check",
-            "alias": "SAAR Check 1",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
-            "lookup_table": "warning_violent_lookup",
-            "default_value": "SAAR CHECK DONE",
+            "lookup_table": "",
+            "default_value": "Casrec Migration - SAAR Check Warning",
             "calculated": "",
             "additional_columns": ""
         },
@@ -113,9 +113,9 @@
         "transform_casrec": {
             "casrec_table": "PAT",
             "casrec_column_name": "SAAR Check",
-            "alias": "SAAR Check 2",
+            "alias": "SAAR Check",
             "requires_transformation": "",
-            "lookup_table": "warning_violent_lookup",
+            "lookup_table": "",
             "default_value": "",
             "calculated": "current_date",
             "additional_columns": ""
