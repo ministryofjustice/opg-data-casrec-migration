@@ -37,7 +37,7 @@ class ApiTests:
         )
         self.password = os.environ.get("API_TEST_PASSWORD")
         custom_logger.setup_logging(env=self.environment, module_name="API tests")
-        self.bucket_name = f"casrec-migration-{self.account_name.lower()}"
+        self.bucket_name = f"casrec-migration-{self.account_name.lower() if self.account_name else None}"
         self.failed = False
         self.user = "case.manager@opgtest.com"
         self.session = None
@@ -156,6 +156,7 @@ class ApiTests:
         assert status_code == 401 or status_code == 200
 
     def get_person_sql(self, caserecnumber):
+        print("GETTING SQL")
         sql = f"""
             SELECT id as id
             FROM persons
@@ -203,6 +204,7 @@ class ApiTests:
         self.engine.execute(sql)
 
     def get_entity_ids_from_order_source(self, sql, caserecnumber):
+        log.debug(f"get_entity_ids_from_order_source for casrec number {caserecnumber}")
         ids = []
         entity_ids = self.engine.execute(sql)
         if entity_ids.rowcount < 1:
@@ -217,9 +219,11 @@ class ApiTests:
                         ids.append(deputy)
                 else:
                     ids.append(entity_id)
+        log.debug(f"returning ids: {ids}")
         return ids
 
     def get_entity_ids(self, caserecnumber):
+        log.debug(f"get_entity_ids for case no {caserecnumber}")
         person_id_sql = self.get_person_sql(caserecnumber)
         order_id_sql = self.get_order_sql(caserecnumber)
         ids = []
@@ -233,6 +237,7 @@ class ApiTests:
             "deputy_clients_count",
         ]:
             ids = self.get_entity_ids_from_order_source(order_id_sql, caserecnumber)
+        log.debug(f"returning ids: {ids}")
         return ids
 
     def get_headers_to_check(self, row):
@@ -249,17 +254,21 @@ class ApiTests:
         return headers_to_check
 
     def get_processed_entity_ids(self, entity_ref):
+        log.debug(f"get_processed_entity_ids for entity ref {entity_ref}")
         entity_ids = self.get_entity_ids(entity_ref)
 
         if len(entity_ids) == 0:
             self.api_log(f"No ids found for '{self.csv}', nothing to test")
             self.failed = True
-
+        log.debug(f"returning: {entity_ids}")
         return entity_ids
 
     def get_formatted_api_response(
         self, entity_ids, endpoint, headers_to_check, row, entity_ref
     ):
+        log.debug(
+            f"get_formatted_api_response: entity_ids: {entity_ids} entity_ref: {entity_ref} endpoint {endpoint}"
+        )
         response_struct = {}
         for entity_id in entity_ids:
             endpoint_final = self.get_endpoint_final(entity_id, endpoint)
@@ -283,10 +292,13 @@ class ApiTests:
             # Does a full check against each sub entity
             if row["full_check"].lower() == "true":
                 self.run_full_check(self.csv, entity_ref, json_obj)
-
+        log.debug(f"returning: {response_struct}")
         return response_struct
 
     def get_count_api_response(self, entity_ids, endpoint, headers_to_check):
+        log.debug(
+            f"get_count_api_response: entity_ids: {entity_ids}  endpoint {endpoint}"
+        )
         response_struct = {}
         for entity_id in entity_ids:
             endpoint_final = self.get_endpoint_final(entity_id, endpoint)
@@ -306,10 +318,11 @@ class ApiTests:
                     )
                 except Exception:
                     response_struct[header] = str(count_of_objects) + "|"
-
+        log.debug(f"returning: {response_struct}")
         return response_struct
 
     def run_full_check(self, entity_ref, json_obj):
+        log.debug(f"running full check for {entity_ref}")
         ignore_list = [
             "id",
             "uid",
@@ -379,6 +392,7 @@ class ApiTests:
         return col_restructured_text
 
     def get_bond_entity_ids(self, entity_id):
+        log.debug(f"get_bond_entity_ids: entity_id {entity_id}")
         response = self.session["sess"].get(
             f'{self.session["base_url"]}/api/v1/clients/{entity_id}/orders',
             headers=self.session["headers_dict"],
@@ -402,10 +416,11 @@ class ApiTests:
             if len(str(order_id)) > 0 and len(str(bond_id)) > 0:
                 bond = {"order_id": order_id, "bond_id": bond_id}
                 bonds.append(bond)
-
+        log.debug(f"returning: {bonds}")
         return bonds
 
     def get_deputy_entity_ids(self, entity_id):
+        log.debug(f"get_deputy_entity_ids: entity_id {entity_id}")
         response = self.session["sess"].get(
             f'{self.session["base_url"]}/api/v1/orders/{entity_id}',
             headers=self.session["headers_dict"],
@@ -422,10 +437,11 @@ class ApiTests:
 
             if len(str(deputy_id)) > 0:
                 deputy_ids.append(deputy_id)
-
+        log.debug(f"returning: {deputy_ids}")
         return deputy_ids
 
     def get_endpoint_final(self, entity_id, endpoint):
+        log.debug(f"get_endpoint_final: entity_id {entity_id} endpoint {endpoint}")
         if self.csv == "bonds":
             endpoint_final = (
                 str(endpoint)
@@ -434,7 +450,7 @@ class ApiTests:
             )
         else:
             endpoint_final = str(endpoint).replace("{id}", str(entity_id))
-
+        log.debug(f"returning: {endpoint_final}")
         return endpoint_final
 
     def assert_on_fields(
