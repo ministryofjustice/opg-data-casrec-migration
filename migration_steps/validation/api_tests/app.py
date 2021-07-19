@@ -156,7 +156,6 @@ class ApiTests:
         assert status_code == 401 or status_code == 200
 
     def get_person_sql(self, caserecnumber):
-        print("GETTING SQL")
         sql = f"""
             SELECT id as id
             FROM persons

@@ -1,4 +1,4 @@
 endpoint,entity_ref,test_purpose,full_check,["bondProvider"]["name"],["requiredBondAmount"],["referenceNumber"]
-/api/v1/orders/{id}/bonds/{id},10000884,dev_api_tests,FALSE,Marsh,15000,47362
-/api/v1/orders/{id}/bonds/{id},10001403,dev_api_tests,FALSE,Marsh|Marsh|other,30000|30000|20000,S3753|S3753|BULE02322
-/api/v1/orders/{id}/bonds/{id},10001668,dev_api_tests,FALSE,Marsh,30000,W11829
+/api/v1/orders/{id}/bonds/{id2},10000884,dev_api_tests,FALSE,Marsh,15000,C2124
+/api/v1/orders/{id}/bonds/{id2},10001403,dev_api_tests,FALSE,dbs|marsh|other,10000|27500|475000,BVLE08598|DBS/5033534|W13123
+/api/v1/orders/{id}/bonds/{id2},10001668,dev_api_tests,FALSE,dbs,475000,DBS/5033534
