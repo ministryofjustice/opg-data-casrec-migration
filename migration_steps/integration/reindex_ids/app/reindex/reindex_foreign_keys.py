@@ -24,8 +24,9 @@ def generate_fk_update_statement(db_schema, table_details):
                 SET {key['column']} = {key['parent_table']}.{key['parent_column']}
                 FROM {db_schema}.{key['parent_table']}
                 WHERE cast({table}.transformation_schema_{key['column']} as int)
-                    = cast({key['parent_table']}.transformation_schema_{key['parent_column']} as int)
-                AND {table}.method = 'INSERT';
+                    = cast({key['parent_table']}.transformation_schema_{key['parent_column']} as int);
+--                 AND {table}.method = 'INSERT';
+
             """
             update_query += query
     return update_query

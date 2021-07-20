@@ -72,6 +72,7 @@ def generate_create_tables_query(db_config, table_list):
             AS
                 SELECT *,
                     'INSERT' as method,
+                    '' as pk_source,
                      {', '.join(select_key_cols)}
                 FROM {db_config['source_schema']}.{table_name};
         """
