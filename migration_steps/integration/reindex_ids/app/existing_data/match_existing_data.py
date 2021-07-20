@@ -27,8 +27,9 @@ def match_existing_data(db_config, table_details):
 
     if len(tables_to_match) == 0:
         log.error("Nothing to match, but there should be...")
-    updates = []
+
     for table, details in tables_to_match.items():
+        updates = []
 
         matching_data = get_matching_data(
             db_config=db_config, table_name=table, table_details=details
@@ -47,14 +48,14 @@ def match_existing_data(db_config, table_details):
 
             updates.append(update_query)
 
-    try:
-        all_updates = " ".join(updates)
-        cursor.execute(all_updates)
-    except Exception as e:
-        log.error(f"There was an error: {e}", extra=format_error_message(e=e))
+        try:
+            all_updates = " ".join(updates)
+            cursor.execute(all_updates)
+        except Exception as e:
+            log.error(f"There was an error: {e}", extra=format_error_message(e=e))
 
-    cursor.close()
-    conn.commit()
+        cursor.close()
+        conn.commit()
 
 
 def get_matching_data(db_config, table_name, table_details):
