@@ -47,7 +47,8 @@ def get_max_value_of_uid_sequence(db_connection_string, db_schema, table_names):
 
 def insert_unique_uids(db_config, target_db_engine):
     schema = db_config["target_schema"]
-    condition = {"method": "INSERT"}
+    # condition = {"method": "INSERT"}
+    condition = {}
     source_columns = ["id", "uid"]
     all_table_names = ["persons", "cases"]
 
