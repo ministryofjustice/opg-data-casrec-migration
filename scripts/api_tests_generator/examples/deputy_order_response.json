@@ -1,0 +1,39 @@
+{
+	"statusOnCaseCalculated": {
+		"handle": "CLOSED",
+		"label": "Closed",
+		"deprecated": null,
+		"description": "Case closed (deputy not discharged or deceased)"
+	},
+	"feePayer": false,
+	"canUnlink": false,
+	"canUnlinkIfError": false,
+	"deputyType": {
+		"handle": "LAY",
+		"label": "Lay",
+		"deprecated": null
+	},
+	"statusOnCase": {
+		"handle": "DISCHARGED",
+		"label": "Discharged",
+		"deprecated": null,
+		"description": "Deputy has been discharged"
+	},
+	"statusOnCaseOverride": {
+		"handle": "DISCHARGED",
+		"label": "Discharged",
+		"deprecated": null,
+		"description": "Deputy has been discharged"
+	},
+	"relationshipToClient": {
+		"handle": "PARENT",
+		"label": "Parent of Client",
+		"deprecated": null,
+		"deputyType": "LAY",
+		"other": false
+	},
+	"relationshipOther": null,
+	"mainCorrespondent": false,
+	"statusChangeDate": null,
+	"statusNotes": null
+}

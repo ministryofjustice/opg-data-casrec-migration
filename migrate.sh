@@ -97,6 +97,8 @@ echo "=== Step 4 - Load to Sirius ==="
 docker-compose ${COMPOSE_ARGS} run --rm load_to_target load_to_sirius/load_to_sirius.sh
 echo "=== Step 5 - Validate Sirius ==="
 docker-compose ${COMPOSE_ARGS} run --rm validation validation/validate.sh "$@"
+echo "=== Step 6 - API Tests ==="
+docker-compose ${COMPOSE_ARGS} run --rm validation validation/api_tests.sh
 if [ "${GENERATE_DOCS}" == "true" ]
   then
   echo "=== Generating new docs for Github Pages ==="

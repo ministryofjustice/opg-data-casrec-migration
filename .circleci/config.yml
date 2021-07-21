@@ -54,6 +54,12 @@ workflows:
           tf_workspace: development
           environment: Development
           filters: {branches:{ignore:[master]}}
+      - run_api_tests:
+          name: run api tests
+          requires: [run the step function development]
+          tf_workspace: development
+          environment: Development
+          filters: {branches:{ignore:[master]}}
 
   master:
     when: << pipeline.parameters.run_master >>
@@ -110,6 +116,12 @@ workflows:
           environment: Preproduction
           environment_tag: qa
           requires: [run the step function preproduction]
+          filters: {branches:{only:[master]}}
+      - run_api_tests:
+          name: run api tests
+          requires: [run the step function preproduction]
+          tf_workspace: preproduction
+          environment: Preproduction
           filters: {branches:{only:[master]}}
       - approve:
           name: approve full elastic reset preprod
@@ -211,7 +223,7 @@ workflows:
   nightly_preproduction_run:
     triggers:
       - schedule:
-          cron: "10 06 * * *"
+          cron: "10 03 * * *"
           filters: {branches:{only:[master]}}
     jobs:
       - get_latest_image:
@@ -303,13 +315,19 @@ orbs:
       setup_ecs_runner:
         steps:
           - run:
+              name: Set image tag var where it exists
+              command: |
+                if test -f ~/project/VERSION
+                then
+                  VERSION=${VERSION:-$(cat ~/project/VERSION 2>/dev/null)}
+                fi
+                echo "export TF_VAR_image_tag=${VERSION}" >> $BASH_ENV
+          - run:
               name: Initialize
               command: terraform init
           - run:
               name: Get template file
               command: |
-                # Image tag is not important but is needed for build
-                export TF_VAR_image_tag=fake-tag
                 terraform apply -target=local_file.output
           - run:
               name: Install ecs-runner
@@ -688,6 +706,33 @@ jobs:
       - notififications/notify_env_vars
       - notififications/notify_if_fail
       - notififications/notify_if_success
+  run_api_tests:
+    executor: terraform/terraform
+    resource_class: small
+    parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "Development"
+      tf_workspace:
+        description: terraform workspace
+        type: string
+        default: "development"
+    environment:
+      ENVIRONMENT: << parameters.environment >>
+      TF_WORKSPACE: << parameters.tf_workspace >>
+    working_directory: ~/project/terraform
+    steps:
+      - checkout:
+          path: ~/project
+      - attach_workspace: {at: ~/project}
+      - terraform/install
+      - terraform/setup_ecs_runner
+      - run:
+          name: Run API tests
+          command: ecs-runner -task validation -timeout 600
+      - notififications/notify_env_vars
+      - notififications/notify_if_fail
   run_behat_tests:
     executor: terraform/terraform
     resource_class: small

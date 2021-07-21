@@ -83,7 +83,13 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
                     ids.append(bond)
             else:
                 ids.append(entity_id)
-    elif csv_type in ["orders", "supervision_level", "deputies", "deputy_clients"]:
+    elif csv_type in [
+        "orders",
+        "supervision_level",
+        "deputies",
+        "deputy_clients",
+        "deputy_orders",
+    ]:
         entity_ids = engine.execute(order_id_sql)
         if entity_ids.rowcount < 1:
             print(f"No matching rows for {caserecnumber}")
@@ -94,6 +100,10 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
                     deputies = get_deputy_entity_ids(entity_id, conn)
                     for deputy in deputies:
                         ids.append(deputy)
+                elif csv_type in ["deputy_orders"]:
+                    deputy_orders = get_deputy_order_entity_ids(entity_id, conn)
+                    for deputy_order in deputy_orders:
+                        ids.append(deputy_order)
                 else:
                     ids.append(entity_id)
 
@@ -185,12 +195,40 @@ def get_deputy_entity_ids(entity_id, conn):
     return deputy_ids
 
 
+def get_deputy_order_entity_ids(entity_id, conn):
+    response = conn["sess"].get(
+        f'{conn["base_url"]}/api/v1/orders/{entity_id}', headers=conn["headers_dict"],
+    )
+
+    json_obj = json.loads(response.text)
+    deputies = json_obj["deputies"]
+
+    order_deputy_ids = []
+    for deputy in deputies:
+        try:
+            deputy_id = deputy["deputy"]["id"]
+        except Exception:
+            deputy_id = ""
+
+        if len(str(deputy_id)) > 0:
+            order_deputy_id = {"order_id": entity_id, "deputy_id": deputy_id}
+            order_deputy_ids.append(order_deputy_id)
+
+    return order_deputy_ids
+
+
 def get_endpoint_final(entity_id, endpoint, csv):
     if csv == "bonds":
         endpoint_final = (
             str(endpoint)
             .replace("{id}", str(entity_id["order_id"]))
             .replace("{id2}", str(entity_id["bond_id"]))
+        )
+    elif csv == "deputy_orders":
+        endpoint_final = (
+            str(endpoint)
+            .replace("{id1}", str(entity_id["order_id"]))
+            .replace("{id2}", str(entity_id["deputy_id"]))
         )
     else:
         endpoint_final = str(endpoint).replace("{id}", str(entity_id))
@@ -287,9 +325,14 @@ deputy_clients_headers = [
     '["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"]'
 ]
 
+deputy_orders_headers = [
+    '["statusOnCaseOverride"]["handle"]',
+    '["relationshipToClient"]["handle"]',
+]
+
 deputy_client_count = []
 
-csvs = ["deputy_client_count"]
+csvs = ["deputy_orders"]
 
 search_headers = [
     "endpoint",
