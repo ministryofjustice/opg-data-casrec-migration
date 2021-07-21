@@ -77,7 +77,6 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
             print(f"No matching rows for {caserecnumber}")
         else:
             entity_id = entity_ids.one().values()[0]
-            print(entity_id)
             if csv_type == "bonds":
                 bonds = get_bond_entity_ids(entity_id, conn)
                 for bond in bonds:
@@ -219,8 +218,6 @@ def get_deputy_order_entity_ids(entity_id, conn):
 
 
 def get_endpoint_final(entity_id, endpoint, csv):
-    print(entity_id)
-
     if csv == "bonds":
         endpoint_final = (
             str(endpoint)

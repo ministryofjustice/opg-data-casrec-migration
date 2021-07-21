@@ -13,10 +13,10 @@ resource "local_file" "output" {
       sec_group_membrane                = data.aws_security_group.sirius_membrane.id,
       subnets                           = join("\", \"", data.aws_subnet_ids.private.ids),
       account                           = local.account.account_id,
-      task-definition-validation-casrec = aws_ecs_task_definition.etl5.arn,
-      cluster-casrec                    = aws_ecs_cluster.migration.name,
-      sec_group-casrec                  = aws_security_group.etl.id,
-      subnets-casrec                    = local.subnets_string
+      casrec-task-definition-validation = aws_ecs_task_definition.etl5.arn,
+      casrec-cluster                    = aws_ecs_cluster.migration.name,
+      casrec-sec_group                  = aws_security_group.etl.id,
+      casrec-subnets                    = local.subnets_string
   })
   filename = "${path.module}/terraform.output.json"
 }

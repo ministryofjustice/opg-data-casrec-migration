@@ -128,15 +128,15 @@
         "TaskDefinition": "arn:aws:ecs:eu-west-1:288342028542:task-definition/behat-migration-${cluster}"
       },
       "validation":{
-        "Cluster":"${cluster-casrec}",
+        "Cluster":"${casrec-cluster}",
         "LaunchType":"FARGATE",
         "NetworkConfiguration":{
             "AwsvpcConfiguration":{
                 "SecurityGroups":[
-                    "${sec_group-casrec}"
+                    "${casrec-sec_group}"
                 ],
                 "Subnets":[
-                    ${subnets-casrec}
+                    ${casrec-subnets}
                 ]
             }
         },
@@ -146,7 +146,7 @@
                 "Command": ["validation/api_tests.sh"]
             }]
         },
-        "TaskDefinition":"${task-definition-validation-casrec}"
+        "TaskDefinition":"${casrec-task-definition-validation}"
       },
       "reset-elasticsearch": {
         "Cluster": "${cluster}",
