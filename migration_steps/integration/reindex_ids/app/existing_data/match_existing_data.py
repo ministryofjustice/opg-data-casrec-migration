@@ -21,8 +21,6 @@ def match_existing_data(db_config, table_details):
     log.info("Matching existing data")
 
     tables_to_match = get_tables_to_match(table_details=table_details)
-    if len(tables_to_match) == 0:
-        log.error("Nothing to match, but there should be...")
 
     match_indicator = "UPDATE"
 
@@ -57,27 +55,32 @@ def match_existing_data(db_config, table_details):
         conn = psycopg2.connect(connection_string)
         cursor = conn.cursor()
 
-        try:
-            all_updates = " ".join(updates)
-            cursor.execute(all_updates)
-        except Exception as e:
-            log.error(f"There was an error: {e}", extra=format_error_message(e=e))
+        if len(updates) == 0:
+            log.error("Nothing to update, but there should be...")
+            # TODO - this should kill the process, awaiting test data. Then get rid of the else below
+            # os._exit(1)
+        else:
+            try:
+                all_updates = " ".join(updates)
+                cursor.execute(all_updates)
+            except Exception as e:
+                log.error(
+                    f"There was an error updating the matched data: {e}",
+                    extra=format_error_message(e=e),
+                )
+                os._exit(1)
 
-        cursor.close()
-        conn.commit()
+            cursor.close()
+            conn.commit()
 
-        try:
-            update_fks(
-                db_config=db_config,
-                table_details=tables_with_fk_links_to_this_table,
-                match=True,
-            )
-        except Exception as e:
-            print(f"e: {e}")
-
-    # tables_to_reindex_fks = fks(table_details=table_details, parent_table=table)
-
-    # update_fks(db_config=db_config, table_details=tables_to_reindex_fks)
+            try:
+                update_fks(
+                    db_config=db_config,
+                    table_details=tables_with_fk_links_to_this_table,
+                    match=True,
+                )
+            except Exception as e:
+                print(f"e: {e}")
 
 
 def fks(table_details, parent_table):
@@ -90,12 +93,6 @@ def fks(table_details, parent_table):
 
     tables_to_reindex_fks = {x: table_details[x] for x in child_tables}
     return tables_to_reindex_fks
-
-    # tables_with_fks = {
-    #     k: v["fks"]['parent_table'] for k, v in table_details.items() if len(v["fks"]) > 0
-    # }
-    #
-    # print(tables_with_fks)
 
 
 def get_matching_data(db_config, table_name, existing_data_details):
