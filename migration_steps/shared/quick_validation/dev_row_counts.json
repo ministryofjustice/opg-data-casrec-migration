@@ -122,7 +122,7 @@
         "table_name": "bonds",
         "query": "select count(*) from {schema}.bonds;",
         "row_counts": {
-            "all": 1023,
+            "all": 1059,
             "team_2": 0
             }
       }
