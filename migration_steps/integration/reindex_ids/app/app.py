@@ -107,19 +107,19 @@ def main(clear, team):
     match_existing_data(db_config=db_config, table_details=all_enabled_tables)
     # fks(db_config=db_config, table_details=all_enabled_tables)
 
-    # log.info(f"Reindex all primary keys")
-    # update_pks(db_config=db_config, table_details=enabled_tables)
-    #
-    # log.info(f"Reindex all foreign keys")
-    # update_fks(db_config=db_config, table_details=all_enabled_tables)
-    #
-    # if environment == "local":
-    #     check_row_counts.count_rows(
-    #         connection_string=db_config["db_connection_string"],
-    #         destination_schema=db_config["target_schema"],
-    #         enabled_entities=allowed_entities,
-    #         team=team,
-    #     )
+    log.info(f"Reindex all primary keys")
+    update_pks(db_config=db_config, table_details=enabled_tables)
+
+    log.info(f"Reindex all foreign keys")
+    update_fks(db_config=db_config, table_details=all_enabled_tables)
+
+    if environment == "local":
+        check_row_counts.count_rows(
+            connection_string=db_config["db_connection_string"],
+            destination_schema=db_config["target_schema"],
+            enabled_entities=allowed_entities,
+            team=team,
+        )
 
 
 if __name__ == "__main__":
