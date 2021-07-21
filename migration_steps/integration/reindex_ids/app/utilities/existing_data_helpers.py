@@ -1,7 +1,5 @@
 def get_tables_to_match(table_details):
-    return {
-        k: v["existing_data"] for k, v in table_details.items() if "existing_data" in v
-    }
+    return {k: v for k, v in table_details.items() if "existing_data" in v}
 
 
 def format_conditions(conditions):

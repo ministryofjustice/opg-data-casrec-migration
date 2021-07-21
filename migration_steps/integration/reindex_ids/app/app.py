@@ -5,7 +5,7 @@ import logging
 import time
 import click
 from sqlalchemy import create_engine
-from existing_data.match_existing_data import match_existing_data
+from existing_data.match_existing_data_fresh import match_existing_data, fks
 from reindex.move_by_table import move_all_tables, create_schema
 from reindex.reindex_foreign_keys import update_fks
 from reindex.reindex_primary_keys import update_pks
@@ -105,20 +105,21 @@ def main(clear, team):
 
     log.info(f"Merge new data with existing data in Sirius")
     match_existing_data(db_config=db_config, table_details=all_enabled_tables)
+    # fks(db_config=db_config, table_details=all_enabled_tables)
 
-    log.info(f"Reindex all primary keys")
-    update_pks(db_config=db_config, table_details=enabled_tables)
-
-    log.info(f"Reindex all foreign keys")
-    update_fks(db_config=db_config, table_details=all_enabled_tables)
-
-    if environment == "local":
-        check_row_counts.count_rows(
-            connection_string=db_config["db_connection_string"],
-            destination_schema=db_config["target_schema"],
-            enabled_entities=allowed_entities,
-            team=team,
-        )
+    # log.info(f"Reindex all primary keys")
+    # update_pks(db_config=db_config, table_details=enabled_tables)
+    #
+    # log.info(f"Reindex all foreign keys")
+    # update_fks(db_config=db_config, table_details=all_enabled_tables)
+    #
+    # if environment == "local":
+    #     check_row_counts.count_rows(
+    #         connection_string=db_config["db_connection_string"],
+    #         destination_schema=db_config["target_schema"],
+    #         enabled_entities=allowed_entities,
+    #         team=team,
+    #     )
 
 
 if __name__ == "__main__":
