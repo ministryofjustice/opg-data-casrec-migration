@@ -21,20 +21,23 @@ def match_existing_data(db_config, table_details):
     log.info("Matching existing data")
 
     tables_to_match = get_tables_to_match(table_details=table_details)
-
-    match_indicator = "UPDATE"
-    connection_string = db_config["db_connection_string"]
-    conn = psycopg2.connect(connection_string)
-    cursor = conn.cursor()
-
     if len(tables_to_match) == 0:
         log.error("Nothing to match, but there should be...")
 
+    match_indicator = "UPDATE"
+
     for table, details in tables_to_match.items():
+        existing_data_details = details["existing_data"]
+
+        tables_with_fk_links_to_this_table = fks(
+            table_details=table_details, parent_table=table
+        )
         updates = []
 
         matching_data = get_matching_data(
-            db_config=db_config, table_name=table, table_details=details
+            db_config=db_config,
+            table_name=table,
+            existing_data_details=existing_data_details,
         )
 
         for match_col, match_ids in matching_data.items():
@@ -45,10 +48,14 @@ def match_existing_data(db_config, table_details):
                 method = '{match_indicator}',
                 pk_source = 'sirius'
                 WHERE id = {match_ids['migration_id']}
-                AND {details['match_field']} = '{match_col}';
+                AND {existing_data_details['match_field']} = '{match_col}';
             """
 
             updates.append(update_query)
+
+        connection_string = db_config["db_connection_string"]
+        conn = psycopg2.connect(connection_string)
+        cursor = conn.cursor()
 
         try:
             all_updates = " ".join(updates)
@@ -59,9 +66,18 @@ def match_existing_data(db_config, table_details):
         cursor.close()
         conn.commit()
 
-        tables_to_reindex_fks = fks(table_details=table_details, parent_table=table)
+        try:
+            update_fks(
+                db_config=db_config,
+                table_details=tables_with_fk_links_to_this_table,
+                match=True,
+            )
+        except Exception as e:
+            print(f"e: {e}")
 
-        update_fks(db_config=db_config, table_details=tables_to_reindex_fks)
+    # tables_to_reindex_fks = fks(table_details=table_details, parent_table=table)
+
+    # update_fks(db_config=db_config, table_details=tables_to_reindex_fks)
 
 
 def fks(table_details, parent_table):
@@ -82,19 +98,19 @@ def fks(table_details, parent_table):
     # print(tables_with_fks)
 
 
-def get_matching_data(db_config, table_name, table_details):
+def get_matching_data(db_config, table_name, existing_data_details):
 
     existing_records = get_records_to_match(
         schema=db_config["sirius_schema"],
         connection_string=db_config["sirius_db_connection_string"],
         table_name=table_name,
-        table_details=table_details,
+        table_details=existing_data_details,
     )
     new_records = get_records_to_match(
-        schema=db_config["target_schema"],
+        schema=db_config["source_schema"],
         connection_string=db_config["db_connection_string"],
         table_name=table_name,
-        table_details=table_details,
+        table_details=existing_data_details,
     )
 
     matching_records = {}
