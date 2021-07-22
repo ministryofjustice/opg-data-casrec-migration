@@ -4,7 +4,7 @@
 
 The purpose of this repo is to house all the code that we will use to perform the casrec to sirius migration.
 Having investigated AWS Glue & pyspark, we are using pandas dataframes to transform the data set into a form that can then be
-injested / inserted into Sirius platform.
+ingested / inserted into Sirius platform.
 
 We use AWS Localstack and postgres containers locally
 
