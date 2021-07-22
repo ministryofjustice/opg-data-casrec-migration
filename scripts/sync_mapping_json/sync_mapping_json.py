@@ -7,6 +7,11 @@ import boto3
 import os
 import click
 from botocore.exceptions import ClientError
+from pathlib import Path
+
+current_path = Path(os.path.dirname(os.path.realpath(__file__)))
+shared_path = f"{current_path}/../../migration_steps/shared"
+ci = os.getenv("CI")
 
 
 def assume_aws_session(account, role):
@@ -86,12 +91,12 @@ def pull_zip_file(bucket, client, source, file_name, version):
     except ClientError as e:
         logging.error(e)
 
-        return (False, version_details)
+        return False, version_details
     print(
         f"Downloaded {file_name.split('/')[-1]} version {version_details['version_id']} last modified {version_details['last_modified']}"
     )
 
-    return (True, version_details)
+    return True, version_details
 
 
 def extract_zip(file, extract_location):
@@ -109,28 +114,31 @@ def extract_zip(file, extract_location):
 @click.option("--s3_source", default="merged")
 @click.option("--version", default=None)
 def main(s3_source, version):
-    dirname = os.path.dirname(__file__)
-
     account = "288342028542"
-    role = "operator"
+    if ci == "true":
+        role = "migrations-ci"
+    else:
+        role = "operator"
+
     zip_file = "mappings.zip"
-    folder_prefix = os.path.join(dirname, "migration_steps", "shared")
     bucket_name = "casrec-migration-mappings-development"
     try:
-        if os.path.isdir(f"{folder_prefix}/mapping_definitions_old"):
-            shutil.rmtree(f"{folder_prefix}/mapping_definitions")
-            shutil.rmtree(f"{folder_prefix}/mapping_spreadsheet")
-            rename_folder(
-                f"{folder_prefix}/mapping_definitions_old",
-                f"{folder_prefix}/mapping_definitions",
-            )
+        if os.path.isdir(f"{shared_path}/mapping_definitions_old"):
+            shutil.rmtree(f"{shared_path}/mapping_definitions_old")
     except FileNotFoundError:
         pass
 
-    rename_folder(
-        f"{folder_prefix}/mapping_definitions",
-        f"{folder_prefix}/mapping_definitions_old",
-    )
+    try:
+        if os.path.isdir(f"{shared_path}/mapping_definitions"):
+            rename_folder(
+                f"{shared_path}/mapping_definitions",
+                f"{shared_path}/mapping_definitions_old",
+            )
+            shutil.rmtree(f"{shared_path}/mapping_definitions")
+            shutil.rmtree(f"{shared_path}/mapping_spreadsheet")
+    except FileNotFoundError:
+        pass
+
     s3_session = assume_aws_session(account, role)
     client = s3_session.client("s3")
 
@@ -138,11 +146,11 @@ def main(s3_source, version):
         bucket_name, client, s3_source, zip_file, version
     )
     if success:
-        extract_zip(zip_file, f"{folder_prefix}")
+        extract_zip(zip_file, f"{shared_path}")
         os.remove(zip_file)
 
         with open(
-            f"{folder_prefix}/mapping_definitions/summary/version.json", "w+"
+            f"{shared_path}/mapping_definitions/summary/version.json", "w+"
         ) as version_file:
             version_file.write(json.dumps(version_details))
     else:

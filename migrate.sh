@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-RELOAD="y"
-RESYNC="y"
+REBUILD_CASREC_CSV_SCHEMA="y"
+SYNC_CASREC_CSVS="y"
 SKIP_LOAD="false"
 PRESERVE_SCHEMAS=""
 LAY_TEAM=""
@@ -13,92 +13,104 @@ COMPOSE_ARGS=""
 if [ "${CI}" != "true" ]
 then
   # Skip this if sure the data in casrec_csv schema is correct)
-  read -p "Rebuild casrec_csv schema from .csv files? (y/n) [n]: " RELOAD
-  RELOAD=${RELOAD:-n}
-  echo $RELOAD
-  if [ "${RELOAD}" == "y" ]
+  read -rp "Rebuild casrec_csv schema from .csv files? (y/n) [n]: " REBUILD_CASREC_CSV_SCHEMA
+  REBUILD_CASREC_CSV_SCHEMA=${REBUILD_CASREC_CSV_SCHEMA:-n}
+  echo "${REBUILD_CASREC_CSV_SCHEMA}"
+  if [ "${REBUILD_CASREC_CSV_SCHEMA}" == "y" ]
   then
-      read -p "Sync local .csv files from S3? (y/n) [n]: " RESYNC
-      RESYNC=${RESYNC:-n}
-      echo ${RESYNC}
+      read -rp "Sync local .csv files from S3? (y/n) [n]: " SYNC_CASREC_CSVS
+      SYNC_CASREC_CSVS=${SYNC_CASREC_CSVS:-n}
+      echo "${SYNC_CASREC_CSVS}"
   else
     PRESERVE_SCHEMAS="casrec_csv"
     SKIP_LOAD="true"
   fi
-  read -p "Migrate specific Lay Team? (1-9) [All]: " LAY_TEAM
+
+  read -rp "Sync local mapping definition json files from S3? (y/n) [n]: " SYNC_MAPPINGS
+  SYNC_MAPPINGS=${SYNC_MAPPINGS:-n}
+  echo "${SYNC_MAPPINGS}"
+
+  read -rp "Migrate specific Lay Team? (1-9) [All]: " LAY_TEAM
   if [ "${LAY_TEAM}" == "" ]
   then
       echo "Migrating ALL Lay teams"
   else
       echo "Migrating Lay Team ${LAY_TEAM} only"
   fi
-  read -p "Migrate to full sirius app? (y/n) [n]: " FULL_SIRIUS_APP
+
+  read -rp "Migrate to full sirius app? (y/n) [n]: " FULL_SIRIUS_APP
   FULL_SIRIUS_APP=${FULL_SIRIUS_APP:-n}
-  echo ${FULL_SIRIUS_APP}
+  echo "${FULL_SIRIUS_APP}"
   if [ "${FULL_SIRIUS_APP}" == "y" ]
   then
       COMPOSE_ARGS="-f docker-compose.sirius.yml -f docker-compose.override.yml"
   fi
 fi
 
-START_TIME=`date +%s`
+START_TIME=$(date +%s)
 
 # Docker compose file for circle build
-docker-compose ${COMPOSE_ARGS} up --no-deps -d casrec_db localstack
+docker-compose "${COMPOSE_ARGS}" up --no-deps -d casrec_db localstack
 docker build base_image -t opg_casrec_migration_base_image:latest
 if [ "${FULL_SIRIUS_APP}" == "n" ]
 then
-  docker-compose ${COMPOSE_ARGS} up --no-deps -d postgres-sirius
-  docker-compose ${COMPOSE_ARGS} run --rm wait-for-it -address postgres-sirius:5432 --timeout=30 -debug
-  docker-compose ${COMPOSE_ARGS} up --no-deps -d postgres-sirius-restore
+  docker-compose "${COMPOSE_ARGS}" up --no-deps -d postgres-sirius
+  docker-compose "${COMPOSE_ARGS}" run --rm wait-for-it -address postgres-sirius:5432 --timeout=30 -debug
+  docker-compose "${COMPOSE_ARGS}" up --no-deps -d postgres-sirius-restore
 fi
-docker-compose ${COMPOSE_ARGS} run --rm wait-for-it -address casrec_db:5432 --timeout=30 -debug
-docker-compose ${COMPOSE_ARGS} run --rm wait-for-it -address localstack:4572 --timeout=30 -debug
+docker-compose "${COMPOSE_ARGS}" run --rm wait-for-it -address casrec_db:5432 --timeout=30 -debug
+docker-compose "${COMPOSE_ARGS}" run --rm wait-for-it -address localstack:4572 --timeout=30 -debug
 
-if [ "${RELOAD}" == "y" ]
+if [ "${REBUILD_CASREC_CSV_SCHEMA}" == "y" ]
 then
   if [ "${CI}" != "true" ]
   then
-      if [ ${RESYNC} == "y" ]
+      if [ ${SYNC_CASREC_CSVS} == "y" ]
       then
-        aws-vault exec identity -- docker-compose ${COMPOSE_ARGS} run --rm load_s3 ./local_s3.sh -s TRUE
+        aws-vault exec identity -- docker-compose "${COMPOSE_ARGS}" run --rm load_s3 ./local_s3.sh -s TRUE
       else
-        docker-compose ${COMPOSE_ARGS} run --rm load_s3 ./local_s3.sh
+        docker-compose "${COMPOSE_ARGS}" run --rm load_s3 ./local_s3.sh
       fi
   else
     RESTORE_DOCKER_ID=$(docker ps -a | grep sirius-restore | awk {'print $1'})
-    docker cp sirius_db/db_snapshots/api.backup ${RESTORE_DOCKER_ID}:/db_snapshots/api.backup
+    docker cp sirius_db/db_snapshots/api.backup "${RESTORE_DOCKER_ID}":/db_snapshots/api.backup
     docker-compose up --no-deps -d postgres-sirius-restore
   fi
 fi
-docker-compose ${COMPOSE_ARGS} run --rm prepare prepare/prepare.sh -i "${PRESERVE_SCHEMAS}"
+
+if [ "${SYNC_MAPPINGS}" == "y" ]
+then
+  av docker-compose -f docker-compose.commands.yml run --rm sync_mapping_json python3 /scripts/sync_mapping_json/sync_mapping_json.py
+fi
+
+docker-compose "${COMPOSE_ARGS}" run --rm prepare prepare/prepare.sh -i "${PRESERVE_SCHEMAS}"
 docker rm casrec_load_1 &>/dev/null || echo "casrec_load_1 does not exist. This is OK"
 docker rm casrec_load_2 &>/dev/null || echo "casrec_load_2 does not exist. This is OK"
 docker rm casrec_load_3 &>/dev/null || echo "casrec_load_3 does not exist. This is OK"
 docker rm casrec_load_4 &>/dev/null || echo "casrec_load_4 does not exist. This is OK"
-docker-compose ${COMPOSE_ARGS} run --rm --name casrec_load_1 load_casrec python3 load_casrec/app/app.py --delay=0 --skip_load="${SKIP_LOAD}" >> docker_load.log &
+docker-compose "${COMPOSE_ARGS}" run --rm --name casrec_load_1 load_casrec python3 load_casrec/app/app.py --delay=0 --skip_load="${SKIP_LOAD}" >> docker_load.log &
 P1=$!
-docker-compose ${COMPOSE_ARGS} run --rm --name casrec_load_2 load_casrec python3 load_casrec/app/app.py --delay=2 --skip_load="${SKIP_LOAD}" >> docker_load.log &
+docker-compose "${COMPOSE_ARGS}" run --rm --name casrec_load_2 load_casrec python3 load_casrec/app/app.py --delay=2 --skip_load="${SKIP_LOAD}" >> docker_load.log &
 P2=$!
-docker-compose ${COMPOSE_ARGS} run --rm --name casrec_load_3 load_casrec python3 load_casrec/app/app.py --delay=3 --skip_load="${SKIP_LOAD}" >> docker_load.log &
+docker-compose "${COMPOSE_ARGS}" run --rm --name casrec_load_3 load_casrec python3 load_casrec/app/app.py --delay=3 --skip_load="${SKIP_LOAD}" >> docker_load.log &
 P3=$!
-docker-compose ${COMPOSE_ARGS} run --rm --name casrec_load_4 load_casrec python3 load_casrec/app/app.py --delay=4 --skip_load="${SKIP_LOAD}" >> docker_load.log &
+docker-compose "${COMPOSE_ARGS}" run --rm --name casrec_load_4 load_casrec python3 load_casrec/app/app.py --delay=4 --skip_load="${SKIP_LOAD}" >> docker_load.log &
 P4=$!
 wait $P1 $P2 $P3 $P4
 cat docker_load.log
 rm docker_load.log
 echo "=== Step 1 - Transform ==="
-docker-compose ${COMPOSE_ARGS} run --rm transform_casrec transform_casrec/transform.sh --team="${LAY_TEAM}"
+docker-compose "${COMPOSE_ARGS}" run --rm transform_casrec transform_casrec/transform.sh --team="${LAY_TEAM}"
 echo "=== Step 2 - Integrate with Sirius ==="
-docker-compose ${COMPOSE_ARGS} run --rm integration integration/integration.sh --team="${LAY_TEAM}"
+docker-compose "${COMPOSE_ARGS}" run --rm integration integration/integration.sh --team="${LAY_TEAM}"
 echo "=== Step 3 - Validate Staging ==="
-docker-compose ${COMPOSE_ARGS} run --rm validation python3 /validation/validate_db/app/app.py --staging
+docker-compose "${COMPOSE_ARGS}" run --rm validation python3 /validation/validate_db/app/app.py --staging
 echo "=== Step 4 - Load to Sirius ==="
-docker-compose ${COMPOSE_ARGS} run --rm load_to_target load_to_sirius/load_to_sirius.sh
+docker-compose "${COMPOSE_ARGS}" run --rm load_to_target load_to_sirius/load_to_sirius.sh
 echo "=== Step 5 - Validate Sirius ==="
-docker-compose ${COMPOSE_ARGS} run --rm validation validation/validate.sh "$@"
+docker-compose "${COMPOSE_ARGS}" run --rm validation validation/validate.sh "$@"
 echo "=== Step 6 - API Tests ==="
-docker-compose ${COMPOSE_ARGS} run --rm validation validation/api_tests.sh
+docker-compose "${COMPOSE_ARGS}" run --rm validation validation/api_tests.sh
 if [ "${GENERATE_DOCS}" == "true" ]
   then
   echo "=== Generating new docs for Github Pages ==="
@@ -106,7 +118,7 @@ if [ "${GENERATE_DOCS}" == "true" ]
 fi
 echo "=== FINISHED! ==="
 
-END_TIME=`date +%s`
+END_TIME=$(date +%s)
 RUN_TIME=$((END_TIME-START_TIME))
 
 echo "Total Run Time: ${RUN_TIME} seconds"
