@@ -4,5 +4,6 @@ COPY prepare/prepare.sh /prepare/prepare.sh
 COPY prepare/prepare_target /prepare/prepare_target
 COPY prepare/create_stage_schema /prepare/create_stage_schema
 COPY prepare/case_details_to_s3 /prepare/case_details_to_s3
+COPY prepare/create_skeleton_data /prepare/create_skeleton_data
 COPY shared /shared
 CMD ["echo", "NO_OP"]
