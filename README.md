@@ -233,12 +233,12 @@ pre-commit run --all-files
 
 Downloads the latest version of the file that is used to generate the mapping json docs.
 
-Ensure you're in a virtual env that has the required dependencies and run:
-- Requires AWS Vault - if you don't have that, somebody in Ops should be able to help out
-- Assumes python requirements.txt installed as above
+You can sync as part of the normal migrate.sh job or alternatively, you can run the command below
+(requires AWS Vault - if you don't have that, somebody in Ops should be able to help out).
+
 
 ```bash
-aws-vault exec identity -- python3 import_mapping_definitions.py
+aws-vault exec identity -- docker-compose -f docker-compose.commands.yml run --rm sync_mapping_json python3 /scripts/sync_mapping_json/sync_mapping_json.py
 ```
 
 There are two flags:
