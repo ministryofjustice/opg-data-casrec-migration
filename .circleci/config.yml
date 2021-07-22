@@ -254,6 +254,12 @@ workflows:
           tf_workspace: preproduction
           environment: Preproduction
           filters: {branches:{only:[master]}}
+      - run_api_tests:
+          name: run api tests
+          requires: [run the step function preproduction]
+          tf_workspace: preproduction
+          environment: Preproduction
+          filters: {branches:{only:[master]}}
       - tag_image_for_environment:
           name: tag image for qa
           environment: Preproduction

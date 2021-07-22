@@ -23,3 +23,11 @@ if [ "${ENVIRONMENT}" == "local" ] \
 else
   echo "This create_stage_schema should not run on ${ENVIRONMENT}"
 fi
+
+if [ "${ENVIRONMENT}" == "local" ] \
+  || [ "${ENVIRONMENT}" == "development" ]
+  then
+  python3 "${DIR}/create_skeleton_data/app/app.py"
+else
+  echo "This create_stage_schema should not run on ${ENVIRONMENT}"
+fi
