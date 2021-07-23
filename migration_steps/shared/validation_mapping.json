@@ -559,15 +559,7 @@
         },
         "sirius": {
             "from_table": "visits",
-            "transform": {
-                "visitcreateddate": "to_char({col}, 'DD/MM/YY')",
-                "visitreportduedate": "to_char({col}, 'DD/MM/YY')",
-                "visitcompleteddate": "to_char({col}, 'DD/MM/YY')",
-                "visitreportrevieweddate": "to_char({col}, 'DD/MM/YY')",
-                "visitcommissiondate": "to_char({col}, 'DD/MM/YY')",
-                "firstextendedvisitreportduedate": "to_char({col}, 'DD/MM/YY')",
-                "secondextendedvisitreportduedate": "to_char({col}, 'DD/MM/YY')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = visits.client_id"
             ],
