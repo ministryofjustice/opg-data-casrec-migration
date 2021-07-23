@@ -22,7 +22,7 @@
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_bonds exc_table ON exc_table.caserecnumber = pat.\"Case\"\n",
             "where_clauses": [
-                "casrec_csv.order.\"Bond No.\" != ''"
+                "casrec_csv.order.\"Bond Rqd\" = 'Y'"
             ]
         },
         "sirius": {
