@@ -447,7 +447,10 @@ def write_column_validation_sql(
 
     # for SELECT DISTINCT, ORDER BY expressions must appear in select list
     for order_mapped_item_name, order_mapped_item in validation_dict["orderby"].items():
-        sql_add(f"{casrec_wrap(order_mapped_item)} AS {order_mapped_item_name},", 4)
+        sql_add(
+            f"{casrec_wrap(order_mapped_item['mapping_table'])} AS {order_mapped_item_name},",
+            4,
+        )
     # tested column
     sql_add(f"{col_source_casrec} AS {mapped_item_name}", 4)
     sql_add(
@@ -476,7 +479,10 @@ def write_column_validation_sql(
 
     # for SELECT DISTINCT, ORDER BY expressions must appear in select list
     for order_mapped_item_name, order_mapped_item in validation_dict["orderby"].items():
-        sql_add(f"{sirius_wrap(order_mapped_item)} AS {order_mapped_item_name},", 4)
+        sql_add(
+            f"{sirius_wrap(order_mapped_item['mapping_table'])} AS {order_mapped_item_name},",
+            4,
+        )
 
     # tested column
     sql_add(f"{col_source_sirius} AS {mapped_item_name}", 4)
