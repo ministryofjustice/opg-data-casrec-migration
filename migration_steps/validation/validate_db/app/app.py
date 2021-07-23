@@ -207,6 +207,10 @@ def wrap_sirius_col(mapped_item_key: str, col, col_definition):
     datatype = col_definition["sirius_details"]["data_type"]
     if datatype == "str":
         col = f"NULLIF(TRIM({col}), '')"
+    if datatype == "date":
+        col = f"CAST({col} as date)"
+    if datatype == "datetime":
+        col = f"cast({col} as timestamp)"
     if "current_date" == col_definition["transform_casrec"]["calculated"]:
         col = f"CAST({col} AS DATE)"
     return col
@@ -218,7 +222,11 @@ def wrap_casrec_col(mapped_item_key: str, col, col_definition):
 
     # other wrapping based on data type
     datatype = col_definition["sirius_details"]["data_type"]
-    if datatype not in ["bool", "int"]:
+    if datatype == "date":
+        col = f"CAST(NULLIF({col}, '') as date)"
+    elif datatype == "datetime":
+        col = f"CAST(NULLIF({col}, '') as date)"
+    elif datatype not in ["bool", "int"]:
         col = f"NULLIF(TRIM({col}), '')"
 
     # wrap transform
