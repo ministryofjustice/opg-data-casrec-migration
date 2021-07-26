@@ -83,13 +83,14 @@ def main(audit):
             table_details=tables_dict[table],
             chunk_size=db_config["chunk_size"],
         )
-        update_data_in_target(
-            db_config=db_config,
-            source_db_engine=source_db_engine,
-            table=table,
-            table_details=tables_dict[table],
-            chunk_size=db_config["chunk_size"],
-        )
+        # todo make this work!
+        # update_data_in_target(
+        #     db_config=db_config,
+        #     source_db_engine=source_db_engine,
+        #     table=table,
+        #     table_details=tables_dict[table],
+        #     chunk_size=db_config["chunk_size"],
+        # )
 
         completed_tables.append(table)
 
