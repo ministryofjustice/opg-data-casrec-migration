@@ -5,7 +5,8 @@ from pathlib import Path
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
-from get_skeleton_data import insert_skeleton_data
+
+from skeleton_data import insert_skeleton_data
 import time
 import psycopg2
 from helpers import get_config
@@ -40,7 +41,7 @@ db_config = {
 
 # logging
 log = logging.getLogger("root")
-custom_logger.setup_logging(env=environment, module_name="validate db")
+custom_logger.setup_logging(env=environment, module_name="skeleton data")
 conn_target = None
 
 skeleton_sqlfile = "skeleton_fixtures.sql"
@@ -51,6 +52,7 @@ def main():
     log.info(helpers.log_title(message="Skeleton Fixtures"))
     log.info("Adding skeleton fixtures\n")
     insert_skeleton_data(db_config=db_config)
+
     # target_connection = psycopg2.connect(config.get_db_connection_string("target"))
     # execute_sql_file(
     #     sql_path, skeleton_sqlfile, target_connection, config.schemas["public"]
