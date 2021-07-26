@@ -60,7 +60,10 @@ def get_mappings():
             "client_special_warnings",
             "client_violent_warnings",
         ],
-        "cases": ["cases", "supervision_level_log"],
+        "cases": [
+            "cases",
+            "supervision_level_log"
+        ],
         "bonds": ["bonds"],
         "deputies": [
             "deputy_persons",
