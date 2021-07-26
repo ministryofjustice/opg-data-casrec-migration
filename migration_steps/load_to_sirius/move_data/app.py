@@ -3,8 +3,8 @@ import os
 import sys
 from pathlib import Path
 
-from move import insert_data_into_target
-from move import update_data_in_target
+from insert_data import insert_data_into_target
+from update_data import update_data_in_target
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
