@@ -72,21 +72,26 @@ def main(audit):
         log.info(f"Finished Pre-Audit - Table Copies")
 
     for i, table in enumerate(tables_list):
-
         log.debug(f"This is table number {i + 1} of {len(tables_list)}")
+
+        if "existing_data" in tables_dict[table]:
+            log.info(f"Updating existing data in {table}")
+            update_data_in_target(
+                db_config=db_config,
+                source_db_engine=source_db_engine,
+                target_db_engine=target_db_engine,
+                table_name=table,
+                table_details=tables_dict[table],
+                chunk_size=db_config["chunk_size"],
+            )
+
+        log.info(f"Inserting new data into {table}")
 
         insert_data_into_target(
             db_config=db_config,
             source_db_engine=source_db_engine,
             target_db_engine=target_db_engine,
             table_name=table,
-            table_details=tables_dict[table],
-            chunk_size=db_config["chunk_size"],
-        )
-        update_data_in_target(
-            db_config=db_config,
-            source_db_engine=source_db_engine,
-            table=table,
             table_details=tables_dict[table],
             chunk_size=db_config["chunk_size"],
         )

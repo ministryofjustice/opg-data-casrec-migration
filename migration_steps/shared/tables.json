@@ -14,7 +14,8 @@
 					"condition_type": "equal",
 					"field": "type",
 					"value": "actor_client"
-				}]
+				}],
+			"keep_original_data": ["uid", "createddate"]
 		},
 		"sequences": [{
 			"name": "persons_id_seq",
