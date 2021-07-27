@@ -15,6 +15,8 @@ log = logging.getLogger("root")
 
 SPECIAL_CASES = ["addresses", "persons"]
 
+import numpy as np
+
 
 def handle_special_cases(table_name, df):
     if table_name == "addresses":
@@ -22,6 +24,7 @@ def handle_special_cases(table_name, df):
         df["address_lines"] = df["address_lines"].apply(json.dumps)
     if table_name == "persons":
         log.debug("Converting 'risk_score' to int")
+        df["risk_score"] = df["risk_score"].replace(np.NaN, None)
         df["risk_score"] = df["risk_score"].astype("Int64")
     return df
 
@@ -52,7 +55,7 @@ def get_columns_query(table, schema):
         """
 
 
-def remove_unecessary_columns(columns):
-    unecessary_field_names = ["method", "casrec_details"]
+def remove_unecessary_columns(columns, cols_to_keep=[]):
+    unecessary_field_names = ["method", "casrec_details"] + cols_to_keep
 
     return [column for column in columns if column not in unecessary_field_names]

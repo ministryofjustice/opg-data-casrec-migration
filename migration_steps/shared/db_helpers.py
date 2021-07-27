@@ -143,14 +143,18 @@ def copy_schema(
     with fileinput.FileInput(str(schema_dump), inplace=True) as file:
         for line in file:
             print(
-                line.replace(f'TO {from_config["user"]}', f'TO {to_config["user"]}',),
+                line.replace(
+                    f'TO {from_config["user"]}',
+                    f'TO {to_config["user"]}',
+                ),
                 end="",
             )
     with fileinput.FileInput(str(schema_dump), inplace=True) as file:
         for line in file:
             print(
                 line.replace(
-                    f'Owner: {from_config["user"]}', f'Owner: {to_config["user"]}',
+                    f'Owner: {from_config["user"]}',
+                    f'Owner: {to_config["user"]}',
                 ),
                 end="",
             )
@@ -248,8 +252,21 @@ def execute_insert(conn, df, table):
     cursor.close()
 
 
+def nan_to_null(
+    f,
+    _NULL=psycopg2.extensions.AsIs("NULL"),
+    _NaN=np.NaN,
+    _Float=psycopg2.extensions.Float,
+):
+    if f is not _NaN:
+        return _Float(f)
+    return _NULL
+
+
 def execute_update(conn, df, table, pk_col):
     # Just ensure that the primary key is the first column of the dataframe
+    psycopg2.extensions.register_adapter(float, nan_to_null)
+    psycopg2.extensions.register_adapter(int, nan_to_null)
 
     cols = list(df.columns)
     try:

@@ -105,7 +105,6 @@ def main(clear, team):
 
     log.info(f"Merge new data with existing data in Sirius")
     match_existing_data(db_config=db_config, table_details=all_enabled_tables)
-    # fks(db_config=db_config, table_details=all_enabled_tables)
 
     log.info(f"Reindex all primary keys")
     update_pks(db_config=db_config, table_details=enabled_tables)
