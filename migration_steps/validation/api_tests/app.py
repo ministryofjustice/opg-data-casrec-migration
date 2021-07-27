@@ -52,7 +52,7 @@ class ApiTests:
         self.s3_sess = None
         self.entities = {
             "local": [
-                # "clients",
+                "clients",
                 "orders",
                 "deputies",
                 "deputy_orders",
@@ -64,7 +64,7 @@ class ApiTests:
                 "crec",
             ],
             "development": [
-                # "clients",
+                "clients",
                 "orders",
                 "deputies",
                 "deputy_orders",
