@@ -588,16 +588,16 @@ class ApiTests:
 
 def main():
     csvs = [
-        "clients",
-        "orders",
-        "bonds",
-        "deputies",
-        "deputy_orders",
-        "deputy_clients_count",
-        "supervision_level",
-        "death_notifications",
-        "warnings",
-        "crec",
+        # "clients",
+        # "orders",
+        # "bonds",
+        # "deputies",
+        # "deputy_orders",
+        # "deputy_clients_count",
+        # "supervision_level",
+        # "death_notifications",
+        # "warnings",
+        # "crec",
     ]
 
     api_tests = ApiTests()
