@@ -31,6 +31,7 @@ def insert_visits(db_config, target_db, mapping_file):
         stage_name="sirius_details",
         only_complete_fields=False,
     )
+
     while True:
         try:
             visits_df = get_basic_data_table(

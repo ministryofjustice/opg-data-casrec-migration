@@ -20,6 +20,9 @@ from helpers import get_config, get_s3_session, upload_file
 
 # logging
 log = logging.getLogger("root")
+environment = os.environ.get("ENVIRONMENT")
+# Update to DEBUG for extra logging whilst developing
+custom_logger.setup_logging(env=environment, module_name="API tests", level="INFO")
 
 
 class ApiTests:
@@ -36,7 +39,6 @@ class ApiTests:
             else "preproduction"
         )
         self.password = os.environ.get("API_TEST_PASSWORD")
-        custom_logger.setup_logging(env=self.environment, module_name="API tests")
         self.bucket_name = f"casrec-migration-{self.account_name.lower() if self.account_name else None}"
         self.failed = False
         self.user = "case.manager@opgtest.com"
@@ -62,6 +64,8 @@ class ApiTests:
                 "death_notifications",
                 "warnings",
                 "crec",
+                "visits",
+                "reports",
             ],
             "development": [
                 "clients",
@@ -74,6 +78,8 @@ class ApiTests:
                 "death_notifications",
                 "warnings",
                 "crec",
+                "visits",
+                "reports",
             ],
             "preproduction": [
                 "clients",
@@ -194,7 +200,7 @@ class ApiTests:
         return ids
 
     def enhance_api_user_permissions(self):
-        roles = '{"OPG User":"OPG User","System Admin":"System Admin"}'
+        roles = '{"OPG User":"OPG User","Case Manager":"Case Manager","System Admin":"System Admin"}'
         sql = f"""
             UPDATE assignees
             SET roles = '{roles}'
@@ -230,7 +236,15 @@ class ApiTests:
         person_id_sql = self.get_person_sql(caserecnumber)
         order_id_sql = self.get_order_sql(caserecnumber)
         ids = []
-        if self.csv in ["clients", "bonds", "death_notifications", "warnings", "crec"]:
+        if self.csv in [
+            "clients",
+            "bonds",
+            "death_notifications",
+            "warnings",
+            "crec",
+            "visits",
+            "reports",
+        ]:
             ids = self.get_entity_ids_from_person_source(person_id_sql, caserecnumber)
         elif self.csv in [
             "orders",
@@ -598,11 +612,14 @@ def main():
         "death_notifications",
         "warnings",
         "crec",
+        "visits",
+        "reports",
     ]
 
     api_tests = ApiTests()
     api_tests.create_a_session()
     api_tests.enhance_api_user_permissions()
+
     for csv in csvs:
         api_tests.csv = csv
         api_tests.run_success_tests()

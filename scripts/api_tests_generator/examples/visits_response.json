@@ -1,0 +1,30 @@
+[{
+	"id": 160,
+	"visitType": {
+		"handle": "VT-SUP",
+		"label": "Supervision",
+		"deprecated": null
+	},
+	"visitSubType": {
+		"handle": "VST-PRO",
+		"label": "Pro Visit",
+		"deprecated": null
+	},
+	"visitUrgency": {
+		"handle": "VU-STAN",
+		"label": "Standard",
+		"deprecated": null
+	},
+	"whoToVisit": null,
+	"visitDueDate": "2021-01-01T00:00:00+00:00",
+	"visitCreatedDate": "2021-07-27T11:19:44+00:00",
+	"visitVisitorAllocated": null,
+	"visitCommissionDate": null,
+	"visitReportDueDate": null,
+	"visitCancellationReason": null,
+	"visitOutcome": null,
+	"visitCompletedDate": null,
+	"visitReportReceivedDate": null,
+	"visitReportMarkedAs": null,
+	"visitReportReviewedDate": null
+}]
