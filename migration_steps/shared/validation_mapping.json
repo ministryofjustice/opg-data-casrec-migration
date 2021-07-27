@@ -5,10 +5,6 @@
         ],
         "casenumber_source": "client_persons.caserecnumber",
         "orderby": {
-            "casesubtype": {
-                "mapping_table": "cases.casesubtype",
-                "direction": "ASC"
-            },
             "orderdate": {
                 "mapping_table": "cases.orderdate",
                 "direction": "ASC"
@@ -22,7 +18,7 @@
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_bonds exc_table ON exc_table.caserecnumber = pat.\"Case\"\n",
             "where_clauses": [
-                "casrec_csv.order.\"Bond No.\" != ''"
+                "casrec_csv.order.\"Bond Rqd\" = 'Y'"
             ]
         },
         "sirius": {
@@ -51,10 +47,6 @@
         ],
         "casenumber_source": "client_persons.caserecnumber",
         "orderby": {
-            "casesubtype": {
-                "mapping_table": "cases.casesubtype",
-                "direction": "ASC"
-            },
             "orderdate": {
                 "mapping_table": "cases.orderdate",
                 "direction": "ASC"
@@ -567,15 +559,7 @@
         },
         "sirius": {
             "from_table": "visits",
-            "transform": {
-                "visitcreateddate": "to_char({col}, 'DD/MM/YY')",
-                "visitreportduedate": "to_char({col}, 'DD/MM/YY')",
-                "visitcompleteddate": "to_char({col}, 'DD/MM/YY')",
-                "visitreportrevieweddate": "to_char({col}, 'DD/MM/YY')",
-                "visitcommissiondate": "to_char({col}, 'DD/MM/YY')",
-                "firstextendedvisitreportduedate": "to_char({col}, 'DD/MM/YY')",
-                "secondextendedvisitreportduedate": "to_char({col}, 'DD/MM/YY')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = visits.client_id"
             ],

@@ -4,7 +4,7 @@ from typing import Dict
 
 import helpers
 import pandas as pd
-
+import numpy as np
 
 log = logging.getLogger("root")
 environment = os.environ.get("ENVIRONMENT")
@@ -34,6 +34,16 @@ def apply_datatypes(mapping_details: Dict, df: pd.DataFrame) -> pd.DataFrame:
         try:
             if datatype == "datetime64[ns]":
                 df[col] = pd.to_datetime(df[col], errors="ignore")
+            elif datatype == "bool":
+                df[col] = np.where(
+                    df[col].isnull(),
+                    pd.NA,
+                    np.where(
+                        df[col] == "true",
+                        True,
+                        np.where(df[col] == "false", False, df[col]),
+                    ),
+                )
             else:
                 df[col] = df[col].astype(datatype)
         except Exception as e:
