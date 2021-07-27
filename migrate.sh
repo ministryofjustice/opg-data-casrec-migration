@@ -1,8 +1,9 @@
 #!/bin/bash
 set -e
 
-RELOAD="y"
-RESYNC="y"
+REBUILD_CASREC_CSV_SCHEMA="y"
+SYNC_CASREC_CSVS="y"
+SYNC_MAPPINGS="n"
 SKIP_LOAD="false"
 PRESERVE_SCHEMAS=""
 LAY_TEAM=""
@@ -13,35 +14,41 @@ COMPOSE_ARGS=""
 if [ "${CI}" != "true" ]
 then
   # Skip this if sure the data in casrec_csv schema is correct)
-  read -p "Rebuild casrec_csv schema from .csv files? (y/n) [n]: " RELOAD
-  RELOAD=${RELOAD:-n}
-  echo $RELOAD
-  if [ "${RELOAD}" == "y" ]
+  read -rp "Rebuild casrec_csv schema from .csv files? (y/n) [n]: " REBUILD_CASREC_CSV_SCHEMA
+  REBUILD_CASREC_CSV_SCHEMA=${REBUILD_CASREC_CSV_SCHEMA:-n}
+  echo "${REBUILD_CASREC_CSV_SCHEMA}"
+  if [ "${REBUILD_CASREC_CSV_SCHEMA}" == "y" ]
   then
-      read -p "Sync local .csv files from S3? (y/n) [n]: " RESYNC
-      RESYNC=${RESYNC:-n}
-      echo ${RESYNC}
+      read -rp "Sync local .csv files from S3? (y/n) [n]: " SYNC_CASREC_CSVS
+      SYNC_CASREC_CSVS=${SYNC_CASREC_CSVS:-n}
+      echo "${SYNC_CASREC_CSVS}"
   else
     PRESERVE_SCHEMAS="casrec_csv"
     SKIP_LOAD="true"
   fi
-  read -p "Migrate specific Lay Team? (1-9) [All]: " LAY_TEAM
+
+  read -rp "Sync local mapping definition json files from S3? (y/n) [n]: " SYNC_MAPPINGS
+  SYNC_MAPPINGS=${SYNC_MAPPINGS:-n}
+  echo "${SYNC_MAPPINGS}"
+
+  read -rp "Migrate specific Lay Team? (1-9) [All]: " LAY_TEAM
   if [ "${LAY_TEAM}" == "" ]
   then
       echo "Migrating ALL Lay teams"
   else
       echo "Migrating Lay Team ${LAY_TEAM} only"
   fi
-  read -p "Migrate to full sirius app? (y/n) [n]: " FULL_SIRIUS_APP
+
+  read -rp "Migrate to full sirius app? (y/n) [n]: " FULL_SIRIUS_APP
   FULL_SIRIUS_APP=${FULL_SIRIUS_APP:-n}
-  echo ${FULL_SIRIUS_APP}
+  echo "${FULL_SIRIUS_APP}"
   if [ "${FULL_SIRIUS_APP}" == "y" ]
   then
       COMPOSE_ARGS="-f docker-compose.sirius.yml -f docker-compose.override.yml"
   fi
 fi
 
-START_TIME=`date +%s`
+START_TIME=$(date +%s)
 
 # Docker compose file for circle build
 docker-compose ${COMPOSE_ARGS} up --no-deps -d casrec_db localstack
@@ -55,11 +62,11 @@ fi
 docker-compose ${COMPOSE_ARGS} run --rm wait-for-it -address casrec_db:5432 --timeout=30 -debug
 docker-compose ${COMPOSE_ARGS} run --rm wait-for-it -address localstack:4572 --timeout=30 -debug
 
-if [ "${RELOAD}" == "y" ]
+if [ "${REBUILD_CASREC_CSV_SCHEMA}" == "y" ]
 then
   if [ "${CI}" != "true" ]
   then
-      if [ ${RESYNC} == "y" ]
+      if [ ${SYNC_CASREC_CSVS} == "y" ]
       then
         aws-vault exec identity -- docker-compose ${COMPOSE_ARGS} run --rm load_s3 ./local_s3.sh -s TRUE
       else
@@ -67,10 +74,16 @@ then
       fi
   else
     RESTORE_DOCKER_ID=$(docker ps -a | grep sirius-restore | awk {'print $1'})
-    docker cp sirius_db/db_snapshots/api.backup ${RESTORE_DOCKER_ID}:/db_snapshots/api.backup
+    docker cp sirius_db/db_snapshots/api.backup "${RESTORE_DOCKER_ID}":/db_snapshots/api.backup
     docker-compose up --no-deps -d postgres-sirius-restore
   fi
 fi
+
+if [ "${SYNC_MAPPINGS}" == "y" ]
+then
+  aws-vault exec identity -- docker-compose -f docker-compose.commands.yml run --rm sync_mapping_json python3 /scripts/sync_mapping_json/sync_mapping_json.py
+fi
+
 docker-compose ${COMPOSE_ARGS} run --rm prepare prepare/prepare.sh -i "${PRESERVE_SCHEMAS}"
 docker rm casrec_load_1 &>/dev/null || echo "casrec_load_1 does not exist. This is OK"
 docker rm casrec_load_2 &>/dev/null || echo "casrec_load_2 does not exist. This is OK"
@@ -106,7 +119,7 @@ if [ "${GENERATE_DOCS}" == "true" ]
 fi
 echo "=== FINISHED! ==="
 
-END_TIME=`date +%s`
+END_TIME=$(date +%s)
 RUN_TIME=$((END_TIME-START_TIME))
 
 echo "Total Run Time: ${RUN_TIME} seconds"
