@@ -108,6 +108,7 @@ def main(clear, team):
 
     log.info(f"Reindex all primary keys")
     update_pks(db_config=db_config, table_details=enabled_tables)
+
     log.info(f"Reindex all foreign keys")
     update_fks(db_config=db_config, table_details=all_enabled_tables)
 

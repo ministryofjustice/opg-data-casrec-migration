@@ -7,6 +7,16 @@
 		"table_type": "data",
 		"pk": "id",
 		"fks": [],
+		"existing_data": {
+			"match_field": "caserecnumber",
+			"conditions": [
+				{
+					"condition_type": "equal",
+					"field": "type",
+					"value": "actor_client"
+				}],
+			"keep_original_data": ["uid", "createddate"]
+		},
 		"sequences": [{
 			"name": "persons_id_seq",
 			"column": "id",
