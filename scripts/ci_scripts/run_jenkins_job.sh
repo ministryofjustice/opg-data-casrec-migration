@@ -11,6 +11,7 @@ do
   esac
 done
 
+JOB_URL="https://jenkins.opg.service.justice.gov.uk/job/Sirius/job/Deploy_to_CasRec_Data_Migration_Preproduction"
 GREP_RETURN_CODE=0
 WAITED=0
 SECS_TO_WAIT=30
@@ -27,11 +28,10 @@ do
     echo "Waiting on previous job to finish for ${WAITED} seconds"
 done
 
-JOB_URL="https://jenkins.opg.service.justice.gov.uk/job/Sirius/job/Deploy_to_CasRec_Data_Migration_Preproduction"
 #Run the build
 echo "Running jenkins restore job against ${WORKSPACE}"
 
-curl -X POST ${JOB_URL}/buildWithParameters?WORKSPACE=${WORKSPACE}\&restore_data=true --user jenkins-opg:${API_KEY}
+curl -X POST ${JOB_URL}/buildWithParameters?WORKSPACE=${WORKSPACE}\&restore_data=false --user jenkins-opg:${API_KEY}
 
 sleep 30
 BUILD_NO=$(curl --silent ${LAST_BUILD_URL} --user jenkins-opg:${API_KEY} | jq ".number")

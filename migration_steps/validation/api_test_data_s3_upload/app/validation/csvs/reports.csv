@@ -1,3 +1,3 @@
-endpoint,entity_ref,test_purpose,full_check,[0]["dueDate"],[0]["reportingPeriodEndDate"],[0]["reportingPeriodStartDate"],[0]["revisedDueDate"],[0]["status"]["handle"],[0]["reviewStatus"]["handle"],[0]["randomReviewDate"]
-/api/v1/clients/{id}/annual-reports,10006413,dev_api_tests,FALSE,27/07/2021,27/07/2021,27/07/2021,,,NO_REVIEW,
-/api/v1/clients/{id}/annual-reports,10000884,dev_api_tests,FALSE,27/07/2021,27/07/2021,27/07/2021,,,NO_REVIEW,
+endpoint,entity_ref,test_purpose,full_check,[0]["status"]["handle"],[0]["reviewStatus"]["handle"]
+/api/v1/clients/{id}/annual-reports,10006413,dev_api_tests,FALSE,,NO_REVIEW
+/api/v1/clients/{id}/annual-reports,10000884,dev_api_tests,FALSE,,NO_REVIEW

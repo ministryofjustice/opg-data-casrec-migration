@@ -1,4 +1,5 @@
 import requests
+import time
 import json
 import jsonschema
 import re
@@ -22,7 +23,7 @@ from helpers import get_config, get_s3_session, upload_file
 log = logging.getLogger("root")
 environment = os.environ.get("ENVIRONMENT")
 # Update to DEBUG for extra logging whilst developing
-custom_logger.setup_logging(env=environment, module_name="API tests", level="INFO")
+custom_logger.setup_logging(env=environment, level="INFO", module_name="API tests")
 
 
 class ApiTests:
@@ -281,6 +282,27 @@ class ApiTests:
         log.debug(f"returning: {entity_ids}")
         return entity_ids
 
+    def get_response_obj(self, endpoint_final):
+        status_code = 500
+        response_text = None
+        retry_count = 0
+
+        while (status_code > 201 or response_text is None) and retry_count < 5:
+            response = self.session["sess"].get(
+                f'{self.session["base_url"]}{endpoint_final}',
+                headers=self.session["headers_dict"],
+            )
+            response_text = response.text
+            status_code = response.status_code
+            if retry_count > 0:
+                self.api_log(
+                    f"Failed request to {endpoint_final} with status {status_code}. Retrying in 3 seconds..."
+                )
+                time.sleep(3)
+            retry_count += 1
+
+        return response_text
+
     def get_formatted_api_response(
         self, entity_ids, endpoint, headers_to_check, row, entity_ref
     ):
@@ -291,11 +313,9 @@ class ApiTests:
         for entity_id in entity_ids:
             endpoint_final = self.get_endpoint_final(entity_id, endpoint)
             self.api_log(f"Checking responses from: {endpoint_final}")
-            response = self.session["sess"].get(
-                f'{self.session["base_url"]}{endpoint_final}',
-                headers=self.session["headers_dict"],
-            )
-            json_obj = json.loads(response.text)
+
+            response_text = self.get_response_obj(endpoint_final)
+            json_obj = json.loads(response_text)
 
             for header in headers_to_check:
                 var_to_eval = f"json_obj{header}"
