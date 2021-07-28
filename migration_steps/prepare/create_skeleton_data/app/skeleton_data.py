@@ -1090,4 +1090,4 @@ def insert_skeleton_data(db_config):
     sirius_db_engine = create_engine(db_config["sirius_db_connection_string"])
 
     insert_client_data_into_sirius(db_config, sirius_db_engine)
-    insert_client_address_data_into_sirius(db_config, sirius_db_engine)
+    # insert_client_address_data_into_sirius(db_config, sirius_db_engine)
