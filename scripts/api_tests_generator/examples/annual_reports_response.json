@@ -1,0 +1,34 @@
+[{
+	"annualReportTypes": [],
+	"isMaxDueDateInTheFuture": false,
+	"reportDueReminderDate": "09\/11\/2015",
+	"id": 35,
+	"dueDate": "21\/12\/2015",
+	"reportingPeriodEndDate": "30\/11\/2015",
+	"reportingPeriodStartDate": "01\/12\/2014",
+	"revisedDueDate": null,
+	"numberOfChaseLetters": 0,
+	"status": {
+		"handle": "NON_COMPLIANT",
+		"label": "Non-compliant",
+		"deprecated": null
+	},
+	"reviewStatus": {
+		"handle": "NO_REVIEW",
+		"label": "No Review",
+		"deprecated": null
+	},
+	"randomReviewDate": null,
+	"reasonForReviewStatusChange": null,
+	"annualReportTypeAssignments": [],
+	"abandonedDate": null,
+	"receivedDate": null,
+	"reasonForAbandonment": null,
+	"lodgingDetail": null,
+	"caseSupervisionLevel": null,
+	"reviewDecision": null,
+	"reasonForFinalDecision": null,
+	"reviewDate": null,
+	"reviewedBy": null,
+	"order": null
+}]

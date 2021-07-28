@@ -12,12 +12,26 @@ do
 done
 
 JOB_URL="https://jenkins.opg.service.justice.gov.uk/job/Sirius/job/Deploy_to_CasRec_Data_Migration_Preproduction"
+GREP_RETURN_CODE=0
+WAITED=0
+SECS_TO_WAIT=30
+LAST_BUILD_URL="${JOB_URL}/lastBuild/api/json"
+
+echo "Checking if previous job is running against ${WORKSPACE}"
+while [ $GREP_RETURN_CODE -eq 0 ]
+do
+    # Grep will return 0 while a build is running
+    curl --silent ${LAST_BUILD_URL} --user jenkins-opg:${API_KEY} | jq ".result" | grep "null" > /dev/null
+    GREP_RETURN_CODE=$?
+    sleep ${SECS_TO_WAIT}
+    WAITED=$((WAITED + SECS_TO_WAIT))
+    echo "Waiting on previous job to finish for ${WAITED} seconds"
+done
+
 #Run the build
 echo "Running jenkins restore job against ${WORKSPACE}"
 
-curl -X POST ${JOB_URL}/buildWithParameters?WORKSPACE=${WORKSPACE}\&restore_data=true --user jenkins-opg:${API_KEY}
-
-LAST_BUILD_URL="${JOB_URL}/lastBuild/api/json"
+curl -X POST ${JOB_URL}/buildWithParameters?WORKSPACE=${WORKSPACE}\&restore_data=false --user jenkins-opg:${API_KEY}
 
 sleep 30
 BUILD_NO=$(curl --silent ${LAST_BUILD_URL} --user jenkins-opg:${API_KEY} | jq ".number")

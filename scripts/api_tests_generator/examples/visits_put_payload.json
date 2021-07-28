@@ -1,0 +1,25 @@
+{
+	"whoToVisit": {
+		"handle": "VPT-CLIENT",
+		"label": "Client"
+	},
+	"visitVisitorAllocated": "Richard Richardson",
+	"visitCommissionDate": "02/02/2021",
+	"visitReportDueDate": "02/02/2021",
+	"visitOutcome": {
+		"handle": "SUCCESSFUL",
+		"label": "Successful"
+	},
+	"visitCancellationReason": null,
+	"visitCompletedDate": "02/02/2021",
+	"visitReportReceivedDate": "02/02/2021",
+	"visitReportMarkedAs": {
+		"handle": "GREEN",
+		"label": "Green"
+	},
+	"visitReportReviewedDate": "02/02/2021"
+}
+
+//Route: /api/v1/clients/6231/visits/160
+//Content Type: application/json
+//Verb: PUT

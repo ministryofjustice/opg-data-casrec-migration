@@ -145,6 +145,5 @@ if __name__ == "__main__":
     t = time.process_time()
 
     main()
-    # this is a pointless comment
 
     print(f"Total time: {round(time.process_time() - t, 2)}")

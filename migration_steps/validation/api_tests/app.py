@@ -1,4 +1,5 @@
 import requests
+import time
 import json
 import jsonschema
 import re
@@ -20,6 +21,9 @@ from helpers import get_config, get_s3_session, upload_file
 
 # logging
 log = logging.getLogger("root")
+environment = os.environ.get("ENVIRONMENT")
+# Update to DEBUG for extra logging whilst developing
+custom_logger.setup_logging(env=environment, level="INFO", module_name="API tests")
 
 
 class ApiTests:
@@ -36,7 +40,6 @@ class ApiTests:
             else "preproduction"
         )
         self.password = os.environ.get("API_TEST_PASSWORD")
-        custom_logger.setup_logging(env=self.environment, module_name="API tests")
         self.bucket_name = f"casrec-migration-{self.account_name.lower() if self.account_name else None}"
         self.failed = False
         self.user = "case.manager@opgtest.com"
@@ -62,6 +65,8 @@ class ApiTests:
                 "death_notifications",
                 "warnings",
                 "crec",
+                "visits",
+                "reports",
             ],
             "development": [
                 "clients",
@@ -74,6 +79,8 @@ class ApiTests:
                 "death_notifications",
                 "warnings",
                 "crec",
+                "visits",
+                "reports",
             ],
             "preproduction": [
                 "clients",
@@ -194,7 +201,7 @@ class ApiTests:
         return ids
 
     def enhance_api_user_permissions(self):
-        roles = '{"OPG User":"OPG User","System Admin":"System Admin"}'
+        roles = '{"OPG User":"OPG User","Case Manager":"Case Manager","System Admin":"System Admin"}'
         sql = f"""
             UPDATE assignees
             SET roles = '{roles}'
@@ -230,7 +237,15 @@ class ApiTests:
         person_id_sql = self.get_person_sql(caserecnumber)
         order_id_sql = self.get_order_sql(caserecnumber)
         ids = []
-        if self.csv in ["clients", "bonds", "death_notifications", "warnings", "crec"]:
+        if self.csv in [
+            "clients",
+            "bonds",
+            "death_notifications",
+            "warnings",
+            "crec",
+            "visits",
+            "reports",
+        ]:
             ids = self.get_entity_ids_from_person_source(person_id_sql, caserecnumber)
         elif self.csv in [
             "orders",
@@ -267,6 +282,27 @@ class ApiTests:
         log.debug(f"returning: {entity_ids}")
         return entity_ids
 
+    def get_response_obj(self, endpoint_final):
+        status_code = 500
+        response_text = None
+        retry_count = 0
+
+        while (status_code > 201 or response_text is None) and retry_count < 5:
+            response = self.session["sess"].get(
+                f'{self.session["base_url"]}{endpoint_final}',
+                headers=self.session["headers_dict"],
+            )
+            response_text = response.text
+            status_code = response.status_code
+            if retry_count > 0:
+                self.api_log(
+                    f"Failed request to {endpoint_final} with status {status_code}. Retrying in 3 seconds..."
+                )
+                time.sleep(3)
+            retry_count += 1
+
+        return response_text
+
     def get_formatted_api_response(
         self, entity_ids, endpoint, headers_to_check, row, entity_ref
     ):
@@ -277,11 +313,9 @@ class ApiTests:
         for entity_id in entity_ids:
             endpoint_final = self.get_endpoint_final(entity_id, endpoint)
             self.api_log(f"Checking responses from: {endpoint_final}")
-            response = self.session["sess"].get(
-                f'{self.session["base_url"]}{endpoint_final}',
-                headers=self.session["headers_dict"],
-            )
-            json_obj = json.loads(response.text)
+
+            response_text = self.get_response_obj(endpoint_final)
+            json_obj = json.loads(response_text)
 
             for header in headers_to_check:
                 var_to_eval = f"json_obj{header}"
@@ -598,11 +632,14 @@ def main():
         "death_notifications",
         "warnings",
         "crec",
+        "visits",
+        "reports",
     ]
 
     api_tests = ApiTests()
     api_tests.create_a_session()
     api_tests.enhance_api_user_permissions()
+
     for csv in csvs:
         api_tests.csv = csv
         api_tests.run_success_tests()

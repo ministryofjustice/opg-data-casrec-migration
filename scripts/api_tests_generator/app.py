@@ -69,7 +69,15 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
 
     ids = []
 
-    if csv_type in ["clients", "bonds", "death_notifications", "warnings", "crec"]:
+    if csv_type in [
+        "clients",
+        "bonds",
+        "death_notifications",
+        "warnings",
+        "crec",
+        "visits",
+        "reports",
+    ]:
         entity_ids = engine.execute(person_id_sql)
         if entity_ids.rowcount > 1:
             print(f"Too many matching rows for {caserecnumber}")
@@ -332,7 +340,28 @@ deputy_orders_headers = [
 
 deputy_client_count = []
 
-csvs = ["deputy_orders"]
+visits_headers = [
+    '[0]["visitType"]["handle"]',
+    '[0]["visitSubType"]["handle"]',
+    '[0]["whoToVisit"]',
+    '[0]["visitDueDate"]',
+    '[0]["visitCreatedDate"]',
+    '[0]["visitCancellationReason"]',
+    '[0]["visitOutcome"]',
+    '[0]["visitCompletedDate"]',
+]
+
+reports_headers = [
+    '[0]["dueDate"]',
+    '[0]["reportingPeriodEndDate"]',
+    '[0]["reportingPeriodStartDate"]',
+    '[0]["revisedDueDate"]',
+    '[0]["status"]["handle"]',
+    '[0]["reviewStatus"]["handle"]',
+    '[0]["randomReviewDate"]',
+]
+
+csvs = ["reports"]
 
 search_headers = [
     "endpoint",

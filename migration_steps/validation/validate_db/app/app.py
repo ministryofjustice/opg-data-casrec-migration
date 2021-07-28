@@ -223,9 +223,9 @@ def wrap_casrec_col(mapped_item_key: str, col, col_definition):
     # other wrapping based on data type
     datatype = col_definition["sirius_details"]["data_type"]
     if datatype == "date":
-        col = f"CAST(NULLIF({col}, '') as date)"
+        col = f"CAST(NULLIF(NULLIF({col}, ''), 'NaT') as date)"
     elif datatype == "datetime":
-        col = f"CAST(NULLIF({col}, '') as date)"
+        col = f"CAST(NULLIF(NULLIF({col}, ''), 'NaT') as date)"
     elif datatype not in ["bool", "int"]:
         col = f"NULLIF(TRIM({col}), '')"
 
@@ -365,8 +365,7 @@ def build_validation_statements(mapping_name):
 
     # FROM, with JOINs
     sql_add(
-        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}",
-        2,
+        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}", 2,
     )
     for join in validation_dict["casrec"]["joins"]:
         sql_add(f"{join}", 2)
@@ -407,8 +406,7 @@ def build_validation_statements(mapping_name):
 
     # FROM, with JOINs
     sql_add(
-        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}",
-        2,
+        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}", 2,
     )
     for join in validation_dict["sirius"]["joins"]:
         join = join.replace("{target_schema}", str(target_schema))
@@ -462,8 +460,7 @@ def write_column_validation_sql(
     # tested column
     sql_add(f"{col_source_casrec} AS {mapped_item_name}", 4)
     sql_add(
-        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}",
-        3,
+        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}", 3,
     )
     for join in validation_dict["casrec"]["joins"]:
         sql_add(f"{join}", 3)
@@ -495,8 +492,7 @@ def write_column_validation_sql(
     # tested column
     sql_add(f"{col_source_sirius} AS {mapped_item_name}", 4)
     sql_add(
-        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}",
-        3,
+        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}", 3,
     )
     for join in validation_dict["sirius"]["joins"]:
         join = join.replace("{target_schema}", str(target_schema))
