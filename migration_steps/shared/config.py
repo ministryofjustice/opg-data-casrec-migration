@@ -97,7 +97,7 @@ class BaseConfig:
 
     def enabled_feature_flags(self, env):
 
-        if env in ["qa", "production"]:
+        if env in ["preproduction", "qa", "production"]:
             return [k for k, v in self.QA_FEATURE_FLAGS.items() if v is True]
         else:
             return [k for k, v in self.DEV_FEATURE_FLAGS.items() if v is True]
