@@ -59,15 +59,13 @@ allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
 tables_list = table_helpers.get_table_list(table_helpers.get_table_file())
 
 enabled_tables = table_helpers.get_enabled_table_details()
-if "additional_data" not in allowed_entities:
-
-    log.info("additional_data entity not enabled, exiting")
-    enabled_extra_tables = {}
-
-else:
+if "additional_data" in config.enabled_feature_flags(env=environment):
     enabled_extra_tables = table_helpers.get_enabled_table_details(
         file_name="additional_data_tables"
     )
+else:
+    enabled_extra_tables = {}
+
 
 all_enabled_tables = {**enabled_tables, **enabled_extra_tables}
 
@@ -126,6 +124,11 @@ def main(clear, team):
         )
     )
     log.info(log_title(message=f"Enabled entities: {', '.join(allowed_entities)}"))
+    log.info(
+        log_title(
+            message=f"Enabled features: {', '.join(config.enabled_feature_flags(env=os.environ.get('ENVIRONMENT')))}"
+        )
+    )
     log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
     work = [base_data, inserts]
