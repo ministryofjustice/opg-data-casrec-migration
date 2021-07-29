@@ -101,6 +101,11 @@ def main(clear, team, chunk_size):
         )
     )
     log.info(log_title(message=f"Enabled entities: {', '.join(allowed_entities)}"))
+    log.info(
+        log_title(
+            message=f"Enabled features: {', '.join(config.enabled_feature_flags(env=os.environ.get('ENVIRONMENT')))}"
+        )
+    )
     log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
     version_details = helpers.get_json_version()
     log.info(

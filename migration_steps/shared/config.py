@@ -89,9 +89,18 @@ class BaseConfig:
         "tasks": [],
         "visits": ["local", "development"],
         "warnings": ["local", "development"],
-        "additional_data": [],
         "death": ["local", "development"],
     }
+
+    DEV_FEATURE_FLAGS = {"match_existing_data": True, "additional_data": False}
+    QA_FEATURE_FLAGS = {"match_existing_data": False, "additional_data": False}
+
+    def enabled_feature_flags(self, env):
+
+        if env in ["preproduction", "qa", "production"]:
+            return [k for k, v in self.QA_FEATURE_FLAGS.items() if v is True]
+        else:
+            return [k for k, v in self.DEV_FEATURE_FLAGS.items() if v is True]
 
     def allowed_entities(self, env):
         if env in ["preproduction", "qa", "production"]:

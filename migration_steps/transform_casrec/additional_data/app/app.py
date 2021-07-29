@@ -69,6 +69,11 @@ def main(clear):
         )
     )
     log.info(log_title(message=f"Enabled entities: {', '.join(allowed_entities)}"))
+    log.info(
+        log_title(
+            message=f"Enabled features: {', '.join(config.enabled_feature_flags(env=os.environ.get('ENVIRONMENT')))}"
+        )
+    )
 
     log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
     version_details = helpers.get_json_version()
@@ -76,8 +81,7 @@ def main(clear):
         f"Using JSON def version '{version_details['version_id']}' last updated {version_details['last_modified']}"
     )
 
-    if "additional_data" not in allowed_entities:
-
+    if "additional_data" not in config.enabled_feature_flags(env=environment):
         log.info("additional_data entity not enabled, exiting")
         return False
 
