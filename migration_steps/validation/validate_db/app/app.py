@@ -261,7 +261,7 @@ def get_casrec_calculated_value(col_key: str):
         + "'"  # just do today's date
     }
     return callables.get(
-        mapping_dict[mapped_item_key]["transform_casrec"]["calculated"]
+        mapping_dict[col_key]["transform_casrec"]["calculated"]
     )
 
 
