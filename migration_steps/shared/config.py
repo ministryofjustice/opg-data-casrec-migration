@@ -93,11 +93,12 @@ class BaseConfig:
     }
 
     DEV_FEATURE_FLAGS = {"match_existing_data": True, "additional_data": False}
+    QA_FEATURE_FLAGS = {"match_existing_data": False, "additional_data": False}
 
     def enabled_feature_flags(self, env):
 
         if env in ["qa", "production"]:
-            return [k for k, v in self.DEV_FEATURE_FLAGS.items() if v is True]
+            return [k for k, v in self.QA_FEATURE_FLAGS.items() if v is True]
         else:
             return [k for k, v in self.DEV_FEATURE_FLAGS.items() if v is True]
 
