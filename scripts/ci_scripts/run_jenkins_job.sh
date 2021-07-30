@@ -31,7 +31,7 @@ done
 #Run the build
 echo "Running jenkins restore job against ${WORKSPACE}"
 
-curl -X POST ${JOB_URL}/buildWithParameters?WORKSPACE=${WORKSPACE}\&restore_data=false --user jenkins-opg:${API_KEY}
+curl -X POST ${JOB_URL}/buildWithParameters?WORKSPACE=${WORKSPACE}\&restore_data=true --user jenkins-opg:${API_KEY}
 
 sleep 30
 BUILD_NO=$(curl --silent ${LAST_BUILD_URL} --user jenkins-opg:${API_KEY} | jq ".number")
