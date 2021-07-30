@@ -11,6 +11,7 @@ import pandas as pd
 
 import utilities
 
+
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../shared")
 
@@ -19,6 +20,47 @@ import db_helpers
 
 
 log = logging.getLogger("root")
+
+
+def create_update_statement(schema, table_name, columns, df):
+
+    log.debug(
+        f"Updating {len(df)} rows",
+        extra={"table_name": table_name, "size": len(df), "action": "insert"},
+    )
+
+    if table_name in utilities.SPECIAL_CASES:
+        df = utilities.handle_special_cases(table_name=table_name, df=df)
+
+    updates = []
+    d = df.to_dict(orient="records")
+    for row in d:
+        source_id = row["id"]
+        del row["id"]
+        update_statement = f"UPDATE {schema}.{table_name} SET "
+
+        row = {col: str(data) for col, data in row.items()}
+        row = {
+            col: utilities.replace_with_sql_friendly_chars_single(val=data)
+            for col, data in row.items()
+        }
+
+        row = {
+            col: f"'{str(data)}'" if str(data) != "" else "NULL"
+            for col, data in row.items()
+        }
+
+        for i, (col, data) in enumerate(row.items()):
+            update_statement += f"{col} = {data}"
+
+            if i + 1 < len(row):
+                update_statement += ", "
+
+        update_statement += f" WHERE id = {source_id}"
+
+        updates.append(update_statement)
+
+    return updates
 
 
 def update_data_in_target(
@@ -57,17 +99,18 @@ def update_data_in_target(
 
     log.debug(f"Using source query to get update data: {query}")
 
-    data_to_insert = pd.read_sql_query(
+    data_to_update = pd.read_sql_query(
         sql=query, con=db_config["source_db_connection_string"]
     )
-    if table_name in utilities.SPECIAL_CASES:
-        data_to_insert = utilities.handle_special_cases(
-            table_name=table_name, df=data_to_insert
-        )
 
-    connection_string = db_config["target_db_connection_string"]
-    conn = psycopg2.connect(connection_string)
-
-    db_helpers.execute_update(
-        conn=conn, df=data_to_insert, table=table_name, pk_col="id"
+    updates = create_update_statement(
+        schema=db_config["target_schema"],
+        table_name=table_name,
+        columns=columns,
+        df=data_to_update,
     )
+
+    try:
+        target_db_engine.execute("; ".join(updates))
+    except Exception as e:
+        print(f"e: {e}")
