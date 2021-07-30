@@ -60,7 +60,10 @@ def get_mappings():
             "client_special_warnings",
             "client_violent_warnings",
         ],
-        "cases": ["cases", "supervision_level_log"],
+        "cases": [
+            "cases",
+            "supervision_level_log"
+        ],
         "bonds": ["bonds"],
         "deputies": [
             "deputy_persons",
@@ -190,49 +193,39 @@ def build_lookup_functions():
     sql_add("")
 
 
-def wrap_override_sql(mapped_item_key: str, side, item):
+def wrap_override_sql(col_name: str, side, sql):
     transform_cols = validation_dict[side]["transform"]
-    if mapped_item_key in transform_cols.keys():
-        item = validation_dict["sirius"]["transform"][mapped_item_key].replace(
-            "{col}", str(item)
+    if col_name in transform_cols.keys():
+        sql = validation_dict[side]["transform"][col_name].replace(
+            "{col}", str(sql)
         )
-    return item
+    return sql
 
 
-def wrap_sirius_col(mapped_item_key: str, col, col_definition):
+def wrap_sirius_col(col_name: str, col_definition, sql: str):
     # first wrap override, if any
-    col = wrap_override_sql(mapped_item_key, "sirius", col)
+    sql = wrap_override_sql(col_name, "sirius", sql)
 
-    # other wrapping based on data type
-    datatype = col_definition["sirius_details"]["data_type"]
-    if datatype == "str":
-        col = f"NULLIF(TRIM({col}), '')"
-    if datatype == "date":
-        col = f"CAST({col} as date)"
-    if datatype == "datetime":
-        col = f"cast({col} as timestamp)"
-    if "current_date" == col_definition["transform_casrec"]["calculated"]:
-        col = f"CAST({col} AS DATE)"
-    return col
+    # convert empty strings to NULL
+    if "str" == col_definition["sirius_details"]["data_type"]:
+        sql = f"NULLIF(TRIM({sql}), '')"
+    return sql
 
 
-def wrap_casrec_col(mapped_item_key: str, col, col_definition):
+def wrap_casrec_col(col_name: str, col_definition, sql: str):
     # first wrap override, if any
-    col = wrap_override_sql(mapped_item_key, "casrec", col)
+    sql = wrap_override_sql(col_name, "casrec", sql)
 
-    # other wrapping based on data type
-    datatype = col_definition["sirius_details"]["data_type"]
-    if datatype == "date":
-        col = f"CAST(NULLIF(NULLIF({col}, ''), 'NaT') as date)"
-    elif datatype == "datetime":
-        col = f"CAST(NULLIF(NULLIF({col}, ''), 'NaT') as date)"
-    elif datatype not in ["bool", "int"]:
-        col = f"NULLIF(TRIM({col}), '')"
+    # convert empty strings to NULL
+    if (
+        col_definition["sirius_details"]["data_type"] not in ["bool", "int"]
+    ):
+        sql = f"NULLIF(TRIM({sql}), '')"
 
-    # wrap transform
+    # wrap transform, if required
     if col_definition["transform_casrec"]["requires_transformation"]:
         transform_func = col_definition["transform_casrec"]["requires_transformation"]
-        col = f"transf_{transform_func}({col})"
+        sql = f"transf_{transform_func}({sql})"
 
     # calculated = col_definition["transform_casrec"]["calculated"]
     # cast to datatype - why are we casting casrec side to anything at all??
@@ -246,12 +239,12 @@ def wrap_casrec_col(mapped_item_key: str, col, col_definition):
     # elif datatype in ["int"]:
     #     col = f"CAST({col} AS INT)"
 
-    return col
+    return sql
 
 
-def get_casrec_default_value(mapped_item_key: str):
-    default_value = mapping_dict[mapped_item_key]["transform_casrec"]["default_value"]
-    data_type = mapping_dict[mapped_item_key]["sirius_details"]["data_type"]
+def get_casrec_default_value(mapped_col_key: str):
+    default_value = mapping_dict[mapped_col_key]["transform_casrec"]["default_value"]
+    data_type = mapping_dict[mapped_col_key]["sirius_details"]["data_type"]
 
     if data_type in ["date", "datetime", "str"]:
         default_value = f"'{default_value}'"
@@ -261,73 +254,79 @@ def get_casrec_default_value(mapped_item_key: str):
     return default_value
 
 
-def get_casrec_calculated_value(mapped_item_key: str):
+def get_casrec_calculated_value(col_key: str):
     callables = {
         "current_date": "'"
         + datetime.now().strftime("%Y-%m-%d")
         + "'"  # just do today's date
     }
     return callables.get(
-        mapping_dict[mapped_item_key]["transform_casrec"]["calculated"]
+        mapping_dict[col_key]["transform_casrec"]["calculated"]
     )
 
 
-def get_mapping_config_for_column(mapped_item_key: str):
-    pieces = mapped_item_key.split(".")
-    if len(pieces) == 1:
-        col_definition = mapping_dict[mapped_item_key]
+def get_col_definition(col_key: str):
+    col_key_parts = col_key.split(".")
+    if len(col_key_parts) == 1:
+        # 'local' definition from same json
+        col_definition = mapping_dict[col_key_parts[0]]
     else:
+        # definition exists in other json
         col_mapping = helpers.get_mapping_dict(
-            file_name=pieces[0] + "_mapping",
+            file_name=col_key_parts[0] + "_mapping",
             only_complete_fields=True,
             include_pk=False,
         )
-        col_definition = col_mapping[pieces[1]]
-
+        col_definition = col_mapping[col_key_parts[1]]
     return col_definition
 
 
-def get_sirius_col_source(mapped_item_key: str, col_definition):
-    pieces = mapped_item_key.split(".")
-    if len(pieces) == 1:
-        col_name = pieces[0]
-    else:
-        col_name = pieces[1]
+def get_sirius_col_source(col_name: str, col_definition):
     table = col_definition["sirius_details"]["table_name"]
-    col = f"{table}.{col_name}"
-    return col
+    sql = f"{table}.{col_name}"
+    return sql
 
 
-def get_casrec_col_source(mapped_item_key: str, col_definition):
-    col = ""
+def get_casrec_col_source(col_key: str, col_definition):
+    sql = ""
     col_definition = col_definition["transform_casrec"]
     if col_definition["casrec_table"]:
         table = col_definition["casrec_table"].lower()
         col_name = col_definition["casrec_column_name"]
-        col = f'{source_schema}.{table}."{col_name}"'
+        sql = f'{source_schema}.{table}."{col_name}"'
         if "" != col_definition["lookup_table"]:
             db_lookup_func = col_definition["lookup_table"]
-            col = f"{source_schema}.{db_lookup_func}({col})"
+            sql = f"{source_schema}.{db_lookup_func}({sql})"
     elif "" != col_definition["default_value"]:
-        col = get_casrec_default_value(mapped_item_key)
+        sql = get_casrec_default_value(col_key)
     elif "" != col_definition["calculated"]:
-        col = get_casrec_calculated_value(mapped_item_key)
-
-    return col
-
-
-def casrec_wrap(mapped_item_key: str):
-    col_definition = get_mapping_config_for_column(mapped_item_key)
-    col = get_casrec_col_source(mapped_item_key, col_definition)
-    col = wrap_casrec_col(mapped_item_key, col, col_definition)
-    return col
+        sql = get_casrec_calculated_value(col_key)
+    return sql
 
 
-def sirius_wrap(mapped_item_key: str):
-    col_definition = get_mapping_config_for_column(mapped_item_key)
-    col = get_sirius_col_source(mapped_item_key, col_definition)
-    col = wrap_sirius_col(mapped_item_key, col, col_definition)
-    return col
+def get_col_name_from_key(col_key: str):
+    col_key_parts = col_key.split(".")
+    if len(col_key_parts) == 1:
+        col_name = col_key_parts[0]
+    else:
+        col_name = col_key_parts[1]
+    return col_name
+
+
+def casrec_wrap(col_key: str):
+    col_name = get_col_name_from_key(col_key)
+    col_definition = get_col_definition(col_key)
+    sql = get_casrec_col_source(col_key, col_definition)
+    sql = wrap_casrec_col(col_name, col_definition, sql)
+    return sql
+
+
+def sirius_wrap(col_key: str):
+    col_name = get_col_name_from_key(col_key)
+    col_definition = get_col_definition(col_key)
+    sql = get_sirius_col_source(col_name, col_definition)
+    sql = wrap_sirius_col(col_name, col_definition, sql)
+    return sql
 
 
 def build_validation_statements(mapping_name):
