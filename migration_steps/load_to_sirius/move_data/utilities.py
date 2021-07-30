@@ -47,6 +47,22 @@ def replace_with_sql_friendly_chars(row_as_list):
     return row
 
 
+def replace_with_sql_friendly_chars_single(val):
+
+    new_val = str(
+        val.replace("'", "''")
+        .replace("NaT", "")
+        .replace("<NA>", "")
+        .replace("nan", "")
+        .replace("None", "")
+        .replace("&", "and")
+        .replace(";", "-")
+        .replace("%", "percent")
+    )
+
+    return new_val
+
+
 def get_columns_query(table, schema):
     return f"""
         SELECT column_name FROM information_schema.columns
