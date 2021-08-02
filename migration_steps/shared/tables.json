@@ -176,41 +176,24 @@
 		"sequences": [],
 		"order_by": ["id"]
 	},
-	"notes": {
-		"sirius_tables": ["notes"],
+	"supervision_notes": {
+		"sirius_tables": ["supervision_notes"],
 		"entities": {
 			"base_entities": ["remarks"]
 		},
 		"table_type": "data",
 		"pk": "id",
-		"fks": [],
+		"fks": [{
+				"column":"person_id",
+				"parent_table" : "persons",
+				"parent_column": "id"
+			}],
 		"sequences": [{
 			"name": "notes_id_seq",
 			"column": "id",
 			"type": "pk"
 		}],
 		"order_by": ["id"]
-	},
-	"caseitem_note": {
-		"sirius_tables": ["caseitem_note"],
-		"entities": {
-			"base_entities": ["remarks"],
-			"relies_on": ["cases"]
-		},
-		"pk": "",
-		"fks": [
-			{
-				"column":"note_id",
-				"parent_table" : "notes",
-				"parent_column": "id"
-			},{
-				"column":"caseitem_id",
-				"parent_table" : "cases",
-				"parent_column": "id"
-			}],
-		"table_type": "join",
-		"sequences": [],
-		"order_by": ["note_id", "caseitem_id"]
 	},
 	"death_notifications": {
 		"sirius_tables": ["death_notifications"],

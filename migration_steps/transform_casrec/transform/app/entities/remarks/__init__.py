@@ -3,7 +3,6 @@ import logging
 
 from helpers import log_title, check_entity_enabled
 
-from entities.remarks.caseitem_note import insert_caseitem_note
 from entities.remarks.notes import insert_notes
 
 log = logging.getLogger("root")
@@ -27,10 +26,7 @@ def runner(target_db, db_config):
     log.info(log_title(message=entity_name))
 
     log.debug("insert_notes")
-    insert_notes(target_db=target_db, db_config=db_config)
-
-    log.debug("insert_caseitem_note")
-    insert_caseitem_note(target_db=target_db, db_config=db_config)
+    insert_notes(target_db=target_db, db_config=db_config, mapping_file="notes")
 
 
 if __name__ == "__main__":

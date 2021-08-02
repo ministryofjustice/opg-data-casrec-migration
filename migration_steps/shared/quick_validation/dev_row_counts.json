@@ -92,15 +92,6 @@
           "all": 54672,
           "team_2": 0
         }
-      },
-      {
-        "table_name": "caseitem_note",
-        "query": "select count(*) from {schema}.caseitem_note;",
-        "row_counts": {
-          "all": 132632,
-          "team_2": 0
-        },
-        "note": "not sure this is right - double check using source data"
       }
     ]
   },
