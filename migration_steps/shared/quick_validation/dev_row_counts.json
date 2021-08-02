@@ -86,8 +86,8 @@
   {
     "remarks": [
       {
-        "table_name": "notes",
-        "query": "select count(*) from {schema}.notes;",
+        "table_name": "supervision_notes",
+        "query": "select count(*) from {schema}.supervision_notes;",
         "row_counts": {
           "all": 54672,
           "team_2": 0
