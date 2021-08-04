@@ -183,6 +183,7 @@
     "client_persons": {
         "exclude": [
             "caserecnumber",
+            "createddate",
             "dateofdeath",
             "middlenames",
             "uid"
