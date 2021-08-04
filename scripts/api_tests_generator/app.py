@@ -85,12 +85,12 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
             print(f"No matching rows for {caserecnumber}")
         else:
             entity_id = entity_ids.one().values()[0]
-            if csv_type == "bonds":
-                bonds = get_bond_entity_ids(entity_id, conn)
-                for bond in bonds:
-                    ids.append(bond)
-            else:
-                ids.append(entity_id)
+            # if csv_type == "bonds":
+            #     bonds = get_bond_entity_ids(entity_id, conn)
+            #     for bond in bonds:
+            #         ids.append(bond)
+            # else:
+            ids.append(entity_id)
     elif csv_type in [
         "orders",
         "supervision_level",
@@ -153,33 +153,33 @@ def restructure_text(col):
     return col_restructured_text
 
 
-def get_bond_entity_ids(entity_id, conn):
-    response = conn["sess"].get(
-        f'{conn["base_url"]}/api/v1/clients/{entity_id}/orders',
-        headers=conn["headers_dict"],
-    )
-
-    json_obj = json.loads(str(response.text))
-
-    cases = json_obj["cases"]
-
-    bonds = []
-    for case in cases:
-        try:
-            order_id = case["id"]
-        except Exception:
-            order_id = ""
-
-        try:
-            bond_id = case["bond"]["id"]
-        except Exception:
-            bond_id = ""
-
-        if len(str(order_id)) > 0 and len(str(bond_id)) > 0:
-            bond = {"order_id": order_id, "bond_id": bond_id}
-            bonds.append(bond)
-
-    return bonds
+# def get_bond_entity_ids(entity_id, conn):
+#     response = conn["sess"].get(
+#         f'{conn["base_url"]}/api/v1/clients/{entity_id}/orders',
+#         headers=conn["headers_dict"],
+#     )
+#
+#     json_obj = json.loads(str(response.text))
+#
+#     cases = json_obj["cases"]
+#
+#     bonds = []
+#     for case in cases:
+#         try:
+#             order_id = case["id"]
+#         except Exception:
+#             order_id = ""
+#
+#         try:
+#             bond_id = case["bond"]["id"]
+#         except Exception:
+#             bond_id = ""
+#
+#         if len(str(order_id)) > 0 and len(str(bond_id)) > 0:
+#             bond = {"order_id": order_id, "bond_id": bond_id}
+#             bonds.append(bond)
+#
+#     return bonds
 
 
 def get_deputy_entity_ids(entity_id, conn):
@@ -226,13 +226,14 @@ def get_deputy_order_entity_ids(entity_id, conn):
 
 
 def get_endpoint_final(entity_id, endpoint, csv):
-    if csv == "bonds":
-        endpoint_final = (
-            str(endpoint)
-            .replace("{id}", str(entity_id["order_id"]))
-            .replace("{id2}", str(entity_id["bond_id"]))
-        )
-    elif csv == "deputy_orders":
+    # if csv == "bonds":
+    #     endpoint_final = (
+    #         str(endpoint)
+    #         .replace("{id}", str(entity_id["order_id"]))
+    #         .replace("{id2}", str(entity_id["bond_id"]))
+    #     )
+    # el
+    if csv == "deputy_orders":
         endpoint_final = (
             str(endpoint)
             .replace("{id1}", str(entity_id["order_id"]))
@@ -301,9 +302,15 @@ orders_headers = [
 ]
 
 bonds_headers = [
-    '["bondProvider"]["name"]',
-    '["requiredBondAmount"]',
-    '["referenceNumber"]',
+    '["cases"][0]["securityBond"]',
+    '["cases"][0]["bond"]["requiredBondAmount"]',
+    '["cases"][0]["bond"]["amountTaken"]',
+    '["cases"][0]["bond"]["referenceNumber"]',
+    '["cases"][0]["bond"]["renewalDate"]',
+    '["cases"][0]["bond"]["dischargeDate"]',
+    '["cases"][0]["bond"]["companyName"]',
+    '["cases"][0]["bond"]["status"]["handle"]',
+    '["cases"][0]["bond"]["bondProvider"]["name"]',
 ]
 
 supervision_level_headers = [
@@ -361,7 +368,7 @@ reports_headers = [
     '[0]["randomReviewDate"]',
 ]
 
-csvs = ["reports"]
+csvs = ["bonds"]
 
 search_headers = [
     "endpoint",

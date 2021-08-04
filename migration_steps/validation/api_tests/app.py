@@ -192,12 +192,12 @@ class ApiTests:
             self.failed = True
         else:
             entity_id = entity_ids.one()._mapping["id"]
-            if self.csv == "bonds":
-                bonds = self.get_bond_entity_ids(entity_id)
-                for bond in bonds:
-                    ids.append(bond)
-            else:
-                ids.append(entity_id)
+            # if self.csv == "bonds":
+            #     bonds = self.get_bond_entity_ids(entity_id)
+            #     for bond in bonds:
+            #         ids.append(bond)
+            # else:
+            ids.append(entity_id)
         return ids
 
     def enhance_api_user_permissions(self):
@@ -429,33 +429,33 @@ class ApiTests:
             pass
         return col_restructured_text
 
-    def get_bond_entity_ids(self, entity_id):
-        log.debug(f"get_bond_entity_ids: entity_id {entity_id}")
-        response = self.session["sess"].get(
-            f'{self.session["base_url"]}/api/v1/clients/{entity_id}/orders',
-            headers=self.session["headers_dict"],
-        )
-        json_obj = json.loads(response.text)
-        cases = json_obj["cases"]
-
-        bonds = []
-        for case in cases:
-
-            try:
-                order_id = case["id"]
-            except Exception:
-                order_id = ""
-
-            try:
-                bond_id = case["bond"]["id"]
-            except Exception:
-                bond_id = ""
-
-            if len(str(order_id)) > 0 and len(str(bond_id)) > 0:
-                bond = {"order_id": order_id, "bond_id": bond_id}
-                bonds.append(bond)
-        log.debug(f"returning: {bonds}")
-        return bonds
+    # def get_bond_entity_ids(self, entity_id):
+    #     log.debug(f"get_bond_entity_ids: entity_id {entity_id}")
+    #     response = self.session["sess"].get(
+    #         f'{self.session["base_url"]}/api/v1/clients/{entity_id}/orders',
+    #         headers=self.session["headers_dict"],
+    #     )
+    #     json_obj = json.loads(response.text)
+    #     cases = json_obj["cases"]
+    #
+    #     bonds = []
+    #     for case in cases:
+    #
+    #         try:
+    #             order_id = case["id"]
+    #         except Exception:
+    #             order_id = ""
+    #
+    #         try:
+    #             bond_id = case["bond"]["id"]
+    #         except Exception:
+    #             bond_id = ""
+    #
+    #         if len(str(order_id)) > 0 and len(str(bond_id)) > 0:
+    #             bond = {"order_id": order_id, "bond_id": bond_id}
+    #             bonds.append(bond)
+    #     log.debug(f"returning: {bonds}")
+    #     return bonds
 
     def get_deputy_entity_ids(self, entity_id):
         log.debug(f"get_deputy_entity_ids: entity_id {entity_id}")
@@ -502,13 +502,7 @@ class ApiTests:
 
     def get_endpoint_final(self, entity_id, endpoint):
         log.debug(f"get_endpoint_final: entity_id {entity_id} endpoint {endpoint}")
-        if self.csv == "bonds":
-            endpoint_final = (
-                str(endpoint)
-                .replace("{id}", str(entity_id["order_id"]))
-                .replace("{id2}", str(entity_id["bond_id"]))
-            )
-        elif self.csv == "deputy_orders":
+        if self.csv == "deputy_orders":
             endpoint_final = (
                 str(endpoint)
                 .replace("{id1}", str(entity_id["order_id"]))
