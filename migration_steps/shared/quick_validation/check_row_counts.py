@@ -46,21 +46,21 @@ def count_rows(connection_string, destination_schema, enabled_entities, team="")
 
                     for query_details in entity_details:
                         query = query_details["query"]
+                        casrec_query = query_details["casrec_query"]
+
                         query_schema = query.replace("{schema}", destination_schema)
-                        if team != "":
-                            expected_row_count = query_details["row_counts"][
-                                f"team_{team}"
-                            ]
-                        else:
-                            expected_row_count = query_details["row_counts"]["all"]
 
                         try:
                             cursor.execute(query_schema)
                             row_count = cursor.fetchall()[0][0]
 
-                            if row_count != expected_row_count:
+                            cursor.execute(casrec_query)
+                            expected_row_count = cursor.fetchall()[0][0]
 
+                            if row_count != expected_row_count:
                                 raise IncorrectRowCount
+                            # else:
+                            #     log.debug(f"{entity_name} - {query_details['table_name']} row counts match")
 
                         except IncorrectRowCount:
                             log.error(

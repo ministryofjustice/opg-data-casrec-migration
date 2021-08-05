@@ -3,27 +3,18 @@
     "clients": [
       {
         "table_name": "persons",
-        "query": "select count(*) from {schema}.persons where type='actor_client';",
-        "row_counts": {
-            "all": 1000,
-            "team_2": 0
-            }
+        "casrec_query": "select count(*) from casrec_csv.pat;",
+        "query": "select count(*) from {schema}.persons where type='actor_client';"
       },
       {
         "table_name": "addresses",
-        "query": "select count(*) from {schema}.addresses where person_id in (select id from {schema}.persons where type='actor_client');",
-        "row_counts": {
-            "all": 1000,
-            "team_2": 0
-            }
+        "casrec_query": "select count(*) from casrec_csv.pat;",
+        "query": "select count(*) from {schema}.addresses where person_id in (select id from {schema}.persons where type='actor_client');"
       },
       {
         "table_name": "phonenumbers",
-        "query": "select count(*) from {schema}.phonenumbers where person_id in (select id from {schema}.persons where type='actor_client');",
-        "row_counts": {
-            "all": 1000,
-            "team_2": 0
-            }
+        "casrec_query": "select count(*) from casrec_csv.pat",
+        "query": "select count(*) from {schema}.phonenumbers where person_id in (select id from {schema}.persons where type='actor_client');"
       }
     ]
   },
@@ -31,35 +22,29 @@
     "deputies": [
       {
         "table_name": "persons",
-        "query": "select count(*) from {schema}.persons where type='actor_deputy';",
-        "row_counts": {
-            "all": 1008,
-            "team_2": 0
-            }
+        "casrec_query": "select count(*) from casrec_csv.deputy",
+        "query": "select count(*) from {schema}.persons where type='actor_deputy';"
       },
       {
         "table_name": "addresses",
+        "casrec_query": "select count(distinct concat(deputy.\"Deputy No\", deputy_address.\"Dep Addr No\")) from casrec_csv.deputy_address inner join casrec_csv.deputyship on deputyship.\"Dep Addr No\" = deputy_address.\"Dep Addr No\" inner join casrec_csv.deputy on deputy.\"Deputy No\" = deputyship.\"Deputy No\"",
         "query": "select count(*) from {schema}.addresses where person_id in (select id from {schema}.persons where type='actor_deputy');",
-        "row_counts": {
-            "all": 939,
-            "team_2": 0
-            }
+        "notes": "We end up with more in Sirius than the source table because Casrec has that extra join table that we don't so we need to duplicate some addreses"
       },
       {
-        "table_name": "phonenumbers",
-        "query": "select count(*) from {schema}.phonenumbers where person_id in (select id from {schema}.persons where type='actor_deputy');",
-        "row_counts": {
-            "all": 2016,
-            "team_2": 0
-            }
+        "table_name": "daytime phonenumbers",
+        "casrec_query": "select count(*) from casrec_csv.deputy where (\"Contact Telephone\" != '');",
+        "query": "select count(*) from {schema}.phonenumbers where type = 'Work' and person_id in (select id from {schema}.persons where type='actor_deputy');"
+      },
+      {
+        "table_name": "evening phonenumbers",
+        "casrec_query": "select count(*) from casrec_csv.deputy where (\"Contact Tele2\" != '');",
+        "query": "select count(*) from {schema}.phonenumbers where type = 'Home' and person_id in (select id from {schema}.persons where type='actor_deputy');"
       },
       {
         "table_name": "order_deputy",
-        "query": "select count(*) from {schema}.order_deputy;",
-        "row_counts": {
-            "all": 1730,
-            "team_2": 0
-            }
+        "casrec_query": "select count(*) from casrec_csv.deputyship inner join casrec_csv.deputy on deputy.\"Deputy No\" =deputyship.\"Deputy No\" inner join casrec_csv.order on \"order\".\"CoP Case\" = deputyship.\"CoP Case\"",
+        "query": "select count(*) from {schema}.order_deputy;"
       }
     ]
   },
@@ -67,19 +52,13 @@
     "cases": [
       {
         "table_name": "cases",
-        "query": "select count(*) from {schema}.cases;",
-        "row_counts": {
-            "all": 1832,
-            "team_2": 0
-            }
+        "casrec_query": "select count(*) from casrec_csv.\"order\"",
+        "query": "select count(*) from {schema}.cases;"
       },
       {
         "table_name": "person_caseitem",
-        "query": "select count(*) from {schema}.person_caseitem;",
-        "row_counts": {
-            "all": 1832,
-            "team_2": 0
-            }
+        "casrec_query": "select count(*) from casrec_csv.\"order\"",
+        "query": "select count(*) from {schema}.person_caseitem;"
       }
     ]
   },
@@ -87,11 +66,8 @@
     "remarks": [
       {
         "table_name": "supervision_notes",
-        "query": "select count(*) from {schema}.supervision_notes;",
-        "row_counts": {
-          "all": 54672,
-          "team_2": 0
-        }
+        "casrec_query": "select count(*) from casrec_csv.remarks",
+        "query": "select count(*) from {schema}.supervision_notes;"
       }
     ]
   },
@@ -99,11 +75,8 @@
     "supervision_level": [
       {
         "table_name": "supervision_level_log",
-        "query": "select count(*) from {schema}.supervision_level_log;",
-        "row_counts": {
-          "all": 1832,
-          "team_2": 0
-        }
+        "casrec_query": "select count(*) from casrec_csv.\"order\"",
+        "query": "select count(*) from {schema}.supervision_level_log;"
       }
     ]
   },
@@ -111,11 +84,8 @@
     "bonds": [
       {
         "table_name": "bonds",
-        "query": "select count(*) from {schema}.bonds;",
-        "row_counts": {
-            "all": 1059,
-            "team_2": 0
-            }
+        "casrec_query": "select count(*) from casrec_csv.\"order\" where \"Bond Rqd\" = 'Y'",
+        "query": "select count(*) from {schema}.bonds;"
       }
     ]
   },
@@ -123,47 +93,57 @@
     "death": [
       {
         "table_name": "death_notifications (client)",
-        "query": "select count(*) from {schema}.death_notifications where person_id in (select id from {schema}.persons where type='actor_client');",
-        "row_counts": {
-            "all": 27,
-            "team_2": 0
-            }
+        "casrec_query": "select count(*) from casrec_csv.pat where \"Term Type\" = 'D'",
+        "query": "select count(*) from {schema}.death_notifications where person_id in (select id from {schema}.persons where type='actor_client');"
       },
       {
         "table_name": "death_notifications (deputy)",
-        "query": "select count(*) from {schema}.death_notifications where person_id in (select id from {schema}.persons where type='actor_deputy');",
-        "row_counts": {
-            "all": 43,
-            "team_2": 0
-            }
+        "casrec_query": "select count(*) from casrec_csv.deputy where \"Stat\" = '99';",
+        "query": "select count(*) from {schema}.death_notifications where person_id in (select id from {schema}.persons where type='actor_deputy');"
       }
     ]
   },
     {
     "warnings": [
       {
-        "table_name": "warnings",
-        "query": "select count(*) from {schema}.warnings;",
-        "row_counts": {
-            "all": 40,
-            "team_2": 0
-            }
+        "table_name": "client violent warnings",
+        "casrec_query": "select count(*) from casrec_csv.pat where \"VWM\" not in ('', '0');",
+        "query": "select count(*) from {schema}.warnings where warningtext = 'Casrec Migration - Violent Warning' and casrec_table_name = 'pat';"
+      },
+      {
+        "table_name": "deputy violent warnings",
+        "casrec_query": "select count(*) from casrec_csv.deputy where \"VWM\" not in ('', '0');",
+        "query": "select count(*) from {schema}.warnings where warningtext = 'Casrec Migration - Violent Warning' and casrec_table_name = 'deputy';"
+      },
+      {
+        "table_name": "client special warnings",
+        "casrec_query": "select count(*) from casrec_csv.pat where \"SIM\" not in ('', '0');",
+        "query": "select count(*) from {schema}.warnings where warningtext = 'Casrec Migration - Special Interest Warning' and casrec_table_name = 'pat';"
+      },
+      {
+        "table_name": "deputy special warnings",
+        "casrec_query": "select count(*) from casrec_csv.deputy where \"SIM\" not in ('', '0');",
+        "query": "select count(*) from {schema}.warnings where warningtext = 'Casrec Migration - Special Interest Warning' and casrec_table_name = 'deputy';"
+      },
+      {
+        "table_name": "client debt chase warnings",
+        "casrec_query": "select count(*) from casrec_csv.pat where \"Debt chase\" not in ('', '0');",
+        "query": "select count(*) from {schema}.warnings where warningtext = 'Casrec Migration - No Debt to be chased' and casrec_table_name = 'pat';"
+      },
+      {
+        "table_name": "client saar check warnings",
+        "casrec_query": "select count(*) from casrec_csv.pat where \"SAAR Check\" not in ('', '0');",
+        "query": "select count(*) from {schema}.warnings where warningtext = 'Casrec Migration - SAAR Check Warning' and casrec_table_name = 'pat';"
       },
       {
         "table_name": "person_warning (client)",
-        "query": "select count(*) from {schema}.person_warning where person_id in (select id from {schema}.persons where type='actor_client');",
-        "row_counts": {
-            "all": 39,
-            "team_2": 0
-            }
+        "casrec_query": "select (select count(*) from casrec_csv.pat where (\"VWM\" not in ('', '0')))+(select count(*) from casrec_csv.pat where (\"SIM\" not in ('', '0')))+(select count(*) from casrec_csv.pat where (\"Debt chase\" not in ('', '0')))+(select count(*) from casrec_csv.pat where (\"SAAR Check\" not in ('', '0')));",
+        "query": "select count(*) from {schema}.person_warning where person_id in (select id from {schema}.persons where type='actor_client');"
       },
       {
         "table_name": "person_warning (deputy)",
-        "query": "select count(*) from {schema}.person_warning where person_id in (select id from {schema}.persons where type='actor_deputy');",
-        "row_counts": {
-            "all": 1,
-            "team_2": 0
-            }
+        "casrec_query": "select (select count(*) from casrec_csv.deputy where (\"VWM\" not in ('', '0'))) + (select count(*) from casrec_csv.deputy where (\"SIM\" not in ('', '0')));",
+        "query": "select count(*) from {schema}.person_warning where person_id in (select id from {schema}.persons where type='actor_deputy');"
       }
     ]
   },
@@ -171,11 +151,8 @@
     "crec": [
       {
         "table_name": "persons_crec",
-        "query": "select count(*) from {schema}.persons where risk_score is not null;",
-        "row_counts": {
-          "all": 754,
-          "team_2": 0
-        }
+        "casrec_query": "select count(distinct \"Case\") from casrec_csv.crec",
+        "query": "select count(*) from {schema}.persons where risk_score is not null;"
       }
     ]
   },
@@ -183,11 +160,8 @@
     "visits": [
       {
         "table_name": "visits",
-        "query": "select count(*) from {schema}.visits;",
-        "row_counts": {
-          "all": 999,
-          "team_2": 0
-        }
+        "casrec_query": "select count(*) from casrec_csv.repvis",
+        "query": "select count(*) from {schema}.visits;"
       }
     ]
   },
@@ -195,19 +169,13 @@
     "reporting": [
       {
         "table_name": "annual_report_logs",
-        "query": "select count(*) from {schema}.annual_report_logs;",
-        "row_counts": {
-          "all": 11288,
-          "team_2": 0
-        }
+        "casrec_query": "select count(*) from casrec_csv.account",
+        "query": "select count(*) from {schema}.annual_report_logs;"
       },
       {
         "table_name": "annual_report_lodging_details",
-        "query": "select count(*) from {schema}.annual_report_lodging_details;",
-        "row_counts": {
-          "all": 11288,
-          "team_2": 0
-        }
+        "casrec_query": "select count(*) from casrec_csv.account",
+        "query": "select count(*) from {schema}.annual_report_lodging_details;"
       }
     ]
   }
