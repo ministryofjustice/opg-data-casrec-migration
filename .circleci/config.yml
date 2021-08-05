@@ -84,6 +84,11 @@ workflows:
   preprod:
     when: << pipeline.parameters.run_preprod >>
     jobs:
+      - reset_sirius_full_restore:
+          name: run and monitor jenkins restore job pre
+          environment: Preproduction
+          sirius_environment: casrecdmpp
+          filters: {branches:{only:[master]}}
       - get_latest_image:
           name: get latest tag preproduction
           image_tag: master
@@ -105,7 +110,7 @@ workflows:
           filters: {branches:{only:[master]}}
       - run_step_function:
           name: run the step function preproduction
-          requires: [build infra preproduction]
+          requires: [build infra preproduction, run and monitor jenkins restore job pre]
           account: "492687888235"
           wait_for: "18000"
           tf_workspace: preproduction
@@ -151,6 +156,11 @@ workflows:
   qa:
     when: << pipeline.parameters.run_qa >>
     jobs:
+      - reset_sirius_full_restore:
+          name: run and monitor jenkins restore job qa
+          environment: Preproduction
+          sirius_environment: casrecdmqa
+          filters: {branches:{only:[master]}}
       - get_latest_image:
           name: get latest tag qa
           image_tag: qa
@@ -172,7 +182,7 @@ workflows:
           filters: {branches:{only:[master]}}
       - run_step_function:
           name: run the step function qa
-          requires: [build infra qa]
+          requires: [build infra qa, run and monitor jenkins restore job qa]
           account: "492687888235"
           wait_for: "18000"
           tf_workspace: qa

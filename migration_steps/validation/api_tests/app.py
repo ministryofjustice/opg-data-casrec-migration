@@ -53,6 +53,7 @@ class ApiTests:
         )
         self.s3_file_path = f"validation/logs/{self.api_log_file}"
         self.s3_sess = None
+        self.list_entity_returned = ["warnings"]
         self.entities = {
             "local": [
                 "clients",
@@ -88,6 +89,8 @@ class ApiTests:
                 "deputies",
                 "deputy_orders",
                 "deputy_clients_count",
+                "warnings",
+                "bonds",
             ],
             "qa": [
                 "clients",
@@ -95,6 +98,8 @@ class ApiTests:
                 "deputies",
                 "deputy_orders",
                 "deputy_clients_count",
+                "warnings",
+                "bonds",
             ],
             "production": [],
         }
@@ -192,11 +197,6 @@ class ApiTests:
             self.failed = True
         else:
             entity_id = entity_ids.one()._mapping["id"]
-            # if self.csv == "bonds":
-            #     bonds = self.get_bond_entity_ids(entity_id)
-            #     for bond in bonds:
-            #         ids.append(bond)
-            # else:
             ids.append(entity_id)
         return ids
 
@@ -239,7 +239,6 @@ class ApiTests:
         ids = []
         if self.csv in [
             "clients",
-            "bonds",
             "death_notifications",
             "warnings",
             "crec",
@@ -249,6 +248,7 @@ class ApiTests:
             ids = self.get_entity_ids_from_person_source(person_id_sql, caserecnumber)
         elif self.csv in [
             "orders",
+            "bonds",
             "supervision_level",
             "deputies",
             "deputy_clients",
@@ -303,6 +303,15 @@ class ApiTests:
 
         return response_text
 
+    def get_json_items_to_loop_through(self, json_object):
+        items_to_loop_through = []
+        if self.csv in self.list_entity_returned:
+            for list_item in json_object:
+                items_to_loop_through.append(list_item)
+        else:
+            items_to_loop_through.append(json_object)
+        return items_to_loop_through
+
     def get_formatted_api_response(
         self, entity_ids, endpoint, headers_to_check, row, entity_ref
     ):
@@ -317,15 +326,20 @@ class ApiTests:
             response_text = self.get_response_obj(endpoint_final)
             json_obj = json.loads(response_text)
 
-            for header in headers_to_check:
-                var_to_eval = f"json_obj{header}"
-                rationalised_var = self.rationalise_var(var_to_eval, json_obj)
-                try:
-                    response_struct[header] = (
-                        response_struct[header] + rationalised_var + "|"
+            json_items_to_loop_through = self.get_json_items_to_loop_through(json_obj)
+
+            for json_item_to_inspect in json_items_to_loop_through:
+                for header in headers_to_check:
+                    var_to_eval = f"json_item_to_inspect{header}"
+                    rationalised_var = self.rationalise_var(
+                        var_to_eval, json_item_to_inspect
                     )
-                except Exception:
-                    response_struct[header] = rationalised_var + "|"
+                    try:
+                        response_struct[header] = (
+                            response_struct[header] + rationalised_var + "|"
+                        )
+                    except Exception:
+                        response_struct[header] = rationalised_var + "|"
 
             # Does a full check against each sub entity
             if row["full_check"].lower() == "true":
@@ -378,7 +392,7 @@ class ApiTests:
         expected_response = self.flat_dict(content_decoded, ignore_list)
         assert str(actual_response).lower() == str(expected_response).lower()
 
-    def rationalise_var(self, v, json_obj):
+    def rationalise_var(self, v, json_item_to_inspect):
         try:
             response_var = eval(v)
             if response_var is None:
@@ -428,34 +442,6 @@ class ApiTests:
         except Exception:
             pass
         return col_restructured_text
-
-    # def get_bond_entity_ids(self, entity_id):
-    #     log.debug(f"get_bond_entity_ids: entity_id {entity_id}")
-    #     response = self.session["sess"].get(
-    #         f'{self.session["base_url"]}/api/v1/clients/{entity_id}/orders',
-    #         headers=self.session["headers_dict"],
-    #     )
-    #     json_obj = json.loads(response.text)
-    #     cases = json_obj["cases"]
-    #
-    #     bonds = []
-    #     for case in cases:
-    #
-    #         try:
-    #             order_id = case["id"]
-    #         except Exception:
-    #             order_id = ""
-    #
-    #         try:
-    #             bond_id = case["bond"]["id"]
-    #         except Exception:
-    #             bond_id = ""
-    #
-    #         if len(str(order_id)) > 0 and len(str(bond_id)) > 0:
-    #             bond = {"order_id": order_id, "bond_id": bond_id}
-    #             bonds.append(bond)
-    #     log.debug(f"returning: {bonds}")
-    #     return bonds
 
     def get_deputy_entity_ids(self, entity_id):
         log.debug(f"get_deputy_entity_ids: entity_id {entity_id}")
