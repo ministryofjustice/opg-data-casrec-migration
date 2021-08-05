@@ -92,8 +92,13 @@ class BaseConfig:
         "death": ["local", "development"],
     }
 
-    DEV_FEATURE_FLAGS = {"match_existing_data": True, "additional_data": False}
-    QA_FEATURE_FLAGS = {"match_existing_data": False, "additional_data": False}
+    DEV_FEATURE_FLAGS = {
+        "match_existing_data": True,
+        "additional_data": False,
+        "row_counts": True,
+        "generate_progress": False,
+    }
+    QA_FEATURE_FLAGS = {}
 
     def enabled_feature_flags(self, env):
 
