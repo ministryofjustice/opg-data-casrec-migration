@@ -1,5 +1,5 @@
-endpoint,entity_ref,test_purpose,full_check,[0]["warningType"],[0]["warningText"],[0]["systemStatus"]
-/api/v1/persons/{id}/warnings,10194709,dev_api_tests,FALSE,REM - Violence Warnings,Casrec Migration - Violent Warning,True
-/api/v1/persons/{id}/warnings,13323382,dev_api_tests,FALSE,OTHER,Casrec Migration - No Debt to be chased,True
-/api/v1/persons/{id}/warnings,10198244,dev_api_tests,FALSE,Other,Casrec Migration - SAAR Check Warning,True
-/api/v1/persons/{id}/warnings,10370284,dev_api_tests,FALSE,REM - Special Interest Markers,Casrec Migration - Special Interest Warning,True
+endpoint,entity_ref,test_purpose,full_check,["warningType"],["warningText"]
+/api/v1/persons/{id}/warnings,10194709,dev_api_tests,FALSE,REM - Violence Warnings,Casrec Migration - Violent Warning
+/api/v1/persons/{id}/warnings,13323382,dev_api_tests,FALSE,OTHER,Casrec Migration - No Debt to be chased
+/api/v1/persons/{id}/warnings,10198244,dev_api_tests,FALSE,Other,Casrec Migration - SAAR Check Warning
+/api/v1/persons/{id}/warnings,10370284,dev_api_tests,FALSE,Other|REM - Special Interest Markers,Casrec Migration - SAAR Check Warning|Casrec Migration - Special Interest Warning

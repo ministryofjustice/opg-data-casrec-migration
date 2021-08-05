@@ -1,0 +1,213 @@
+{
+	"limit": 25,
+	"metadata": [],
+	"pages": {
+		"current": 1,
+		"total": 1
+	},
+	"total": 1,
+	"cases": [{
+		"id": 6106189,
+		"uId": "7005-4902-9999",
+		"caseRecNumber": "13549999",
+		"assignee": {
+			"id": 0,
+			"phoneNumber": "03004560300",
+			"displayName": "Unassigned"
+		},
+		"client": {
+			"id": 34559252,
+			"uId": "7005-4902-9999",
+			"workPhoneNumber": null,
+			"homePhoneNumber": null,
+			"mobilePhoneNumber": null,
+			"email": null,
+			"dob": "",
+			"dateOfDeath": "",
+			"salutation": null,
+			"firstname": "JOHN",
+			"middlenames": null,
+			"surname": "PHIL DANIEL BOB",
+			"addressLine1": "",
+			"addressLine2": "",
+			"addressLine3": "",
+			"town": "",
+			"county": "",
+			"postcode": "",
+			"country": "",
+			"isAirmailRequired": false,
+			"addresses": [{
+				"id": null,
+				"addressLines": [],
+				"town": "",
+				"county": "",
+				"postcode": "",
+				"country": "",
+				"isAirmailRequired": false,
+				"type": "Primary",
+				"addressLine1": "",
+				"addressLine2": "",
+				"addressLine3": ""
+			}],
+			"phoneNumber": null,
+			"phoneNumbers": [],
+			"personType": "Client",
+			"companyName": null
+		},
+		"donor": null,
+		"applicationType": "Classic",
+		"batchId": null,
+		"title": null,
+		"caseType": "ORDER",
+		"caseSubtype": "pfa",
+		"receiptDate": "21\/04\/2020",
+		"dueDate": null,
+		"registrationDate": null,
+		"closedDate": null,
+		"status": null,
+		"statusDate": "21\/04\/2020",
+		"orderStatusNotes": null,
+		"ragRating": 1,
+		"invalidDate": null,
+		"rejectedDate": null,
+		"revokedDate": null,
+		"withdrawnDate": null,
+		"caseAttorneySingular": false,
+		"tasks": [],
+		"clauseExpiryDate": null,
+		"bond": {
+			"bondProviderId": 185,
+			"id": 79943,
+			"requiredBondAmount": 1000,
+			"amountTaken": 500,
+			"bondProvider": {
+				"id": 185,
+				"name": "Howden",
+				"oneOffValue": 21000,
+				"telephoneNumber": null,
+				"emailAddress": null,
+				"webAddress": "https:\/\/www.howdendeputybonds.co.uk"
+			},
+			"referenceNumber": "BH1234",
+			"companyName": "",
+			"renewalDate": "23\/02\/2021",
+			"dischargeDate": null,
+			"dispensedReason": null,
+			"status": {
+				"handle": "INSUFFICIENT",
+				"label": "Bond: insufficient",
+				"deprecated": null
+			},
+			"oneOff": false
+		},
+		"latestAnnualReport": {
+			"annualReportTypes": [],
+			"isMaxDueDateInTheFuture": false,
+			"reportDueReminderDate": "03\/02\/2021",
+			"id": 13752,
+			"dueDate": "17\/03\/2021",
+			"reportingPeriodEndDate": "24\/02\/2021",
+			"reportingPeriodStartDate": "25\/02\/2020",
+			"revisedDueDate": null,
+			"numberOfChaseLetters": 0,
+			"status": {
+				"handle": "PENDING",
+				"label": "Pending",
+				"deprecated": null
+			},
+			"reviewStatus": {
+				"handle": "NO_REVIEW",
+				"label": "No Review",
+				"deprecated": null
+			},
+			"randomReviewDate": null,
+			"reasonForReviewStatusChange": null,
+			"annualReportTypeAssignments": [],
+			"abandonedDate": null,
+			"receivedDate": null,
+			"reasonForAbandonment": null,
+			"lodgingDetail": null,
+			"caseSupervisionLevel": null,
+			"reviewDecision": null,
+			"reasonForFinalDecision": null,
+			"reviewDate": null,
+			"reviewedBy": null
+		},
+		"latestSupervisionLevel": {
+			"appliesFrom": "25\/02\/2020",
+			"supervisionLevel": null,
+			"assetLevel": {
+				"handle": "LOW",
+				"label": "Less than \u00a321K",
+				"deprecated": null
+			},
+			"notes": "Public API - not setting supervision level"
+		},
+		"isSupervisedOrder": true,
+		"howDeputyAppointed": {
+			"handle": "SOLE",
+			"label": "Sole",
+			"deprecated": null
+		},
+		"fileLocationDescription": null,
+		"orderDate": "25\/02\/2020",
+		"orderIssueDate": "16\/04\/2020",
+		"securityBond": true,
+		"bondReferenceNumber": "",
+		"bondValue": 0,
+		"orderStatus": {
+			"handle": "OPEN",
+			"label": "Open",
+			"deprecated": true
+		},
+		"feePayer": null,
+		"deputies": [{
+			"deputy": {
+				"id": 34559253,
+				"uId": "7005-4902-2651",
+				"workPhoneNumber": null,
+				"homePhoneNumber": null,
+				"mobilePhoneNumber": null,
+				"email": null,
+				"dob": "",
+				"dateOfDeath": "",
+				"salutation": null,
+				"firstname": "IRANDA",
+				"middlenames": null,
+				"surname": "MEGAN",
+				"addressLine1": "",
+				"addressLine2": "",
+				"addressLine3": "",
+				"town": "",
+				"county": "",
+				"postcode": "",
+				"country": "",
+				"isAirmailRequired": false,
+				"addresses": [{
+					"id": 34243454,
+					"addressLines": ["", "", ""],
+					"town": "",
+					"county": "",
+					"postcode": "",
+					"country": "",
+					"isAirmailRequired": false,
+					"type": "Primary",
+					"addressLine1": "",
+					"addressLine2": "",
+					"addressLine3": ""
+				}],
+				"phoneNumber": null,
+				"phoneNumbers": [],
+				"personType": "Deputy"
+			}
+		}],
+		"orderExpiryDate": null,
+		"orderClosureReason": null,
+		"orderSubtype": {
+			"handle": "NEW DEPUTY",
+			"label": "New deputy",
+			"deprecated": null
+		},
+		"orderNotes": ""
+	}]
+}

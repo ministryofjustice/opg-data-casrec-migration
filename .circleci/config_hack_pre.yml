@@ -7,6 +7,11 @@ workflows:
       - build:
           name: build and unit tests
           filters: {branches:{ignore:[master]}}
+      - reset_sirius_full_restore:
+          name: run and monitor jenkins restore job
+          environment: Preproduction
+          sirius_environment: casrecdmpp
+          filters: {branches:{ignore:[master]}}
       - infrastructure:
           name: build infra preproduction
           requires: [build and unit tests]
@@ -16,7 +21,7 @@ workflows:
           filters: {branches:{ignore:[master]}}
       - run_step_function:
           name: run the step function preproduction
-          requires: [build infra preproduction]
+          requires: [build infra preproduction, run and monitor jenkins restore job]
           account: "492687888235"
           wait_for: "18000"
           tf_workspace: preproduction
@@ -159,10 +164,16 @@ jobs:
   build:
     executor: migration/python
     resource_class: small
+    parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "Development"
     environment:
       AWS_REGION: eu-west-1
       AWS_CONFIG_FILE: ~/project/aws_config
       AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
+      ENVIRONMENT: << parameters.environment >>
     steps:
       - dockerhub_helper/dockerhub_login
       - setup_remote_docker
@@ -185,6 +196,24 @@ jobs:
           name: Show version
           command: echo ${VERSION}
       - run:
+          name: Install python requirements
+          command: |
+            pip3 install -r base_image/requirements.txt
+            pip3 install -r migration_steps/shared/shared_tests/requirements.txt
+      - run:
+          name: Sync mapping json files
+          command: python3 ~/project/scripts/sync_mapping_json/sync_mapping_json.py
+      - run:
+          name: Run transform_casrec unit tests
+          command: |
+            export PYTHONPATH=~/project/migration_steps/transform_casrec:~/project/migration_steps/transform_casrec/transform/app
+            python3 -m pytest migration_steps/transform_casrec/transform/transform_tests --cov-fail-under=85
+      - run:
+          name: Run shared utilities unit tests
+          command: |
+            export PYTHONPATH=~/project/migration_steps/shared:~/project/migration_steps/shared/shared_tests
+            python3 -m pytest migration_steps/shared/shared_tests
+      - run:
           name: Docker login
           command: aws ecr get-login-password --region $AWS_REGION --profile migrations-ci | docker login --username AWS --password-stdin $AWS_REGISTRY
       - run:
@@ -194,8 +223,17 @@ jobs:
           name: Build images
           command: docker-compose -f docker-compose.ci.yml build --parallel
       - run:
+          name: Full local run through
+          command: |
+            echo "Switching override so we do not use volume mounts"
+            rm docker-compose.override.yml
+            mv docker-compose.override.ci.yml docker-compose.override.yml
+            echo "Running migrate.sh"
+            ./migrate.sh
+      - run:
           name: Push images
           command: docker-compose -f docker-compose.ci.yml push
+
   infrastructure:
     executor: terraform/terraform
     resource_class: small
@@ -263,11 +301,16 @@ jobs:
     executor: migration/python
     resource_class: small
     parameters:
+      environment:
+        description: environment for notifications
+        type: string
+        default: "Development"
       sirius_environment:
         description: environment for notifications
         type: string
         default: "casrecdmpp"
     environment:
+      ENVIRONMENT: << parameters.environment >>
       SIRIUS_ENVIRONMENT: << parameters.sirius_environment >>
     steps:
       - checkout

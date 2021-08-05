@@ -71,7 +71,6 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
 
     if csv_type in [
         "clients",
-        "bonds",
         "death_notifications",
         "warnings",
         "crec",
@@ -85,14 +84,10 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
             print(f"No matching rows for {caserecnumber}")
         else:
             entity_id = entity_ids.one().values()[0]
-            if csv_type == "bonds":
-                bonds = get_bond_entity_ids(entity_id, conn)
-                for bond in bonds:
-                    ids.append(bond)
-            else:
-                ids.append(entity_id)
+            ids.append(entity_id)
     elif csv_type in [
         "orders",
+        "bonds",
         "supervision_level",
         "deputies",
         "deputy_clients",
@@ -118,7 +113,7 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
     return ids
 
 
-def rationalise_var(v, json_obj):
+def rationalise_var(v, json_item_to_inspect):
     try:
         response_var = eval(v)
         if response_var is None:
@@ -151,35 +146,6 @@ def restructure_text(col):
     except Exception:
         pass
     return col_restructured_text
-
-
-def get_bond_entity_ids(entity_id, conn):
-    response = conn["sess"].get(
-        f'{conn["base_url"]}/api/v1/clients/{entity_id}/orders',
-        headers=conn["headers_dict"],
-    )
-
-    json_obj = json.loads(str(response.text))
-
-    cases = json_obj["cases"]
-
-    bonds = []
-    for case in cases:
-        try:
-            order_id = case["id"]
-        except Exception:
-            order_id = ""
-
-        try:
-            bond_id = case["bond"]["id"]
-        except Exception:
-            bond_id = ""
-
-        if len(str(order_id)) > 0 and len(str(bond_id)) > 0:
-            bond = {"order_id": order_id, "bond_id": bond_id}
-            bonds.append(bond)
-
-    return bonds
 
 
 def get_deputy_entity_ids(entity_id, conn):
@@ -226,13 +192,7 @@ def get_deputy_order_entity_ids(entity_id, conn):
 
 
 def get_endpoint_final(entity_id, endpoint, csv):
-    if csv == "bonds":
-        endpoint_final = (
-            str(endpoint)
-            .replace("{id}", str(entity_id["order_id"]))
-            .replace("{id2}", str(entity_id["bond_id"]))
-        )
-    elif csv == "deputy_orders":
+    if csv == "deputy_orders":
         endpoint_final = (
             str(endpoint)
             .replace("{id1}", str(entity_id["order_id"]))
@@ -301,9 +261,15 @@ orders_headers = [
 ]
 
 bonds_headers = [
-    '["bondProvider"]["name"]',
-    '["requiredBondAmount"]',
-    '["referenceNumber"]',
+    '["securityBond"]',
+    '["bond"]["requiredBondAmount"]',
+    '["bond"]["amountTaken"]',
+    '["bond"]["referenceNumber"]',
+    '["bond"]["renewalDate"]',
+    '["bond"]["dischargeDate"]',
+    '["bond"]["companyName"]',
+    '["bond"]["status"]["handle"]',
+    '["bond"]["bondProvider"]["name"]',
 ]
 
 supervision_level_headers = [
@@ -319,11 +285,7 @@ death_notifications_headers = [
     '["person"]["dateOfDeath"]',
 ]
 
-warnings_headers = [
-    '[0]["warningType"]',
-    '[0]["warningText"]',
-    '[0]["systemStatus"]',
-]
+warnings_headers = ['["warningType"]', '["warningText"]']
 
 crec_headers = [
     '["riskScore"]',
@@ -361,7 +323,7 @@ reports_headers = [
     '[0]["randomReviewDate"]',
 ]
 
-csvs = ["reports"]
+csvs = ["bonds"]
 
 search_headers = [
     "endpoint",
@@ -369,6 +331,8 @@ search_headers = [
     "test_purpose",
     "full_check",
 ]
+
+list_entity_returned = ["warnings"]
 
 print(f"You are running this script against: {environment}")
 
@@ -417,22 +381,34 @@ for csv in csvs:
 
             json_obj = json.loads(response.text)
 
-            with open(f"responses/{csv}_{entity_ref}.json", "w") as outfile:
-                json.dump(json_obj, outfile, indent=4, sort_keys=False)
+            items_to_loop_through = []
+            if csv in list_entity_returned:
+                for list_item in json_obj:
+                    items_to_loop_through.append(list_item)
+            else:
+                items_to_loop_through.append(json_obj)
 
-            for header in search_headers:
-                curr_var = eval(f'row["{header}"]')
-                try:
-                    line_struct[header] = line_struct[header] + curr_var + "|"
-                except Exception:
-                    line_struct[header] = curr_var + "|"
-            for header in eval(f"{csv}_headers"):
-                var_to_eval = f"json_obj{header}"
-                rationalised_var = rationalise_var(var_to_eval, json_obj)
-                try:
-                    line_struct[header] = line_struct[header] + rationalised_var + "|"
-                except Exception:
-                    line_struct[header] = rationalised_var + "|"
+            for json_item_to_inspect in items_to_loop_through:
+                with open(f"responses/{csv}_{entity_ref}.json", "w") as outfile:
+                    json.dump(json_item_to_inspect, outfile, indent=4, sort_keys=False)
+
+                for header in search_headers:
+                    curr_var = eval(f'row["{header}"]')
+                    try:
+                        line_struct[header] = line_struct[header] + curr_var + "|"
+                    except Exception:
+                        line_struct[header] = curr_var + "|"
+                for header in eval(f"{csv}_headers"):
+                    var_to_eval = f"json_item_to_inspect{header}"
+                    rationalised_var = rationalise_var(
+                        var_to_eval, json_item_to_inspect
+                    )
+                    try:
+                        line_struct[header] = (
+                            line_struct[header] + rationalised_var + "|"
+                        )
+                    except Exception:
+                        line_struct[header] = rationalised_var + "|"
 
         for header in eval(f"{csv}_headers") + search_headers:
             try:
