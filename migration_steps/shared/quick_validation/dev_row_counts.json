@@ -108,32 +108,32 @@
       {
         "table_name": "client violent warnings",
         "casrec_query": "select count(*) from casrec_csv.pat where \"VWM\" not in ('', '0');",
-        "query": "select count(*) from {schema}.warnings where warningtext = 'Casrec Migration - Violent Warning' and casrec_table_name = 'pat';"
+        "query": "select count(warnings.*) from {schema}.warnings inner join {schema}.person_warning on warnings.id = person_warning.warning_id inner join {schema}.persons on person_warning.person_id = persons.id and persons.type = 'actor_client' where warningtext = 'Casrec Migration - Violent Warning';"
       },
       {
         "table_name": "deputy violent warnings",
         "casrec_query": "select count(*) from casrec_csv.deputy where \"VWM\" not in ('', '0');",
-        "query": "select count(*) from {schema}.warnings where warningtext = 'Casrec Migration - Violent Warning' and casrec_table_name = 'deputy';"
+        "query": "select count(warnings.*) from {schema}.warnings inner join {schema}.person_warning on warnings.id = person_warning.warning_id inner join {schema}.persons on person_warning.person_id = persons.id and persons.type = 'actor_deputy' where warningtext = 'Casrec Migration - Violent Warning';"
       },
       {
         "table_name": "client special warnings",
         "casrec_query": "select count(*) from casrec_csv.pat where \"SIM\" not in ('', '0');",
-        "query": "select count(*) from {schema}.warnings where warningtext = 'Casrec Migration - Special Interest Warning' and casrec_table_name = 'pat';"
+        "query": "select count(warnings.*) from {schema}.warnings inner join {schema}.person_warning on warnings.id = person_warning.warning_id inner join {schema}.persons on person_warning.person_id = persons.id and persons.type = 'actor_client' where warningtext = 'Casrec Migration - Special Interest Warning';"
       },
       {
         "table_name": "deputy special warnings",
         "casrec_query": "select count(*) from casrec_csv.deputy where \"SIM\" not in ('', '0');",
-        "query": "select count(*) from {schema}.warnings where warningtext = 'Casrec Migration - Special Interest Warning' and casrec_table_name = 'deputy';"
+        "query": "select count(warnings.*) from {schema}.warnings inner join {schema}.person_warning on warnings.id = person_warning.warning_id inner join {schema}.persons on person_warning.person_id = persons.id and persons.type = 'actor_deputy' where warningtext = 'Casrec Migration - Special Interest Warning';"
       },
       {
         "table_name": "client debt chase warnings",
         "casrec_query": "select count(*) from casrec_csv.pat where \"Debt chase\" not in ('', '0');",
-        "query": "select count(*) from {schema}.warnings where warningtext = 'Casrec Migration - No Debt to be chased' and casrec_table_name = 'pat';"
+        "query": "select count(warnings.*) from {schema}.warnings inner join {schema}.person_warning on warnings.id = person_warning.warning_id inner join {schema}.persons on person_warning.person_id = persons.id and persons.type = 'actor_client' where warningtext = 'Casrec Migration - No Debt to be chased';"
       },
       {
         "table_name": "client saar check warnings",
         "casrec_query": "select count(*) from casrec_csv.pat where \"SAAR Check\" not in ('', '0');",
-        "query": "select count(*) from {schema}.warnings where warningtext = 'Casrec Migration - SAAR Check Warning' and casrec_table_name = 'pat';"
+        "query": "select count(warnings.*) from {schema}.warnings inner join {schema}.person_warning on warnings.id = person_warning.warning_id inner join {schema}.persons on person_warning.person_id = persons.id and persons.type = 'actor_client' where warningtext = 'Casrec Migration - SAAR Check Warning';"
       },
       {
         "table_name": "person_warning (client)",
