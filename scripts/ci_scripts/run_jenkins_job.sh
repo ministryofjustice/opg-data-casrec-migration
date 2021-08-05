@@ -11,7 +11,13 @@ do
   esac
 done
 
-JOB_URL="https://jenkins.opg.service.justice.gov.uk/job/Sirius/job/Deploy_to_CasRec_Data_Migration_Preproduction"
+if [ ${WORKSPACE} == "casmigrate" ]
+then
+  JOB_URL="https://jenkins.opg.service.justice.gov.uk/job/Sirius/job/Create_Development_Environment"
+else
+  JOB_URL="https://jenkins.opg.service.justice.gov.uk/job/Sirius/job/Deploy_to_CasRec_Data_Migration_Preproduction"
+fi
+
 GREP_RETURN_CODE=0
 WAITED=0
 SECS_TO_WAIT=30
@@ -31,7 +37,12 @@ done
 #Run the build
 echo "Running jenkins restore job against ${WORKSPACE}"
 
-curl -X POST ${JOB_URL}/buildWithParameters?WORKSPACE=${WORKSPACE}\&restore_data=true --user jenkins-opg:${API_KEY}
+if [ ${WORKSPACE} == "casmigrate" ]
+then
+  curl -X POST ${JOB_URL}/buildWithParameters?target_environment=casmigrate\&time_to_protect='4'\&recreate_databases=true\&data_fixture=true\&ingest_data=true\&elasticsearch_reindex=true --user jenkins-opg:${API_KEY}
+else
+  curl -X POST ${JOB_URL}/buildWithParameters?WORKSPACE=${WORKSPACE}\&restore_data=true --user jenkins-opg:${API_KEY}
+fi
 
 sleep 30
 BUILD_NO=$(curl --silent ${LAST_BUILD_URL} --user jenkins-opg:${API_KEY} | jq ".number")
