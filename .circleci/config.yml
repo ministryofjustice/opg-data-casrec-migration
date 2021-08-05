@@ -230,6 +230,18 @@ workflows:
           environment: production
           filters: {branches:{only:[master]}}
 
+  nightly_development_restore:
+    triggers:
+      - schedule:
+          cron: "00 08 * * *"
+          filters: {branches:{only:[master]}}
+    jobs:
+      - reset_sirius_full_restore:
+          name: run and monitor jenkins restore job development
+          environment: Development
+          sirius_environment: casmigrate
+          filters: {branches:{only:[master]}}
+
   nightly_preproduction_run:
     triggers:
       - schedule:
@@ -1042,5 +1054,16 @@ jobs:
           name: run and monitor jenkins job
           command: ./run_jenkins_job.sh -w ${SIRIUS_ENVIRONMENT} -k ${JENKINS_API_KEY}
           working_directory: ~/project/scripts/ci_scripts
+      - when:
+          condition:
+            and:
+              - equal: [casmigrate, << parameters.sirius_environment >>]
+          steps:
+            - run:
+                name: Run extend casmigrate ttl
+                command: |
+                  pip3 install boto3
+                  python3 extend_casmigrate_ttl.py --role migrations-ci
+                working_directory: ~/project/scripts/ci_scripts
       - notififications/notify_env_vars
       - notififications/notify_if_fail
