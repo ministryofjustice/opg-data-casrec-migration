@@ -59,7 +59,7 @@ def insert_bonds(target_db, db_config, mapping_file):
                 chunk_no=chunk_no,
             )
 
-            offset += chunk_size
+            offset += int(chunk_size)
             chunk_no += 1
         except EmptyDataFrame:
             target_db.create_empty_table(sirius_details=sirius_details)

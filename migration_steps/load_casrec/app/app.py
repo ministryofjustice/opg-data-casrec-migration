@@ -352,13 +352,12 @@ def initialise_progress_table(
 
 @click.command()
 @click.option("-e", "--entities", default="all", help="list of entities to load")
-@click.option("-c", "--chunk", default=config.DEFAULT_CHUNK_SIZE, help="chunk size")
 @click.option("-d", "--delay", default="0", help="delay in seconds for process")
 @click.option("-v", "--verbose", count=True)
 @click.option(
     "-s", "--skip_load", default="false", help="whether to skip the s3 load or not"
 )
-def main(entities, chunk, delay, verbose, skip_load):
+def main(entities, delay, verbose, skip_load):
     # We add this delay to let the first process get to create table first
     if skip_load == "true":
         log.info(f"Skipping the s3 load step as skip flag has been set")
@@ -366,7 +365,7 @@ def main(entities, chunk, delay, verbose, skip_load):
         log.info(f"Starting copy of s3 tables into casrec_csv")
         time.sleep(int(delay))
         table_list = entities.split(",")
-        chunk_size = int(chunk)
+        chunk_size = config.DEFAULT_CHUNK_SIZE
         bucket_name = f"casrec-migration-{account_name.lower()}"
         setup_logging(log, verbose, log_title, bucket_name)
         env_path = current_path / "../../.env"

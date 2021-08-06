@@ -117,7 +117,7 @@ def insert_data_into_target(
             )
             os._exit(1)
 
-        offset += chunk_size
+        offset += int(chunk_size)
         log.debug(f"doing offset {offset} for table {table_name}")
-        if len(data_to_insert) < chunk_size:
+        if len(data_to_insert) < int(chunk_size):
             break

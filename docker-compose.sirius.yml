@@ -1,3 +1,4 @@
+---
 version: '3.6'
 services:
   casrec_db:
@@ -32,6 +33,7 @@ services:
       context: ./migration_steps
       dockerfile: prepare-dockerfile
     environment:
+      DEFAULT_CHUNK_SIZE: 500
       DB_USER: casrec
       DB_PASSWORD: casrec # pragma: allowlist secret
       DB_NAME: casrecmigration
@@ -51,6 +53,7 @@ services:
       context: ./migration_steps
       dockerfile: load_casrec-dockerfile
     environment:
+      DEFAULT_CHUNK_SIZE: 500
       DB_USER: casrec
       DB_PASSWORD: casrec # pragma: allowlist secret
       DB_NAME: casrecmigration
@@ -66,6 +69,7 @@ services:
       context: ./migration_steps
       dockerfile: transform_casrec-dockerfile
     environment:
+      DEFAULT_CHUNK_SIZE: 500
       DB_USER: casrec
       DB_PASSWORD: casrec # pragma: allowlist secret
       DB_NAME: casrecmigration
@@ -78,6 +82,7 @@ services:
       context: ./migration_steps
       dockerfile: integration-dockerfile
     environment:
+      DEFAULT_CHUNK_SIZE: 500
       DB_USER: casrec
       DB_PASSWORD: casrec # pragma: allowlist secret
       DB_NAME: casrecmigration
@@ -95,6 +100,7 @@ services:
       context: ./migration_steps
       dockerfile: validation-dockerfile
     environment:
+      DEFAULT_CHUNK_SIZE: 500
       DB_USER: casrec
       DB_PASSWORD: casrec # pragma: allowlist secret
       DB_NAME: casrecmigration
@@ -119,6 +125,7 @@ services:
       context: ./migration_steps
       dockerfile: load_to_target-dockerfile
     environment:
+      DEFAULT_CHUNK_SIZE: 500
       DB_USER: casrec
       DB_PASSWORD: casrec # pragma: allowlist secret
       DB_NAME: casrecmigration

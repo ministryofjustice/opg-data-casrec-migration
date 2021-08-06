@@ -5,7 +5,6 @@ import os
 import pandas as pd
 
 from helpers import get_mapping_dict, get_table_def
-from helpers import get_mapping_dict
 from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 
 log = logging.getLogger("root")
@@ -84,7 +83,7 @@ def insert_persons_crec(db_config, target_db, mapping_file):
                 chunk_no=chunk_no,
             )
 
-            offset += chunk_size
+            offset += int(chunk_size)
             chunk_no += 1
 
         except EmptyDataFrame:

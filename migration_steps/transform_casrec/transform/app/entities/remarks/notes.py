@@ -57,7 +57,7 @@ def insert_notes(db_config, target_db, mapping_file):
                     chunk_no=chunk_no,
                 )
 
-            offset += chunk_size
+            offset += int(chunk_size)
             chunk_no += 1
         except EmptyDataFrame:
 

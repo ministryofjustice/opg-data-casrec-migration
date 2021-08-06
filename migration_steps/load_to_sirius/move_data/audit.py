@@ -41,8 +41,8 @@ def copy_table(
         )
 
         log.info(f"Copied {offset + len(df)} rows")
-        offset += chunk_size
-        if len(df) < chunk_size:
+        offset += int(chunk_size)
+        if len(df) < int(chunk_size):
             break
 
 

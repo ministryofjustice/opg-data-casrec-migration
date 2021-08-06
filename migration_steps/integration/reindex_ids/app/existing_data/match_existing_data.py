@@ -131,9 +131,9 @@ def get_existing_data(db_config, table_name, table_details):
             )
             os._exit(1)
 
-        offset += chunk_size
+        offset += int(chunk_size)
         log.debug(f"doing offset {offset} for table {table_name}")
-        if len(existing_data) < chunk_size:
+        if len(existing_data) < int(chunk_size):
             break
 
 
