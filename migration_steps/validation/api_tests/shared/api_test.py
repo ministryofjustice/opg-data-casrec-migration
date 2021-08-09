@@ -282,11 +282,10 @@ class ApiTests:
         log.debug(f"returning: {entity_ids}")
         return entity_ids
 
-    def get_response_obj(self, endpoint_final):
+    def get_response_object(self, endpoint_final):
         status_code = 500
         response_text = None
         retry_count = 0
-
         while (status_code > 201 or response_text is None) and retry_count < 5:
             response = self.session["sess"].get(
                 f'{self.session["base_url"]}{endpoint_final}',
@@ -300,6 +299,37 @@ class ApiTests:
                 )
                 time.sleep(3)
             retry_count += 1
+
+        return response_text
+
+    def get_functional_response_object(self, endpoint_final, method, data=None):
+        print(f'{self.session["base_url"]}{endpoint_final}')
+        print(data)
+        if method == "POST":
+            response = self.session["sess"].post(
+                f'{self.session["base_url"]}{endpoint_final}',
+                headers=self.session["headers_dict"],
+                data=data,
+            )
+        elif method == "PUT":
+            response = self.session["sess"].put(
+                f'{self.session["base_url"]}{endpoint_final}',
+                headers=self.session["headers_dict"],
+                data=data,
+            )
+        elif method == "DELETE":
+            response = self.session["sess"].delete(
+                f'{self.session["base_url"]}{endpoint_final}',
+                headers=self.session["headers_dict"],
+            )
+        else:
+            print(f"Method {method} is invalid")
+
+        response_text = response.text
+        status_code = response.status_code
+
+        print(response_text)
+        print(f"Returns following: {status_code}")
 
         return response_text
 
@@ -323,7 +353,7 @@ class ApiTests:
             endpoint_final = self.get_endpoint_final(entity_id, endpoint)
             self.api_log(f"Checking responses from: {endpoint_final}")
 
-            response_text = self.get_response_obj(endpoint_final)
+            response_text = self.get_response_object(endpoint_final)
             json_obj = json.loads(response_text)
 
             json_items_to_loop_through = self.get_json_items_to_loop_through(json_obj)
@@ -499,6 +529,37 @@ class ApiTests:
         log.debug(f"returning: {endpoint_final}")
         return endpoint_final
 
+    def get_first_entity_id_from_array(self, endpoint, get_ids_json_path):
+        response = self.session["sess"].get(
+            f'{self.session["base_url"]}{endpoint}',
+            headers=self.session["headers_dict"],
+        )
+        json_object = json.loads(response.text)
+        print(json_object)
+        variable_to_evaluate = f"json_object{get_ids_json_path}"
+        first_id = eval(variable_to_evaluate)
+        return first_id
+
+    def get_functional_endpoint(
+        self, entity_id, endpoint, get_ids_endpoint=None, get_ids_json_path=None
+    ):
+        log.debug(
+            f"get_functional_endpoint: entity_id {entity_id}, endpoint {endpoint}"
+        )
+        if (
+            "{id2}" in endpoint
+            and get_ids_endpoint is not None
+            and get_ids_json_path is not None
+        ):
+            first_id = self.get_first_entity_id_from_array(get_ids_endpoint)
+            endpoint_final = (
+                str(endpoint).replace("{id}", endpoint).replace("{id2}", first_id)
+            )
+        else:
+            endpoint_final = str(endpoint).replace("{id}", str(entity_id))
+        log.debug(f"returning: {endpoint_final}")
+        return endpoint_final
+
     def assert_on_fields(
         self, headers_to_check, formatted_api_response, row, entity_ref
     ):
@@ -599,38 +660,24 @@ class ApiTests:
                 f"CSV '{self.csv}' doesn't exist in this environment. Skipping..."
             )
 
+    def functional_tests_by_method(self, method, entity_setup_object):
+        url = "/api/v1/" + entity_setup_object["url"]
+        data = entity_setup_object["data"]
+        case_references = entity_setup_object["case_references"]
 
-def main():
-    csvs = [
-        "clients",
-        "orders",
-        "bonds",
-        "deputies",
-        "deputy_orders",
-        "deputy_clients_count",
-        "supervision_level",
-        "death_notifications",
-        "warnings",
-        "crec",
-        "visits",
-        "reports",
-    ]
+        for case_reference in case_references:
+            entity_ids = self.get_entity_ids(case_reference)
+            for entity_id in entity_ids:
+                endpoint = self.get_endpoint_final(entity_id, url)
+                self.get_response_object(endpoint, method, data)
 
-    api_tests = ApiTests()
-    api_tests.create_a_session()
-    api_tests.enhance_api_user_permissions()
-
-    for csv in csvs:
-        api_tests.csv = csv
-        api_tests.run_success_tests()
-    api_tests.upload_log_file()
-
-    if api_tests.failed:
-        log.info("Tests Failed")
-        exit(1)
-    else:
-        log.info("Tests Passed")
-
-
-if __name__ == "__main__":
-    main()
+    def run_functional_test(self, entity, entity_setup_object):
+        self.csv = entity
+        if entity_setup_object["post_objects"] is not None:
+            self.functional_tests_by_method("POST", entity_setup_object["post_objects"])
+        if entity_setup_object["put_objects"] is not None:
+            self.functional_tests_by_method("PUT", entity_setup_object["put_objects"])
+        if entity_setup_object["get_objects"] is not None:
+            self.functional_tests_by_method(
+                "DELETE", entity_setup_object["delete_objects"]
+            )
