@@ -23,43 +23,43 @@ workflows:
           name: manage workflow
           environment: Development
           filters: {branches:{ignore:[master]}}
-#      - reset_sirius:
-#          name: reset the sirius fixtures development
-#          requires: [manage workflow]
-#          tf_workspace: development
-#          environment: Development
-#          filters: {branches:{ignore:[master]}}
-#      - build:
-#          name: build and unit tests
-#          requires: [manage workflow]
-#          environment: Development
-#          filters: {branches:{ignore:[master]}}
-#      - infrastructure:
-#          name: plan infra development
-#          requires: [build and unit tests]
-#          tf_workspace: development
-#          tf_command: plan
-#          environment: Development
-#          filters: {branches:{ignore:[master]}}
-#      - infrastructure:
-#          name: build infra development
-#          requires: [plan infra development]
-#          tf_workspace: development
-#          tf_command: apply
-#          environment: Development
-#          filters: {branches:{ignore:[master]}}
-#      - run_step_function:
-#          name: run the step function development
-#          requires: [build infra development, reset the sirius fixtures development]
-#          tf_workspace: development
-#          environment: Development
-#          filters: {branches:{ignore:[master]}}
-#      - run_api_tests:
-#          name: run api tests
-#          requires: [run the step function development]
-#          tf_workspace: development
-#          environment: Development
-#          filters: {branches:{ignore:[master]}}
+      - reset_sirius:
+          name: reset the sirius fixtures development
+          requires: [manage workflow]
+          tf_workspace: development
+          environment: Development
+          filters: {branches:{ignore:[master]}}
+      - build:
+          name: build and unit tests
+          requires: [manage workflow]
+          environment: Development
+          filters: {branches:{ignore:[master]}}
+      - infrastructure:
+          name: plan infra development
+          requires: [build and unit tests]
+          tf_workspace: development
+          tf_command: plan
+          environment: Development
+          filters: {branches:{ignore:[master]}}
+      - infrastructure:
+          name: build infra development
+          requires: [plan infra development]
+          tf_workspace: development
+          tf_command: apply
+          environment: Development
+          filters: {branches:{ignore:[master]}}
+      - run_step_function:
+          name: run the step function development
+          requires: [build infra development, reset the sirius fixtures development]
+          tf_workspace: development
+          environment: Development
+          filters: {branches:{ignore:[master]}}
+      - run_api_tests:
+          name: run api tests
+          requires: [run the step function development]
+          tf_workspace: development
+          environment: Development
+          filters: {branches:{ignore:[master]}}
 
   master:
     when: << pipeline.parameters.run_master >>
@@ -233,14 +233,14 @@ workflows:
   nightly_development_restore:
     triggers:
       - schedule:
-          cron: "37 06 * * *"
+          cron: "30 06 * * *"
           filters: {branches:{only:[master]}}
     jobs:
       - reset_sirius_full_restore:
           name: run and monitor jenkins restore job development
           environment: Development
           sirius_environment: casmigrate
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
 
   nightly_preproduction_run:
     triggers:
