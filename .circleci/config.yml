@@ -233,7 +233,7 @@ workflows:
   nightly_development_restore:
     triggers:
       - schedule:
-          cron: "00 08 * * *"
+          cron: "30 06 * * *"
           filters: {branches:{only:[master]}}
     jobs:
       - reset_sirius_full_restore:
@@ -1062,7 +1062,7 @@ jobs:
             - run:
                 name: Run extend casmigrate ttl
                 command: |
-                  pip3 install boto3
+                  pip3 install boto3 click
                   python3 extend_casmigrate_ttl.py --role migrations-ci
                 working_directory: ~/project/scripts/ci_scripts
       - notififications/notify_env_vars
