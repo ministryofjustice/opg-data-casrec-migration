@@ -186,6 +186,18 @@ class ApiTests:
             and c.casetype = 'ORDER'"""
         return sql
 
+    def get_active_order_sql(self, caserecnumber):
+        sql = f"""
+            SELECT c.id as id
+            FROM persons p
+            INNER join cases c
+            on c.client_id = p.id
+            WHERE p.caserecnumber = '{caserecnumber}'
+            AND p.clientsource = 'CASRECMIGRATION'
+            and c.casetype = 'ORDER'
+            and c.orderstatus = 'ACTIVE'"""
+        return sql
+
     def get_entity_ids_from_person_source(self, sql, caserecnumber):
         ids = []
         entity_ids = self.engine.execute(sql)
@@ -299,37 +311,6 @@ class ApiTests:
                 )
                 time.sleep(3)
             retry_count += 1
-
-        return response_text
-
-    def get_functional_response_object(self, endpoint_final, method, data=None):
-        print(f'{self.session["base_url"]}{endpoint_final}')
-        print(data)
-        if method == "POST":
-            response = self.session["sess"].post(
-                f'{self.session["base_url"]}{endpoint_final}',
-                headers=self.session["headers_dict"],
-                data=data,
-            )
-        elif method == "PUT":
-            response = self.session["sess"].put(
-                f'{self.session["base_url"]}{endpoint_final}',
-                headers=self.session["headers_dict"],
-                data=data,
-            )
-        elif method == "DELETE":
-            response = self.session["sess"].delete(
-                f'{self.session["base_url"]}{endpoint_final}',
-                headers=self.session["headers_dict"],
-            )
-        else:
-            print(f"Method {method} is invalid")
-
-        response_text = response.text
-        status_code = response.status_code
-
-        print(response_text)
-        print(f"Returns following: {status_code}")
 
         return response_text
 
@@ -529,37 +510,6 @@ class ApiTests:
         log.debug(f"returning: {endpoint_final}")
         return endpoint_final
 
-    def get_first_entity_id_from_array(self, endpoint, get_ids_json_path):
-        response = self.session["sess"].get(
-            f'{self.session["base_url"]}{endpoint}',
-            headers=self.session["headers_dict"],
-        )
-        json_object = json.loads(response.text)
-        print(json_object)
-        variable_to_evaluate = f"json_object{get_ids_json_path}"
-        first_id = eval(variable_to_evaluate)
-        return first_id
-
-    def get_functional_endpoint(
-        self, entity_id, endpoint, get_ids_endpoint=None, get_ids_json_path=None
-    ):
-        log.debug(
-            f"get_functional_endpoint: entity_id {entity_id}, endpoint {endpoint}"
-        )
-        if (
-            "{id2}" in endpoint
-            and get_ids_endpoint is not None
-            and get_ids_json_path is not None
-        ):
-            first_id = self.get_first_entity_id_from_array(get_ids_endpoint)
-            endpoint_final = (
-                str(endpoint).replace("{id}", endpoint).replace("{id2}", first_id)
-            )
-        else:
-            endpoint_final = str(endpoint).replace("{id}", str(entity_id))
-        log.debug(f"returning: {endpoint_final}")
-        return endpoint_final
-
     def assert_on_fields(
         self, headers_to_check, formatted_api_response, row, entity_ref
     ):
@@ -660,16 +610,33 @@ class ApiTests:
                 f"CSV '{self.csv}' doesn't exist in this environment. Skipping..."
             )
 
-    def functional_tests_by_method(self, method, entity_setup_object):
-        url = "/api/v1/" + entity_setup_object["url"]
-        data = entity_setup_object["data"]
-        case_references = entity_setup_object["case_references"]
+    def functional_tests_by_method(self, method, entity_setup_objects):
+        for entity_setup_object in entity_setup_objects:
+            title = entity_setup_object["title"]
+            self.api_log(f"Running Functional API Section - {title}")
+            url = "/api/v1/" + entity_setup_object["url"]
+            data = entity_setup_object["data"]
+            source = entity_setup_object["source"]
+            case_references = entity_setup_object["case_references"]
+            expected_status = entity_setup_object["expected_status"]
 
-        for case_reference in case_references:
-            entity_ids = self.get_entity_ids(case_reference)
-            for entity_id in entity_ids:
-                endpoint = self.get_endpoint_final(entity_id, url)
-                self.get_response_object(endpoint, method, data)
+            try:
+                id2_endpoint = entity_setup_object["id2_url"]
+                id2_json_path = entity_setup_object["id2_json_path"]
+            except Exception:
+                id2_endpoint = None
+                id2_json_path = None
+
+            for case_reference in case_references:
+                entity_ids = self.get_functional_entity_ids(case_reference, source)
+                first_entity_id = entity_ids[0]
+                endpoint = self.get_functional_endpoint(
+                    first_entity_id, url, id2_endpoint, id2_json_path
+                )
+                actual_status = self.get_functional_response_object(
+                    endpoint, method, data
+                )
+                assert expected_status == actual_status
 
     def run_functional_test(self, entity, entity_setup_object):
         self.csv = entity
@@ -677,7 +644,84 @@ class ApiTests:
             self.functional_tests_by_method("POST", entity_setup_object["post_objects"])
         if entity_setup_object["put_objects"] is not None:
             self.functional_tests_by_method("PUT", entity_setup_object["put_objects"])
-        if entity_setup_object["get_objects"] is not None:
+        if entity_setup_object["delete_objects"] is not None:
             self.functional_tests_by_method(
                 "DELETE", entity_setup_object["delete_objects"]
             )
+
+    def get_functional_endpoint(
+        self, entity_id, endpoint, id2_endpoint=None, id2_json_path=None
+    ):
+        if id2_endpoint is not None and id2_endpoint is not None:
+            first_id2 = self.get_entity_id_from_array(
+                entity_id, id2_endpoint, id2_json_path
+            )
+            endpoint_final = (
+                str(endpoint)
+                .replace("{id}", str(entity_id))
+                .replace("{id2}", str(first_id2))
+            )
+        else:
+            endpoint_final = str(endpoint).replace("{id}", str(entity_id))
+        self.api_log(f"Running against: {endpoint_final}")
+        return endpoint_final
+
+    def get_entity_id_from_array(self, entity_id, endpoint, id2_json_path):
+        endpoint_final = self.get_functional_endpoint(entity_id, endpoint)
+        full_url = f'{self.session["base_url"]}/api/v1/{endpoint_final}'
+        self.api_log(full_url)
+
+        response = self.session["sess"].get(
+            full_url, headers=self.session["headers_dict"],
+        )
+
+        json_object = json.loads(response.text)
+        log.debug(json_object)
+
+        variable_to_evaluate = f"json_object{id2_json_path}"
+        first_id = eval(variable_to_evaluate)
+        return first_id
+
+    def get_functional_response_object(self, endpoint_final, method, data=None):
+        print(f'{self.session["base_url"]}{endpoint_final}')
+
+        content_type_dict = {"Content-Type": "application/json"}
+        headers = {**self.session["headers_dict"], **content_type_dict}
+        if method == "POST":
+            response = self.session["sess"].post(
+                f'{self.session["base_url"]}{endpoint_final}',
+                headers=headers,
+                data=json.dumps(data),
+            )
+        elif method == "PUT":
+            response = self.session["sess"].put(
+                f'{self.session["base_url"]}{endpoint_final}',
+                headers=headers,
+                data=json.dumps(data),
+            )
+        elif method == "DELETE":
+            response = self.session["sess"].delete(
+                f'{self.session["base_url"]}{endpoint_final}',
+                headers=self.session["headers_dict"],
+            )
+        else:
+            print(f"Method {method} is invalid")
+
+        response_text = response.text
+        status_code = response.status_code
+
+        print(response_text)
+        print(f"Returns following: {status_code}")
+
+        return status_code
+
+    def get_functional_entity_ids(self, caserecnumber, source):
+        person_id_sql = self.get_person_sql(caserecnumber)
+        order_id_sql = self.get_active_order_sql(caserecnumber)
+        ids = []
+        if source == "clients":
+            ids = self.get_entity_ids_from_person_source(person_id_sql, caserecnumber)
+        elif source == "orders":
+            ids = self.get_entity_ids_from_order_source(order_id_sql, caserecnumber)
+        log.debug(f"returning ids: {ids}")
+        return ids
