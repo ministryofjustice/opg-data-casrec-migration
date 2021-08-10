@@ -90,34 +90,34 @@ def update_data_in_target(
 
     offset = 0
     while True:
-        query = f"""
-            SELECT {', '.join(columns)}
-            FROM {db_config["source_schema"]}.{table_name}
-            WHERE method = 'UPDATE'
-            ORDER BY {order_by}
-            LIMIT {chunk_size} OFFSET {offset};
-        """
-
-        log.debug(f"Using source query to get update data: {query}")
-
-        data_to_update = pd.read_sql_query(
-            sql=query, con=db_config["source_db_connection_string"]
-        )
-        log.debug(f"doing offset {offset} for table {table_name}")
-        if len(data_to_update) < int(chunk_size):
-            break
-
-        updates = create_update_statement(
-            schema=db_config["target_schema"],
-            table_name=table_name,
-            columns=columns,
-            df=data_to_update,
-        )
-
         try:
+            query = f"""
+                SELECT {', '.join(columns)}
+                FROM {db_config["source_schema"]}.{table_name}
+                WHERE method = 'UPDATE'
+                ORDER BY {order_by}
+                LIMIT {chunk_size} OFFSET {offset};
+            """
+
+            log.debug(f"Using source query to get update data: {query}")
+
+            data_to_update = pd.read_sql_query(
+                sql=query, con=db_config["source_db_connection_string"]
+            )
+
+            log.debug(f"doing offset {offset} for table {table_name}")
+            if len(data_to_update) == 0:
+                break
+
+            updates = create_update_statement(
+                schema=db_config["target_schema"],
+                table_name=table_name,
+                columns=columns,
+                df=data_to_update,
+            )
+            log.critical(f"len(updates): {len(updates)}")
 
             target_db_engine.execute("; ".join(updates))
+            offset += int(chunk_size)
         except Exception as e:
             print(f"e: {e}")
-
-        offset += int(chunk_size)
