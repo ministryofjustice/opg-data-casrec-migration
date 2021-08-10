@@ -30,13 +30,51 @@ def get_post_data(entity):
         #         "case_references": ["10194709"],
         #     },
         # ],
+        # "death": [
+        #     {
+        #         "title": "Create New Death",
+        #         "data": {
+        #             "proofOfDeathReceived": True,
+        #             "dateLetterSentOut": "",
+        #             "dateOfDeath": "09/08/2021",
+        #             "dateDeathCertificateReceived": "",
+        #             "dateNotified": "09/08/2021",
+        #             "notifiedBy": {
+        #               "handle": "DEPUTY",
+        #               "label": "Deputy"
+        #             },
+        #             "notifiedByOther": "",
+        #             "notificationMethod": "Phone",
+        #             "notes": ""
+        #         },
+        #         "url":             "persons/{id}/death-notification",
+        #         "expected_status": 201,
+        #         "source":          "clients",
+        #         "case_references": ["10138356"],
+        #     }
+        # ],
+        "supervision": [
+            {
+                "title": "Create Supervision",
+                "data": {
+                    "notes": "",
+                    "appliesFrom": "02/08/2021",
+                    "newLevel": "MINIMAL",
+                    "newAssetLevel": "LOW",
+                },
+                "url": "orders/{id}/supervision-level",
+                "expected_status": 200,
+                "source": "orders",
+                "case_references": ["10001668"],
+            }
+        ],
         "orders": [
             {
                 "title": "Create New Orders",
                 "data": {
                     "caseSubtype": "PFA",
                     "orderSubtype": {"handle": "TRUSTEE", "label": "Trustee"},
-                    "caseRecNumber": "10006413",
+                    "caseRecNumber": "10013583",
                     "orderDate": "01/01/2021",
                     "orderIssueDate": "",
                     "orderStatus": "",
@@ -64,7 +102,7 @@ def get_post_data(entity):
                 "url": "clients/{id}/orders",
                 "expected_status": 201,
                 "source": "clients",
-                "case_references": ["10006413"],
+                "case_references": ["10013583"],
             }
         ],
     }
@@ -79,6 +117,18 @@ def get_post_data(entity):
 
 def get_put_data(entity):
     put_data = {
+        "crec": [
+            {
+                "title": "Edit a Risk Rating",
+                "data": {"riskScore": 4, "notes": "<p>Risky</p>"},
+                "url": "clients/{id}/edit/risk-score",
+                "expected_status": 200,
+                "source": "orders",
+                "id2_url": None,
+                "id2_json_path": None,
+                "case_references": ["10036052"],
+            },
+        ],
         "bonds": [
             {
                 "title": "Edit a Bond",
@@ -123,7 +173,7 @@ def get_put_data(entity):
                         "label": "Replacement",
                         "deprecated": None,
                     },
-                    "caseRecNumber": "10007261",
+                    "caseRecNumber": "10013583",
                     "orderDate": "26/05/2011",
                     "orderIssueDate": "28/05/2011",
                     "orderStatus": {
@@ -158,7 +208,7 @@ def get_put_data(entity):
                 "source": "orders",
                 "id2_url": None,
                 "id2_json_path": None,
-                "case_references": ["10007261"],
+                "case_references": ["10013583"],
             },
             {
                 "title": "Edit an Order Status",
@@ -181,7 +231,89 @@ def get_put_data(entity):
                 "source": "orders",
                 "id2_url": None,
                 "id2_json_path": None,
-                "case_references": ["10194709"],
+                "case_references": ["10013583"],
+            },
+        ],
+        "deputies": [
+            {
+                "title": "Edit a Deputy",
+                "data": {
+                    "deputyType": {"handle": "PRO", "label": "Professional"},
+                    "salutation": "Mr",
+                    "firstname": "Bob",
+                    "otherNames": "",
+                    "surname": "Bobly",
+                    "dob": "05/08/1987",
+                    "previousNames": "Jennifer",
+                    "addressLine1": "Studio 38P",
+                    "addressLine2": "Susan pass",
+                    "addressLine3": "",
+                    "town": "South Damien",
+                    "postcode": "RM6 9NQ",
+                    "county": "HU5 3ER",
+                    "country": "",
+                    "workPhoneNumber": "0808 157 0028",
+                    "mobileNumber": "",
+                    "homePhoneNumber": "0808 157 0028",
+                    "email": "dharrison@hotmail.com",
+                    "isAirmailRequired": True,
+                },
+                "url": "deputies/{id}",
+                "expected_status": 200,
+                "source": "orders",
+                "id2_url": "orders/{id}",
+                "id2_json_path": '["deputies"][0]["deputy"]["id"]',
+                "case_references": ["10004257"],
+            },
+        ],
+        "clients": [
+            {
+                "title": "Edit a Client",
+                "data": {
+                    "memorablePhrase": None,
+                    "medicalCondition": None,
+                    "salutation": "Brigadier",
+                    "firstname": "Jim",
+                    "middlenames": "Jones",
+                    "surname": "Warden",
+                    "dob": "09/10/1990",
+                    "previousNames": "Victoria",
+                    "email": None,
+                    "caseRecNumber": "10028288",
+                    "clientAccommodation": {
+                        "handle": "HEALTH SERVICE PATIENT",
+                        "label": "Health Service Patient",
+                        "deprecated": False,
+                    },
+                    "maritalStatus": "Single",
+                    "correspondenceByPost": True,
+                    "correspondenceByEmail": False,
+                    "correspondenceByPhone": False,
+                    "correspondenceByWelsh": False,
+                    "addressLine1": "Studio 97",
+                    "addressLine2": "Geraldine trail",
+                    "addressLine3": "",
+                    "town": "Junehaven",
+                    "postcode": "S8 2HD",
+                    "county": "E6 3FS",
+                    "country": None,
+                    "isAirmailRequired": False,
+                    "phoneNumber": "01174960999",
+                    "interpreterRequired": "No",
+                    "specialCorrespondenceRequirements": {
+                        "audioTape": False,
+                        "largePrint": False,
+                        "hearingImpaired": False,
+                        "spellingOfNameRequiresCare": False,
+                    },
+                    "casesManagedAsHybrid": False,
+                },
+                "url": "clients/{id}",
+                "expected_status": 200,
+                "source": "clients",
+                "id2_url": None,
+                "id2_json_path": None,
+                "case_references": ["10028288"],
             },
         ],
     }
@@ -205,7 +337,7 @@ def get_delete_data(entity):
                 "source": "clients",
                 "id2_url": "persons/{id}/warnings",
                 "id2_json_path": '[0]["id"]',
-                "case_references": ["10194709"],
+                "case_references": ["11866428"],
             }
         ]
     }
@@ -219,7 +351,16 @@ def get_delete_data(entity):
 
 
 def main():
-    entities = ["orders", "bonds", "warnings", "deputies"]
+    entities = [
+        "orders",
+        "bonds",
+        "warnings",
+        "deputies",
+        "clients",
+        "death",
+        "supervision",
+        "crec",
+    ]
 
     api_tests = ApiTests()
     api_tests.create_a_session()

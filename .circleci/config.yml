@@ -60,6 +60,13 @@ workflows:
           tf_workspace: development
           environment: Development
           filters: {branches:{ignore:[master]}}
+      - run_api_tests:
+          name: run functional api tests
+          requires: [run the step function development]
+          tf_workspace: development
+          environment: Development
+          runner_command: functional-api-tests
+          filters: {branches:{ignore:[master]}}
 
   master:
     when: << pipeline.parameters.run_master >>
@@ -758,9 +765,14 @@ jobs:
         description: terraform workspace
         type: string
         default: "development"
+      runner_command:
+        description: ecs command to run
+        type: string
+        default: "api-tests"
     environment:
       ENVIRONMENT: << parameters.environment >>
       TF_WORKSPACE: << parameters.tf_workspace >>
+      RUNNER_CMD: << parameters.runner_command >>
     working_directory: ~/project/terraform
     steps:
       - checkout:
@@ -770,7 +782,7 @@ jobs:
       - terraform/setup_ecs_runner
       - run:
           name: Run API tests
-          command: ecs-runner -task validation -timeout 600
+          command: ecs-runner -task ${RUNNER_CMD} -timeout 600
       - notififications/notify_env_vars
       - notififications/notify_if_fail
   run_behat_tests:

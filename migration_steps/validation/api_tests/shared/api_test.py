@@ -244,6 +244,19 @@ class ApiTests:
         log.debug(f"returning ids: {ids}")
         return ids
 
+    def get_functional_entity_ids_from_order_source(self, sql, caserecnumber):
+        ids = []
+        entity_ids = self.engine.execute(sql)
+        if entity_ids.rowcount < 1:
+            self.api_log(f"No matching rows for {caserecnumber}")
+            self.failed = True
+        else:
+            for entity_id_row in entity_ids:
+                entity_id = entity_id_row._mapping["id"]
+                ids.append(entity_id)
+        log.debug(f"returning ids: {ids}")
+        return ids
+
     def get_entity_ids(self, caserecnumber):
         log.debug(f"get_entity_ids for case no {caserecnumber}")
         person_id_sql = self.get_person_sql(caserecnumber)
@@ -648,6 +661,7 @@ class ApiTests:
             self.functional_tests_by_method(
                 "DELETE", entity_setup_object["delete_objects"]
             )
+        self.api_log(f"Successfully finished {self.csv} functional tests")
 
     def get_functional_endpoint(
         self, entity_id, endpoint, id2_endpoint=None, id2_json_path=None
@@ -656,11 +670,14 @@ class ApiTests:
             first_id2 = self.get_entity_id_from_array(
                 entity_id, id2_endpoint, id2_json_path
             )
-            endpoint_final = (
-                str(endpoint)
-                .replace("{id}", str(entity_id))
-                .replace("{id2}", str(first_id2))
-            )
+            if "{id2}" in endpoint:
+                endpoint_final = (
+                    str(endpoint)
+                    .replace("{id}", str(entity_id))
+                    .replace("{id2}", str(first_id2))
+                )
+            else:
+                endpoint_final = str(endpoint).replace("{id}", str(first_id2))
         else:
             endpoint_final = str(endpoint).replace("{id}", str(entity_id))
         self.api_log(f"Running against: {endpoint_final}")
@@ -669,7 +686,9 @@ class ApiTests:
     def get_entity_id_from_array(self, entity_id, endpoint, id2_json_path):
         endpoint_final = self.get_functional_endpoint(entity_id, endpoint)
         full_url = f'{self.session["base_url"]}/api/v1/{endpoint_final}'
-        self.api_log(full_url)
+        log.debug(
+            f"Using the following url to get the required id for real url: {full_url}"
+        )
 
         response = self.session["sess"].get(
             full_url, headers=self.session["headers_dict"],
@@ -677,14 +696,11 @@ class ApiTests:
 
         json_object = json.loads(response.text)
         log.debug(json_object)
-
         variable_to_evaluate = f"json_object{id2_json_path}"
         first_id = eval(variable_to_evaluate)
         return first_id
 
     def get_functional_response_object(self, endpoint_final, method, data=None):
-        print(f'{self.session["base_url"]}{endpoint_final}')
-
         content_type_dict = {"Content-Type": "application/json"}
         headers = {**self.session["headers_dict"], **content_type_dict}
         if method == "POST":
@@ -705,13 +721,12 @@ class ApiTests:
                 headers=self.session["headers_dict"],
             )
         else:
-            print(f"Method {method} is invalid")
+            self.api_log(f"Method {method} is invalid")
 
-        response_text = response.text
+        log.debug(f"Response text: {response.text}")
         status_code = response.status_code
 
-        print(response_text)
-        print(f"Returns following: {status_code}")
+        self.api_log(f"Returns following: {status_code}")
 
         return status_code
 
@@ -722,6 +737,8 @@ class ApiTests:
         if source == "clients":
             ids = self.get_entity_ids_from_person_source(person_id_sql, caserecnumber)
         elif source == "orders":
-            ids = self.get_entity_ids_from_order_source(order_id_sql, caserecnumber)
+            ids = self.get_functional_entity_ids_from_order_source(
+                order_id_sql, caserecnumber
+            )
         log.debug(f"returning ids: {ids}")
         return ids
