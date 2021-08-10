@@ -60,11 +60,8 @@ def get_mappings():
             "client_special_warnings",
             "client_violent_warnings",
         ],
-        "cases": [
-            "cases",
-            "supervision_level_log"
-        ],
-        "bonds": ["bonds"],
+        "cases": ["cases", "supervision_level_log"],
+        # "bonds": ["bonds"],
         "deputies": [
             "deputy_persons",
             "deputy_death_notifications",
@@ -196,9 +193,7 @@ def build_lookup_functions():
 def wrap_override_sql(col_name: str, side, sql):
     transform_cols = validation_dict[side]["transform"]
     if col_name in transform_cols.keys():
-        sql = validation_dict[side]["transform"][col_name].replace(
-            "{col}", str(sql)
-        )
+        sql = validation_dict[side]["transform"][col_name].replace("{col}", str(sql))
     return sql
 
 
@@ -217,9 +212,7 @@ def wrap_casrec_col(col_name: str, col_definition, sql: str):
     sql = wrap_override_sql(col_name, "casrec", sql)
 
     # convert empty strings to NULL
-    if (
-        col_definition["sirius_details"]["data_type"] not in ["bool", "int"]
-    ):
+    if col_definition["sirius_details"]["data_type"] not in ["bool", "int"]:
         sql = f"NULLIF(TRIM({sql}), '')"
 
     # wrap transform, if required
@@ -260,9 +253,7 @@ def get_casrec_calculated_value(col_key: str):
         + datetime.now().strftime("%Y-%m-%d")
         + "'"  # just do today's date
     }
-    return callables.get(
-        mapping_dict[col_key]["transform_casrec"]["calculated"]
-    )
+    return callables.get(mapping_dict[col_key]["transform_casrec"]["calculated"])
 
 
 def get_col_definition(col_key: str):
@@ -364,7 +355,8 @@ def build_validation_statements(mapping_name):
 
     # FROM, with JOINs
     sql_add(
-        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}", 2,
+        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}",
+        2,
     )
     for join in validation_dict["casrec"]["joins"]:
         sql_add(f"{join}", 2)
@@ -405,7 +397,8 @@ def build_validation_statements(mapping_name):
 
     # FROM, with JOINs
     sql_add(
-        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}", 2,
+        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}",
+        2,
     )
     for join in validation_dict["sirius"]["joins"]:
         join = join.replace("{target_schema}", str(target_schema))
@@ -459,7 +452,8 @@ def write_column_validation_sql(
     # tested column
     sql_add(f"{col_source_casrec} AS {mapped_item_name}", 4)
     sql_add(
-        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}", 3,
+        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}",
+        3,
     )
     for join in validation_dict["casrec"]["joins"]:
         sql_add(f"{join}", 3)
@@ -491,7 +485,8 @@ def write_column_validation_sql(
     # tested column
     sql_add(f"{col_source_sirius} AS {mapped_item_name}", 4)
     sql_add(
-        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}", 3,
+        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}",
+        3,
     )
     for join in validation_dict["sirius"]["joins"]:
         join = join.replace("{target_schema}", str(target_schema))
