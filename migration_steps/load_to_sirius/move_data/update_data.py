@@ -115,7 +115,6 @@ def update_data_in_target(
                 columns=columns,
                 df=data_to_update,
             )
-            log.critical(f"len(updates): {len(updates)}")
 
             target_db_engine.execute("; ".join(updates))
             offset += int(chunk_size)
