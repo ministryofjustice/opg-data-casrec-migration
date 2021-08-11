@@ -127,7 +127,7 @@
         },
         "TaskDefinition": "arn:aws:ecs:eu-west-1:288342028542:task-definition/behat-migration-${cluster}"
       },
-      "validation":{
+      "api-tests":{
         "Cluster":"${casrec-cluster}",
         "LaunchType":"FARGATE",
         "NetworkConfiguration":{
@@ -144,6 +144,27 @@
             "ContainerOverrides": [{
                 "Name": "etl5",
                 "Command": ["validation/api_tests.sh"]
+            }]
+        },
+        "TaskDefinition":"${casrec-task-definition-validation}"
+      },
+      "functional-api-tests":{
+        "Cluster":"${casrec-cluster}",
+        "LaunchType":"FARGATE",
+        "NetworkConfiguration":{
+            "AwsvpcConfiguration":{
+                "SecurityGroups":[
+                    "${casrec-sec_group}"
+                ],
+                "Subnets":[
+                    ${casrec-subnets}
+                ]
+            }
+        },
+        "Overrides": {
+            "ContainerOverrides": [{
+                "Name": "etl5",
+                "Command": ["validation/functional_api_tests.sh"]
             }]
         },
         "TaskDefinition":"${casrec-task-definition-validation}"

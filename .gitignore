@@ -50,7 +50,7 @@ migration_steps/shared/mapping_definitions_old*
 migration_steps/shared/mapping_definitions*
 migration_steps/shared/mapping_spreadsheet*
 migration_steps/shared/progress/*_progress.json
-migration_steps/validation/api_tests/api_tests_*.log
+migration_steps/validation/api_tests/response_tests/api_tests_*.log
 validation.sql
 /scripts/api_tests_generator/responses/*.csv
 /scripts/api_tests_generator/responses/

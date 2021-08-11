@@ -186,6 +186,18 @@ class ApiTests:
             and c.casetype = 'ORDER'"""
         return sql
 
+    def get_active_order_sql(self, caserecnumber):
+        sql = f"""
+            SELECT c.id as id
+            FROM persons p
+            INNER join cases c
+            on c.client_id = p.id
+            WHERE p.caserecnumber = '{caserecnumber}'
+            AND p.clientsource = 'CASRECMIGRATION'
+            and c.casetype = 'ORDER'
+            and c.orderstatus = 'ACTIVE'"""
+        return sql
+
     def get_entity_ids_from_person_source(self, sql, caserecnumber):
         ids = []
         entity_ids = self.engine.execute(sql)
@@ -229,6 +241,19 @@ class ApiTests:
                         ids.append(deputy_order)
                 else:
                     ids.append(entity_id)
+        log.debug(f"returning ids: {ids}")
+        return ids
+
+    def get_functional_entity_ids_from_order_source(self, sql, caserecnumber):
+        ids = []
+        entity_ids = self.engine.execute(sql)
+        if entity_ids.rowcount < 1:
+            self.api_log(f"No matching rows for {caserecnumber}")
+            self.failed = True
+        else:
+            for entity_id_row in entity_ids:
+                entity_id = entity_id_row._mapping["id"]
+                ids.append(entity_id)
         log.debug(f"returning ids: {ids}")
         return ids
 
@@ -282,11 +307,10 @@ class ApiTests:
         log.debug(f"returning: {entity_ids}")
         return entity_ids
 
-    def get_response_obj(self, endpoint_final):
+    def get_response_object(self, endpoint_final):
         status_code = 500
         response_text = None
         retry_count = 0
-
         while (status_code > 201 or response_text is None) and retry_count < 5:
             response = self.session["sess"].get(
                 f'{self.session["base_url"]}{endpoint_final}',
@@ -323,7 +347,7 @@ class ApiTests:
             endpoint_final = self.get_endpoint_final(entity_id, endpoint)
             self.api_log(f"Checking responses from: {endpoint_final}")
 
-            response_text = self.get_response_obj(endpoint_final)
+            response_text = self.get_response_object(endpoint_final)
             json_obj = json.loads(response_text)
 
             json_items_to_loop_through = self.get_json_items_to_loop_through(json_obj)
@@ -599,38 +623,122 @@ class ApiTests:
                 f"CSV '{self.csv}' doesn't exist in this environment. Skipping..."
             )
 
+    def functional_tests_by_method(self, method, entity_setup_objects):
+        for entity_setup_object in entity_setup_objects:
+            title = entity_setup_object["title"]
+            self.api_log(f"Running Functional API Section - {title}")
+            url = "/api/v1/" + entity_setup_object["url"]
+            data = entity_setup_object["data"]
+            source = entity_setup_object["source"]
+            case_references = entity_setup_object["case_references"]
+            expected_status = entity_setup_object["expected_status"]
 
-def main():
-    csvs = [
-        "clients",
-        "orders",
-        "bonds",
-        "deputies",
-        "deputy_orders",
-        "deputy_clients_count",
-        "supervision_level",
-        "death_notifications",
-        "warnings",
-        "crec",
-        "visits",
-        "reports",
-    ]
+            try:
+                id2_endpoint = entity_setup_object["id2_url"]
+                id2_json_path = entity_setup_object["id2_json_path"]
+            except Exception:
+                id2_endpoint = None
+                id2_json_path = None
 
-    api_tests = ApiTests()
-    api_tests.create_a_session()
-    api_tests.enhance_api_user_permissions()
+            for case_reference in case_references:
+                entity_ids = self.get_functional_entity_ids(case_reference, source)
+                first_entity_id = entity_ids[0]
+                endpoint = self.get_functional_endpoint(
+                    first_entity_id, url, id2_endpoint, id2_json_path
+                )
+                actual_status = self.get_functional_response_object(
+                    endpoint, method, data
+                )
+                assert expected_status == actual_status
 
-    for csv in csvs:
-        api_tests.csv = csv
-        api_tests.run_success_tests()
-    api_tests.upload_log_file()
+    def run_functional_test(self, entity, entity_setup_object):
+        self.csv = entity
+        if entity_setup_object["post_objects"] is not None:
+            self.functional_tests_by_method("POST", entity_setup_object["post_objects"])
+        if entity_setup_object["put_objects"] is not None:
+            self.functional_tests_by_method("PUT", entity_setup_object["put_objects"])
+        if entity_setup_object["delete_objects"] is not None:
+            self.functional_tests_by_method(
+                "DELETE", entity_setup_object["delete_objects"]
+            )
+        self.api_log(f"Successfully finished {self.csv} functional tests")
 
-    if api_tests.failed:
-        log.info("Tests Failed")
-        exit(1)
-    else:
-        log.info("Tests Passed")
+    def get_functional_endpoint(
+        self, entity_id, endpoint, id2_endpoint=None, id2_json_path=None
+    ):
+        if id2_endpoint is not None and id2_endpoint is not None:
+            first_id2 = self.get_entity_id_from_array(
+                entity_id, id2_endpoint, id2_json_path
+            )
+            if "{id2}" in endpoint:
+                endpoint_final = (
+                    str(endpoint)
+                    .replace("{id}", str(entity_id))
+                    .replace("{id2}", str(first_id2))
+                )
+            else:
+                endpoint_final = str(endpoint).replace("{id}", str(first_id2))
+        else:
+            endpoint_final = str(endpoint).replace("{id}", str(entity_id))
+        self.api_log(f"Running against: {endpoint_final}")
+        return endpoint_final
 
+    def get_entity_id_from_array(self, entity_id, endpoint, id2_json_path):
+        endpoint_final = self.get_functional_endpoint(entity_id, endpoint)
+        full_url = f'{self.session["base_url"]}/api/v1/{endpoint_final}'
+        log.debug(
+            f"Using the following url to get the required id for real url: {full_url}"
+        )
 
-if __name__ == "__main__":
-    main()
+        response = self.session["sess"].get(
+            full_url, headers=self.session["headers_dict"],
+        )
+
+        json_object = json.loads(response.text)
+        log.debug(json_object)
+        variable_to_evaluate = f"json_object{id2_json_path}"
+        first_id = eval(variable_to_evaluate)
+        return first_id
+
+    def get_functional_response_object(self, endpoint_final, method, data=None):
+        content_type_dict = {"Content-Type": "application/json"}
+        headers = {**self.session["headers_dict"], **content_type_dict}
+        if method == "POST":
+            response = self.session["sess"].post(
+                f'{self.session["base_url"]}{endpoint_final}',
+                headers=headers,
+                data=json.dumps(data),
+            )
+        elif method == "PUT":
+            response = self.session["sess"].put(
+                f'{self.session["base_url"]}{endpoint_final}',
+                headers=headers,
+                data=json.dumps(data),
+            )
+        elif method == "DELETE":
+            response = self.session["sess"].delete(
+                f'{self.session["base_url"]}{endpoint_final}',
+                headers=self.session["headers_dict"],
+            )
+        else:
+            self.api_log(f"Method {method} is invalid")
+
+        log.debug(f"Response text: {response.text}")
+        status_code = response.status_code
+
+        self.api_log(f"Returns following: {status_code}")
+
+        return status_code
+
+    def get_functional_entity_ids(self, caserecnumber, source):
+        person_id_sql = self.get_person_sql(caserecnumber)
+        order_id_sql = self.get_active_order_sql(caserecnumber)
+        ids = []
+        if source == "clients":
+            ids = self.get_entity_ids_from_person_source(person_id_sql, caserecnumber)
+        elif source == "orders":
+            ids = self.get_functional_entity_ids_from_order_source(
+                order_id_sql, caserecnumber
+            )
+        log.debug(f"returning ids: {ids}")
+        return ids

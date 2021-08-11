@@ -9,7 +9,7 @@ fi
 
 if [ "${RUN_API_TESTS}" == "True" ]
 then
-  cd "${DIR}/api_tests"
+  cd "${DIR}/api_tests/response_tests"
   echo "== Running API tests =="
   python3 app.py
   echo $?
