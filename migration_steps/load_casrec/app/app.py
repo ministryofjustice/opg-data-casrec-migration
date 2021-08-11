@@ -489,9 +489,14 @@ def main(entities, delay, verbose, skip_load):
                         progress_table, schema, engine, file, "COMPLETE", processor_id
                     )
                     log.info(f"Processed {file}\n\n")
-                except Exception:
+                except Exception as e:
                     update_progress(
-                        progress_table, schema, engine, file, "FAILED", processor_id
+                        progress_table,
+                        schema,
+                        engine,
+                        file,
+                        f"FAILED {e}",
+                        processor_id,
                     )
                     log.info(f"Failed to process {file}\n\n")
             else:
