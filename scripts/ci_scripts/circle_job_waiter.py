@@ -21,7 +21,7 @@ def get_running_jobs(
             if job["status"] == "queued" or job["status"] == "running":
                 if job["workflows"]["workflow_id"] != current_workflow_id:
                     if (
-                        "preprod" not in job["workflows"]["job_name"]
+                        "pre" not in job["workflows"]["job_name"]
                         and "qa" not in job["workflows"]["job_name"]
                     ):
                         print(
