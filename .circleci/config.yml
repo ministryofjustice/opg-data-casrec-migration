@@ -62,7 +62,7 @@ workflows:
           filters: {branches:{ignore:[master]}}
       - run_api_tests:
           name: run functional api tests
-          requires: [run the step function development]
+          requires: [run api tests]
           tf_workspace: development
           environment: Development
           runner_command: functional-api-tests
