@@ -551,10 +551,10 @@ def write_results_sql():
             f"(SELECT COUNT(*) FROM {get_exception_table(mapping_name)}),\n"
             f"(SELECT CONCAT( CAST( CAST( (\n"
             f"    (SELECT COUNT(*) FROM {get_exception_table(mapping_name)}) / \n"
-            f"    (SELECT COUNT(*) FROM {source_schema}.{casrec_table_name})::FLOAT) * 100 AS NUMERIC) AS TEXT), '%')),\n"
-            f"CAST((SELECT json_agg(vary) AS affected_columns FROM (\n"
-            f"    SELECT DISTINCT unnest(vary_columns) as vary FROM {get_exception_table(mapping_name)}\n"
-            f") t1) AS TEXT)\n"
+            f"    (SELECT COUNT(*) FROM {source_schema}.{casrec_table_name})::FLOAT) * 100 AS NUMERIC) AS TEXT), '%'))\n"
+            # f"CAST((SELECT json_agg(vary) AS affected_columns FROM (\n"
+            # f"    SELECT DISTINCT unnest(vary_columns) as vary FROM {get_exception_table(mapping_name)}\n"
+            # f") t1) AS TEXT)\n"
         )
     separator = "UNION\n"
     sql_file.writelines(separator.join(results_rows))
@@ -657,8 +657,8 @@ def pre_validation():
         build_validation_statements(mapping_name)
         output_statement_to_file()
 
-        log.info("- Column Validation Statements")
-        build_column_validation_statements(mapping_name)
+        # log.info("- Column Validation Statements")
+        # build_column_validation_statements(mapping_name)
 
     write_validation_sql()
 
@@ -686,7 +686,7 @@ def post_validation():
         "Attempted",
         "Failed",
         "Fail rate",
-        "Mismatches in...",
+        # "Mismatches in...",
     ]
     print(tabulate(report_df, headers, tablefmt="psql"))
 
