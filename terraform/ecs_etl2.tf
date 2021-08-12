@@ -53,6 +53,10 @@ locals {
         name  = "ENVIRONMENT",
         value = terraform.workspace
       },
+      {
+        name  = "DEFAULT_CHUNK_SIZE",
+        value = local.account.default_chunk_size
+      }
     ]
   })
 }

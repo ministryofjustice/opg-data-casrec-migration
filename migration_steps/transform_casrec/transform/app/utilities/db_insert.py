@@ -273,7 +273,7 @@ class InsertData:
             except Exception as e:
 
                 log.error(
-                    f"There was a problem creating empty table {table_name}",
+                    f"There was a problem creating empty table {table_name} - {e}",
                     extra={
                         "file_name": "",
                         "error": helpers.format_error_message(e=e),

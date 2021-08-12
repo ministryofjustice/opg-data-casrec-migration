@@ -48,6 +48,7 @@ variable "accounts" {
       run_audit               = string
       account_name            = string
       s3_vpc_endpoint_ids     = set(string)
+      default_chunk_size      = string
     })
   )
 }

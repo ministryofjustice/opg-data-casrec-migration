@@ -5,7 +5,6 @@ import os
 import pandas as pd
 
 from helpers import get_mapping_dict, get_table_def
-from helpers import get_mapping_dict
 from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 
 log = logging.getLogger("root")

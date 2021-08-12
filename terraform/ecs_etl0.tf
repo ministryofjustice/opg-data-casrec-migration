@@ -78,6 +78,10 @@ locals {
         value = terraform.workspace
       },
       {
+        name  = "DEFAULT_CHUNK_SIZE",
+        value = local.account.default_chunk_size
+      },
+      {
         name  = "SIRIUS_ACCOUNT",
         value = local.account.account_id
       }

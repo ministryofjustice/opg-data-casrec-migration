@@ -73,7 +73,7 @@ class BaseConfig:
             f"/{self.db_config[db]['name']}"
         )  # pragma: allowlist secret
 
-    DEFAULT_CHUNK_SIZE = 20000
+    DEFAULT_CHUNK_SIZE = int(os.environ.get("DEFAULT_CHUNK_SIZE", 20000))
 
     ALL_ENVIRONMENTS = ["local", "development", "preproduction", "qa"]
     ENABLED_ENTITIES = {

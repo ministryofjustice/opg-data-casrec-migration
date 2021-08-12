@@ -117,6 +117,6 @@ def update_data_in_target(
             )
 
             target_db_engine.execute("; ".join(updates))
-            offset += int(chunk_size)
+            offset += chunk_size
         except Exception as e:
             print(f"e: {e}")
