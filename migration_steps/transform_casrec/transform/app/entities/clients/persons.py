@@ -38,7 +38,7 @@ def insert_persons_clients(db_config, target_db, mapping_file):
                 chunk_no=chunk_no,
             )
 
-            offset += int(chunk_size)
+            offset += chunk_size
             chunk_no += 1
 
         except EmptyDataFrame:

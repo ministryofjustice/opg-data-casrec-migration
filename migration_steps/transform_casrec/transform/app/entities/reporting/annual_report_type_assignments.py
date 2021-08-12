@@ -46,7 +46,7 @@ def insert_annual_report_type_assignments(db_config, target_db, mapping_file):
     #             chunk_no=chunk_no,
     #         )
     #
-    #         offset += int(chunk_size)
+    #         offset += chunk_size
     #         chunk_no += 1
     #
     #     except EmptyDataFrame:

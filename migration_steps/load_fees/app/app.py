@@ -272,7 +272,7 @@ def main():
 
         if len(df_renamed.index) > 0:
             try:
-                n = int(chunk_size)  # chunk row size
+                n = chunk_size  # chunk row size
                 list_df = [
                     df_renamed[i : i + n] for i in range(0, df_renamed.shape[0], n)
                 ]

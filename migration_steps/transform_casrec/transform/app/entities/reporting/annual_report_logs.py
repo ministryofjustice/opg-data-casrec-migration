@@ -70,7 +70,7 @@ def insert_annual_report_logs(db_config, target_db, mapping_file):
                     sirius_details=sirius_details,
                 )
 
-            offset += int(chunk_size)
+            offset += chunk_size
             chunk_no += 1
 
         except EmptyDataFrame:
