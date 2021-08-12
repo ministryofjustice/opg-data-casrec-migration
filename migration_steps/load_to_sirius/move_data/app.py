@@ -98,8 +98,7 @@ def main(audit):
 
         completed_tables.append(table)
 
-    if environment == "local":
-        update_progress(module_name="load_to_sirius", completed_items=completed_tables)
+    update_progress(module_name="load_to_sirius", completed_items=completed_tables)
 
     if audit == "True":
         log.info(f"Running Post-Audit - Table Copies and Comparisons")

@@ -134,16 +134,14 @@ def main(clear, team, chunk_size):
     warnings.runner(target_db=target_db, db_config=db_config)
     crec.runner(target_db=target_db, db_config=db_config)
 
-    if environment == "local":
-        check_row_counts.count_rows(
-            connection_string=db_config["db_connection_string"],
-            destination_schema=db_config["target_schema"],
-            enabled_entities=allowed_entities,
-            team=team,
-        )
+    check_row_counts.count_rows(
+        connection_string=db_config["db_connection_string"],
+        destination_schema=db_config["target_schema"],
+        enabled_entities=allowed_entities,
+        team=team,
+    )
 
-        update_progress(module_name="transform", completed_items=files_used)
-        log.debug(f"Number of mapping docs used: {len(files_used)}")
+    update_progress(module_name="transform", completed_items=files_used)
 
 
 if __name__ == "__main__":

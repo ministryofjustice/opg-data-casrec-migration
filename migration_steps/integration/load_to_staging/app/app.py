@@ -144,13 +144,12 @@ def main(clear, team):
         thread.join()
         log.debug(f"Result: {result}")
 
-    if environment == "local":
-        check_row_counts.count_rows(
-            connection_string=db_config["db_connection_string"],
-            destination_schema=db_config["target_schema"],
-            enabled_entities=allowed_entities,
-            team=team,
-        )
+    check_row_counts.count_rows(
+        connection_string=db_config["db_connection_string"],
+        destination_schema=db_config["target_schema"],
+        enabled_entities=allowed_entities,
+        team=team,
+    )
 
 
 if __name__ == "__main__":
