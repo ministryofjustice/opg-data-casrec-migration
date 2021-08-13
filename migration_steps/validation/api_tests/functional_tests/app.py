@@ -14,22 +14,22 @@ from api_test import ApiTests
 
 def get_post_data(entity):
     post_data = {
-        # "warnings": [
-        #     {
-        #         "title": "Create New Warnings",
-        #         "data": {
-        #             "warningText": "<p>Blah<\/p>",
-        #             "warningType": {
-        #                 "handle": "REM - Violence Warnings",
-        #                 "label": "REM - Violence Warnings",
-        #             },
-        #         },
-        #         "url": "clients/{id}/warnings",
-        #         "expected_status": 201,
-        #         "source": "clients",
-        #         "case_references": ["10194709"],
-        #     },
-        # ],
+        "warnings": [
+            {
+                "title": "Create New Warnings",
+                "data": {
+                    "warningText": "<p>Blah<\/p>",
+                    "warningType": {
+                        "handle": "REM - Violence Warnings",
+                        "label": "REM - Violence Warnings",
+                    },
+                },
+                "url": "clients/{id}/warnings",
+                "expected_status": 201,
+                "source": "clients",
+                "case_references": ["10194709"],
+            },
+        ],
         # "death": [
         #     {
         #         "title": "Create New Death",
