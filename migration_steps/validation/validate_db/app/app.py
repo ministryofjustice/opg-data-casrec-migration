@@ -29,6 +29,7 @@ env_path = current_path / "../../../../.env"
 shared_path = current_path / "../../../shared"
 sql_path = shared_path / "sql"
 sql_path_temp = sql_path / "temp"
+fixed_entity_sql_dir = current_path / "fixed_sql"
 load_dotenv(dotenv_path=env_path)
 
 environment = os.environ.get("ENVIRONMENT")
@@ -59,6 +60,7 @@ def get_mappings():
             "client_saarcheck_warnings",
             "client_special_warnings",
             "client_violent_warnings",
+            "crec_persons",
         ],
         "cases": ["cases", "supervision_level_log"],
         # "bonds": ["bonds"],
@@ -202,7 +204,10 @@ def wrap_sirius_col(col_name: str, col_definition, sql: str):
     sql = wrap_override_sql(col_name, "sirius", sql)
 
     # convert empty strings to NULL
-    if "str" == col_definition["sirius_details"]["data_type"]:
+    if (
+        "str" == col_definition["sirius_details"]["data_type"]
+            and col_name != 'caserecnumber'
+    ):
         sql = f"NULLIF(TRIM({sql}), '')"
     return sql
 
@@ -212,7 +217,10 @@ def wrap_casrec_col(col_name: str, col_definition, sql: str):
     sql = wrap_override_sql(col_name, "casrec", sql)
 
     # convert empty strings to NULL
-    if col_definition["sirius_details"]["data_type"] not in ["bool", "int"]:
+    if (
+        col_definition["sirius_details"]["data_type"] not in ["bool", "int"]
+        and col_name != 'caserecnumber'
+    ):
         sql = f"NULLIF(TRIM({sql}), '')"
 
     # wrap transform, if required
@@ -618,27 +626,28 @@ def pre_validation():
     else:
         log.info(f"Validating with STAGING schema")
 
-    log.info(f"INSTALL TRANSFORMATION ROUTINES")
-
     clear_local_temp_sql()
 
+    log.info(f"INSTALL TRANSFORMATION ROUTINES")
     execute_sql_file(
         sql_path, transformations_sqlfile, conn_target, config.schemas["public"]
     )
 
     log.info(f"GENERATE SQL")
 
-    log.info("- Lookup Functions")
+    log.info("Lookup Functions")
     build_lookup_functions()
     output_statement_to_file()
 
-    log.info("- Drop Exception Tables")
+    log.info("Drop Exception Tables")
     drop_exception_tables()
     output_statement_to_file()
 
     global mapping_dict, validation_dict
 
     for mapping_name in mappings_to_run:
+        log.info(f"Entity: {mapping_name}")
+
         mapping_dict = helpers.get_mapping_dict(
             file_name=mapping_name + "_mapping",
             only_complete_fields=True,
@@ -647,18 +656,24 @@ def pre_validation():
 
         validation_dict = get_validation_dict(mapping_name)
 
-        log.info(mapping_name)
+        fixed_sql_path = f"{fixed_entity_sql_dir}/{mapping_name}.sql"
+        if os.path.exists(fixed_sql_path):
+            log.debug(f"Static validation file found! {fixed_sql_path}")
+            fixedfile = open(fixed_sql_path, "r")
+            for line in fixedfile:
+                sql_add(line)
+            output_statement_to_file()
+        else:
+            log.debug("Exception Table")
+            build_exception_table(mapping_name)
+            output_statement_to_file()
 
-        log.info("- Exception Table")
-        build_exception_table(mapping_name)
-        output_statement_to_file()
+            log.debug("Table Validation Statement")
+            build_validation_statements(mapping_name)
+            output_statement_to_file()
 
-        log.info("- Table Validation Statement")
-        build_validation_statements(mapping_name)
-        output_statement_to_file()
-
-        # log.info("- Column Validation Statements")
-        # build_column_validation_statements(mapping_name)
+            # log.debug("Column Validation Statements")
+            # build_column_validation_statements(mapping_name)
 
     write_validation_sql()
 
