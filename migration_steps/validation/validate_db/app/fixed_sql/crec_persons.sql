@@ -28,7 +28,7 @@ INSERT INTO casrec_csv.exceptions_crec_persons(
         SELECT DISTINCT
             persons.caserecnumber AS caserecnumber,
             persons.risk_score AS risk_score
-        FROM public.persons
+        FROM {target_schema}.persons
         WHERE persons.type = 'actor_client'
         AND persons.clientsource = 'CASRECMIGRATION'
         ORDER BY caserecnumber ASC

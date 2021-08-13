@@ -661,7 +661,7 @@ def pre_validation():
             log.debug(f"Static validation file found! {fixed_sql_path}")
             fixedfile = open(fixed_sql_path, "r")
             for line in fixedfile:
-                sql_add(line)
+                sql_add(line.replace("{target_schema}", str(target_schema)))
             output_statement_to_file()
         else:
             log.debug("Exception Table")
