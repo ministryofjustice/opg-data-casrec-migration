@@ -352,14 +352,14 @@ def get_delete_data(entity):
 
 def main():
     entities = [
-        # "orders",
+        "orders",
         "bonds",
         "warnings",
         "deputies",
         "clients",
         "death",
         "supervision",
-        # "crec",
+        "crec",
     ]
 
     api_tests = ApiTests()
