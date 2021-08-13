@@ -189,7 +189,7 @@
 				"parent_column": "id"
 			}],
 		"sequences": [{
-			"name": "notes_id_seq",
+			"name": "supervision_notes_id_seq",
 			"column": "id",
 			"type": "pk"
 		}],
@@ -221,7 +221,11 @@
 		"pk": "id",
 		"fks": [],
 		"table_type": "data",
-		"sequences": [],
+		"sequences": [{
+			"name": "warnings_id_seq",
+			"column": "id",
+			"type": "pk"
+		}],
 		"order_by": ["id"]
 	},
 	"person_warning": {
