@@ -336,6 +336,30 @@
             ]
         }
     },
+    "crec_persons": {
+        "exclude": [
+            "supervisioncaseowner_id"
+        ],
+        "casenumber_source": "client_persons.caserecnumber",
+        "orderby": {},
+        "casrec": {
+            "from_table": "crec",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_crec_persons exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "where_clauses": []
+        },
+        "sirius": {
+            "from_table": "persons",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_crec_persons exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "persons.type = 'actor_client'",
+                "persons.clientsource = 'CASRECMIGRATION'"
+            ]
+        }
+    },
     "deputy_daytime_phonenumbers": {
         "exclude": [
             "person_id"
