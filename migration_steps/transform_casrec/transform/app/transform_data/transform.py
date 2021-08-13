@@ -49,7 +49,7 @@ def perform_transformations(
 
     if conditions:
         log.debug("Applying conditions to source data")
-        final_df = source_conditions(df=final_df, conditions=conditions)
+        final_df = source_conditions(df=final_df, conditions=dict(conditions))
         if len(final_df) == 0:
             log.debug(f"No data left after applying source conditions")
             raise EmptyDataFrame
