@@ -156,6 +156,44 @@ def table_exists_already(table_name, table_lookup, schema_name, engine):
         return False
 
 
+def check_columns_exist(table_name, schema, csv_cols, engine):
+
+    existing_cols_statement = (
+        f"SELECT column_name FROM "
+        f"information_schema.columns "
+        f"WHERE  table_schema = '{schema}'"
+        f"AND    table_name   = '{table_name}';"
+    )
+
+    existing_cols = engine.execute(existing_cols_statement)
+    existing_cols_list = [row[0] for row in existing_cols]
+
+    if len(existing_cols_list) != len(csv_cols):
+        log.warning("There is a column difference between multipart files")
+
+    col_diff = [i for i in csv_cols if i not in existing_cols_list]
+
+    return col_diff
+
+
+def add_missing_columns_statement(table, schema, col_diff):
+
+    log.info(
+        f"Adding columns to existing table due to column difference \"{', '.join(col_diff)}\""
+    )
+
+    statement = f"""
+        ALTER TABLE "{schema}"."{table}"
+        """
+    for i, col in enumerate(col_diff):
+        statement += f'ADD COLUMN "{col}" text'
+        if i + 1 < len(col_diff):
+            statement += ","
+    statement += ";"
+
+    return statement
+
+
 def create_table_statement(table_name, schema, columns):
     create_statement = f"""
         CREATE TABLE IF NOT EXISTS "{schema}"."{table_name}"
@@ -460,6 +498,19 @@ def main(entities, delay, verbose, skip_load):
 
             if table_exists_already(table_name, table_lookup, schema, engine):
                 log.info("Multipart file table detected")
+
+                col_diff = check_columns_exist(
+                    table_name=table_name,
+                    schema=schema,
+                    csv_cols=columns,
+                    engine=engine,
+                )
+                if len(col_diff) != 0:
+                    add_cols_statement = add_missing_columns_statement(
+                        table=table_name, schema=schema, col_diff=col_diff
+                    )
+                    engine.execute(add_cols_statement)
+
             else:
                 log.info(
                     f"Table {schema}.{table_name} doesn't exist. Creating table..."
