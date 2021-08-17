@@ -176,7 +176,7 @@
                 "persons.type = 'actor_client'",
                 "persons.clientsource = 'CASRECMIGRATION'",
                 "warnings.warningtype = 'OTHER'",
-                "warnings.warningtext = 'No Debt to be chased'"
+                "warnings.warningtext = 'Casrec Migration - No Debt to be chased'"
             ]
         }
     },
@@ -267,8 +267,8 @@
             "where_clauses": [
                 "persons.type = 'actor_client'",
                 "persons.clientsource = 'CASRECMIGRATION'",
-                "warnings.warningtype = 'OTHER'",
-                "warnings.warningtext = 'SAAR CHECK DONE'"
+                "warnings.warningtype = 'Other'",
+                "warnings.warningtext = 'Casrec Migration - SAAR Check Warning'"
             ]
         }
     },
@@ -282,7 +282,8 @@
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_special_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
-                "casrec_csv.pat.\"SIM\" != ''"
+                "casrec_csv.pat.\"SIM\" != ''",
+                "casrec_csv.pat.\"SIM\" != '0'"
             ]
         },
         "sirius": {
@@ -298,8 +299,8 @@
             "where_clauses": [
                 "persons.type = 'actor_client'",
                 "persons.clientsource = 'CASRECMIGRATION'",
-                "warnings.warningtype = 'OTHER'",
-                "warnings.warningtext = 'Special Interest'"
+                "warnings.warningtype = 'REM - Special Interest Markers'",
+                "warnings.warningtext = 'Casrec Migration - Special Interest Warning'"
             ]
         }
     },
@@ -331,8 +332,8 @@
             "where_clauses": [
                 "persons.type = 'actor_client'",
                 "persons.clientsource = 'CASRECMIGRATION'",
-                "warnings.warningtype = 'Marker'",
-                "warnings.warningtext = 'Marker'"
+                "warnings.warningtype = 'REM - Violence Warnings'",
+                "warnings.warningtext = 'Casrec Migration - Violent Warning'"
             ]
         }
     },
@@ -571,7 +572,8 @@
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_special_warnings exc_table ON exc_table.caserecnumber = casrec_csv.order.\"Case\"",
             "where_clauses": [
-                "casrec_csv.deputy.\"SIM\" != ''"
+                "casrec_csv.deputy.\"SIM\" != ''",
+                "casrec_csv.deputy.\"SIM\" != '0'"
             ]
         },
         "sirius": {
@@ -589,8 +591,8 @@
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
                 "persons.clientsource = 'CASRECMIGRATION'",
-                "warnings.warningtype = 'OTHER'",
-                "warnings.warningtext = 'Special Interest'"
+                "warnings.warningtype = 'REM - Special Interest Markers'",
+                "warnings.warningtext = 'Casrec Migration - Special Interest Warning'"
             ]
         }
     },
@@ -637,8 +639,8 @@
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
                 "persons.clientsource = 'CASRECMIGRATION'",
-                "warnings.warningtype = 'Marker'",
-                "warnings.warningtext = 'Marker'"
+                "warnings.warningtype = 'REM - Special Interest Markers'",
+                "warnings.warningtext = 'Casrec Migration - Violent Warning'"
             ]
         }
     },
