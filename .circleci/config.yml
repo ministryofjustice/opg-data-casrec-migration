@@ -203,10 +203,16 @@ workflows:
           environment: PreQualityAssurance
           filters: {branches:{only:[master]}}
       - run_step_function:
-          name: run the step function preproduction
+          name: run the step function preqa
           requires: [build infra preqa, run and monitor jenkins restore job preqa]
           account: "492687888235"
           wait_for: "18000"
+          tf_workspace: preqa
+          environment: PreQualityAssurance
+          filters: {branches:{only:[master]}}
+      - run_api_tests:
+          name: run api tests preqa
+          requires: [run the step function preqa]
           tf_workspace: preqa
           environment: PreQualityAssurance
           filters: {branches:{only:[master]}}

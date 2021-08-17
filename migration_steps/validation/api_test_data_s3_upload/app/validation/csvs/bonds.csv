@@ -1,4 +1,1 @@
-endpoint,entity_ref,test_purpose,full_check,["securityBond"],["bond"]["requiredBondAmount"],["bond"]["amountTaken"],["bond"]["referenceNumber"],["bond"]["renewalDate"],["bond"]["dischargeDate"],["bond"]["companyName"],["bond"]["status"]["handle"],["bond"]["bondProvider"]["name"]
-/api/v1/orders/{id},10000884,dev_api_tests,FALSE,True,10000,25000,47362,,,,,MARSH
-/api/v1/orders/{id},10001403,dev_api_tests,FALSE,True,20000|30000,20000|30000,BULE02322|S3753,19/03/2018,,,,MARSH|OTHER
-/api/v1/orders/{id},10001668,dev_api_tests,FALSE,True,30000,30000,W11829,,,,,MARSH
+endpoint,entity_ref,test_purpose,full_check,["securityBond"],["bond"]["requiredBondAmount"],["bond"]["amountTaken"],["bond"]["referenceNumber"],["bond"]["dischargeDate"],["bond"]["companyName"],["bond"]["status"]["handle"],["bond"]["bondProvider"]["name"]/api/v1/orders/{id},10000884,dev_api_tests,FALSE,True,10000,25000,47362,,,,MARSH/api/v1/orders/{id},10001403,dev_api_tests,FALSE,True,20000|30000,20000|30000,BULE02322|S3753,,,,MARSH|OTHER/api/v1/orders/{id},10001668,dev_api_tests,FALSE,True,30000,30000,W11829,,,,MARSH

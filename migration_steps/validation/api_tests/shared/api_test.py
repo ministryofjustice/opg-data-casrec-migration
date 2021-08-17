@@ -92,6 +92,15 @@ class ApiTests:
                 "warnings",
                 "bonds",
             ],
+            "preqa": [
+                "clients",
+                "orders",
+                "deputies",
+                "deputy_orders",
+                "deputy_clients_count",
+                "warnings",
+                "bonds",
+            ],
             "qa": [
                 "clients",
                 "orders",
