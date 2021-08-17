@@ -92,6 +92,15 @@ class ApiTests:
                 "warnings",
                 "bonds",
             ],
+            "preqa": [
+                "clients",
+                "orders",
+                "deputies",
+                "deputy_orders",
+                "deputy_clients_count",
+                "warnings",
+                "bonds",
+            ],
             "qa": [
                 "clients",
                 "orders",
@@ -613,10 +622,10 @@ class ApiTests:
                     formatted_api_response = self.get_formatted_api_response(
                         entity_ids, endpoint, headers_to_check, row, entity_ref
                     )
-            # Loop through and check expected results against actual for each field
-            self.assert_on_fields(
-                headers_to_check, formatted_api_response, row, entity_ref
-            )
+                # Loop through and check expected results against actual for each field
+                self.assert_on_fields(
+                    headers_to_check, formatted_api_response, row, entity_ref
+                )
             self.api_log(f"Ran happy path tests against {count} cases in {self.csv}")
         else:
             self.api_log(
