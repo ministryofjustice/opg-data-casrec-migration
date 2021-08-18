@@ -352,7 +352,6 @@ def initialise_progress_table(
     progress_df["state"] = "UNPROCESSED"
     progress_df["process"] = "None"
     progress_df.rename(index={0: "file"})
-
     if (
         get_row_count(progress_table, schema, engine) > 0
         and get_row_count(progress_table, schema, engine, "UNPROCESSED") == 0
@@ -481,7 +480,7 @@ def main(entities, delay, verbose, skip_load):
             if file.split(".")[1] == "csv":
                 df = pd.read_csv(io.BytesIO(obj["Body"].read()))
             elif file.split(".")[1] == "xlsx":
-                df = pd.read_excel(io.BytesIO(obj["Body"].read()), index_col=0)
+                df = pd.read_excel(io.BytesIO(obj["Body"].read()), engine="openpyxl")
             else:
                 log.info("Unknown file format")
                 exit(1)
