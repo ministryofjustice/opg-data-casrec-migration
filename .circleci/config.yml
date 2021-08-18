@@ -695,6 +695,7 @@ jobs:
             fi
             echo "export RUN_PREPROD=${RUN_PREPROD}" >> $BASH_ENV
             echo "export RUN_QA=${RUN_QA}" >> $BASH_ENV
+            echo "export RUN_PRE_QA=${RUN_PRE_QA}" >> $BASH_ENV
       - run:
           name: kick off << parameters.workspace >> job
           command: |
