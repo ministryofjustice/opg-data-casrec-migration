@@ -29,10 +29,10 @@ def main():
     ]
 
     api_tests = ApiTests()
-    api_tests.create_a_session()
     api_tests.enhance_api_user_permissions()
 
     for csv in csvs:
+        api_tests.create_a_session()
         api_tests.csv = csv
         api_tests.run_success_tests()
     api_tests.upload_log_file()
