@@ -19,6 +19,16 @@ git clone git@github.com:ministryofjustice/opg-data-casrec-migration.git
 
 All commands are from the root directory of `opg-data-casrec-migration` unless otherwise stated
 
+### Install Python and dependencies
+
+Download and install the latest version of Python (v3.9.6 at time of writing)
+
+Install dependencies
+
+```bash
+pip install -r base_image/requirements.txt
+```
+
 ### Grab Casrec dev data
 
 For development we have a sample set of migration data in the same format as the files we will be receiving from Casrec (about 40 files). Sensitive data has been removed - hence we call this our 'anonymised csv data'.
@@ -210,13 +220,10 @@ make ingest
 ### Run the tests
 
 ```bash
-pip3 install pytest
-pip3 install pytest_cases
-
 # export test paths to PYTHONPATH with something like
-export PYTHONPATH=[project root]/migration_steps/transform_casrec/tests:[project root]/migration_steps/transform_casrec/app:[project root]/migration_steps/transform_casrec
+export PYTHONPATH=[project root]/migration_steps/transform_casrec/transform/transform_tests:[project root]/migration_steps/transform_casrec/transform/app:[project root]/migration_steps/transform_casrec/transform
 
-python3 -m pytest migration_steps/transform_casrec/tests
+python3 -m pytest migration_steps/transform_casrec/transform/transform_tests
 ```
 
 ### Python linting - run precommit
@@ -261,7 +268,7 @@ host: localhost
 port: 5555
 user: api
 pass: api
-schema: etl2
+schema: transform
 
 db:   sirius project postgres
 host: localhost
@@ -358,11 +365,11 @@ The Migration steps, in order, are:
 - Reads data from the `casrec_csv` schema and performs a series of transformations on the columns
 - Makes extensive use of pandas to perform the transformations
 - Arrives at a schema more closely resembling the Sirius DB
-- outputs schema `etl2`
+- outputs schema `transform`
 
 #### integration
 
-- Copies `etl2` to `integration`, which has added id columns to hold associated ids from Sirius
+- Copies `transform` to `integration`, which has added id columns to hold associated ids from Sirius
 - Generates ID lookup tables from the Sirius DB
 - Uses the lookup tables to transpose the corresponding Sirius ids into the integration schema
 
