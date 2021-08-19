@@ -190,14 +190,14 @@ workflows:
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra preqa
-          requires: [get latest tag preproduction]
+          requires: [get latest tag preqa]
           tf_workspace: preqa
           tf_command: plan
           environment: PreQualityAssurance
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: build infra preqa
-          requires: [plan infra preproduction]
+          requires: [plan infra preqa]
           tf_workspace: preqa
           tf_command: apply
           environment: PreQualityAssurance
@@ -222,7 +222,7 @@ workflows:
     jobs:
       - reset_sirius_full_restore:
           name: run and monitor jenkins restore job qa
-          environment: Preproduction
+          environment: Quality Assurance
           sirius_environment: casrecdmqa
           filters: {branches:{only:[master]}}
       - get_latest_image:
@@ -368,6 +368,18 @@ workflows:
           name: kick off qa
           workspace: qa
           requires: [approve qa kick off]
+          environment: Preproduction
+          filters: {branches:{only:[master]}}
+      - approve:
+          name: approve preqa kick off
+          type: approval
+          requires: [tag image for qa]
+          environment: Preproduction
+          filters: {branches:{only:[master]}}
+      - kick_off_environment:
+          name: kick off preqa
+          workspace: preqa
+          requires: [approve preqa kick off]
           environment: Preproduction
           filters: {branches:{only:[master]}}
 
