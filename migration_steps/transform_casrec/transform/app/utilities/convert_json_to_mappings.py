@@ -31,10 +31,10 @@ class MappingDefinitions:
         transformations = {}
         for k, v in requires_transformation.items():
             tr = v["requires_transformation"]
-            d = {"original_columns": v["casrec_column_name"], "aggregate_col": k}
+            d = {"original_columns": v["alias"], "aggregate_col": k}
             if v["requires_transformation"] == "conditional_lookup":
                 d["lookup_table"] = v["lookup_table"]
-                d["original_columns"] = v["casrec_column_name"]
+                d["original_columns"] = v["alias"]
                 d["additional_columns"] = v["additional_columns"]
             if tr in transformations:
                 transformations[tr].append(d)
