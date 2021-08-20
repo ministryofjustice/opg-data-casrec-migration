@@ -223,7 +223,8 @@ def get_bond_entity_ids(conn, entity_id):
 
 def get_deputy_entity_ids(conn, entity_id):
     response = conn["sess"].get(
-        f'{conn["base_url"]}/api/v1/orders/{entity_id}', headers=conn["headers_dict"],
+        f'{conn["base_url"]}/api/v1/orders/{entity_id}',
+        headers=conn["headers_dict"],
     )
     json_obj = json.loads(response.text)
     deputies = json_obj["deputies"]

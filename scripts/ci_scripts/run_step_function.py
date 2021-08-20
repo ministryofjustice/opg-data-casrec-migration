@@ -166,7 +166,7 @@ class StepFunctionRunner:
             self.execution_arn = execution["executionArn"]
 
     def refresh_creds(self):
-        " Refresh tokens by calling assume_role again "
+        "Refresh tokens by calling assume_role again"
         params = {
             "RoleArn": self.role_name,
             "RoleSessionName": "step_function_session",

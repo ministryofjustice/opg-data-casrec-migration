@@ -86,6 +86,34 @@ def capitalise(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataF
     return df
 
 
+def multiply_by_100(
+    original_col: str, result_col: str, df: pd.DataFrame
+) -> pd.DataFrame:
+    df[result_col] = df[original_col].apply(lambda x: float(x) * 100)
+    df = df.drop(columns=[original_col])
+
+    return df
+
+
+def first_two_chars(
+    original_col: str, result_col: str, df: pd.DataFrame
+) -> pd.DataFrame:
+    df[result_col] = df[original_col].apply(lambda x: x[:2])
+    df = df.drop(columns=[original_col])
+
+    return df
+
+
+def add_one_year(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+    df[result_col] = df[original_col].astype(str)
+    df[result_col] = pd.to_datetime(
+        df[result_col], format="%d/%m/%Y %H:%M"
+    ) + pd.offsets.DateOffset(years=1)
+    df = df.drop(columns=[original_col])
+
+    return df
+
+
 def round_column(
     original_col: str, result_col: str, df: pd.DataFrame, dp=2
 ) -> pd.DataFrame:

@@ -23,9 +23,17 @@ def source_conditions(df, conditions):
     convert_to_timestamp_cols = {
         k: v for k, v in conditions.items() if k == "convert_to_timestamp"
     }
+
     if convert_to_timestamp_cols:
         df = convert_to_timestamp(df, convert_to_timestamp_cols)
         for col in convert_to_timestamp_cols:
+            conditions.pop(col, None)
+
+    first_x_chars_cols = {k: v for k, v in conditions.items() if k == "first_x_chars"}
+
+    if first_x_chars_cols:
+        df = first_x_chars(df, first_x_chars_cols)
+        for col in first_x_chars_cols:
             conditions.pop(col, None)
 
     not_null_cols = [k for k, v in conditions.items() if v == "not null"]
@@ -83,6 +91,16 @@ def convert_to_timestamp(df, cols):
         config.VERBOSE,
         f"Dataframe size after converting {source_date} and {source_time} to timestamp: {len(df)}",
     )
+
+    return df
+
+
+def first_x_chars(df, cols):
+
+    source_col = format_additional_col_alias(cols["first_x_chars"]["col"])
+    result_col = format_additional_col_alias(cols["first_x_chars"]["result_col"])
+    num = cols["first_x_chars"]["num"]
+    df[result_col] = df[source_col].apply(lambda x: x[:num])
 
     return df
 

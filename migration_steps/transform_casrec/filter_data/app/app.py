@@ -41,11 +41,7 @@ def set_logging_level(verbose):
 @click.command()
 @click.option("-v", "--verbose", count=True)
 @click.option("--team", default="")
-@click.option(
-    "--clear",
-    prompt=False,
-    default=False
-)
+@click.option("--clear", prompt=False, default=False)
 def main(verbose, team, clear):
     set_logging_level(verbose)
     log.info(log_title(message="Filter Data"))
@@ -64,7 +60,7 @@ def main(verbose, team, clear):
         log.info(f"No filtering requested, proceed with migrating ALL.")
 
     if team:
-        team = 'T' + team
+        team = "T" + team
         log.info(f"Deleting data not associated with {team}")
         execute_generated_sql(
             sql_path,

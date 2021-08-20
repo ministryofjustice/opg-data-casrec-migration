@@ -56,6 +56,27 @@ def do_simple_transformations(
                 t["original_columns"], t["aggregate_col"], transformed_df
             )
 
+    if "multiply_by_100" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: multiply_by_100")
+        for t in transformations["multiply_by_100"]:
+            transformed_df = standard_transformations.multiply_by_100(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
+    if "first_two_chars" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: first_two_chars")
+        for t in transformations["first_two_chars"]:
+            transformed_df = standard_transformations.first_two_chars(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
+    if "add_one_year" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: add_one_year")
+        for t in transformations["add_one_year"]:
+            transformed_df = standard_transformations.add_one_year(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
     if "conditional_lookup" in transformations:
         log.log(config.VERBOSE, "Applying transformation: conditional_lookup")
         for t in transformations["conditional_lookup"]:
