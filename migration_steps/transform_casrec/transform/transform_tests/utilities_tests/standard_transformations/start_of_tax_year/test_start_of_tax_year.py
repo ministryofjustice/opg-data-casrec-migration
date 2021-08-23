@@ -8,7 +8,12 @@ def test_start_of_tax_year():
     new_col = "start of tax year"
 
     test_data = {
-        "column_1": ["28/02/2011 00:00", "29/06/2012 00:00", "31/03/2012 00:00", "01/04/2012 00:00"],
+        "column_1": [
+            "28/02/2011 00:00",
+            "29/06/2012 00:00",
+            "31/03/2012 00:00",
+            "01/04/2012 00:00",
+        ],
     }
 
     test_data_df = pd.DataFrame(test_data, columns=[x for x in test_data])

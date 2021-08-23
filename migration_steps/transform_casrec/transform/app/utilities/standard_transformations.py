@@ -115,26 +115,30 @@ def add_one_year(original_col: str, result_col: str, df: pd.DataFrame) -> pd.Dat
     return df
 
 
-def start_of_tax_year(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+def start_of_tax_year(
+    original_col: str, result_col: str, df: pd.DataFrame
+) -> pd.DataFrame:
     df[result_col] = df[original_col].astype(str)
-    df[result_col] = pd.to_datetime(
-        df[result_col], format="%d/%m/%Y %H:%M"
-    )
-    df[result_col] = df[result_col].dt.to_period('Q-MAR').dt.qyear.apply(
-        lambda x: datetime.datetime(x-1, 4, 1)
+    df[result_col] = pd.to_datetime(df[result_col], format="%d/%m/%Y %H:%M")
+    df[result_col] = (
+        df[result_col]
+        .dt.to_period("Q-MAR")
+        .dt.qyear.apply(lambda x: datetime.datetime(x - 1, 4, 1))
     )
     df = df.drop(columns=[original_col])
 
     return df
 
 
-def end_of_tax_year(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+def end_of_tax_year(
+    original_col: str, result_col: str, df: pd.DataFrame
+) -> pd.DataFrame:
     df[result_col] = df[original_col].astype(str)
-    df[result_col] = pd.to_datetime(
-        df[result_col], format="%d/%m/%Y %H:%M"
-    )
-    df[result_col] = df[result_col].dt.to_period('Q-MAR').dt.qyear.apply(
-        lambda x: datetime.datetime(x, 3, 31)
+    df[result_col] = pd.to_datetime(df[result_col], format="%d/%m/%Y %H:%M")
+    df[result_col] = (
+        df[result_col]
+        .dt.to_period("Q-MAR")
+        .dt.qyear.apply(lambda x: datetime.datetime(x, 3, 31))
     )
     df = df.drop(columns=[original_col])
 
