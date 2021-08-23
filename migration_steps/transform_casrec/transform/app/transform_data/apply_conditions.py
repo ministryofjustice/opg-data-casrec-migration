@@ -30,10 +30,15 @@ def source_conditions(df, conditions):
             conditions.pop(col, None)
 
     first_x_chars_cols = {k: v for k, v in conditions.items() if k == "first_x_chars"}
-
     if first_x_chars_cols:
         df = first_x_chars(df, first_x_chars_cols)
         for col in first_x_chars_cols:
+            conditions.pop(col, None)
+
+    exclude_values_cols = {k: v for k, v in conditions.items() if k == "exclude_values"}
+    if exclude_values_cols:
+        df = exclude_values(df, exclude_values_cols)
+        for col in exclude_values_cols:
             conditions.pop(col, None)
 
     not_null_cols = [k for k, v in conditions.items() if v == "not null"]
@@ -91,6 +96,18 @@ def convert_to_timestamp(df, cols):
         config.VERBOSE,
         f"Dataframe size after converting {source_date} and {source_time} to timestamp: {len(df)}",
     )
+
+    return df
+
+
+def exclude_values(df, cols):
+
+    col = format_additional_col_alias(cols["exclude_values"]["col"])
+    values_to_exclude = cols["exclude_values"]["values"]
+
+    log.debug(f"Removing rows where '{col}' is one of {values_to_exclude}")
+
+    df = df[~df[col].isin(values_to_exclude)]
 
     return df
 
