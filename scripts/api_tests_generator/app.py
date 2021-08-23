@@ -150,7 +150,8 @@ def restructure_text(col):
 
 def get_deputy_entity_ids(entity_id, conn):
     response = conn["sess"].get(
-        f'{conn["base_url"]}/api/v1/orders/{entity_id}', headers=conn["headers_dict"],
+        f'{conn["base_url"]}/api/v1/orders/{entity_id}',
+        headers=conn["headers_dict"],
     )
 
     json_obj = json.loads(response.text)
@@ -171,7 +172,8 @@ def get_deputy_entity_ids(entity_id, conn):
 
 def get_deputy_order_entity_ids(entity_id, conn):
     response = conn["sess"].get(
-        f'{conn["base_url"]}/api/v1/orders/{entity_id}', headers=conn["headers_dict"],
+        f'{conn["base_url"]}/api/v1/orders/{entity_id}',
+        headers=conn["headers_dict"],
     )
 
     json_obj = json.loads(response.text)
@@ -372,7 +374,8 @@ for csv in csvs:
             print(f"Endpoint: {endpoint_final}")
 
             response = conn["sess"].get(
-                f'{conn["base_url"]}{endpoint_final}', headers=conn["headers_dict"],
+                f'{conn["base_url"]}{endpoint_final}',
+                headers=conn["headers_dict"],
             )
 
             if print_extra_info:

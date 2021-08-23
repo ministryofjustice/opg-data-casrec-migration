@@ -83,7 +83,7 @@ class BaseConfig:
         "crec": ["local", "development"],
         "supervision_level": ["local", "development"],
         "deputies": ["local", "development"],
-        "finance": [],
+        "invoice": ["local"],
         "remarks": ["local", "development"],
         "reporting": ["local", "development"],
         "tasks": [],

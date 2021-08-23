@@ -29,7 +29,7 @@ from entities import (
     bonds,
     death,
     events,
-    finance,
+    invoice,
     remarks,
     reporting,
     tasks,
@@ -125,7 +125,7 @@ def main(clear, team, chunk_size):
     deputies.runner(target_db=target_db, db_config=db_config)
     death.runner(target_db=target_db, db_config=db_config)
     events.runner(target_db=target_db, db_config=db_config)
-    finance.runner(target_db=target_db, db_config=db_config)
+    invoice.runner(target_db=target_db, db_config=db_config)
     remarks.runner(target_db=target_db, db_config=db_config)
     reporting.runner(target_db=target_db, db_config=db_config)
     tasks.runner(target_db=target_db, db_config=db_config)

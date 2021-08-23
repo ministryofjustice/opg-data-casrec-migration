@@ -206,7 +206,7 @@ def wrap_sirius_col(col_name: str, col_definition, sql: str):
     # convert empty strings to NULL
     if (
         "str" == col_definition["sirius_details"]["data_type"]
-            and col_name != 'caserecnumber'
+        and col_name != "caserecnumber"
     ):
         sql = f"NULLIF(TRIM({sql}), '')"
     return sql
@@ -219,7 +219,7 @@ def wrap_casrec_col(col_name: str, col_definition, sql: str):
     # convert empty strings to NULL
     if (
         col_definition["sirius_details"]["data_type"] not in ["bool", "int"]
-        and col_name != 'caserecnumber'
+        and col_name != "caserecnumber"
     ):
         sql = f"NULLIF(TRIM({sql}), '')"
 

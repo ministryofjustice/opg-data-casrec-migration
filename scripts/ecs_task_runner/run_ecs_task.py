@@ -67,7 +67,7 @@ class TaskRunner:
             )
 
     def refresh_creds(self):
-        " Refresh tokens by calling assume_role again "
+        "Refresh tokens by calling assume_role again"
         params = {
             "RoleArn": self.role_name,
             "RoleSessionName": "step_function_session",
@@ -141,8 +141,12 @@ class TaskRunner:
         waiter = self.auto_refresh_session_task_runner.get_waiter("tasks_stopped")
         response = waiter.wait(
             cluster=cluster_arn,
-            tasks=[task_arn,],
-            include=["TAGS",],
+            tasks=[
+                task_arn,
+            ],
+            include=[
+                "TAGS",
+            ],
             WaiterConfig={"Delay": 6, "MaxAttempts": 100},
         )
 
@@ -150,7 +154,13 @@ class TaskRunner:
 
     def get_stop_exit_code(self, cluster_arn, task_arn):
         response = self.auto_refresh_session_task_runner.describe_tasks(
-            cluster=cluster_arn, tasks=[task_arn,], include=["TAGS",]
+            cluster=cluster_arn,
+            tasks=[
+                task_arn,
+            ],
+            include=[
+                "TAGS",
+            ],
         )
         exit_code = response["tasks"][0]["stopCode"]
         stop_reason = response["tasks"][0]["stoppedReason"]
