@@ -89,8 +89,11 @@ data "aws_iam_policy_document" "etl_task" {
     ]
   }
   statement {
-    effect    = "Allow"
-    resources = [aws_ssm_parameter.allowed_entities.arn]
+    effect = "Allow"
+    resources = [
+      aws_ssm_parameter.allowed_entities.arn,
+      aws_ssm_parameter.lay_team.arn
+    ]
 
     actions = [
       "ssm:GetParameter*"
