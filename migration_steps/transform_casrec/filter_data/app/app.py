@@ -20,8 +20,8 @@ sql_path = current_path / "sql"
 load_dotenv(dotenv_path=env_path)
 
 environment = os.environ.get("ENVIRONMENT")
-lay_team = os.environ.get("LAY_TEAM")
 config = get_config(environment)
+lay_team = config.lay_team_filter(env=environment)
 
 # logging
 log = logging.getLogger("root")
@@ -49,13 +49,13 @@ def main(verbose, team, clear):
 
     if team:
         if lay_team:
-            log.info(f"Lay Team filtering specified in env vars: Team {lay_team}")
+            log.info(f"Lay Team filtering specified in param store: Team {lay_team}")
             log.info(f"Overriding with Lay Team requested at runtime: Team {team}")
         else:
             log.info(f"Lay Team filtering requested at runtime: Team {team}")
     elif lay_team:
         team = lay_team
-        log.info(f"Lay Team filtering specified in env vars: Team {team}")
+        log.info(f"Lay Team filtering specified in param store: Team {team}")
     else:
         log.info(f"No filtering requested, proceed with migrating ALL.")
 
