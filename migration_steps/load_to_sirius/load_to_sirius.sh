@@ -4,6 +4,7 @@ set -e
 if [ "${ENVIRONMENT}" == "local" ] \
   || [ "${ENVIRONMENT}" == "development" ] \
   || [ "${ENVIRONMENT}" == "preproduction" ] \
+  || [ "${ENVIRONMENT}" == "preqa" ] \
   || [ "${ENVIRONMENT}" == "qa" ]
   then
   DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
