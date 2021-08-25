@@ -22,6 +22,14 @@ def get_enabled_entities_from_param_store(env):
     return parameter["Parameter"]["Value"].split(",")
 
 
+def get_lay_team_from_param_store(env):
+    session = boto3.session.Session()
+    ssm = session.client("ssm", region_name="eu-west-1")
+    parameter = ssm.get_parameter(Name=f"{env}-lay-team")
+
+    return parameter["Parameter"]["Value"]
+
+
 class BaseConfig:
     load_env_vars()
     db_config = {
@@ -121,6 +129,13 @@ class BaseConfig:
             log.error("No entities enabled")
             os._exit(1)
 
+    def lay_team_filter(self, env):
+        if env in ["preproduction", "qa", "preqa", "production"]:
+            lay_team = get_lay_team_from_param_store(env)
+        else:
+            lay_team = ""
+
+        return lay_team
 
 class LocalConfig(BaseConfig):
     verbosity_levels = {0: "INFO", 1: "DEBUG", 2: "VERBOSE", 3: "DATA"}
