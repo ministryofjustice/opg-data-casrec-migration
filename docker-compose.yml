@@ -77,7 +77,6 @@ services:
       DB_HOST: casrec_db
       DB_PORT: 5432
       ENVIRONMENT: local
-      LAY_TEAM: 2
     depends_on: [localstack, casrec_db]
   integration:
     build:
