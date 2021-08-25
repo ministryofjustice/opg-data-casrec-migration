@@ -9,3 +9,15 @@ resource "aws_ssm_parameter" "allowed_entities" {
     ignore_changes = [value]
   }
 }
+
+resource "aws_ssm_parameter" "lay_team" {
+  name  = "${local.account.name}-lay-team"
+  type  = "String"
+  value = "2"
+
+  tags = local.default_tags
+
+  lifecycle {
+    ignore_changes = [value]
+  }
+}
