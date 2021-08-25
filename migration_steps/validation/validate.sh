@@ -4,6 +4,7 @@ set -e
 if [ "${ENVIRONMENT}" == "local" ] \
   || [ "${ENVIRONMENT}" == "development" ] \
   || [ "${ENVIRONMENT}" == "preproduction" ] \
+  || [ "${ENVIRONMENT}" == "preqa" ] \
   || [ "${ENVIRONMENT}" == "qa" ]
   then
 
