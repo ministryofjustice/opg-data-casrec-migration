@@ -17,6 +17,7 @@ python3 "${DIR}/prepare_target/app/app.py" --preserve_schemas="${SCHEMAS}"
 if [ "${ENVIRONMENT}" == "local" ] \
   || [ "${ENVIRONMENT}" == "development" ] \
   || [ "${ENVIRONMENT}" == "preproduction" ] \
+  || [ "${ENVIRONMENT}" == "preqa" ] \
   || [ "${ENVIRONMENT}" == "qa" ]
   then
   python3 "${DIR}/create_stage_schema/app/app.py"
