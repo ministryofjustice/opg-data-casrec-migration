@@ -77,6 +77,20 @@ def do_simple_transformations(
                 t["original_columns"], t["aggregate_col"], transformed_df
             )
 
+    if "start_of_tax_year" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: start_of_tax_year")
+        for t in transformations["start_of_tax_year"]:
+            transformed_df = standard_transformations.start_of_tax_year(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
+    if "end_of_tax_year" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: end_of_tax_year")
+        for t in transformations["end_of_tax_year"]:
+            transformed_df = standard_transformations.end_of_tax_year(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
     if "conditional_lookup" in transformations:
         log.log(config.VERBOSE, "Applying transformation: conditional_lookup")
         for t in transformations["conditional_lookup"]:
