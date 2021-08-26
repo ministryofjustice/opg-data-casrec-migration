@@ -66,24 +66,26 @@ def get_max_id_from_existing_table(db_connection_string, db_schema, table, id="i
 
 
 @timer
-def update_uids(db_connection_string, db_schema, table, update_data):
+def update_ids(db_connection_string, db_schema, table, column_name, update_data):
     connection_string = db_connection_string
     conn = psycopg2.connect(connection_string)
     cursor = conn.cursor()
 
+    log.info(f'Updating {table}."{column_name}" IDs...')
+
     try:
         cursor.execute(
-            """
-            CREATE TEMP TABLE temp_uids(id bigint, uid bigint) ON COMMIT DROP ;
+            f"""
+            CREATE TEMP TABLE temp_ids(id bigint, "{column_name}" bigint) ON COMMIT DROP ;
         """
         )
 
         insert_query = f"""
-            INSERT INTO temp_uids VALUES
+            INSERT INTO temp_ids VALUES
         """
         update_data_list = list(update_data)
-        for i, (id, uid) in enumerate(update_data_list):
-            insert_query += f"({id}, {uid})"
+        for i, (id, update_id) in enumerate(update_data_list):
+            insert_query += f"({id}, {update_id})"
             if i + 1 < len(update_data_list):
                 insert_query += ", "
             else:
@@ -94,9 +96,9 @@ def update_uids(db_connection_string, db_schema, table, update_data):
         cursor.execute(
             f"""
             UPDATE {db_schema}.{table}
-            SET uid = temp_uids.uid
-            FROM temp_uids
-            WHERE temp_uids.id = {table}.id
+            SET "{column_name}" = temp_ids."{column_name}"
+            FROM temp_ids
+            WHERE temp_ids.id = {table}.id
         """
         )
     except (Exception) as error:
