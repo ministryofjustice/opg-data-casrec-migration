@@ -2,8 +2,7 @@ import logging
 
 
 from helpers import log_title, check_entity_enabled
-from entities.invoice.finance_invoice_ad import insert_finance_invoice_ad
-from entities.invoice.finance_invoice_non_ad import insert_finance_invoice_non_ad
+from entities.invoice.finance_invoice import insert_finance_invoice
 
 log = logging.getLogger("root")
 
@@ -24,13 +23,13 @@ def runner(target_db, db_config):
 
     log.info(log_title(message=entity_name))
 
-    log.debug("insert_finance_invoice_ad")
-    insert_finance_invoice_ad(
+    log.debug("insert_finance_invoice - AD")
+    insert_finance_invoice(
         target_db=target_db, db_config=db_config, mapping_file="finance_invoice_ad"
     )
 
-    log.debug("insert_finance_invoice_non_ad")
-    insert_finance_invoice_non_ad(
+    log.debug("insert_finance_invoice - non-AD")
+    insert_finance_invoice(
         target_db=target_db, db_config=db_config, mapping_file="finance_invoice_non_ad"
     )
 

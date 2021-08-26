@@ -103,7 +103,7 @@
       }
     ]
   },
-    {
+  {
     "warnings": [
       {
         "table_name": "client violent warnings",
@@ -165,7 +165,7 @@
       }
     ]
   },
-    {
+  {
     "reporting": [
       {
         "table_name": "annual_report_logs",
@@ -178,7 +178,14 @@
         "query": "select count(*) from {schema}.annual_report_lodging_details;"
       }
     ]
+  },
+  {
+    "invoice": [
+      {
+        "table_name": "finance_invoice",
+        "casrec_query": "select count(*) from casrec_csv.feeexport",
+        "query": "select count(*) from {schema}.finance_invoice;"
+      }
+    ]
   }
-  ]
-
-
+]
