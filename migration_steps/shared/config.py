@@ -137,6 +137,7 @@ class BaseConfig:
 
         return lay_team
 
+
 class LocalConfig(BaseConfig):
     verbosity_levels = {0: "INFO", 1: "DEBUG", 2: "VERBOSE", 3: "DATA"}
     SAMPLE_PERCENTAGE = 10
