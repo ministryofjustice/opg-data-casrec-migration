@@ -6,7 +6,7 @@ import pandas as pd
 
 from utilities.db_helpers import (
     generate_select_query,
-    update_ids,
+    update_uids,
     get_max_id_from_existing_table,
 )
 from utilities.generate_luhn_checksum import append_checksum
@@ -102,10 +102,9 @@ def insert_unique_uids(db_config, target_db_engine):
         rows_to_update = zip(source_data_df["id"], source_data_df["uid"])
 
         log.debug("Now update the table....")
-        update_ids(
+        update_uids(
             db_connection_string=db_config["db_connection_string"],
             db_schema=db_config["target_schema"],
             table=table,
-            column_name="uid",
             update_data=rows_to_update,
         )
