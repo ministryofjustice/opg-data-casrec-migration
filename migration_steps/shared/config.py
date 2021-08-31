@@ -23,11 +23,15 @@ def get_enabled_entities_from_param_store(env):
 
 
 def get_lay_team_from_param_store(env):
-    session = boto3.session.Session()
-    ssm = session.client("ssm", region_name="eu-west-1")
-    parameter = ssm.get_parameter(Name=f"{env}-lay-team")
+    if env in ["preproduction", "qa", "preqa", "production"]:
+        session = boto3.session.Session()
+        ssm = session.client("ssm", region_name="eu-west-1")
+        parameter = ssm.get_parameter(Name=f"{env}-lay-team")
+        lay_team = parameter["Parameter"]["Value"]
+    else:
+        lay_team = ""
 
-    return parameter["Parameter"]["Value"]
+    return lay_team
 
 
 class BaseConfig:
@@ -129,13 +133,23 @@ class BaseConfig:
             log.error("No entities enabled")
             os._exit(1)
 
-    def lay_team_filter(self, env):
-        if env in ["preproduction", "qa", "preqa", "production"]:
-            lay_team = get_lay_team_from_param_store(env)
+    def get_filtered_lay_team(self, env, console_team):
+        paramstore_team = get_lay_team_from_param_store(env)
+        filter_team = ""
+        if console_team:
+            if paramstore_team:
+                log.info(f"Lay Team filtering specified in param store: Team {paramstore_team}")
+                log.info(f"Overriding with Lay Team requested at runtime: Team {console_team}")
+            else:
+                log.info(f"Lay Team filtering requested at runtime: Team {console_team}")
+            filter_team = console_team
+        elif paramstore_team:
+            log.info(f"Lay Team filtering specified in param store: Team {paramstore_team}")
+            filter_team = paramstore_team
         else:
-            lay_team = ""
+            log.info(f"No filtering requested, proceed with migrating ALL.")
 
-        return lay_team
+        return filter_team
 
 
 class LocalConfig(BaseConfig):
