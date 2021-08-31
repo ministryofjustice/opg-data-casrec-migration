@@ -29,7 +29,7 @@ def get_lay_team_from_param_store(env):
         parameter = ssm.get_parameter(Name=f"{env}-lay-team")
         lay_team = parameter["Parameter"]["Value"]
     else:
-        lay_team = "2"
+        lay_team = ""
 
     return lay_team
 
