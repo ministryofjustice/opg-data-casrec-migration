@@ -61,7 +61,11 @@ class InsertData:
             columns_from_df = []
 
         columns_from_mapping = mapping_details.keys()
-        temp_columns = list(set(columns_from_df) - set(columns_from_mapping))
+        temp_columns = list(
+            set(columns_from_df) - set(columns_from_mapping)
+            | set(self.standard_columns)
+        )
+
         for col in temp_columns:
             if col in self.standard_columns:
                 columns.append(f"{col} {self.standard_columns[col]}")
