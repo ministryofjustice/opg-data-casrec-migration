@@ -21,7 +21,6 @@ load_dotenv(dotenv_path=env_path)
 
 environment = os.environ.get("ENVIRONMENT")
 config = get_config(environment)
-lay_team = config.lay_team_filter(env=environment)
 
 # logging
 log = logging.getLogger("root")
@@ -46,22 +45,11 @@ def main(verbose, team, clear):
     set_logging_level(verbose)
     log.info(log_title(message="Filter Data"))
     conn_source = psycopg2.connect(config.get_db_connection_string("migration"))
+    filtered_lay_team = config.get_filtered_lay_team(environment, team)
 
-    if team:
-        if lay_team:
-            log.info(f"Lay Team filtering specified in param store: Team {lay_team}")
-            log.info(f"Overriding with Lay Team requested at runtime: Team {team}")
-        else:
-            log.info(f"Lay Team filtering requested at runtime: Team {team}")
-    elif lay_team:
-        team = lay_team
-        log.info(f"Lay Team filtering specified in param store: Team {team}")
-    else:
-        log.info(f"No filtering requested, proceed with migrating ALL.")
-
-    if team:
-        team = "T" + team
-        log.info(f"Deleting data not associated with {team}")
+    if filtered_lay_team:
+        team = "T" + filtered_lay_team
+        log.info(f"Deleting data not associated with lay_team '{team}'")
         execute_generated_sql(
             sql_path,
             "delete_filtered_source_data.template.sql",
