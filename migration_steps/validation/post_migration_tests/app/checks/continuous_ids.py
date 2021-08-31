@@ -78,6 +78,8 @@ def check_continuous(table_list, db_config):
         )
         if last_original_record + 1 == first_migrated_record:
             report["pass"].append(table)
+        elif last_original_record == 0 and first_migrated_record == 0:
+            pass
         else:
             report["fail"].append(table)
 

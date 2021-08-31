@@ -93,6 +93,9 @@ def insert_data_into_target(
         data_to_insert = pd.read_sql_query(
             sql=query, con=db_config["source_db_connection_string"]
         )
+        if len(data_to_insert) == 0:
+            log.info(f"No data to insert into {table_name}")
+            break
 
         insert_statement = create_insert_statement(
             schema=db_config["target_schema"],
