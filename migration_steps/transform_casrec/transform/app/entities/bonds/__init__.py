@@ -1,6 +1,7 @@
 import logging
 
-from entities.bonds.bonds import insert_bonds
+from entities.bonds.bonds_active import insert_bonds_active
+from entities.bonds.bonds_dispensed import insert_bonds_dispensed
 from helpers import log_title, check_entity_enabled
 
 
@@ -24,8 +25,15 @@ def runner(target_db, db_config):
 
     log.info(log_title(message=entity_name))
 
-    log.debug("insert_bonds")
-    insert_bonds(target_db=target_db, db_config=db_config, mapping_file="bonds")
+    log.debug("insert_bonds_active")
+    insert_bonds_active(
+        target_db=target_db, db_config=db_config, mapping_file="bonds_active"
+    )
+
+    log.debug("insert_bonds_dispensed")
+    insert_bonds_dispensed(
+        target_db=target_db, db_config=db_config, mapping_file="bonds_dispensed"
+    )
 
 
 if __name__ == "__main__":

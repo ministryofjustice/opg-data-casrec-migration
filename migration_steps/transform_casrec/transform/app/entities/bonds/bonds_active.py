@@ -5,7 +5,7 @@ from utilities.basic_data_table import get_basic_data_table
 import pandas as pd
 
 
-def insert_bonds(target_db, db_config, mapping_file):
+def insert_bonds_active(target_db, db_config, mapping_file):
 
     chunk_size = db_config["chunk_size"]
     offset = 0
