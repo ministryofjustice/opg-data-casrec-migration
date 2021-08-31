@@ -57,20 +57,17 @@ DELETE FROM casrec_csv.deputy WHERE "Deputy No" IN (
         SELECT casrec_csv.pat."Case" FROM casrec_csv.pat WHERE casrec_csv.pat."Lay Team" != '{team}'
     )
 );
--- SELECT COUNT(*) FROM casrec_csv.deputy;
 
 -- deputyships
 DELETE FROM casrec_csv.deputyship WHERE deputyship."Case" IN (
     SELECT casrec_csv.pat."Case" FROM casrec_csv.pat WHERE casrec_csv.pat."Lay Team" != '{team}'
 );
--- SELECT COUNT(*) FROM casrec_csv.deputyship;
 
 -- order table (cases)
 DELETE FROM casrec_csv.order
 USING casrec_csv.pat
 WHERE pat."Case" = casrec_csv.order."Case"
 AND casrec_csv.pat."Lay Team" != '{team}';
--- SELECT COUNT(*) FROM casrec_csv.order;
 
 -- pat
 DELETE FROM casrec_csv.pat WHERE "Lay Team" != '{team}';
