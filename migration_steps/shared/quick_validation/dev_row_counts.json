@@ -83,8 +83,8 @@
   {
     "bonds": [
       {
-        "table_name": "bonds",
-        "casrec_query": "select count(*) from casrec_csv.\"order\" where \"Bond Rqd\" = 'Y'",
+        "table_name": "all bonds",
+        "casrec_query": "select count(*) from casrec_csv.\"order\" where \"Bond Rqd\" in ('Y', 'S')",
         "query": "select count(*) from {schema}.bonds;"
       }
     ]
