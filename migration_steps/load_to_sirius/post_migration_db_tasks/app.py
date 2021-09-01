@@ -91,7 +91,12 @@ def main():
     log.info(log_title(message=f"Target: {db_config['target_schema']}"))
     log.info(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
-    jobs = [reset_sequences, reset_uid_sequences, set_finance_person_ids, set_batch_numbers]
+    jobs = [
+        reset_sequences,
+        reset_uid_sequences,
+        set_finance_person_ids,
+        set_batch_numbers,
+    ]
 
     for job in jobs:
         thread = threading.Thread(target=job)

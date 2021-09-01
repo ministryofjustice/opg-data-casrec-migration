@@ -13,7 +13,9 @@ log = logging.getLogger("root")
 
 def set_invoice_finance_person_ids(cursor):
     if not table_helpers.check_enabled_by_table_name(table_name="finance_invoice"):
-        log.info(f"Skip setting finance_person_id on invoices. Invoice entity disabled.")
+        log.info(
+            f"Skip setting finance_person_id on invoices. Invoice entity disabled."
+        )
         return
 
     log.info("Setting finance_person_id on invoices...")
