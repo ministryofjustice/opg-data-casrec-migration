@@ -105,7 +105,7 @@ class BaseConfig:
     }
 
     DEV_FEATURE_FLAGS = {
-        "match_existing_data": True,
+        "match_existing_data": False,
         "additional_data": False,
         "row_counts": True,
         "generate_progress": False,
@@ -138,13 +138,21 @@ class BaseConfig:
         filter_team = ""
         if console_team:
             if paramstore_team:
-                log.info(f"Lay Team filtering specified in param store: Team {paramstore_team}")
-                log.info(f"Overriding with Lay Team requested at runtime: Team {console_team}")
+                log.info(
+                    f"Lay Team filtering specified in param store: Team {paramstore_team}"
+                )
+                log.info(
+                    f"Overriding with Lay Team requested at runtime: Team {console_team}"
+                )
             else:
-                log.info(f"Lay Team filtering requested at runtime: Team {console_team}")
+                log.info(
+                    f"Lay Team filtering requested at runtime: Team {console_team}"
+                )
             filter_team = console_team
         elif paramstore_team:
-            log.info(f"Lay Team filtering specified in param store: Team {paramstore_team}")
+            log.info(
+                f"Lay Team filtering specified in param store: Team {paramstore_team}"
+            )
             filter_team = paramstore_team
         else:
             log.info(f"No filtering requested, proceed with migrating ALL.")
