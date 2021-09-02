@@ -69,8 +69,8 @@ def get_mappings():
             "deputy_death_notifications",
             "deputy_special_warnings",
             "deputy_violent_warnings",
-        ],
-        "visits": ["visits"]
+        ]
+        # "visits": ["visits"]
         # "remarks": ["notes"]
     }
 

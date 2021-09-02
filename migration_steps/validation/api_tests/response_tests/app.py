@@ -24,7 +24,7 @@ def main():
         "death_notifications",
         "warnings",
         "crec",
-        "visits",
+        # "visits",
         "reports",
     ]
 

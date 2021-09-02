@@ -99,7 +99,7 @@ class BaseConfig:
         "remarks": ["local", "development"],
         "reporting": ["local", "development"],
         "tasks": [],
-        "visits": ["local", "development"],
+        # "visits": ["local", "development"],
         "warnings": ["local", "development"],
         "death": ["local", "development"],
     }
