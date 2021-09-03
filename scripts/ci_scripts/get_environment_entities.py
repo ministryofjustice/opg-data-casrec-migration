@@ -29,6 +29,7 @@ def main(role, environment):
     account = {
         "development": "288342028542",
         "preproduction": "492687888235",
+        "preqa": "492687888235",
         "qa": "492687888235",
         "production": "649098267436",
     }
