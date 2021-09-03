@@ -1101,9 +1101,20 @@ def insert_finance_person_data_into_sirius(db_config, sirius_db_engine):
     sirius_db_engine.execute(insert_statement)
 
 
+def create_batch_number_counter_in_sirius(db_config, sirius_db_engine):
+    # Create the counter if it doesn't exist
+    insert_statement = f"""
+        INSERT INTO finance_counter (id, key, counter)
+        SELECT nextval('finance_counter_id_seq'), 'DatFileBatchNumberReportBatchNumber', 0
+        WHERE NOT EXISTS (SELECT 1 FROM finance_counter WHERE key = 'DatFileBatchNumberReportBatchNumber');
+    """
+    sirius_db_engine.execute(insert_statement)
+
+
 def insert_skeleton_data(db_config):
     sirius_db_engine = create_engine(db_config["sirius_db_connection_string"])
 
     insert_client_data_into_sirius(db_config, sirius_db_engine)
     insert_finance_person_data_into_sirius(db_config, sirius_db_engine)
+    create_batch_number_counter_in_sirius(db_config, sirius_db_engine)
     # insert_client_address_data_into_sirius(db_config, sirius_db_engine)

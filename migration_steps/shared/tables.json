@@ -292,5 +292,29 @@
 		"table_type": "data",
 		"sequences": [],
 		"order_by": ["id"]
+	},
+	"finance_invoice": {
+		"sirius_tables": [
+			"finance_invoice"
+		],
+		"entities": {
+			"base_entities": [
+				"invoice"
+			],
+			"relies_on": [
+				"clients"
+			]
+		},
+		"pk": "id",
+		"fks": [
+			{
+				"column": "person_id",
+				"parent_table": "persons",
+				"parent_column": "id"
+			}
+		],
+		"table_type": "data",
+		"sequences": [],
+		"order_by": ["id"]
 	}
 }
