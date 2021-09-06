@@ -133,6 +133,7 @@ class ApiTests:
             "local": "case.manager@opgtest.com",
             "development": "case.manager@opgtest.com",
             "preproduction": "opg+siriussmoketest@digital.justice.gov.uk",
+            "preqa": "opg+siriussmoketest@digital.justice.gov.uk",
             "qa": "opg+siriussmoketest@digital.justice.gov.uk",
             "production": "opg+siriussmoketest@digital.justice.gov.uk",
         }
@@ -704,8 +705,7 @@ class ApiTests:
         )
 
         response = self.session["sess"].get(
-            full_url,
-            headers=self.session["headers_dict"],
+            full_url, headers=self.session["headers_dict"],
         )
 
         json_object = json.loads(response.text)
