@@ -4,10 +4,10 @@ version: 2.1
 parameters:
   run_master:
     type: boolean
-    default: true
+    default: false
   run_preprod:
     type: boolean
-    default: false
+    default: true
   run_preqa:
     type: boolean
     default: false
