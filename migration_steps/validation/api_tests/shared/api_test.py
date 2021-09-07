@@ -182,7 +182,7 @@ class ApiTests:
             SELECT id as id
             FROM persons
             WHERE caserecnumber = '{caserecnumber}'
-            AND clientsource = 'CASRECMIGRATION'"""
+            AND clientsource = ('CASRECMIGRATION', 'SKELETON')"""
         return sql
 
     def get_order_sql(self, caserecnumber):
@@ -192,7 +192,7 @@ class ApiTests:
             INNER join cases c
             on c.client_id = p.id
             WHERE p.caserecnumber = '{caserecnumber}'
-            AND p.clientsource = 'CASRECMIGRATION'
+            AND p.clientsource in ('CASRECMIGRATION', 'SKELETON')
             and c.casetype = 'ORDER'"""
         return sql
 
@@ -203,7 +203,7 @@ class ApiTests:
             INNER join cases c
             on c.client_id = p.id
             WHERE p.caserecnumber = '{caserecnumber}'
-            AND p.clientsource = 'CASRECMIGRATION'
+            AND p.clientsource in ('CASRECMIGRATION', 'SKELETON')
             and c.casetype = 'ORDER'
             and c.orderstatus = 'ACTIVE'"""
         return sql

@@ -252,6 +252,8 @@ def get_put_data(entity):
                     "postcode": "RM6 9NQ",
                     "county": "HU5 3ER",
                     "country": "",
+                    "organisationName": None,
+                    "organisationTeamOrDepartmentName": None,
                     "workPhoneNumber": "0808 157 0028",
                     "mobileNumber": "",
                     "homePhoneNumber": "0808 157 0028",

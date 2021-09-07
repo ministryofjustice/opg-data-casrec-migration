@@ -8,6 +8,7 @@ delete from person_timeline where person_id in (select id from persons where cli
 delete from person_task where person_id in (select id from persons where clientsource = 'SKELETON');
 delete from persons where parent_id in (select id from persons where clientsource = 'SKELETON');
 delete from persons where executor_id in (select id from persons where clientsource = 'SKELETON');
+update persons set client_id = null where id in (select id from persons where client_id in (select id from persons where clientsource = 'SKELETON'));
 delete from persons where client_id in (select id from persons where clientsource = 'SKELETON');
 delete from person_research_preferences where person_id in (select id from persons where clientsource = 'SKELETON');
 delete from person_personreference where person_id in (select id from persons where clientsource = 'SKELETON');
@@ -19,8 +20,6 @@ delete from pa_certificate_provider where certificate_provider_id in (select id 
 delete from pa_applicants where person_id in (select id from persons where clientsource = 'SKELETON');
 delete from order_deputy where deputy_id in (select id from persons where clientsource = 'SKELETON');
 delete from investigation where person_id in (select id from persons where clientsource = 'SKELETON');
-delete from events where source_person_id in (select id from persons where clientsource = 'SKELETON');
-delete from events where owning_donor_id in (select id from persons where clientsource = 'SKELETON');
 delete from epa_personnotifydonor where personnotifydonor_id in (select id from persons where clientsource = 'SKELETON');
 delete from death_notifications where person_id in (select id from persons where clientsource = 'SKELETON');
 delete from cases where donor_id in (select id from persons where clientsource = 'SKELETON');
@@ -28,5 +27,6 @@ delete from cases where feepayer_id in (select id from persons where clientsourc
 delete from cases where correspondent_id in (select id from persons where clientsource = 'SKELETON');
 delete from annual_report_logs where client_id in (select id from persons where clientsource = 'SKELETON');
 delete from addresses where person_id in (select id from persons where clientsource = 'SKELETON');
+delete from bonds where order_id in (select id from cases where client_id in (select id from persons where clientsource = 'SKELETON'));
 delete from cases where client_id in (select id from persons where clientsource = 'SKELETON');
 delete from persons where feepayer_id in (select id from persons where clientsource = 'SKELETON');
