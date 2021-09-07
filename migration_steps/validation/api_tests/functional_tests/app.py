@@ -105,6 +105,21 @@ def get_post_data(entity):
                 "case_references": ["10013583"],
             }
         ],
+        "visits": [
+            {
+                "title": "Create New Orders",
+                "data": {
+                    "visitType": {"handle": "VT-SUP", "label": "Supervision"},
+                    "visitSubType": {"handle": "VST-PA", "label": "PA Visit"},
+                    "visitUrgency": {"handle": "VU-STAN", "label": "Standard"},
+                    "visitDueDate": "01/01/2021",
+                },
+                "url": "clients/{id}/visits",
+                "expected_status": 201,
+                "source": "clients",
+                "case_references": ["10013583"],
+            }
+        ],
     }
 
     try:
