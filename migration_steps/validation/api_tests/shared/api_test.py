@@ -182,7 +182,7 @@ class ApiTests:
             SELECT id as id
             FROM persons
             WHERE caserecnumber = '{caserecnumber}'
-            AND clientsource = ('CASRECMIGRATION', 'SKELETON')"""
+            AND clientsource in ('CASRECMIGRATION', 'SKELETON')"""
         return sql
 
     def get_order_sql(self, caserecnumber):
