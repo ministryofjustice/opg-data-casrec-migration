@@ -51,23 +51,54 @@ UPDATE casrec_csv.pat SET "Lay Team" = 'T2' WHERE "Case" IN (
  '10025768'
 );
 
+-- Filters Crec
+DELETE FROM casrec_csv.crec WHERE crec."Case" IN (
+    SELECT casrec_csv.pat."Case" FROM casrec_csv.pat WHERE casrec_csv.pat."Lay Team" != '{team}'
+);
+
+-- Filters:
 -- deputy
+-- "deputy_persons",
+-- "deputy_death_notifications",
+-- "deputy_special_warnings",
+-- "deputy_violent_warnings",
 DELETE FROM casrec_csv.deputy WHERE "Deputy No" IN (
     SELECT deputyship."Deputy No" FROM casrec_csv.deputyship WHERE deputyship."Case" IN (
         SELECT casrec_csv.pat."Case" FROM casrec_csv.pat WHERE casrec_csv.pat."Lay Team" != '{team}'
     )
 );
 
--- deputyships
+-- Filters deputyships
 DELETE FROM casrec_csv.deputyship WHERE deputyship."Case" IN (
     SELECT casrec_csv.pat."Case" FROM casrec_csv.pat WHERE casrec_csv.pat."Lay Team" != '{team}'
 );
 
--- order table (cases)
+-- Filters:
+-- "cases",
+-- "supervision_level_log"
 DELETE FROM casrec_csv.order
 USING casrec_csv.pat
 WHERE pat."Case" = casrec_csv.order."Case"
 AND casrec_csv.pat."Lay Team" != '{team}';
 
--- pat
+-- Filters remarks
+DELETE FROM casrec_csv.remarks WHERE remarks."Case" IN (
+    SELECT casrec_csv.pat."Case" FROM casrec_csv.pat WHERE casrec_csv.pat."Lay Team" != '{team}'
+);
+
+-- Filters visits
+DELETE FROM casrec_csv.REPVIS WHERE REPVIS."Case" IN (
+    SELECT casrec_csv.pat."Case" FROM casrec_csv.pat WHERE casrec_csv.pat."Lay Team" != '{team}'
+);
+
+-- Filters:
+-- "client",
+-- "client_addresses",
+-- "client_persons",
+-- "client_phonenumbers",
+-- "client_death_notifications",
+-- "client_nodebtchase_warnings",
+-- "client_saarcheck_warnings",
+-- "client_special_warnings",
+-- "client_violent_warnings",
 DELETE FROM casrec_csv.pat WHERE "Lay Team" != '{team}';
