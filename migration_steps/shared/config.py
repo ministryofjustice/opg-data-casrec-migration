@@ -23,13 +23,13 @@ def get_enabled_entities_from_param_store(env):
 
 
 def get_lay_team_from_param_store(env):
+    lay_team = ""
     if env in ["preproduction", "qa", "preqa", "production"]:
         session = boto3.session.Session()
         ssm = session.client("ssm", region_name="eu-west-1")
         parameter = ssm.get_parameter(Name=f"{env}-lay-team")
-        lay_team = parameter["Parameter"]["Value"]
-    else:
-        lay_team = ""
+        if parameter["Parameter"]["Value"] not in ["0", "all", "All", "ALL"]:
+            lay_team = parameter["Parameter"]["Value"]
 
     return lay_team
 
@@ -113,7 +113,6 @@ class BaseConfig:
     QA_FEATURE_FLAGS = {}
 
     def enabled_feature_flags(self, env):
-
         if env in ["qa", "production"]:
             return [k for k, v in self.QA_FEATURE_FLAGS.items() if v is True]
         else:
