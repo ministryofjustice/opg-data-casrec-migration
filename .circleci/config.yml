@@ -4,10 +4,10 @@ version: 2.1
 parameters:
   run_master:
     type: boolean
-    default: false
+    default: true
   run_preprod:
     type: boolean
-    default: true
+    default: false
   run_preqa:
     type: boolean
     default: false
@@ -98,25 +98,26 @@ workflows:
           name: run and monitor jenkins restore job pre
           environment: Preproduction
           sirius_environment: casrecdmpp
-          filters: {branches:{ignore:[master]}}
-      - build:
-          name: build and unit tests
+          filters: {branches:{only:[master]}}
+      - get_latest_image:
+          name: get latest tag preproduction
+          image_tag: master
           environment: Preproduction
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra preproduction
-          requires: [build and unit tests]
+          requires: [get latest tag preproduction]
           tf_workspace: preproduction
           tf_command: plan
           environment: Preproduction
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
       - infrastructure:
           name: build infra preproduction
           requires: [plan infra preproduction]
           tf_workspace: preproduction
           tf_command: apply
           environment: Preproduction
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
       - run_step_function:
           name: run the step function preproduction
           requires: [build infra preproduction, run and monitor jenkins restore job pre]
@@ -124,55 +125,55 @@ workflows:
           wait_for: "18000"
           tf_workspace: preproduction
           environment: Preproduction
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
       - tag_image_for_environment:
           name: tag image for qa
           environment: Preproduction
           environment_tag: qa
           requires: [run the step function preproduction]
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
       - run_api_tests:
           name: run api tests
           requires: [run the step function preproduction]
           tf_workspace: preproduction
           environment: Preproduction
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
       - approve:
           name: approve full elastic reset preprod
           type: approval
           requires: [build infra preproduction]
           environment: Preproduction
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch preprod
           requires: [approve full elastic reset preprod]
           tf_workspace: preproduction
           environment: Preproduction
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
       - approve:
           name: approve qa kick off
           type: approval
           requires: [tag image for qa]
           environment: Preproduction
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
       - kick_off_environment:
           name: kick off qa
           workspace: qa
           requires: [approve qa kick off]
           environment: Preproduction
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
       - approve:
           name: approve preqa kick off
           type: approval
           requires: [tag image for qa]
           environment: Preproduction
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
       - kick_off_environment:
           name: kick off preqa
           workspace: preqa
           requires: [approve preqa kick off]
           environment: Preproduction
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
 
   preqa:
     when: << pipeline.parameters.run_preqa >>
