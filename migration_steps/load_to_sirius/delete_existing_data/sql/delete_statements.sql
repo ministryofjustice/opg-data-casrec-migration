@@ -28,5 +28,6 @@ delete from cases where correspondent_id in (select id from persons where type i
 delete from annual_report_logs where client_id in (select id from persons where type in ('actor_client', 'actor_deputy') and caseactorgroup is null);
 delete from addresses where person_id in (select id from persons where type in ('actor_client', 'actor_deputy') and caseactorgroup is null);
 delete from bonds where order_id in (select id from cases where client_id in (select id from persons where type in ('actor_client', 'actor_deputy') and caseactorgroup is null));
+delete from document_secondaryrecipient where person_id in (select id from persons where type in ('actor_client', 'actor_deputy') and caseactorgroup is null);
+delete from documents where correspondent_id in (select id from persons where type in ('actor_client', 'actor_deputy') and caseactorgroup is null);
 delete from cases where client_id in (select id from persons where type in ('actor_client', 'actor_deputy') and caseactorgroup is null);
-delete from persons where feepayer_id in (select id from persons where type in ('actor_client', 'actor_deputy') and caseactorgroup is null);

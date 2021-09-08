@@ -57,10 +57,11 @@ def main():
             f"{current_path}/sql/delete_statements.sql", "r"
         ) as delete_statements:
             for delete_statement in delete_statements:
-                log.info(f"Running delete statement - {delete_statement}")
-                delete_statement = delete_statement.strip()
-                response = target_db_engine.execute(delete_statement)
-                log.info(f"{response.rowcount} rows updated\n")
+                if len(delete_statement) > 0:
+                    log.info(f"Running delete statement - {delete_statement}")
+                    delete_statement = delete_statement.strip()
+                    response = target_db_engine.execute(delete_statement)
+                    log.info(f"{response.rowcount} rows updated\n")
         log.info(f"Finished running delete statements on skeleton cases")
     else:
         log.info(f"Not running delete statements {os.environ.get('ENVIRONMENT')}!")
