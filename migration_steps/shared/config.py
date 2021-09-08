@@ -105,7 +105,7 @@ class BaseConfig:
     }
 
     DEV_FEATURE_FLAGS = {
-        "match_existing_data": False,
+        "match_existing_data": True,
         "additional_data": False,
         "row_counts": True,
         "generate_progress": False,

@@ -34,6 +34,15 @@ class ApiTests:
         self.base_url = os.environ.get("SIRIUS_FRONT_URL")
         self.account = os.environ["SIRIUS_ACCOUNT"]
         self.environment = os.environ.get("ENVIRONMENT")
+        env_users = {
+            "local": "case.manager@opgtest.com",
+            "development": "case.manager@opgtest.com",
+            "preproduction": "opg+siriussmoketest@digital.justice.gov.uk",
+            "preqa": "opg+siriussmoketest@digital.justice.gov.uk",
+            "qa": "opg+siriussmoketest@digital.justice.gov.uk",
+            "production": "opg+siriussmoketest@digital.justice.gov.uk",
+        }
+        self.user = env_users[self.environment]
         self.account_name = (
             os.environ.get("ACCOUNT_NAME")
             if os.environ.get("ACCOUNT_NAME") != "qa"
@@ -42,7 +51,6 @@ class ApiTests:
         self.password = os.environ.get("API_TEST_PASSWORD")
         self.bucket_name = f"casrec-migration-{self.account_name.lower() if self.account_name else None}"
         self.failed = False
-        self.user = "case.manager@opgtest.com"
         self.session = None
         self.config = get_config(self.environment)
         self.db_conn_string = self.config.get_db_connection_string("target")
@@ -129,16 +137,6 @@ class ApiTests:
             return s, headers_dict, p.status_code
 
     def create_a_session(self):
-        env_users = {
-            "local": "case.manager@opgtest.com",
-            "development": "case.manager@opgtest.com",
-            "preproduction": "opg+siriussmoketest@digital.justice.gov.uk",
-            "preqa": "opg+siriussmoketest@digital.justice.gov.uk",
-            "qa": "opg+siriussmoketest@digital.justice.gov.uk",
-            "production": "opg+siriussmoketest@digital.justice.gov.uk",
-        }
-        self.user = env_users[self.environment]
-
         sess, headers_dict, status_code = self.get_session()
 
         aws_sess = boto3.session.Session()
@@ -182,7 +180,7 @@ class ApiTests:
             SELECT id as id
             FROM persons
             WHERE caserecnumber = '{caserecnumber}'
-            AND clientsource = 'CASRECMIGRATION'"""
+            AND clientsource in ('CASRECMIGRATION', 'SKELETON')"""
         return sql
 
     def get_order_sql(self, caserecnumber):
@@ -192,7 +190,7 @@ class ApiTests:
             INNER join cases c
             on c.client_id = p.id
             WHERE p.caserecnumber = '{caserecnumber}'
-            AND p.clientsource = 'CASRECMIGRATION'
+            AND p.clientsource in ('CASRECMIGRATION', 'SKELETON')
             and c.casetype = 'ORDER'"""
         return sql
 
@@ -203,7 +201,7 @@ class ApiTests:
             INNER join cases c
             on c.client_id = p.id
             WHERE p.caserecnumber = '{caserecnumber}'
-            AND p.clientsource = 'CASRECMIGRATION'
+            AND p.clientsource in ('CASRECMIGRATION', 'SKELETON')
             and c.casetype = 'ORDER'
             and c.orderstatus = 'ACTIVE'"""
         return sql
@@ -737,7 +735,7 @@ class ApiTests:
         else:
             self.api_log(f"Method {method} is invalid")
 
-        log.debug(f"Response text: {response.text}")
+        log.info(f"Response text: {response.text}")
         status_code = response.status_code
 
         self.api_log(f"Returns following: {status_code}")
