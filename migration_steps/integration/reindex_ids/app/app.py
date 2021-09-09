@@ -106,7 +106,7 @@ def main(clear, team):
     )
     move_all_tables(db_config=db_config, table_list=all_enabled_tables)
 
-    if "match_existing_data" in config.enabled_feature_flags(env=environment):
+    if "match-existing-data" in config.enabled_feature_flags(env=environment):
         log.info(f"Merge new data with existing data in Sirius")
         match_existing_data(db_config=db_config, table_details=all_enabled_tables)
 

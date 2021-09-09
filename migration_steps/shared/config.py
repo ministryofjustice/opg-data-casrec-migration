@@ -104,19 +104,23 @@ class BaseConfig:
         "death"
     }
 
-    DEV_FEATURE_FLAGS = {
-        "match_existing_data": True,
-        "additional_data": False,
-        "row_counts": True,
-        "generate_progress": False,
+    LOCAL_FEATURE_FLAGS = {
+        "match-existing-data": False,
+        "additional-data": False,
+        "row-counts": True,
+        "generate-progress": False,
     }
-    QA_FEATURE_FLAGS = {}
 
     def enabled_feature_flags(self, env):
-        if env in ["qa", "production"]:
-            return [k for k, v in self.QA_FEATURE_FLAGS.items() if v is True]
+        if env in ["development", "preproduction", "qa", "preqa", "production"]:
+            all_flags = list(self.LOCAL_FEATURE_FLAGS.keys())
+            enabled_flags = list(
+                flag for flag in all_flags
+                if get_paramstore_value(f"{env}-{flag}") == "True"
+            )
         else:
-            return [k for k, v in self.DEV_FEATURE_FLAGS.items() if v is True]
+            enabled_flags = [k for k, v in self.LOCAL_FEATURE_FLAGS.items() if v is True]
+        return enabled_flags
 
     def allowed_entities(self, env):
         if env in ["development", "preproduction", "qa", "preqa", "production"]:
