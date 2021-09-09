@@ -17,6 +17,9 @@ parameters:
   run_production:
     type: boolean
     default: false
+  override_tag:
+    type: string
+    default: ""
 
 workflows:
   pull_request:
@@ -1111,7 +1114,13 @@ jobs:
           command: pip install boto3 click
       - run:
           name: Set latest version
-          command: python get_image.py --role migrations-ci --image_tag ${IMAGE_TAG} >> ~/project/VERSION
+          command: |
+            if [ "<< pipeline.parameters.override_tag >>" == "" ]
+            then
+              python get_image.py --role migrations-ci --image_tag ${IMAGE_TAG} >> ~/project/VERSION
+            else
+              echo << pipeline.parameters.override_tag >> >> ~/project/VERSION
+            fi
           working_directory: ~/project/scripts/ci_scripts
       - run:
           name: Show latest version
