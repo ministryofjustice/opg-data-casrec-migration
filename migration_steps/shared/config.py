@@ -88,20 +88,20 @@ class BaseConfig:
     DEFAULT_CHUNK_SIZE = int(os.environ.get("DEFAULT_CHUNK_SIZE", 20000))
 
     ALL_ENVIRONMENTS = ["local", "development", "preproduction", "qa", "preqa"]
-    ENABLED_ENTITIES = {
-        "clients": ["local", "development"],
-        "cases": ["local", "development"],
-        "bonds": ["local", "development"],
-        "crec": ["local", "development"],
-        "supervision_level": ["local", "development"],
-        "deputies": ["local", "development"],
-        "invoice": ["local"],
-        "remarks": ["local", "development"],
-        "reporting": ["local", "development"],
-        "tasks": [],
-        # "visits": ["local", "development"],
-        "warnings": ["local", "development"],
-        "death": ["local", "development"],
+    LOCAL_ENTITIES = {
+        "clients",
+        "cases",
+        "bonds",
+        "crec",
+        "supervision_level",
+        "deputies",
+        "invoice",
+        "remarks",
+        "reporting",
+        # "tasks",
+        # "visits",
+        "warnings",
+        "death"
     }
 
     DEV_FEATURE_FLAGS = {
@@ -119,17 +119,16 @@ class BaseConfig:
             return [k for k, v in self.DEV_FEATURE_FLAGS.items() if v is True]
 
     def allowed_entities(self, env):
-        if env in ["preproduction", "qa", "preqa", "production"]:
-            enabled_entity_list = get_enabled_entities_from_param_store(env)
+        if env in ["development", "preproduction", "qa", "preqa", "production"]:
+            entities = get_paramstore_value(f"{env}-allowed-entities")
+            allowed_entity_list = entities.split(",")
         else:
-            enabled_entity_list = [
-                k for k, v in self.ENABLED_ENTITIES.items() if env in v
-            ]
+            allowed_entity_list = self.LOCAL_ENTITIES
 
-        if len(enabled_entity_list) > 0:
-            return enabled_entity_list
+        if len(allowed_entity_list) > 0:
+            return allowed_entity_list
         else:
-            log.error("No entities enabled")
+            log.error("No entities allowed")
             os._exit(1)
 
     def get_filtered_lay_team(self, env, console_team):
