@@ -56,21 +56,28 @@ def get_mappings():
             "client_persons",
             "client_phonenumbers",
             "client_death_notifications",
+        ],
+        "cases": ["cases"],
+        # "bonds": ["bonds"],
+        "crec": [
+            "crec_persons",
+        ],
+        "supervision_level": [
+            "supervision_level_log",
+        ],
+        "deputies": [
+            "deputy_persons",
+            "deputy_death_notifications",
+        ],
+        "warnings": [
             "client_nodebtchase_warnings",
             "client_saarcheck_warnings",
             "client_special_warnings",
             "client_violent_warnings",
-            "crec_persons",
-        ],
-        "cases": ["cases", "supervision_level_log"],
-        # "bonds": ["bonds"],
-        "deputies": [
-            "deputy_persons",
-            "deputy_death_notifications",
             "deputy_special_warnings",
             "deputy_violent_warnings",
-        ]
-        # "visits": ["visits"]
+        ],
+        # "visits": ["visits"],
         # "remarks": ["notes"]
     }
 
