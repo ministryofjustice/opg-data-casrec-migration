@@ -37,3 +37,13 @@ services:
     volumes:
       - ./migration_steps/shared:/migration_steps/shared
       - ./scripts/sync_mapping_json/sync_mapping_json.py:/scripts/sync_mapping_json/sync_mapping_json.py
+  migrate_tagged_version:
+    build:
+      context: ./scripts/migrate_tagged_version
+      dockerfile: Dockerfile
+    environment:
+      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+      AWS_SESSION_TOKEN: $AWS_SESSION_TOKEN
+    volumes:
+      - ./scripts/migrate_tagged_version/app.py:/migrate_tagged_version/app.py

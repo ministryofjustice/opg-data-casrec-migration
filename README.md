@@ -604,3 +604,13 @@ python3 migration_steps/transform_casrec/app/app.py -vv
 python3 migration_steps/load_to_target/app/app.py
 ./migration_steps/validation/validate.sh -vv
 ```
+
+#### Deploying to an environment from a tagged image
+
+From the root directory run the following:
+
+`sh ./migrate_tagged_version.sh`
+
+Follow the instructions carefully, being mindful to pick the relevant environment and tag.
+You can then go and have a look at your job running in circle. During the get latest image stage,
+it will actually override with the image you selected and you can check this in the 'show image' stage.
