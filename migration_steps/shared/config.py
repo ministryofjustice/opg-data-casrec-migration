@@ -14,24 +14,11 @@ def load_env_vars():
     load_dotenv(dotenv_path=env_path)
 
 
-def get_enabled_entities_from_param_store(env):
+def get_paramstore_value(param_name):
     session = boto3.session.Session()
     ssm = session.client("ssm", region_name="eu-west-1")
-    parameter = ssm.get_parameter(Name=f"{env}-allowed-entities")
-
-    return parameter["Parameter"]["Value"].split(",")
-
-
-def get_lay_team_from_param_store(env):
-    lay_team = ""
-    if env in ["preproduction", "qa", "preqa", "production"]:
-        session = boto3.session.Session()
-        ssm = session.client("ssm", region_name="eu-west-1")
-        parameter = ssm.get_parameter(Name=f"{env}-lay-team")
-        if parameter["Parameter"]["Value"] not in ["0", "all", "All", "ALL"]:
-            lay_team = parameter["Parameter"]["Value"]
-
-    return lay_team
+    parameter = ssm.get_parameter(Name=param_name)
+    return parameter["Parameter"]["Value"]
 
 
 class BaseConfig:
@@ -136,28 +123,25 @@ class BaseConfig:
             os._exit(1)
 
     def get_filtered_lay_team(self, env, console_team):
-        paramstore_team = get_lay_team_from_param_store(env)
         filter_team = ""
-        if console_team:
-            if paramstore_team:
+
+        if env in ["development", "preproduction", "preqa", "qa", "production"]:
+            param_team = get_paramstore_value(f"{env}-lay-team")
+            if param_team in ["0", "all", "All", "ALL"]:
                 log.info(
-                    f"Lay Team filtering specified in param store: Team {paramstore_team}"
-                )
-                log.info(
-                    f"Overriding with Lay Team requested at runtime: Team {console_team}"
+                    f"No filtering requested, proceed with migrating ALL."
                 )
             else:
+                filter_team = param_team
                 log.info(
-                    f"Lay Team filtering requested at runtime: Team {console_team}"
+                    f"Lay Team filtering specified in param store: Team {param_team}"
                 )
-            filter_team = console_team
-        elif paramstore_team:
+
+        if console_team:
             log.info(
-                f"Lay Team filtering specified in param store: Team {paramstore_team}"
+                f"Lay Team filtering requested at runtime: Team {console_team}"
             )
-            filter_team = paramstore_team
-        else:
-            log.info(f"No filtering requested, proceed with migrating ALL.")
+            filter_team = console_team
 
         return filter_team
 
