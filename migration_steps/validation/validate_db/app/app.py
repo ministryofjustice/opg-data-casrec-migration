@@ -726,10 +726,22 @@ def get_exception_count():
 
 
 @click.command()
+@click.option("--team", default="")
 @click.option("--staging", is_flag=True, default=False)
-def main(staging):
+def main(team, staging):
+    allowed_entities = config.allowed_entities(env=environment)
+    filtered_lay_team = config.get_filtered_lay_team(environment, team)
 
-    log.info(helpers.log_title(message="Validation"))
+    log.info(log_title(message="Migration Step: Automated DB Validation"))
+    log.debug(f"Environment: {environment}")
+    log.info(f"Lay Team: {filtered_lay_team}")
+    log.info(f"Enabled entities: {', '.join(allowed_entities)}")
+    log.info(f"Enabled features: {', '.join(config.enabled_feature_flags(environment))}")
+    version_details = helpers.get_json_version()
+    log.info(
+        f"Using JSON def version '{version_details['version_id']}' last updated {version_details['last_modified']}"
+    )
+    log.info(log_title(message="Begin"))
 
     global is_staging
     is_staging = staging

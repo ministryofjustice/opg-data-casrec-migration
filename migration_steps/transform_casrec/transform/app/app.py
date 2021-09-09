@@ -95,26 +95,20 @@ def main(clear, team, chunk_size):
     filtered_lay_team = config.get_filtered_lay_team(environment, team)
 
     log.info(log_title(message="Migration Step: Transform Casrec Data"))
-    log.info(log_title(message=f"Team: {filtered_lay_team}"))
-    log.info(
-        log_title(
-            message=f"Source: {db_config['source_schema']}, Target: {db_config['target_schema']}, Chunk Size: {db_config['chunk_size']}"
-        )
-    )
-    log.info(log_title(message=f"Enabled entities: {', '.join(allowed_entities)}"))
-    log.info(
-        log_title(
-            message=f"Enabled features: {', '.join(config.enabled_feature_flags(env=os.environ.get('ENVIRONMENT')))}"
-        )
-    )
-    log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
+    log.debug(f"Environment: {environment}")
+    log.info(f"Lay Team: {filtered_lay_team}")
+    log.info(f"Enabled entities: {', '.join(allowed_entities)}")
+    log.info(f"Enabled features: {', '.join(config.enabled_feature_flags(environment))}")
+    log.info(f"Source: {db_config['source_schema']}")
+    log.info(f"Target: {db_config['target_schema']}")
+    log.info(f"Chunk Size: {db_config['chunk_size']}")
+    db_config["chunk_size"] = chunk_size if chunk_size else 10000
+    log.info(f"Chunking data at {chunk_size} rows")
     version_details = helpers.get_json_version()
     log.info(
         f"Using JSON def version '{version_details['version_id']}' last updated {version_details['last_modified']}"
     )
-
-    db_config["chunk_size"] = chunk_size if chunk_size else 10000
-    log.info(f"Chunking data at {chunk_size} rows")
+    log.info(log_title(message="Begin"))
 
     if clear:
         clear_tables(db_config=db_config)

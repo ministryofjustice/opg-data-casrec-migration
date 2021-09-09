@@ -105,11 +105,11 @@ docker-compose ${COMPOSE_ARGS} run --rm transform_casrec transform_casrec/transf
 echo "=== Step 2 - Integrate with Sirius ==="
 docker-compose ${COMPOSE_ARGS} run --rm integration integration/integration.sh --team="${LAY_TEAM}"
 echo "=== Step 3 - Validate Staging ==="
-docker-compose ${COMPOSE_ARGS} run --rm validation python3 /validation/validate_db/app/app.py --staging
+docker-compose ${COMPOSE_ARGS} run --rm validation python3 /validation/validate_db/app/app.py --team="${LAY_TEAM}" --staging
 echo "=== Step 4 - Load to Sirius ==="
 docker-compose ${COMPOSE_ARGS} run --rm load_to_target load_to_sirius/load_to_sirius.sh
 echo "=== Step 5 - Validate Sirius ==="
-docker-compose ${COMPOSE_ARGS} run --rm validation validation/validate.sh "$@"
+docker-compose ${COMPOSE_ARGS} run --rm validation validation/validate.sh --team="${LAY_TEAM}"
 echo "=== Step 6 - API Tests ==="
 docker-compose ${COMPOSE_ARGS} run --rm validation validation/api_tests.sh
 echo "=== Step 7 - Functional API Tests ==="
