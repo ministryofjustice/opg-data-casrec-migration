@@ -81,8 +81,8 @@ def main(clear):
         f"Using JSON def version '{version_details['version_id']}' last updated {version_details['last_modified']}"
     )
 
-    if "additional_data" not in config.enabled_feature_flags(env=environment):
-        log.info("additional_data entity not enabled, exiting")
+    if "additional-data" not in config.enabled_feature_flags(env=environment):
+        log.info("additional-data flag not enabled, exiting")
         return False
 
     all_files = [x[:-5] for x in helpers.get_all_additional_data_files()]

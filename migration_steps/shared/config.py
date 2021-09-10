@@ -14,24 +14,11 @@ def load_env_vars():
     load_dotenv(dotenv_path=env_path)
 
 
-def get_enabled_entities_from_param_store(env):
+def get_paramstore_value(param_name):
     session = boto3.session.Session()
     ssm = session.client("ssm", region_name="eu-west-1")
-    parameter = ssm.get_parameter(Name=f"{env}-allowed-entities")
-
-    return parameter["Parameter"]["Value"].split(",")
-
-
-def get_lay_team_from_param_store(env):
-    lay_team = ""
-    if env in ["preproduction", "qa", "preqa", "production"]:
-        session = boto3.session.Session()
-        ssm = session.client("ssm", region_name="eu-west-1")
-        parameter = ssm.get_parameter(Name=f"{env}-lay-team")
-        if parameter["Parameter"]["Value"] not in ["0", "all", "All", "ALL"]:
-            lay_team = parameter["Parameter"]["Value"]
-
-    return lay_team
+    parameter = ssm.get_parameter(Name=param_name)
+    return parameter["Parameter"]["Value"]
 
 
 class BaseConfig:
@@ -88,73 +75,73 @@ class BaseConfig:
     DEFAULT_CHUNK_SIZE = int(os.environ.get("DEFAULT_CHUNK_SIZE", 20000))
 
     ALL_ENVIRONMENTS = ["local", "development", "preproduction", "qa", "preqa"]
-    ENABLED_ENTITIES = {
-        "clients": ["local", "development"],
-        "cases": ["local", "development"],
-        "bonds": ["local", "development"],
-        "crec": ["local", "development"],
-        "supervision_level": ["local", "development"],
-        "deputies": ["local", "development"],
-        "invoice": ["local"],
-        "remarks": ["local", "development"],
-        "reporting": ["local", "development"],
-        "tasks": [],
-        # "visits": ["local", "development"],
-        "warnings": ["local", "development"],
-        "death": ["local", "development"],
+    LOCAL_ENTITIES = {
+        "clients",
+        "cases",
+        "bonds",
+        "crec",
+        "supervision_level",
+        "deputies",
+        "invoice",
+        "remarks",
+        "reporting",
+        # "tasks",
+        # "visits",
+        "warnings",
+        "death"
     }
 
-    DEV_FEATURE_FLAGS = {
-        "match_existing_data": True,
-        "additional_data": False,
-        "row_counts": True,
-        "generate_progress": False,
+    LOCAL_FEATURE_FLAGS = {
+        "match-existing-data": False,
+        "additional-data": False,
+        "row-counts": True,
+        "generate-progress": False,
     }
-    QA_FEATURE_FLAGS = {}
 
     def enabled_feature_flags(self, env):
-        if env in ["qa", "production"]:
-            return [k for k, v in self.QA_FEATURE_FLAGS.items() if v is True]
+        if env in ["development", "preproduction", "qa", "preqa", "production"]:
+            all_flags = list(self.LOCAL_FEATURE_FLAGS.keys())
+            enabled_flags = list(
+                flag for flag in all_flags
+                if get_paramstore_value(f"{env}-{flag}") == "True"
+            )
         else:
-            return [k for k, v in self.DEV_FEATURE_FLAGS.items() if v is True]
+            enabled_flags = [k for k, v in self.LOCAL_FEATURE_FLAGS.items() if v is True]
+        return enabled_flags
 
     def allowed_entities(self, env):
-        if env in ["preproduction", "qa", "preqa", "production"]:
-            enabled_entity_list = get_enabled_entities_from_param_store(env)
+        if env in ["development", "preproduction", "qa", "preqa", "production"]:
+            entities = get_paramstore_value(f"{env}-allowed-entities")
+            allowed_entity_list = entities.split(",")
         else:
-            enabled_entity_list = [
-                k for k, v in self.ENABLED_ENTITIES.items() if env in v
-            ]
+            allowed_entity_list = self.LOCAL_ENTITIES
 
-        if len(enabled_entity_list) > 0:
-            return enabled_entity_list
+        if len(allowed_entity_list) > 0:
+            return allowed_entity_list
         else:
-            log.error("No entities enabled")
+            log.error("No entities allowed")
             os._exit(1)
 
     def get_filtered_lay_team(self, env, console_team):
-        paramstore_team = get_lay_team_from_param_store(env)
         filter_team = ""
-        if console_team:
-            if paramstore_team:
+
+        if env in ["development", "preproduction", "preqa", "qa", "production"]:
+            param_team = get_paramstore_value(f"{env}-lay-team")
+            if param_team in ["0", "all", "All", "ALL"]:
                 log.info(
-                    f"Lay Team filtering specified in param store: Team {paramstore_team}"
-                )
-                log.info(
-                    f"Overriding with Lay Team requested at runtime: Team {console_team}"
+                    f"No filtering requested, proceed with migrating ALL."
                 )
             else:
+                filter_team = param_team
                 log.info(
-                    f"Lay Team filtering requested at runtime: Team {console_team}"
+                    f"Lay Team filtering specified in param store: Team {param_team}"
                 )
-            filter_team = console_team
-        elif paramstore_team:
+
+        if console_team:
             log.info(
-                f"Lay Team filtering specified in param store: Team {paramstore_team}"
+                f"Lay Team filtering requested at runtime: Team {console_team}"
             )
-            filter_team = paramstore_team
-        else:
-            log.info(f"No filtering requested, proceed with migrating ALL.")
+            filter_team = console_team
 
         return filter_team
 
