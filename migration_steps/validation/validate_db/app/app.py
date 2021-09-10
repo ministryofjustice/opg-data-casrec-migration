@@ -58,7 +58,10 @@ def get_mappings():
             "client_death_notifications",
         ],
         "cases": ["cases"],
-        # "bonds": ["bonds"],
+        "bonds": [
+            "bonds_active",
+            "bonds_dispensed"
+        ],
         "crec": [
             "crec_persons",
         ],
