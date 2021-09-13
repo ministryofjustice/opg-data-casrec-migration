@@ -37,6 +37,21 @@
         },
         "TaskDefinition": "arn:aws:ecs:eu-west-1:${account}:task-definition/migrate-api-${cluster}"
       },
+      "restore-database-snapshot-api": {
+        "Cluster": "${cluster}",
+        "LaunchType": "FARGATE",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "SecurityGroups": [
+              "${sec_group}"
+            ],
+            "Subnets": [
+              "${subnets}"
+            ]
+          }
+        },
+        "TaskDefinition": "arn:aws:ecs:eu-west-1:${account}:task-definition/restore-database-snapshot-api-${cluster}"
+      },
       "reset-api": {
         "Cluster": "${cluster}",
         "LaunchType": "FARGATE",
