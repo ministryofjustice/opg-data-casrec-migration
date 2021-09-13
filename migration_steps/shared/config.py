@@ -88,7 +88,7 @@ class BaseConfig:
         # "tasks",
         # "visits",
         "warnings",
-        "death",
+        "death"
     }
 
     LOCAL_FEATURE_FLAGS = {
@@ -96,21 +96,17 @@ class BaseConfig:
         "additional-data": False,
         "row-counts": True,
         "generate-progress": False,
-        "delete-skeleton-links": True,
     }
 
     def enabled_feature_flags(self, env):
         if env in ["development", "preproduction", "qa", "preqa", "production"]:
             all_flags = list(self.LOCAL_FEATURE_FLAGS.keys())
             enabled_flags = list(
-                flag
-                for flag in all_flags
+                flag for flag in all_flags
                 if get_paramstore_value(f"{env}-{flag}") == "True"
             )
         else:
-            enabled_flags = [
-                k for k, v in self.LOCAL_FEATURE_FLAGS.items() if v is True
-            ]
+            enabled_flags = [k for k, v in self.LOCAL_FEATURE_FLAGS.items() if v is True]
         return enabled_flags
 
     def allowed_entities(self, env):
@@ -132,7 +128,9 @@ class BaseConfig:
         if env in ["development", "preproduction", "preqa", "qa", "production"]:
             param_team = get_paramstore_value(f"{env}-lay-team")
             if param_team in ["0", "all", "All", "ALL"]:
-                log.info(f"No filtering requested, proceed with migrating ALL.")
+                log.info(
+                    f"No filtering requested, proceed with migrating ALL."
+                )
             else:
                 filter_team = param_team
                 log.info(
@@ -140,7 +138,9 @@ class BaseConfig:
                 )
 
         if console_team:
-            log.info(f"Lay Team filtering requested at runtime: Team {console_team}")
+            log.info(
+                f"Lay Team filtering requested at runtime: Team {console_team}"
+            )
             filter_team = console_team
 
         return filter_team
