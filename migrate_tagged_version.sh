@@ -84,7 +84,7 @@ then
               --url https://circleci.com/api/v2/project/github/ministryofjustice/opg-data-casrec-migration/pipeline \
               --header "Circle-Token: ${CIRCLE_TOKEN}" \
               --header 'content-type: application/json' \
-              --data "{\"branch\":\"master\", \"parameters\":{\"run_master\": false, \"run_preprod\": $RUN_PREPROD, \"run_qa\": $RUN_QA, \"run_preqa\": $RUN_PRE_QA, \"override_tag\": $TAG}}"
+              --data "{\"branch\":\"master\", \"parameters\":{\"run_master\": false, \"run_preprod\": $RUN_PREPROD, \"run_qa\": $RUN_QA, \"run_preqa\": $RUN_PRE_QA, \"override_tag\": \"$TAG\"}}"
 else
   echo "You chose not to deploy. Good bye!"
   exit 0
