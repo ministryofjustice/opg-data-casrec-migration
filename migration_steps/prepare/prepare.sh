@@ -14,6 +14,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 python3 "${DIR}/prepare_target/app/app.py" --preserve_schemas="${SCHEMAS}"
 
+
+
 if [ "${ENVIRONMENT}" == "local" ] \
   || [ "${ENVIRONMENT}" == "development" ] \
   || [ "${ENVIRONMENT}" == "preproduction" ] \
@@ -31,4 +33,15 @@ if [ "${ENVIRONMENT}" == "local" ] \
   python3 "${DIR}/create_skeleton_data/app/app.py"
 else
   echo "create_skeleton_data should not run on ${ENVIRONMENT}"
+fi
+
+if [ "${ENVIRONMENT}" == "local" ] \
+  || [ "${ENVIRONMENT}" == "development" ] \
+  || [ "${ENVIRONMENT}" == "preproduction" ] \
+  || [ "${ENVIRONMENT}" == "preqa" ] \
+  || [ "${ENVIRONMENT}" == "qa" ]
+  then
+  python3 "${DIR}/delete_existing_data/app.py"
+else
+  echo "delete_existing_data should not run on ${ENVIRONMENT}"
 fi
