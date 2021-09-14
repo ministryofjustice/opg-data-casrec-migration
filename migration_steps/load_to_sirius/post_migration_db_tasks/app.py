@@ -91,10 +91,6 @@ def main():
     log.info(log_title(message=f"Target: {db_config['target_schema']}"))
     log.info(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
-    # feature_flag load-to-sirius
-    if "load-to-sirius" not in config.enabled_feature_flags(env=environment):
-        return False
-
     jobs = [
         reset_sequences,
         reset_uid_sequences,
