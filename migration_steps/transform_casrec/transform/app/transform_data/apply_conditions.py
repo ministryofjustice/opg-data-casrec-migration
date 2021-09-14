@@ -129,7 +129,6 @@ def exclude_values(df, cols):
 
 
 def greater_than(df, cols):
-
     col = format_additional_col_alias(cols["greater_than"]["col"])
     value = cols["greater_than"]["value"]
 
@@ -142,12 +141,8 @@ def greater_than(df, cols):
 
 
 def recent_or_open_invoices(df, cols):
-
-    col = format_additional_col_alias(cols["recent_or_open_invoices"]["date_col"])
-    tax_year_from = cols["recent_or_open_invoices"]["tax_year_from"]
-    date_from = datetime.datetime(tax_year_from, 3, 31)
+    # join sop_aged_debt on feeexport to get Open/Closed invoice status
     debt_col = "Outstanding Amount"
-
     aged_debt_query = f'select "Trx Number", "{debt_col}" from {config.schemas["pre_transform"]}.sop_aged_debt;'
     aged_debt_df = pd.read_sql_query(
         aged_debt_query, config.get_db_connection_string("migration")
@@ -161,14 +156,23 @@ def recent_or_open_invoices(df, cols):
         right_on="Trx Number",
     )
 
+    filtered_df = filter_recent_or_open_invoices(df=df, cols=cols, debt_col=debt_col)
+    filtered_df = filtered_df.drop(columns=["Trx Number", debt_col])
+
+    return filtered_df
+
+
+def filter_recent_or_open_invoices(df, cols, debt_col):
+    col = format_additional_col_alias(cols["recent_or_open_invoices"]["date_col"])
+    tax_year_from = cols["recent_or_open_invoices"]["tax_year_from"]
+    date_from = datetime.datetime(year=tax_year_from, month=3, day=31, hour=23, minute=59, second=59)
+
     log.debug(
         f"Removing rows where '{col}' is on or before {date_from} and {debt_col} is null"
     )
 
     df[col] = pd.to_datetime(df[col], format="%d/%m/%Y %H:%M")
     df = df[(df[col] > date_from) | (df[debt_col].notnull())]
-
-    df = df.drop(columns=["Trx Number", debt_col])
 
     return df
 
