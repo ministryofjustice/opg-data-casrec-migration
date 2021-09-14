@@ -25,20 +25,9 @@ else
 fi
 
 python3 "${DIR}/prepare_target/app/app.py" --preserve_schemas="${SCHEMAS}"
+python3 "${DIR}/create_stage_schema/app/app.py"
 
 
-
-# todo IN-908
-if [ "${ENVIRONMENT}" == "local" ] \
-  || [ "${ENVIRONMENT}" == "development" ] \
-  || [ "${ENVIRONMENT}" == "preproduction" ] \
-  || [ "${ENVIRONMENT}" == "preqa" ] \
-  || [ "${ENVIRONMENT}" == "qa" ]
-  then
-  python3 "${DIR}/create_stage_schema/app/app.py"
-else
-  echo "create_stage_schema should not run on ${ENVIRONMENT}"
-fi
 # todo IN-908
 if [ "${ENVIRONMENT}" == "local" ] \
   || [ "${ENVIRONMENT}" == "development" ]

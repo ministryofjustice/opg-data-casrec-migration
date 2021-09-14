@@ -6,10 +6,6 @@ from pathlib import Path
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
 
-from lookups.check_lookups_in_mapping import check_lookups
-from lookups.sync_lookups_in_staging import sync_lookups
-from lookups.dev_data_fixes import amend_dev_data
-
 
 import time
 from config import get_config
@@ -56,13 +52,6 @@ def main():
         to_schema=config.schemas["pre_migration"],
         structure_only=True,
     )
-
-    # todo IN-908
-    if environment != "preproduction":
-        amend_dev_data(db_engine=sirius_db_engine)
-
-    check_lookups(db_config=db_config)
-    sync_lookups(db_engine=target_db_engine, db_config=db_config)
 
 
 if __name__ == "__main__":
