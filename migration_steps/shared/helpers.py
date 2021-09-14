@@ -236,7 +236,8 @@ def get_json_version():
 
 
 def get_config(env="local"):
-    # todo IN-908
+
+    # envcheck - just setting log levels for local dev
     if env == "local":
         config = LocalConfig()
     else:
