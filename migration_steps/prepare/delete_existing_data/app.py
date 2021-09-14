@@ -45,6 +45,9 @@ completed_tables = []
 
 def main():
     log.info(helpers.log_title(message="Delete data adjoining sirius data"))
+    log.critical(
+        "THIS IS A DEVELOPMENT ONLY SCRIPT - IT MUST NEVER RUN ON PRODUCTION DATA"
+    )
     log.info(
         helpers.log_title(
             message=f"Source: {db_config['source_schema']}, Target: {db_config['target_schema']}, Chunk Size: {db_config['chunk_size']}"
