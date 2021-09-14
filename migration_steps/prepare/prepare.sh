@@ -20,11 +20,22 @@ if [ "${ENVIRONMENT}" == "local" ] \
   || [ "${ENVIRONMENT}" == "preqa" ] \
   || [ "${ENVIRONMENT}" == "qa" ]
   then
+  python3 "${DIR}/delete_existing_data/app.py"
+else
+  echo "delete_existing_data should not run on ${ENVIRONMENT}"
+fi
+
+if [ "${ENVIRONMENT}" == "local" ] \
+  || [ "${ENVIRONMENT}" == "development" ] \
+  || [ "${ENVIRONMENT}" == "preproduction" ] \
+  || [ "${ENVIRONMENT}" == "preqa" ] \
+  || [ "${ENVIRONMENT}" == "qa" ]
+  then
   python3 "${DIR}/create_stage_schema/app/app.py"
 else
   echo "create_stage_schema should not run on ${ENVIRONMENT}"
 fi
-
+# todo IN-908
 if [ "${ENVIRONMENT}" == "local" ] \
   || [ "${ENVIRONMENT}" == "development" ]
   then
