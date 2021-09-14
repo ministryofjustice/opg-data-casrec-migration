@@ -8,7 +8,7 @@ sys.path.insert(0, str(current_path) + "/../../../shared")
 
 
 import time
-from config import get_config
+from helpers import get_config
 from dotenv import load_dotenv
 from db_helpers import *
 import logging
