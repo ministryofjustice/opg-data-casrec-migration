@@ -2,6 +2,7 @@
 set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+# todo IN-908
 if [[ "${ENVIRONMENT}" == "local" || "${ENVIRONMENT}" == "development" ]]
 then
   if [ "${RUN_API_TESTS}" == "True" ]
