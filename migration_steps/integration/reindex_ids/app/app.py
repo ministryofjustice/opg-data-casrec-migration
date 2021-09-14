@@ -92,6 +92,8 @@ def main(clear, team):
         clear_tables(db_config)
 
     enabled_tables = table_helpers.get_enabled_table_details()
+
+    # feature_flag additional data
     if "additional_data" in config.enabled_feature_flags(env=environment):
         enabled_extra_tables = table_helpers.get_enabled_table_details(
             file_name="additional_data_tables"
@@ -106,6 +108,7 @@ def main(clear, team):
     )
     move_all_tables(db_config=db_config, table_list=all_enabled_tables)
 
+    # feature_flag match-existing-data
     if "match-existing-data" in config.enabled_feature_flags(env=environment):
         log.info(f"Merge new data with existing data in Sirius")
         match_existing_data(db_config=db_config, table_details=all_enabled_tables)

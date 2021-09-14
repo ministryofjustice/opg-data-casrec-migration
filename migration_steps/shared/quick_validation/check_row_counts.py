@@ -26,6 +26,7 @@ def get_current_directory():
 
 
 def count_rows(connection_string, destination_schema, enabled_entities, team=""):
+    # feature_flag row-counts
     if "row-counts" not in config.enabled_feature_flags(env=environment):
         return False
 

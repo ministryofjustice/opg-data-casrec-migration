@@ -382,7 +382,7 @@ def initialise_progress_table(
                 processor_id,
             )
         # To allow multiple processes to get involved
-        # todo IN-908
+        # envcheck - not sure what this is for so leaving it alone!
         if environment == "local":
             secs = 0
         else:
