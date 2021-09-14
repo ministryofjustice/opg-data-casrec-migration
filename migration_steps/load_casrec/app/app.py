@@ -316,8 +316,8 @@ def sirius_session(account):
 
 
 def get_s3_session(host, account, ci):
+    # todo refactor and combine multiple instances of get_s3_session
     s3_session = boto3.session.Session()
-    # todo IN-908
     if environment == "local":
 
         if host == "localhost":

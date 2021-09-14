@@ -12,7 +12,7 @@ done
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-# todo IN-908
+# envcheck - linked skeleton data should NOT be deleted on prod
 if [ "${ENVIRONMENT}" == "local" ] \
   || [ "${ENVIRONMENT}" == "development" ] \
   || [ "${ENVIRONMENT}" == "preproduction" ] \
@@ -28,7 +28,7 @@ python3 "${DIR}/prepare_target/app/app.py" --preserve_schemas="${SCHEMAS}"
 python3 "${DIR}/create_stage_schema/app/app.py"
 
 
-# todo IN-908
+# envcheck - skeleton data should ONLY be created on dev databases
 if [ "${ENVIRONMENT}" == "local" ] \
   || [ "${ENVIRONMENT}" == "development" ]
   then
