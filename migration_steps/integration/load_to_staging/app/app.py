@@ -136,9 +136,6 @@ def main(clear, team):
 
     if clear:
         work.insert(0, clear_tables)
-    # todo IN-908
-    if environment == "local":
-        work.append(update)
 
     for item in work:
         thread = threading.Thread(target=item)
