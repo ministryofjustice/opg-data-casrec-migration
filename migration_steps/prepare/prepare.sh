@@ -12,6 +12,7 @@ done
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+# todo IN-908
 if [ "${ENVIRONMENT}" == "local" ] \
   || [ "${ENVIRONMENT}" == "development" ] \
   || [ "${ENVIRONMENT}" == "preproduction" ] \
@@ -25,6 +26,9 @@ fi
 
 python3 "${DIR}/prepare_target/app/app.py" --preserve_schemas="${SCHEMAS}"
 
+
+
+# todo IN-908
 if [ "${ENVIRONMENT}" == "local" ] \
   || [ "${ENVIRONMENT}" == "development" ] \
   || [ "${ENVIRONMENT}" == "preproduction" ] \
@@ -35,7 +39,7 @@ if [ "${ENVIRONMENT}" == "local" ] \
 else
   echo "create_stage_schema should not run on ${ENVIRONMENT}"
 fi
-
+# todo IN-908
 if [ "${ENVIRONMENT}" == "local" ] \
   || [ "${ENVIRONMENT}" == "development" ]
   then

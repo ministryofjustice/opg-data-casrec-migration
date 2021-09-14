@@ -57,6 +57,7 @@ def main():
         structure_only=True,
     )
 
+    # todo IN-908
     if environment != "preproduction":
         amend_dev_data(db_engine=sirius_db_engine)
 

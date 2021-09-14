@@ -62,6 +62,7 @@ if __name__ == "__main__":
     log.setLevel(1)
     log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
+    # todo IN-908
     if environment in ("local", "development"):
         main()
     else:

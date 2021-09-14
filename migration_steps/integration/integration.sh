@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-
+# todo IN-908
 if [ "${ENVIRONMENT}" == "local" ] \
   || [ "${ENVIRONMENT}" == "development" ] \
   || [ "${ENVIRONMENT}" == "preproduction" ] \

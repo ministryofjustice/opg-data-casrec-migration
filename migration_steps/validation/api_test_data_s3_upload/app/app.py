@@ -39,6 +39,7 @@ custom_logger.setup_logging(env=environment, module_name="upload api test data")
 @click.option("-v", "--verbose", count=True)
 def main(verbose):
     # set_logging_level(verbose)
+    # todo IN-908
     if environment in ["local", "development"]:
         log.info(log_title(message="API CSV Upload"))
 

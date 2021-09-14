@@ -236,6 +236,7 @@ def get_json_version():
 
 
 def get_config(env="local"):
+    # todo IN-908
     if env == "local":
         config = LocalConfig()
     else:
@@ -245,6 +246,7 @@ def get_config(env="local"):
 
 def get_s3_session(session, environment, host, ci="false", account=None):
     s3_session = session
+    # todo IN-908
     if environment == "local":
         if host == "localhost":
             stack_host = "localhost"

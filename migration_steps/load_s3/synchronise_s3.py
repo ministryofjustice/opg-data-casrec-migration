@@ -124,6 +124,7 @@ def main(environment):
     s3 = s3_session.client("s3")
     local_data_path = current_path / csv_dir_suffix
 
+    # todo IN-908
     if environment == "development":
         clear_folder(local_data_path)
         download_list_of_files(bucket, s3, local_data_path, "anon")
