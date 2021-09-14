@@ -735,7 +735,7 @@ class ApiTests:
         else:
             self.api_log(f"Method {method} is invalid")
 
-        log.info(f"Response text: {response.text}")
+        log.debug(f"Response text: {response.text}")
         status_code = response.status_code
 
         self.api_log(f"Returns following: {status_code}")
