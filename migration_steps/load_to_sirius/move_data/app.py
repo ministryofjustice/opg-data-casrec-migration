@@ -63,6 +63,9 @@ def main(audit):
     )
     log.info(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
+    if "load-to-sirius" not in config.enabled_feature_flags(env=environment):
+        return False
+
     tables_dict = table_helpers.get_enabled_table_details()
     tables_list = table_helpers.get_table_list(tables_dict)
 

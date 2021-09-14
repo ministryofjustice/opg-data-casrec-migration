@@ -105,6 +105,7 @@ class BaseConfig:
         "additional-data": False,
         "row-counts": True,
         "generate-progress": False,
+        "load-to-sirius": True,
     }
 
     def enabled_feature_flags(self, env):
