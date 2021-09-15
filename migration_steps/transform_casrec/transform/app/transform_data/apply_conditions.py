@@ -98,7 +98,7 @@ def convert_to_timestamp(df, cols):
         .astype(str)
         .apply(
             lambda x: dt.datetime.strptime(
-                x[source_date] + x[source_time].split(".")[0], "%Y-%m-%d%H:%M:%S"
+                x[source_date][0:10] + x[source_time].split(".")[0], "%Y-%m-%d%H:%M:%S"
             )
             if x[source_date] not in empty_date
             else "",
