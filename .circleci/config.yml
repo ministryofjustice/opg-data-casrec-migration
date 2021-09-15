@@ -219,6 +219,18 @@ workflows:
           tf_workspace: preqa
           environment: PreQualityAssurance
           filters: {branches:{only:[master]}}
+      - approve:
+          name: approve full elastic reset preqa
+          type: approval
+          requires: [build infra preqa]
+          environment: PreQualityAssurance
+          filters: {branches:{only:[master]}}
+      - run_elasticsearch_reset:
+          name: full reindex elasticsearch preqa
+          requires: [approve full elastic reset preqa]
+          tf_workspace: preqa
+          environment: PreQualityAssurance
+          filters: {branches:{only:[master]}}
 
   qa:
     when: << pipeline.parameters.run_qa >>
