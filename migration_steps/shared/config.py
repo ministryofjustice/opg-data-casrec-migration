@@ -82,7 +82,7 @@ class BaseConfig:
     DEFAULT_CHUNK_SIZE = int(os.environ.get("DEFAULT_CHUNK_SIZE", 20000))
 
     ALL_ENVIRONMENTS = ["local", "development", "preproduction", "qa", "preqa"]
-    LOCAL_ENTITIES = {
+    LOCAL_ENTITIES = [
         "clients",
         "cases",
         "bonds",
@@ -98,7 +98,7 @@ class BaseConfig:
         # "visits",
         "warnings",
         "death",
-    }
+    ]
 
     LOCAL_FEATURE_FLAGS = {
         "match-existing-data": True,
