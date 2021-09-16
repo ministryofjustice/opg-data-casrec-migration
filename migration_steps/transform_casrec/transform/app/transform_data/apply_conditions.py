@@ -1,3 +1,4 @@
+import datetime
 import logging
 import os
 import datetime as dt
@@ -6,6 +7,7 @@ import numpy as np
 
 import helpers
 from custom_errors import EmptyDataFrame
+import pandas as pd
 
 
 log = logging.getLogger("root")
@@ -27,6 +29,20 @@ def source_conditions(df, conditions):
     if convert_to_timestamp_cols:
         df = convert_to_timestamp(df, convert_to_timestamp_cols)
         for col in convert_to_timestamp_cols:
+            conditions.pop(col, None)
+
+    greater_than_cols = {k: v for k, v in conditions.items() if k == "greater_than"}
+    if greater_than_cols:
+        df = greater_than(df, greater_than_cols)
+        for col in greater_than_cols:
+            conditions.pop(col, None)
+
+    recent_or_open_invoices_cols = {
+        k: v for k, v in conditions.items() if k == "recent_or_open_invoices"
+    }
+    if recent_or_open_invoices_cols:
+        df = recent_or_open_invoices(df, recent_or_open_invoices_cols)
+        for col in recent_or_open_invoices_cols:
             conditions.pop(col, None)
 
     first_x_chars_cols = {k: v for k, v in conditions.items() if k == "first_x_chars"}
@@ -108,6 +124,55 @@ def exclude_values(df, cols):
     log.debug(f"Removing rows where '{col}' is one of {values_to_exclude}")
 
     df = df[~df[col].isin(values_to_exclude)]
+
+    return df
+
+
+def greater_than(df, cols):
+    col = format_additional_col_alias(cols["greater_than"]["col"])
+    value = cols["greater_than"]["value"]
+
+    log.debug(f"Removing rows where '{col}' is not greater than {value}")
+
+    df[col] = df[col].astype(float)
+    df = df[df[col] > value]
+
+    return df
+
+
+def recent_or_open_invoices(df, cols):
+    # join sop_aged_debt on feeexport to get Open/Closed invoice status
+    debt_col = "Outstanding Amount"
+    aged_debt_query = f'select "Trx Number", "{debt_col}" from {config.schemas["pre_transform"]}.sop_aged_debt;'
+    aged_debt_df = pd.read_sql_query(
+        aged_debt_query, config.get_db_connection_string("migration")
+    )
+    aged_debt_df = aged_debt_df[["Trx Number", debt_col]]
+
+    df = df.merge(
+        aged_debt_df,
+        how="left",
+        left_on="Invoice No",
+        right_on="Trx Number",
+    )
+
+    filtered_df = filter_recent_or_open_invoices(df=df, cols=cols, debt_col=debt_col)
+    filtered_df = filtered_df.drop(columns=["Trx Number", debt_col])
+
+    return filtered_df
+
+
+def filter_recent_or_open_invoices(df, cols, debt_col):
+    col = format_additional_col_alias(cols["recent_or_open_invoices"]["date_col"])
+    tax_year_from = cols["recent_or_open_invoices"]["tax_year_from"]
+    date_from = datetime.datetime(year=tax_year_from, month=3, day=31, hour=23, minute=59, second=59)
+
+    log.debug(
+        f"Removing rows where '{col}' is on or before {date_from} and {debt_col} is null"
+    )
+
+    df[col] = pd.to_datetime(df[col], format="%d/%m/%Y %H:%M")
+    df = df[(df[col] > date_from) | (df[debt_col].notnull())]
 
     return df
 
