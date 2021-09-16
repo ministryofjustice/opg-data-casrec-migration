@@ -120,6 +120,64 @@ def get_post_data(entity):
                 "case_references": ["10013583"],
             }
         ],
+        "invoice": [
+            {
+                "title": "Create New Credit Memo On Invoice",
+                "data": {
+                    "type": "CREDIT MEMO",
+                    "amount": "10",
+                    "notes": "<p>Adding credit of 10</p>",
+                },
+                "url": "finance/{id}/invoice/{id2}/ledger-entries",
+                "id2_url": "finance/{id}/invoices",
+                "id2_json_path": '[0]["id"]',
+                "expected_status": 201,
+                "source": "clients",
+                "case_references": ["10041221", "10162667", "10015105", "10050512"],
+            },
+            {
+                "title": "Create New Write Off On Invoice",
+                "data": {
+                    "type": "CREDIT WRITE OFF",
+                    "amount": 100,
+                    "notes": "<p>Write Off</p>",
+                },
+                "url": "finance/{id}/invoice/{id2}/ledger-entries",
+                "id2_url": "finance/{id}/invoices",
+                "id2_json_path": '[0]["id"]',
+                "expected_status": 201,
+                "source": "clients",
+                "case_references": ["13547686"],
+            },
+            {
+                "title": "Create New Write Off On Invoice",
+                "data": {
+                    "type": "CREDIT WRITE OFF",
+                    "amount": 320,
+                    "notes": "<p>Write Off</p>",
+                },
+                "url": "finance/{id}/invoice/{id2}/ledger-entries",
+                "id2_url": "finance/{id}/invoices",
+                "id2_json_path": '[0]["id"]',
+                "expected_status": 201,
+                "source": "clients",
+                "case_references": ["10027832", "94009939"],
+            },
+            {
+                "title": "Create New Write Off On Invoice",
+                "data": {
+                    "type": "CREDIT WRITE OFF",
+                    "amount": 32.9,
+                    "notes": "<p>Write Off</p>",
+                },
+                "url": "finance/{id}/invoice/{id2}/ledger-entries",
+                "id2_url": "finance/{id}/invoices",
+                "id2_json_path": '[0]["id"]',
+                "expected_status": 201,
+                "source": "clients",
+                "case_references": ["94087154"],
+            },
+        ],
     }
 
     try:
@@ -377,6 +435,7 @@ def main():
         "death",
         "supervision",
         "crec",
+        "invoice",
     ]
 
     api_tests = ApiTests()

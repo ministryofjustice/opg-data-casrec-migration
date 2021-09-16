@@ -13,7 +13,7 @@ from helpers import get_config, get_s3_session
 
 env_path = current_path / "../../migration_steps/.env"
 load_dotenv(dotenv_path=env_path)
-print_extra_info = False
+print_extra_info = True
 base_url = os.environ.get("SIRIUS_FRONT_URL")
 password = os.environ.get("API_TEST_PASSWORD")
 environment = os.environ.get("ENVIRONMENT")
@@ -76,6 +76,7 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
         "crec",
         "visits",
         "reports",
+        "invoices",
     ]:
         entity_ids = engine.execute(person_id_sql)
         if entity_ids.rowcount > 1:
@@ -150,8 +151,7 @@ def restructure_text(col):
 
 def get_deputy_entity_ids(entity_id, conn):
     response = conn["sess"].get(
-        f'{conn["base_url"]}/api/v1/orders/{entity_id}',
-        headers=conn["headers_dict"],
+        f'{conn["base_url"]}/api/v1/orders/{entity_id}', headers=conn["headers_dict"],
     )
 
     json_obj = json.loads(response.text)
@@ -172,8 +172,7 @@ def get_deputy_entity_ids(entity_id, conn):
 
 def get_deputy_order_entity_ids(entity_id, conn):
     response = conn["sess"].get(
-        f'{conn["base_url"]}/api/v1/orders/{entity_id}',
-        headers=conn["headers_dict"],
+        f'{conn["base_url"]}/api/v1/orders/{entity_id}', headers=conn["headers_dict"],
     )
 
     json_obj = json.loads(response.text)
@@ -325,7 +324,17 @@ reports_headers = [
     '[0]["randomReviewDate"]',
 ]
 
-csvs = ["bonds"]
+invoices_headers = [
+    '["feeType"]',
+    '["reference"]',
+    '["raisedDate"]',
+    '["amount"]',
+    '["amountOutstanding"]',
+    '["status"]["handle"]',
+    '["sopStatus"]["label"]',
+]
+
+csvs = ["invoices"]
 
 search_headers = [
     "endpoint",
@@ -334,7 +343,7 @@ search_headers = [
     "full_check",
 ]
 
-list_entity_returned = ["warnings"]
+list_entity_returned = ["warnings", "invoices"]
 
 print(f"You are running this script against: {environment}")
 
@@ -374,8 +383,7 @@ for csv in csvs:
             print(f"Endpoint: {endpoint_final}")
 
             response = conn["sess"].get(
-                f'{conn["base_url"]}{endpoint_final}',
-                headers=conn["headers_dict"],
+                f'{conn["base_url"]}{endpoint_final}', headers=conn["headers_dict"],
             )
 
             if print_extra_info:
