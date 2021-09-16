@@ -15,7 +15,15 @@ def add_required_columns(
 ) -> pd.DataFrame:
 
     for col, details in required_columns.items():
-        source_data_df[col] = details["default_value"]
+
+        default_val = details["default_value"]
+
+        try:
+            source_data_df[col] = source_data_df[col].apply(
+                lambda x: default_val if x == "" else x
+            )
+        except Exception:
+            source_data_df[col] = details["default_value"]
 
     log.log(
         config.VERBOSE, f"Dataframe size after default columns: {len(source_data_df)}"

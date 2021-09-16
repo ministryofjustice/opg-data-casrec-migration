@@ -47,7 +47,8 @@ class MappingDefinitions:
         return {
             k: v
             for k, v in self.mapping_definitions.items()
-            if v["default_value"] != "" and v["casrec_column_name"] == ""
+            if v["default_value"] != ""
+            # and v["casrec_column_name"] == ""
         }
 
     def _get_calculations(self) -> dict:
