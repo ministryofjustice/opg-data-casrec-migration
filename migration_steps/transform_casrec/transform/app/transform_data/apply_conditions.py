@@ -59,10 +59,15 @@ def source_conditions(df, conditions):
         for k, v in conditions.items()
         if k not in df.columns.tolist()
     }
+
     renamed_conditions = {**df_cols, **additional_cols}
 
-    for column, value in renamed_conditions.items():
-        df = df.loc[df[column] == str(value)]
+    # todo this actually needs fixing not just escaping!
+    try:
+        for column, value in renamed_conditions.items():
+            df = df.loc[df[column] == str(value)]
+    except Exception as e:
+        log.error(f"Error renaming columns in source conditions: {e}")
 
     df = df.reset_index(drop=True)
     log.log(config.VERBOSE, f"Dataframe size after applying conditions: {len(df)}")
