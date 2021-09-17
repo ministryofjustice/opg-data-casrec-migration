@@ -26,6 +26,7 @@ def main():
         "crec",
         # "visits",
         "reports",
+        "invoice",
     ]
 
     api_tests = ApiTests()
