@@ -100,6 +100,7 @@ class ApiTests:
                 "deputy_orders",
                 "deputy_clients_count",
                 "warnings",
+                "crec",
                 "bonds",
             ],
             "preqa": [
@@ -109,6 +110,7 @@ class ApiTests:
                 "deputy_orders",
                 "deputy_clients_count",
                 "warnings",
+                "crec",
                 "bonds",
             ],
             "qa": [
