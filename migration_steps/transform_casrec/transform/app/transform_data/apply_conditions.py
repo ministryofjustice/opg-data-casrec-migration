@@ -6,7 +6,6 @@ import datetime as dt
 import numpy as np
 
 import helpers
-from custom_errors import EmptyDataFrame
 import pandas as pd
 
 
@@ -238,7 +237,4 @@ def remove_empty_rows(df, not_null_cols, how="all"):
         config.VERBOSE, f"Dataframe size after removing empty rows: {len(final_df)}"
     )
 
-    if len(final_df) == 0:
-        raise EmptyDataFrame
-    else:
-        return final_df
+    return final_df
