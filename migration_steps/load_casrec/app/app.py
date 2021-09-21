@@ -1,5 +1,6 @@
 import sys
 import os
+from datetime import datetime
 from pathlib import Path
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -480,7 +481,10 @@ def main(entities, delay, verbose, skip_load):
             if file.split(".")[1] == "csv":
                 df = pd.read_csv(io.BytesIO(obj["Body"].read()))
             elif file.split(".")[1] == "xlsx":
-                df = pd.read_excel(io.BytesIO(obj["Body"].read()), engine="openpyxl")
+                xlsx_converters = {
+                    "Made Date": convert_datetime_to_date
+                }
+                df = pd.read_excel(io.BytesIO(obj["Body"].read()), engine="openpyxl", converters=xlsx_converters)
             else:
                 log.info("Unknown file format")
                 exit(1)
@@ -556,6 +560,12 @@ def main(entities, delay, verbose, skip_load):
                 )
 
         log.info(f"Processor {processor_id} has finished processing")
+
+
+def convert_datetime_to_date(val):
+    if isinstance(val, datetime):
+        return val.strftime("%Y-%m-%d")
+    return val
 
 
 if __name__ == "__main__":

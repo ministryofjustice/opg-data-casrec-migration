@@ -1,7 +1,6 @@
 import os
 
 from utilities.basic_data_table import get_basic_data_table
-import numpy as np
 import logging
 
 from custom_errors import EmptyDataFrame
@@ -13,8 +12,8 @@ log = logging.getLogger("root")
 def insert_deputy_violent_warnings(db_config, target_db, mapping_file):
 
     chunk_size = db_config["chunk_size"]
-    offset = 0
-    chunk_no = 1
+    offset = -chunk_size
+    chunk_no = 0
 
     mapping_file_name = f"{mapping_file}_mapping"
     table_definition = get_table_def(mapping_name=mapping_file)
@@ -23,7 +22,11 @@ def insert_deputy_violent_warnings(db_config, target_db, mapping_file):
         stage_name="sirius_details",
         only_complete_fields=False,
     )
+
     while True:
+        offset += chunk_size
+        chunk_no += 1
+
         try:
             warnings_df = get_basic_data_table(
                 db_config=db_config,
@@ -40,13 +43,12 @@ def insert_deputy_violent_warnings(db_config, target_db, mapping_file):
                 chunk_no=chunk_no,
             )
 
-            offset += chunk_size
-            chunk_no += 1
-        except EmptyDataFrame:
+        except EmptyDataFrame as empty_data_frame:
+            if empty_data_frame.empty_data_frame_type == 'chunk':
+                target_db.create_empty_table(sirius_details=sirius_details)
+                break
+            continue
 
-            target_db.create_empty_table(sirius_details=sirius_details)
-
-            break
         except Exception as e:
             log.error(f"unexpected error {e}")
             os._exit(1)

@@ -38,7 +38,7 @@ def insert_deputy_person_warning(db_config, target_db, mapping_file):
 
         deputy_warning_query = f"""
                 select * from {db_config["target_schema"]}.warnings
-                where casrec_mapping_file_name = 'deputy_violent_warnings_mapping';"""
+                where casrec_table_name = 'deputy';"""
         deputy_warning_df = pd.read_sql_query(
             deputy_warning_query, db_config["db_connection_string"]
         )
