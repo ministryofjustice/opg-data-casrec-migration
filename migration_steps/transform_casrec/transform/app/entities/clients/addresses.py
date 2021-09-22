@@ -7,10 +7,10 @@ from utilities.basic_data_table import get_basic_data_table
 
 
 def insert_addresses_clients(db_config, target_db, mapping_file):
-
     chunk_size = db_config["chunk_size"]
-    offset = 0
-    chunk_no = 1
+    offset = -chunk_size
+    chunk_no = 0
+
     persons_query = (
         f'select "id", "caserecnumber" from {db_config["target_schema"]}.persons '
         f"where \"type\" = 'actor_client';"
@@ -27,6 +27,9 @@ def insert_addresses_clients(db_config, target_db, mapping_file):
         only_complete_fields=False,
     )
     while True:
+        offset += chunk_size
+        chunk_no += 1
+
         try:
             addresses_df = get_basic_data_table(
                 db_config=db_config,
@@ -55,12 +58,11 @@ def insert_addresses_clients(db_config, target_db, mapping_file):
                 chunk_no=chunk_no,
             )
 
-            offset += chunk_size
-            chunk_no += 1
-        except EmptyDataFrame:
+        except EmptyDataFrame as empty_data_frame:
+            if empty_data_frame.empty_data_frame_type == 'chunk':
+                target_db.create_empty_table(sirius_details=sirius_details)
+                break
+            continue
 
-            target_db.create_empty_table(sirius_details=sirius_details)
-
-            break
         except Exception:
             break

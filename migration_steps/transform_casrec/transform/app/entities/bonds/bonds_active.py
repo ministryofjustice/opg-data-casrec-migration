@@ -1,15 +1,14 @@
 from custom_errors import EmptyDataFrame
 from helpers import get_mapping_dict, get_table_def
-from transform_data.apply_datatypes import apply_datatypes, reapply_datatypes_to_fk_cols
+from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 from utilities.basic_data_table import get_basic_data_table
 import pandas as pd
 
 
 def insert_bonds_active(target_db, db_config, mapping_file):
-
     chunk_size = db_config["chunk_size"]
-    offset = 0
-    chunk_no = 1
+    offset = -chunk_size
+    chunk_no = 0
 
     existing_cases_query = f"""
         SELECT c_cop_case, c_bond_no, id from {db_config['target_schema']}.cases;
@@ -28,6 +27,9 @@ def insert_bonds_active(target_db, db_config, mapping_file):
         only_complete_fields=False,
     )
     while True:
+        offset += chunk_size
+        chunk_no += 1
+
         try:
             bonds_df = get_basic_data_table(
                 db_config=db_config,
@@ -59,11 +61,11 @@ def insert_bonds_active(target_db, db_config, mapping_file):
                 chunk_no=chunk_no,
             )
 
-            offset += chunk_size
-            chunk_no += 1
-        except EmptyDataFrame:
-            target_db.create_empty_table(sirius_details=sirius_details)
+        except EmptyDataFrame as empty_data_frame:
+            if empty_data_frame.empty_data_frame_type == 'chunk':
+                target_db.create_empty_table(sirius_details=sirius_details)
+                break
+            continue
 
-            break
         except Exception:
             break
