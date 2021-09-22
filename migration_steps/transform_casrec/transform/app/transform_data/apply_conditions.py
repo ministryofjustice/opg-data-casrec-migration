@@ -105,7 +105,7 @@ def convert_to_timestamp(df, cols):
                 x[source_date][0:10] + x[source_time].split(".")[0], "%Y-%m-%d%H:%M:%S"
             )
             if x[source_date] not in empty_date
-            else "",
+            else "1900-01-01 00:00:00",
             axis=1,
         )
     )
@@ -154,10 +154,7 @@ def recent_or_open_invoices(df, cols):
     aged_debt_df = aged_debt_df[["Trx Number", debt_col]]
 
     df = df.merge(
-        aged_debt_df,
-        how="left",
-        left_on="Invoice No",
-        right_on="Trx Number",
+        aged_debt_df, how="left", left_on="Invoice No", right_on="Trx Number",
     )
 
     filtered_df = filter_recent_or_open_invoices(df=df, cols=cols, debt_col=debt_col)
@@ -169,7 +166,9 @@ def recent_or_open_invoices(df, cols):
 def filter_recent_or_open_invoices(df, cols, debt_col):
     col = format_additional_col_alias(cols["recent_or_open_invoices"]["date_col"])
     tax_year_from = cols["recent_or_open_invoices"]["tax_year_from"]
-    date_from = datetime.datetime(year=tax_year_from, month=3, day=31, hour=23, minute=59, second=59)
+    date_from = datetime.datetime(
+        year=tax_year_from, month=3, day=31, hour=23, minute=59, second=59
+    )
 
     log.debug(
         f"Removing rows where '{col}' is on or before {date_from} and {debt_col} is null"
