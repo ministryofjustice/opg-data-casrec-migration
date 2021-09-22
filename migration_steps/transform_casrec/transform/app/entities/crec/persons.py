@@ -11,10 +11,9 @@ log = logging.getLogger("root")
 
 
 def insert_persons_crec(db_config, target_db, mapping_file):
-
     chunk_size = db_config["chunk_size"]
-    offset = 0
-    chunk_no = 1
+    offset = -chunk_size
+    chunk_no = 0
 
     persons_query = (
         f'select "id", "caserecnumber", "casrec_details" from {db_config["target_schema"]}.persons '
@@ -32,6 +31,9 @@ def insert_persons_crec(db_config, target_db, mapping_file):
         only_complete_fields=False,
     )
     while True:
+        offset += chunk_size
+        chunk_no += 1
+
         try:
             crec_df = get_basic_data_table(
                 db_config=db_config,
@@ -83,14 +85,11 @@ def insert_persons_crec(db_config, target_db, mapping_file):
                 chunk_no=chunk_no,
             )
 
-            offset += chunk_size
-            chunk_no += 1
-
-        except EmptyDataFrame:
-
-            target_db.create_empty_table(sirius_details=sirius_details)
-
-            break
+        except EmptyDataFrame as empty_data_frame:
+            if empty_data_frame.empty_data_frame_type == 'chunk':
+                target_db.create_empty_table(sirius_details=sirius_details)
+                break
+            continue
 
         except Exception as e:
             log.error(f"Unexpected error: {e}")
