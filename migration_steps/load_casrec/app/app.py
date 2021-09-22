@@ -388,6 +388,14 @@ def initialise_progress_table(
         time.sleep(secs)
 
 
+def convert_datetime_to_date(val):
+    if isinstance(val, datetime):
+        return val.strftime("%Y-%m-%d")
+    elif val == "NaT":
+        return ""
+    return val
+
+
 @click.command()
 @click.option("-e", "--entities", default="all", help="list of entities to load")
 @click.option("-d", "--delay", default="0", help="delay in seconds for process")
@@ -482,7 +490,8 @@ def main(entities, delay, verbose, skip_load):
                 df = pd.read_csv(io.BytesIO(obj["Body"].read()))
             elif file.split(".")[1] == "xlsx":
                 xlsx_converters = {
-                    "Made Date": convert_datetime_to_date
+                    "Made Date": convert_datetime_to_date,
+                    "DOB": convert_datetime_to_date
                 }
                 df = pd.read_excel(io.BytesIO(obj["Body"].read()), engine="openpyxl", converters=xlsx_converters)
             else:
@@ -560,12 +569,6 @@ def main(entities, delay, verbose, skip_load):
                 )
 
         log.info(f"Processor {processor_id} has finished processing")
-
-
-def convert_datetime_to_date(val):
-    if isinstance(val, datetime):
-        return val.strftime("%Y-%m-%d")
-    return val
 
 
 if __name__ == "__main__":
