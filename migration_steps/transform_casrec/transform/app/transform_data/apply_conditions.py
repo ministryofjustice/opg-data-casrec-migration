@@ -106,7 +106,7 @@ def convert_to_timestamp(df, cols):
                 x[source_date][0:10] + x[source_time].split(".")[0], "%Y-%m-%d%H:%M:%S"
             )
             if x[source_date] not in empty_date
-            else "",
+            else "1900-01-01 00:00:00",
             axis=1,
         )
     )
@@ -198,7 +198,7 @@ def select_latest(df, latest_cols):
 
     log.debug(f"Selecting latest '{col}' per '{per}'")
 
-    final_df = df.sort_values(col, ascending=False).groupby(per).tail(1)
+    final_df = df.sort_values(col).groupby(per).tail(1)
     log.log(
         config.VERBOSE,
         f"Dataframe size after selecting latest {col} per {per}: {len(final_df)}",

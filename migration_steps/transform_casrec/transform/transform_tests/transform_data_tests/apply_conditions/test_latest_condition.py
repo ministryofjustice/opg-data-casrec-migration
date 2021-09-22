@@ -3,14 +3,14 @@ import pandas as pd
 from transform_data.apply_conditions import select_latest
 
 
-def case_latest_row():
+def test_select_latest():
     test_data = {
-        "column_id": ["1", "1", "2", "2"],
-        "column_date_time": [
+        "c_column_id": ["1", "1", "2", "2"],
+        "c_column_date_time": [
             "2021-01-01 00:00:00",
             "2020-06-01 00:00:00",
             "2060-01-01 00:00:00",
-            "2020-06-01 00:00:00",
+            "2020-09-01 00:00:00",
         ],
     }
 
@@ -19,8 +19,8 @@ def case_latest_row():
     conditions = {"latest": {"col": "column_date_time", "per": "column_id"}}
 
     result_data = {
-        "column_id": ["1", "2", "3"],
-        "column_date_time": ["2021-01-01 00:00:00", "2060-01-01 00:00:00"],
+        "c_column_id": ["1", "2"],
+        "c_column_date_time": ["2021-01-01 00:00:00", "2060-01-01 00:00:00"],
     }
 
     expected_result_data_data_df = pd.DataFrame(
@@ -29,6 +29,10 @@ def case_latest_row():
 
     expected_data_df = select_latest(test_data_df, conditions)
 
+    print(expected_data_df)
+    print(expected_result_data_data_df)
+
     assert_frame_equal(
-        expected_data_df, expected_result_data_data_df.reset_index(drop=True)
+        expected_data_df.reset_index(drop=True),
+        expected_result_data_data_df.reset_index(drop=True),
     )
