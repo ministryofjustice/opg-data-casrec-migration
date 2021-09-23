@@ -491,7 +491,8 @@ def main(entities, delay, verbose, skip_load):
             elif file.split(".")[1] == "xlsx":
                 xlsx_converters = {
                     "Made Date": convert_datetime_to_date,
-                    "DOB": convert_datetime_to_date
+                    "DOB": convert_datetime_to_date,
+                    "Disch Death": convert_datetime_to_date
                 }
                 df = pd.read_excel(io.BytesIO(obj["Body"].read()), engine="openpyxl", converters=xlsx_converters)
             else:
