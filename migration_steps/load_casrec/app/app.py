@@ -493,6 +493,10 @@ def main(entities, delay, verbose, skip_load):
                     "Made Date": convert_datetime_to_date,
                     "DOB": convert_datetime_to_date,
                     "Disch Death": convert_datetime_to_date
+                    "Issue Date": convert_datetime_to_date,
+                    "Spvn Received": convert_datetime_to_date,
+                    "Expiry Date": convert_datetime_to_date,
+                    "Clause Expiry": convert_datetime_to_date
                 }
                 df = pd.read_excel(io.BytesIO(obj["Body"].read()), engine="openpyxl", converters=xlsx_converters)
             else:
