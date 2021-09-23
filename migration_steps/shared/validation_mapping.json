@@ -175,7 +175,7 @@
             "where_clauses": [
                 "persons.type = 'actor_client'",
                 "persons.clientsource = 'CASRECMIGRATION'",
-                "warnings.warningtype = 'OTHER'",
+                "warnings.warningtype = 'Other'",
                 "warnings.warningtext = 'Casrec Migration - No Debt to be chased'"
             ]
         }
