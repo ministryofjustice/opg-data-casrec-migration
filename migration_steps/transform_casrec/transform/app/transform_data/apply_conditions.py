@@ -105,7 +105,7 @@ def convert_to_timestamp(df, cols):
                 x[source_date][0:10] + x[source_time].split(".")[0], "%Y-%m-%d%H:%M:%S"
             )
             if x[source_date] not in empty_date
-            else "1900-01-01 00:00:00",
+            else dt.datetime.strptime("1900-01-01 00:00:00", "%Y-%m-%d %H:%M:%S"),
             axis=1,
         )
     )

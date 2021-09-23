@@ -11,13 +11,10 @@ log = logging.getLogger("root")
 
 
 def insert_persons_crec(db_config, target_db, mapping_file):
-    chunk_size = db_config["chunk_size"]
-    offset = -chunk_size
-    chunk_no = 0
 
     persons_query = (
         f'select "id", "caserecnumber", "casrec_details" from {db_config["target_schema"]}.persons '
-        f"where \"type\" = 'actor_client';"
+        f"where \"type\" = 'actor_client' order by caserecnumber;"
     )
     persons_df = pd.read_sql_query(persons_query, db_config["db_connection_string"])
 
@@ -30,67 +27,58 @@ def insert_persons_crec(db_config, target_db, mapping_file):
         stage_name="sirius_details",
         only_complete_fields=False,
     )
-    while True:
-        offset += chunk_size
-        chunk_no += 1
 
-        try:
-            crec_df = get_basic_data_table(
-                db_config=db_config,
-                mapping_file_name=mapping_file_name,
-                table_definition=table_definition,
-                sirius_details=sirius_details,
-                chunk_details={"chunk_size": chunk_size, "offset": offset},
+    try:
+        crec_df = get_basic_data_table(
+            db_config=db_config,
+            mapping_file_name=mapping_file_name,
+            table_definition=table_definition,
+            order_by_cols=["Case"],
+            sirius_details=sirius_details,
+            chunk_details=None,
+        )
+
+        crec_joined_df = crec_df.merge(
+            persons_df,
+            how="left",
+            left_on="c_case",
+            right_on="caserecnumber",
+            suffixes=["_crec", "_persons"],
+        )
+
+        crec_joined_df = crec_joined_df.rename(columns={"id_persons": "id"})
+
+        crec_joined_df = reapply_datatypes_to_fk_cols(columns=["id"], df=crec_joined_df)
+
+        fields_to_update = [
+            x
+            for x in get_mapping_dict(
+                file_name=mapping_file_name,
+                stage_name="sirius_details",
+                only_complete_fields=False,
+                include_pk=False,
+                include_fks=False,
             )
+        ]
 
-            # print(crec_df.sample(10).to_markdown())
+        join_col = "id"
 
-            crec_joined_df = crec_df.merge(
-                persons_df,
-                how="left",
-                left_on="c_case",
-                right_on="caserecnumber",
-                suffixes=["_crec", "_persons"],
-            )
+        fields_to_select = fields_to_update + [join_col] + ["casrec_details"]
 
-            crec_joined_df = crec_joined_df.rename(columns={"id_persons": "id"})
+        crec_joined_df = crec_joined_df[fields_to_select]
 
-            crec_joined_df = reapply_datatypes_to_fk_cols(
-                columns=["id"], df=crec_joined_df
-            )
+        target_db.update_data(
+            table_name=table_definition["destination_table_name"],
+            df=crec_joined_df,
+            fields_to_update=fields_to_update,
+            join_column=join_col,
+            sirius_details=sirius_details,
+        )
 
-            fields_to_update = [
-                x
-                for x in get_mapping_dict(
-                    file_name=mapping_file_name,
-                    stage_name="sirius_details",
-                    only_complete_fields=False,
-                    include_pk=False,
-                    include_fks=False,
-                )
-            ]
+    except EmptyDataFrame as empty_data_frame:
+        if empty_data_frame.empty_data_frame_type == "chunk":
+            target_db.create_empty_table(sirius_details=sirius_details)
 
-            join_col = "id"
-
-            fields_to_select = fields_to_update + [join_col] + ["casrec_details"]
-
-            crec_joined_df = crec_joined_df[fields_to_select]
-
-            target_db.update_data(
-                table_name=table_definition["destination_table_name"],
-                df=crec_joined_df,
-                fields_to_update=fields_to_update,
-                join_column=join_col,
-                sirius_details=sirius_details,
-                chunk_no=chunk_no,
-            )
-
-        except EmptyDataFrame as empty_data_frame:
-            if empty_data_frame.empty_data_frame_type == 'chunk':
-                target_db.create_empty_table(sirius_details=sirius_details)
-                break
-            continue
-
-        except Exception as e:
-            log.error(f"Unexpected error: {e}")
-            os._exit(1)
+    except Exception as e:
+        log.error(f"Unexpected error: {e}")
+        os._exit(1)

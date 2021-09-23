@@ -27,7 +27,12 @@ def get_source_table(mapping_dict):
 
 
 def get_basic_data_table(
-    mapping_file_name, table_definition, db_config, sirius_details, chunk_details=None
+    mapping_file_name,
+    table_definition,
+    db_config,
+    sirius_details,
+    chunk_details=None,
+    order_by_cols: list = ["casrec_row_id"],
 ):
     log.debug(f"Getting basic data using {mapping_file_name}")
 
@@ -40,6 +45,7 @@ def get_basic_data_table(
     source_data_query = generate_select_string_from_mapping(
         mapping=mapping_dict,
         source_table_name=source_table,
+        order_by_cols=order_by_cols,
         additional_columns=table_definition["source_table_additional_columns"],
         db_schema=db_config["source_schema"],
         chunk_details=chunk_details,

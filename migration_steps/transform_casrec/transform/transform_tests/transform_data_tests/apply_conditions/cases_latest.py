@@ -1,9 +1,10 @@
-from pandas._testing import assert_frame_equal
+from pytest_cases import case
 import pandas as pd
-from transform_data.apply_conditions import select_latest
+
+case(id="find latest grouped by two ids")
 
 
-def test_select_latest():
+def case_latest():
     test_data = {
         "c_column_id": ["1", "1", "2", "2"],
         "c_column_date_time": [
@@ -27,12 +28,4 @@ def test_select_latest():
         result_data, columns=[x for x in result_data]
     )
 
-    expected_data_df = select_latest(test_data_df, conditions)
-
-    print(expected_data_df)
-    print(expected_result_data_data_df)
-
-    assert_frame_equal(
-        expected_data_df.reset_index(drop=True),
-        expected_result_data_data_df.reset_index(drop=True),
-    )
+    return (test_data_df, conditions, expected_result_data_data_df)

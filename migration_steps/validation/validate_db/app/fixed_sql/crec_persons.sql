@@ -18,7 +18,7 @@ INSERT INTO casrec_csv.exceptions_crec_persons(
         SELECT
         casrec_csv.pat."Case" AS caserecnumber,
         casrec_csv.crec_lookup(casrec_csv.crec."Score") AS risk_score,
-        to_timestamp(CONCAT(CASE WHEN crec."Modify" = '' THEN '1900-01-01' ELSE crec."Modify" END, ' ', crec."at.1"), 'YYYY-MM-DD HH24:MI:SS.US') AS sortdate
+        to_timestamp(CONCAT(CASE WHEN crec."Modify" = '' THEN '1900-01-01' WHEN crec."Modify" = 'NaT' THEN '1900-01-01' ELSE crec."Modify" END, ' ', crec."at.1"), 'YYYY-MM-DD HH24:MI:SS.US') AS sortdate
         FROM casrec_csv.crec
         LEFT JOIN casrec_csv.pat
         ON pat."Case" = crec."Case"

@@ -31,6 +31,7 @@ def generate_select_string_from_mapping(
     source_table_name: str,
     db_schema: str,
     default_columns: list = ["casrec_row_id"],
+    order_by_cols: list = ["casrec_row_id"],
     additional_columns: list = [],
     chunk_details=None,
 ) -> str:
@@ -82,7 +83,7 @@ def generate_select_string_from_mapping(
     statement += f"FROM {db_schema}.{source_table_name}"
 
     if chunk_details:
-        cols = [f'"{x}"' for x in default_columns]
+        cols = [f'"{x}"' for x in order_by_cols]
         statement += f' ORDER BY {", ".join(cols)} LIMIT {chunk_details["chunk_size"]} OFFSET {chunk_details["offset"]};'
     else:
         statement += ";"
