@@ -58,10 +58,10 @@ def get_mappings():
             "client_death_notifications",
         ],
         "cases": ["cases"],
-        # "bonds": ["bonds"],
         "crec": ["crec_persons",],
         "supervision_level": ["supervision_level_log",],
         "deputies": ["deputy_persons", "deputy_death_notifications",],
+        "bonds": ["bonds_active", "bonds_dispensed"],
         "warnings": [
             "client_nodebtchase_warnings",
             "client_saarcheck_warnings",
@@ -428,7 +428,6 @@ def build_validation_statements(mapping_name):
 
 def add_manual_checks_sql(validation_dict):
     sql_add(f'WHERE {validation_dict["manual_checks"]["column"]} NOT IN (', 1)
-    # for key, item in validation_dict["manual_checks"]["identifiers"]:
     sql_add(f",\n        ".join(validation_dict["manual_checks"]["identifiers"]), 1)
     sql_add(")", 1)
 
@@ -772,8 +771,10 @@ def main(team, staging):
     post_validation()
 
     if get_exception_count() > 0:
+        # TODO: remove conditional once all validation errors are fixed in preproduction
+        if environment in ["local", "development"]:
+            exit(1)
         log.info("Exceptions WERE found: override / continue anyway\n")
-        # exit(1)
     else:
         log.info("No exceptions found: continue...\n")
 
