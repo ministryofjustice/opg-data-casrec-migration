@@ -61,7 +61,6 @@ def insert_order_deputies(db_config, target_db, mapping_file):
         order_query = (
             f"""select "id", "c_cop_case" from {db_config["target_schema"]}.cases;"""
         )
-
         order_df = pd.read_sql_query(order_query, db_config["db_connection_string"])
 
         deputyship_persons_joined_df = deputyship_df.merge(
@@ -73,23 +72,11 @@ def insert_order_deputies(db_config, target_db, mapping_file):
         ].astype("Int64")
         deputyship_persons_joined_df = deputyship_persons_joined_df.drop(columns=["id"])
 
-        log.info("JIMMY")
-        log.info(order_df)
-        log.info(order_df[order_df["c_cop_case"] == "1274208401"])
-
         deputyship_persons_order_df = deputyship_persons_joined_df.merge(
             order_df, how="left", left_on="CoP Case", right_on="c_cop_case"
         )
 
         deputyship_persons_order_df["order_id"] = deputyship_persons_order_df["id"]
-
-        log.info(deputyship_persons_order_df)
-        log.info(
-            deputyship_persons_order_df[
-                deputyship_persons_order_df["CoP Case"] == "1274208401"
-            ]
-        )
-
         deputyship_persons_order_df = deputyship_persons_order_df.drop(
             columns=["id", "Deputy No", "CoP Case"]
         )

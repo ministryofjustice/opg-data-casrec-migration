@@ -59,16 +59,9 @@ def get_mappings():
         ],
         "cases": ["cases"],
         # "bonds": ["bonds"],
-        "crec": [
-            "crec_persons",
-        ],
-        "supervision_level": [
-            "supervision_level_log",
-        ],
-        "deputies": [
-            "deputy_persons",
-            "deputy_death_notifications",
-        ],
+        "crec": ["crec_persons",],
+        "supervision_level": ["supervision_level_log",],
+        "deputies": ["deputy_persons", "deputy_death_notifications",],
         "warnings": [
             "client_nodebtchase_warnings",
             "client_saarcheck_warnings",
@@ -370,8 +363,7 @@ def build_validation_statements(mapping_name):
 
     # FROM, with JOINs
     sql_add(
-        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}",
-        2,
+        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}", 2,
     )
     for join in validation_dict["casrec"]["joins"]:
         sql_add(f"{join}", 2)
@@ -384,6 +376,9 @@ def build_validation_statements(mapping_name):
     # ORDER
     sql_add(f"ORDER BY {order_by}", 2)
     sql_add(") as csv_data", 1)
+
+    if len(validation_dict["manual_checks"]["column"]) > 0:
+        add_manual_checks_sql(validation_dict)
     sql_add("EXCEPT", 1)
 
     # SIRIUS half
@@ -412,8 +407,7 @@ def build_validation_statements(mapping_name):
 
     # FROM, with JOINs
     sql_add(
-        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}",
-        2,
+        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}", 2,
     )
     for join in validation_dict["sirius"]["joins"]:
         join = join.replace("{target_schema}", str(target_schema))
@@ -427,7 +421,16 @@ def build_validation_statements(mapping_name):
     # ORDER
     sql_add(f"ORDER BY {order_by}", 2)
     sql_add(") as sirius_data", 1)
+    if len(validation_dict["manual_checks"]["column"]) > 0:
+        add_manual_checks_sql(validation_dict)
     sql_add(");", 0, 2)
+
+
+def add_manual_checks_sql(validation_dict):
+    sql_add(f'WHERE {validation_dict["manual_checks"]["column"]} NOT IN (', 1)
+    # for key, item in validation_dict["manual_checks"]["identifiers"]:
+    sql_add(f",\n        ".join(validation_dict["manual_checks"]["identifiers"]), 1)
+    sql_add(")", 1)
 
 
 def sql_add(sql, indent_level=0, line_breaks=1):
@@ -467,8 +470,7 @@ def write_column_validation_sql(
     # tested column
     sql_add(f"{col_source_casrec} AS {mapped_item_name}", 4)
     sql_add(
-        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}",
-        3,
+        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}", 3,
     )
     for join in validation_dict["casrec"]["joins"]:
         sql_add(f"{join}", 3)
@@ -500,8 +502,7 @@ def write_column_validation_sql(
     # tested column
     sql_add(f"{col_source_sirius} AS {mapped_item_name}", 4)
     sql_add(
-        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}",
-        3,
+        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}", 3,
     )
     for join in validation_dict["sirius"]["joins"]:
         join = join.replace("{target_schema}", str(target_schema))
@@ -736,7 +737,9 @@ def main(team, staging):
     log.debug(f"Environment: {environment}")
     log.info(f"Lay Team: {filtered_lay_team}")
     log.info(f"Enabled entities: {', '.join(allowed_entities)}")
-    log.info(f"Enabled features: {', '.join(config.enabled_feature_flags(environment))}")
+    log.info(
+        f"Enabled features: {', '.join(config.enabled_feature_flags(environment))}"
+    )
     version_details = helpers.get_json_version()
     log.info(
         f"Using JSON def version '{version_details['version_id']}' last updated {version_details['last_modified']}"

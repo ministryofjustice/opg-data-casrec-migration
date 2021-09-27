@@ -78,17 +78,17 @@ class BaseConfig:
     LOCAL_ENTITIES = [
         "clients",
         "cases",
-        # "bonds",
-        # "crec",
-        # "supervision_level",
+        "bonds",
+        "crec",
+        "supervision_level",
         "deputies",
-        # "invoice",
-        # "remarks",
-        # "reporting",
+        "invoice",
+        "remarks",
+        "reporting",
         # "tasks",
         # "visits",
-        # "warnings",
-        # "death",
+        "warnings",
+        "death",
     ]
 
     LOCAL_FEATURE_FLAGS = {
