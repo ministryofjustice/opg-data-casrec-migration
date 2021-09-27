@@ -3,7 +3,8 @@
         "exclude": [
             "order_id",
             "requiredbondamount",
-            "bondamounttaken"
+            "bondamounttaken",
+            "renewaldateofbond"
         ],
         "casenumber_source": "client_persons.caserecnumber",
         "orderby": {
@@ -14,7 +15,9 @@
         },
         "casrec": {
             "from_table": "order",
-            "transform": {},
+            "transform": {
+              "bondcompanyname": "replace({col}, '&', 'and')"
+            },
             "joins": [
                 "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\""
             ],
@@ -27,7 +30,6 @@
             "from_table": "bonds",
             "transform": {
                 "orderdate": "to_char({col}, 'YYYY-MM-DD')",
-                "renewaldateofbond": "to_char({col}, 'YYYY-MM-DD')",
                 "dischargedate": "to_char({col}, 'YYYY-MM-DD')"
             },
             "joins": [
@@ -45,7 +47,8 @@
         "exclude": [
             "order_id",
             "requiredbondamount",
-            "bondamounttaken"
+            "bondamounttaken",
+            "renewaldateofbond"
         ],
         "casenumber_source": "client_persons.caserecnumber",
         "orderby": {
@@ -56,7 +59,9 @@
         },
         "casrec": {
             "from_table": "order",
-            "transform": {},
+            "transform": {
+              "bondcompanyname": "replace({col}, '&', 'and')"
+            },
             "joins": [
                 "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\""
             ],
@@ -69,7 +74,6 @@
             "from_table": "bonds",
             "transform": {
                 "orderdate": "to_char({col}, 'YYYY-MM-DD')",
-                "renewaldateofbond": "to_char({col}, 'YYYY-MM-DD')",
                 "dischargedate": "to_char({col}, 'YYYY-MM-DD')"
             },
             "joins": [
