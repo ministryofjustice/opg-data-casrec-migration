@@ -183,7 +183,7 @@
     "invoice": [
       {
         "table_name": "finance_invoice",
-        "casrec_query": "select count(*) from casrec_csv.feeexport",
+        "casrec_query": "select count(*) from casrec_csv.feeexport left join casrec_csv.sop_aged_debt on sop_aged_debt.\"Trx Number\" = feeexport.\"Invoice No\" where cast(feeexport.\"Amount\" as double precision) > 0 and (sop_aged_debt.\"Outstanding Amount\" is not null or to_timestamp(feeexport.\"Create\", 'DD/MM/YYYY HH24:MI') >= '2019-04-01')",
         "query": "select count(*) from {schema}.finance_invoice;"
       }
     ]

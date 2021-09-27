@@ -10,8 +10,8 @@ log = logging.getLogger("root")
 
 def insert_persons_deputies(db_config, target_db, mapping_file):
     chunk_size = db_config["chunk_size"]
-    offset = 0
-    chunk_no = 1
+    offset = -chunk_size
+    chunk_no = 0
 
     mapping_file_name = f"{mapping_file}_mapping"
     table_definition = get_table_def(mapping_name=mapping_file)
@@ -22,8 +22,10 @@ def insert_persons_deputies(db_config, target_db, mapping_file):
         only_complete_fields=False,
     )
     while True:
-        try:
+        offset += chunk_size
+        chunk_no += 1
 
+        try:
             persons_df = get_basic_data_table(
                 db_config=db_config,
                 mapping_file_name=mapping_file_name,
@@ -37,13 +39,13 @@ def insert_persons_deputies(db_config, target_db, mapping_file):
                 sirius_details=sirius_details,
                 chunk_no=chunk_no,
             )
-            offset += chunk_size
-            chunk_no += 1
-        except EmptyDataFrame:
 
-            target_db.create_empty_table(sirius_details=sirius_details)
+        except EmptyDataFrame as empty_data_frame:
+            if empty_data_frame.empty_data_frame_type == 'chunk':
+                target_db.create_empty_table(sirius_details=sirius_details)
+                break
+            continue
 
-            break
         except Exception as e:
             log.debug(f"End of insert_persons_deputies: {e}")
             break

@@ -1,0 +1,30 @@
+[{
+	"id": 2,
+	"feeType": "AD",
+	"reference": "AD51780\/19",
+	"raisedDate": "18\/03\/2020",
+	"startDate": "18\/03\/2020",
+	"endDate": "18\/03\/2021",
+	"amount": 100,
+	"feeRanges": [],
+	"amountPaid": 0,
+	"amountOutstanding": 100,
+	"ledgerEntryAllocations": [],
+	"batchNumber": 1,
+	"confirmedDate": "13\/05\/2020",
+	"status": {
+		"handle": "OPEN",
+		"label": "Open"
+	},
+	"sopStatus": {
+		"handle": "CONFIRMED",
+		"label": "Confirmed"
+	},
+	"allowedActions": [{
+		"handle": "CREDIT",
+		"label": "Add Credit"
+	}, {
+		"handle": "WRITE OFF",
+		"label": "Write-off"
+	}]
+}]

@@ -61,7 +61,7 @@ class ApiTests:
         )
         self.s3_file_path = f"validation/logs/{self.api_log_file}"
         self.s3_sess = None
-        self.list_entity_returned = ["warnings"]
+        self.list_entity_returned = ["warnings", "invoice"]
         self.entities = {
             "local": [
                 "clients",
@@ -76,6 +76,7 @@ class ApiTests:
                 "crec",
                 "visits",
                 "reports",
+                "invoice",
             ],
             "development": [
                 "clients",
@@ -90,6 +91,7 @@ class ApiTests:
                 "crec",
                 "visits",
                 "reports",
+                "invoice",
             ],
             "preproduction": [
                 "clients",
@@ -98,6 +100,7 @@ class ApiTests:
                 "deputy_orders",
                 "deputy_clients_count",
                 "warnings",
+                "crec",
                 "bonds",
             ],
             "preqa": [
@@ -107,6 +110,7 @@ class ApiTests:
                 "deputy_orders",
                 "deputy_clients_count",
                 "warnings",
+                "crec",
                 "bonds",
             ],
             "qa": [
@@ -221,7 +225,12 @@ class ApiTests:
         return ids
 
     def enhance_api_user_permissions(self):
-        roles = '{"OPG User":"OPG User","Case Manager":"Case Manager","System Admin":"System Admin"}'
+        roles = (
+            '{"OPG User":"OPG User","Case Manager":"Case Manager","System Admin":"System Admin","Finance '
+            'User":"Finance User","Finance Reporting":"Finance Reporting","Corporate Finance":"Corporate '
+            'Finance","Finance Manager":"Finance Manager"}'
+        )
+
         sql = f"""
             UPDATE assignees
             SET roles = '{roles}'
@@ -277,6 +286,7 @@ class ApiTests:
             "crec",
             "visits",
             "reports",
+            "invoice",
         ]:
             ids = self.get_entity_ids_from_person_source(person_id_sql, caserecnumber)
         elif self.csv in [
@@ -661,7 +671,10 @@ class ApiTests:
                 actual_status = self.get_functional_response_object(
                     endpoint, method, data
                 )
-                assert expected_status == actual_status
+                try:
+                    assert expected_status == actual_status
+                except AssertionError:
+                    self.api_log(f"Expected: {expected_status} but got {actual_status}")
 
     def run_functional_test(self, entity, entity_setup_object):
         self.csv = entity
@@ -735,7 +748,7 @@ class ApiTests:
         else:
             self.api_log(f"Method {method} is invalid")
 
-        log.info(f"Response text: {response.text}")
+        log.debug(f"Response text: {response.text}")
         status_code = response.status_code
 
         self.api_log(f"Returns following: {status_code}")

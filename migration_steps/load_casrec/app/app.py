@@ -1,5 +1,6 @@
 import sys
 import os
+from datetime import datetime
 from pathlib import Path
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -387,6 +388,14 @@ def initialise_progress_table(
         time.sleep(secs)
 
 
+def convert_datetime_to_date(val):
+    if isinstance(val, datetime):
+        return val.strftime("%Y-%m-%d")
+    elif val == "NaT":
+        return ""
+    return val
+
+
 @click.command()
 @click.option("-e", "--entities", default="all", help="list of entities to load")
 @click.option("-d", "--delay", default="0", help="delay in seconds for process")
@@ -480,7 +489,18 @@ def main(entities, delay, verbose, skip_load):
             if file.split(".")[1] == "csv":
                 df = pd.read_csv(io.BytesIO(obj["Body"].read()))
             elif file.split(".")[1] == "xlsx":
-                df = pd.read_excel(io.BytesIO(obj["Body"].read()), engine="openpyxl")
+                xlsx_converters = {
+                    "Made Date": convert_datetime_to_date,
+                    "DOB": convert_datetime_to_date,
+                    "Disch Death": convert_datetime_to_date,
+                    "Issue Date": convert_datetime_to_date,
+                    "Spvn Received": convert_datetime_to_date,
+                    "Expiry Date": convert_datetime_to_date,
+                    "Clause Expiry": convert_datetime_to_date,
+                    "Notified": convert_datetime_to_date,
+                    "Letter Sent": convert_datetime_to_date,
+                }
+                df = pd.read_excel(io.BytesIO(obj["Body"].read()), engine="openpyxl", converters=xlsx_converters)
             else:
                 log.info("Unknown file format")
                 exit(1)

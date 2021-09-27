@@ -50,6 +50,9 @@ skeleton_sqlfile = "skeleton_fixtures.sql"
 def main():
 
     log.info(helpers.log_title(message="Skeleton Fixtures"))
+    log.critical(
+        "THIS IS A DEVELOPMENT ONLY SCRIPT - IT MUST NEVER RUN ON PRODUCTION DATA"
+    )
     log.info("Adding skeleton fixtures\n")
     insert_skeleton_data(db_config=db_config)
 

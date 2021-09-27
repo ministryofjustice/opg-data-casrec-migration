@@ -52,7 +52,7 @@ def perform_transformations(
         final_df = source_conditions(df=final_df, conditions=dict(conditions))
         if len(final_df) == 0:
             log.debug(f"No data left after applying source conditions")
-            raise EmptyDataFrame
+            raise EmptyDataFrame(empty_data_frame_type="chunk with conditions applied")
 
     if len(simple_mapping) > 0:
         log.debug("Applying simple mappings")
@@ -61,7 +61,7 @@ def perform_transformations(
         )
         if len(final_df) == 0:
             log.debug(f"No data left after simple_mapping")
-            raise EmptyDataFrame
+            raise EmptyDataFrame(empty_data_frame_type="chunk with simple mappings applied")
 
     if len(transformations) > 0:
         log.debug("Applying transformations")
@@ -70,7 +70,7 @@ def perform_transformations(
         )
         if len(final_df) == 0:
             log.debug(f"No data left after transformations")
-            raise EmptyDataFrame
+            raise EmptyDataFrame(empty_data_frame_type="chunk with simple transformations applied")
 
     if len(required_columns) > 0:
         log.debug("Applying default columns")
@@ -79,7 +79,7 @@ def perform_transformations(
         )
         if len(final_df) == 0:
             log.debug(f"No data left after default columns")
-            raise EmptyDataFrame
+            raise EmptyDataFrame(empty_data_frame_type="chunk with required columns applied")
 
     if len(calculated_fields) > 0:
         log.debug("Applying calculated fields")
@@ -87,7 +87,7 @@ def perform_transformations(
 
         if len(final_df) == 0:
             log.debug(f"No data left after calculated fields")
-            raise EmptyDataFrame
+            raise EmptyDataFrame(empty_data_frame_type="chunk with calculations applied")
 
     if len(lookup_tables) > 0:
         log.debug("Applying lookup tables")
@@ -95,7 +95,7 @@ def perform_transformations(
 
         if len(final_df) == 0:
             log.debug(f"No data left after lookup tables")
-            raise EmptyDataFrame
+            raise EmptyDataFrame(empty_data_frame_type="chunk with lookups applied")
 
     if "id" not in source_data_df.columns.values.tolist():
         log.debug("Applying unique id")
@@ -103,12 +103,12 @@ def perform_transformations(
             db_conn_string, db_schema, table_definition, final_df
         )
         if len(final_df) == 0:
-            raise EmptyDataFrame
+            raise EmptyDataFrame(empty_data_frame_type="chunk with unique IDs applied")
 
     if sirius_details:
         log.debug("Applying datatypes")
         final_df = apply_datatypes(mapping_details=sirius_details, df=final_df)
         if len(final_df) == 0:
-            raise EmptyDataFrame
+            raise EmptyDataFrame(empty_data_frame_type="chunk with datatypes applied")
 
     return final_df

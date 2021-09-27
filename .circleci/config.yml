@@ -60,19 +60,19 @@ workflows:
           tf_workspace: development
           environment: Development
           filters: {branches:{ignore:[master]}}
-#      - run_api_tests:
-#          name: run api tests
-#          requires: [run the step function development]
-#          tf_workspace: development
-#          environment: Development
-#          filters: {branches:{ignore:[master]}}
-#      - run_api_tests:
-#          name: run functional api tests
-#          requires: [run api tests]
-#          tf_workspace: development
-#          environment: Development
-#          runner_command: functional-api-tests
-#          filters: {branches:{ignore:[master]}}
+      - run_api_tests:
+          name: run api tests
+          requires: [run the step function development]
+          tf_workspace: development
+          environment: Development
+          filters: {branches:{ignore:[master]}}
+      - run_api_tests:
+          name: run functional api tests
+          requires: [run api tests]
+          tf_workspace: development
+          environment: Development
+          runner_command: functional-api-tests
+          filters: {branches:{ignore:[master]}}
 
   master:
     when: << pipeline.parameters.run_master >>
@@ -137,7 +137,7 @@ workflows:
           filters: {branches:{only:[master]}}
       - run_api_tests:
           name: run api tests
-          requires: [run the step function preproduction]
+          requires: [tag image for qa]
           tf_workspace: preproduction
           environment: Preproduction
           filters: {branches:{only:[master]}}
@@ -216,6 +216,18 @@ workflows:
       - run_api_tests:
           name: run api tests preqa
           requires: [run the step function preqa]
+          tf_workspace: preqa
+          environment: PreQualityAssurance
+          filters: {branches:{only:[master]}}
+      - approve:
+          name: approve full elastic reset preqa
+          type: approval
+          requires: [build infra preqa]
+          environment: PreQualityAssurance
+          filters: {branches:{only:[master]}}
+      - run_elasticsearch_reset:
+          name: full reindex elasticsearch preqa
+          requires: [approve full elastic reset preqa]
           tf_workspace: preqa
           environment: PreQualityAssurance
           filters: {branches:{only:[master]}}
@@ -300,7 +312,7 @@ workflows:
   nightly_development_restore:
     triggers:
       - schedule:
-          cron: "30 06 * * *"
+          cron: "30 07 * * *"
           filters: {branches:{only:[master]}}
     jobs:
       - reset_sirius_full_restore:
@@ -343,21 +355,21 @@ workflows:
           tf_workspace: preproduction
           environment: Preproduction
           filters: {branches:{only:[master]}}
-      - run_api_tests:
-          name: run api tests
-          requires: [run the step function preproduction]
-          tf_workspace: preproduction
-          environment: Preproduction
-          filters: {branches:{only:[master]}}
       - tag_image_for_environment:
           name: tag image for qa
           environment: Preproduction
           environment_tag: qa
           requires: [run the step function preproduction]
           filters: {branches:{only:[master]}}
+      - run_api_tests:
+          name: run api tests
+          requires: [tag image for qa]
+          tf_workspace: preproduction
+          environment: Preproduction
+          filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch preprod
-          requires: [run the step function preproduction]
+          requires: [run api tests]
           tf_workspace: preproduction
           environment: Preproduction
           filters: {branches:{only:[master]}}
@@ -1160,6 +1172,7 @@ jobs:
           steps:
             - run:
                 name: Run extend casmigrate ttl
+                when: always
                 command: |
                   pip3 install boto3 click
                   python3 extend_casmigrate_ttl.py --role migrations-ci

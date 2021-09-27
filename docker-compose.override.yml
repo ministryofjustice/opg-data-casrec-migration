@@ -21,6 +21,7 @@ services:
       - ./migration_steps/prepare/create_stage_schema:/prepare/create_stage_schema
       - ./migration_steps/prepare/case_details_to_s3:/prepare/case_details_to_s3
       - ./migration_steps/prepare/create_skeleton_data:/prepare/create_skeleton_data
+      - ./migration_steps/prepare/delete_existing_data:/prepare/delete_existing_data
       - ./migration_steps/shared:/shared
 
   load_casrec:

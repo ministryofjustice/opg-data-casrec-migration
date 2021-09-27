@@ -1,7 +1,6 @@
 FROM opg_casrec_migration_base_image:latest
 RUN apt-get install -y postgresql-client
 COPY load_to_sirius/load_to_sirius.sh /load_to_sirius/load_to_sirius.sh
-COPY load_to_sirius/delete_existing_data /load_to_sirius/delete_existing_data
 COPY load_to_sirius/move_data /load_to_sirius/move_data
 COPY load_to_sirius/post_migration_db_tasks /load_to_sirius/post_migration_db_tasks
 COPY shared /shared
