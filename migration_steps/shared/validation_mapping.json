@@ -41,6 +41,10 @@
                 "persons.clientsource = 'CASRECMIGRATION'",
                 "bonds.bondcompanyname != 'Security dispensed with'"
             ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
         }
     },
     "bonds_dispensed": {
@@ -85,6 +89,10 @@
                 "persons.clientsource = 'CASRECMIGRATION'",
                 "bonds.bondcompanyname = 'Security dispensed with'"
             ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
         }
     },
     "cases": {
@@ -134,6 +142,10 @@
                 "persons.clientsource = 'CASRECMIGRATION'",
                 "cases.casetype = 'ORDER'"
             ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
         }
     },
     "client_addresses": {
@@ -165,6 +177,10 @@
                 "persons.type = 'actor_client'",
                 "persons.clientsource = 'CASRECMIGRATION'"
             ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
         }
     },
     "client_death_notifications": {
@@ -196,6 +212,10 @@
                 "persons.type = 'actor_client'",
                 "persons.clientsource = 'CASRECMIGRATION'"
             ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
         }
     },
     "client_nodebtchase_warnings": {
@@ -227,6 +247,10 @@
                 "warnings.warningtype = 'Other'",
                 "warnings.warningtext = 'Casrec Migration - No Debt to be chased'"
             ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
         }
     },
     "client_persons": {
@@ -260,6 +284,10 @@
                 "persons.type = 'actor_client'",
                 "persons.clientsource = 'CASRECMIGRATION'"
             ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
         }
     },
     "client_phonenumbers": {
@@ -288,6 +316,10 @@
                 "persons.type = 'actor_client'",
                 "persons.clientsource = 'CASRECMIGRATION'"
             ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
         }
     },
     "client_saarcheck_warnings": {
@@ -319,6 +351,10 @@
                 "warnings.warningtype = 'Other'",
                 "warnings.warningtext = 'Casrec Migration - SAAR Check Warning'"
             ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
         }
     },
     "client_special_warnings": {
@@ -351,6 +387,10 @@
                 "warnings.warningtype = 'REM - Special Interest Markers'",
                 "warnings.warningtext = 'Casrec Migration - Special Interest Warning'"
             ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
         }
     },
     "client_violent_warnings": {
@@ -384,6 +424,10 @@
                 "warnings.warningtype = 'REM - Violence Warnings'",
                 "warnings.warningtext = 'Casrec Migration - Violent Warning'"
             ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
         }
     },
     "crec_persons": {
@@ -408,6 +452,10 @@
                 "persons.type = 'actor_client'",
                 "persons.clientsource = 'CASRECMIGRATION'"
             ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
         }
     },
     "deputy_daytime_phonenumbers": {
@@ -452,6 +500,10 @@
                 "persons.clientsource = 'CASRECMIGRATION'",
                 "phonenumbers.type = 'Work'"
             ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
         }
     },
     "deputy_evening_phonenumbers": {
@@ -496,6 +548,10 @@
                 "persons.clientsource = 'CASRECMIGRATION'",
                 "phonenumbers.type = 'Home'"
             ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
         }
     },
     "deputy_death_notifications": {
@@ -547,6 +603,10 @@
                 "persons.type = 'actor_deputy'",
                 "persons.clientsource = 'CASRECMIGRATION'"
             ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
         }
     },
     "deputy_persons": {
@@ -595,6 +655,22 @@
                 "persons.type = 'actor_deputy'",
                 "persons.clientsource = 'CASRECMIGRATION'"
             ]
+        },
+        "manual_checks": {
+          "column": "caserecnumber",
+          "identifiers": [
+            "'12885347'",
+            "'11854030'",
+            "'11509969'",
+            "'11065340'",
+            "'99379589'",
+            "'12138872'",
+            "'11741056'",
+            "'12742084'",
+            "'13097967'",
+            "'1208622T'",
+            "'12913439'"
+          ]
         }
     },
     "deputy_special_warnings": {
@@ -643,6 +719,10 @@
                 "warnings.warningtype = 'REM - Special Interest Markers'",
                 "warnings.warningtext = 'Casrec Migration - Special Interest Warning'"
             ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
         }
     },
     "deputy_violent_warnings": {
@@ -688,6 +768,10 @@
                 "warnings.warningtype = 'REM - Violence Warnings'",
                 "warnings.warningtext = 'Casrec Migration - Violent Warning'"
             ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
         }
     },
     "notes": {
@@ -722,6 +806,10 @@
                 "persons.type = 'actor_client'",
                 "persons.clientsource = 'CASRECMIGRATION'"
             ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
         }
     },
     "supervision_level_log": {
@@ -750,6 +838,10 @@
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_supervision_level_log exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": []
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
         }
     },
     "visits": {
@@ -784,6 +876,10 @@
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_visits exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": []
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
         }
     }
 }
