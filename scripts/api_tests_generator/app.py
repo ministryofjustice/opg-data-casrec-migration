@@ -71,7 +71,7 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
 
     if csv_type in [
         "clients",
-        "death_notifications",
+        "client_death_notifications",
         "warnings",
         "crec",
         "visits",
@@ -93,6 +93,7 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
         "deputies",
         "deputy_clients",
         "deputy_orders",
+        "deputy_death_notifications",
     ]:
         entity_ids = engine.execute(order_id_sql)
         if entity_ids.rowcount < 1:
@@ -100,7 +101,11 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
         else:
             for entity_id_row in entity_ids:
                 entity_id = entity_id_row.values()[0]
-                if csv_type in ["deputies", "deputy_clients"]:
+                if csv_type in [
+                    "deputies",
+                    "deputy_clients",
+                    "deputy_death_notifications",
+                ]:
                     deputies = get_deputy_entity_ids(entity_id, conn)
                     for deputy in deputies:
                         ids.append(deputy)
@@ -192,6 +197,29 @@ def get_deputy_order_entity_ids(entity_id, conn):
     return order_deputy_ids
 
 
+def get_deputy_person_entity_ids(entity_id, conn):
+    response = conn["sess"].get(
+        f'{conn["base_url"]}/api/v1/clients/{entity_id}/orders',
+        headers=conn["headers_dict"],
+    )
+
+    json_obj = json.loads(response.text)
+    cases = json_obj["cases"]
+    deputy_ids = []
+    for case in cases:
+        deputies = case["deputies"]
+        for deputy in deputies:
+            try:
+                deputy_id = deputy["deputy"]["id"]
+            except Exception:
+                deputy_id = ""
+
+            if len(str(deputy_id)) > 0:
+                deputy_ids.append(deputy_id)
+
+    return deputy_ids
+
+
 def get_endpoint_final(entity_id, endpoint, csv):
     if csv == "deputy_orders":
         endpoint_final = (
@@ -279,13 +307,6 @@ supervision_level_headers = [
     '["latestSupervisionLevel"]["assetLevel"]["handle"]',
 ]
 
-death_notifications_headers = [
-    '["dateLetterSentOut"]',
-    '["dateDeathCertificateReceived"]',
-    '["notifiedBy"]["handle"]',
-    '["person"]["dateOfDeath"]',
-]
-
 warnings_headers = ['["warningType"]', '["warningText"]']
 
 crec_headers = [
@@ -324,17 +345,27 @@ reports_headers = [
     '[0]["randomReviewDate"]',
 ]
 
-invoices_headers = [
-    '["feeType"]',
-    '["reference"]',
-    '["raisedDate"]',
-    '["amount"]',
-    '["amountOutstanding"]',
-    '["status"]["handle"]',
-    '["sopStatus"]["label"]',
+deputy_death_notifications_headers = [
+    '["proofOfDeathReceived"]',
+    '["dateDeathCertificateReceived"]',
+    '["dateLetterSentOut"]',
+    '["notifiedBy"]["handle"]',
+    '["notificationMethod"]',
+    '["person"]["dateOfDeath"]',
+    '["dateNotified"]',
 ]
 
-csvs = ["invoices"]
+client_death_notifications_headers = [
+    '["proofOfDeathReceived"]',
+    '["dateDeathCertificateReceived"]',
+    '["dateLetterSentOut"]',
+    '["notifiedBy"]["handle"]',
+    '["notificationMethod"]',
+    '["person"]["dateOfDeath"]',
+    '["dateNotified"]',
+]
+
+csvs = ["deputy_death_notifications"]
 
 search_headers = [
     "endpoint",
