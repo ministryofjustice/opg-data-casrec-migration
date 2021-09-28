@@ -499,6 +499,7 @@ def main(entities, delay, verbose, skip_load):
                     "Clause Expiry": convert_datetime_to_date,
                     "Notified": convert_datetime_to_date,
                     "Letter Sent": convert_datetime_to_date,
+                    "Bond Discharge": convert_datetime_to_date,
                 }
                 df = pd.read_excel(io.BytesIO(obj["Body"].read()), engine="openpyxl", converters=xlsx_converters)
             else:
