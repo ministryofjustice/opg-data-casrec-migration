@@ -71,7 +71,8 @@ class ApiTests:
                 "deputy_clients_count",
                 "supervision_level",
                 "bonds",
-                "death_notifications",
+                "client_death_notifications",
+                "deputy_death_notifications",
                 "warnings",
                 "crec",
                 "visits",
@@ -86,7 +87,8 @@ class ApiTests:
                 "deputy_clients_count",
                 "supervision_level",
                 "bonds",
-                "death_notifications",
+                "client_death_notifications",
+                "deputy_death_notifications",
                 "warnings",
                 "crec",
                 "visits",
@@ -102,6 +104,8 @@ class ApiTests:
                 "warnings",
                 "crec",
                 "bonds",
+                "client_death_notifications",
+                "deputy_death_notifications",
             ],
             "preqa": [
                 "clients",
@@ -112,6 +116,8 @@ class ApiTests:
                 "warnings",
                 "crec",
                 "bonds",
+                "client_death_notifications",
+                "deputy_death_notifications",
             ],
             "qa": [
                 "clients",
@@ -121,6 +127,8 @@ class ApiTests:
                 "deputy_clients_count",
                 "warnings",
                 "bonds",
+                "client_death_notifications",
+                "deputy_death_notifications",
             ],
             "production": [],
         }
@@ -128,6 +136,7 @@ class ApiTests:
             "deputy_clients",
             "deputy_clients_count",
         ]
+        self.no_retry_entities = ["deputy_death_notifications"]
 
     def get_session(self):
         response = requests.get(self.base_url)
@@ -248,7 +257,12 @@ class ApiTests:
         else:
             for entity_id_row in entity_ids:
                 entity_id = entity_id_row._mapping["id"]
-                if self.csv in ["deputies", "deputy_clients", "deputy_clients_count"]:
+                if self.csv in [
+                    "deputies",
+                    "deputy_clients",
+                    "deputy_clients_count",
+                    "deputy_death_notifications",
+                ]:
                     deputies = self.get_deputy_entity_ids(entity_id)
                     for deputy in deputies:
                         ids.append(deputy)
@@ -281,7 +295,7 @@ class ApiTests:
         ids = []
         if self.csv in [
             "clients",
-            "death_notifications",
+            "client_death_notifications",
             "warnings",
             "crec",
             "visits",
@@ -297,6 +311,7 @@ class ApiTests:
             "deputy_clients",
             "deputy_orders",
             "deputy_clients_count",
+            "deputy_death_notifications",
         ]:
             ids = self.get_entity_ids_from_order_source(order_id_sql, caserecnumber)
         log.debug(f"returning ids: {ids}")
@@ -329,19 +344,33 @@ class ApiTests:
         status_code = 500
         response_text = None
         retry_count = 0
-        while (status_code > 201 or response_text is None) and retry_count < 5:
+        if self.csv in self.no_retry_entities:
             response = self.session["sess"].get(
                 f'{self.session["base_url"]}{endpoint_final}',
                 headers=self.session["headers_dict"],
             )
             response_text = response.text
             status_code = response.status_code
-            if retry_count > 0:
+            if status_code > 201 and status_code != 404:
                 self.api_log(
-                    f"Failed request to {endpoint_final} with status {status_code}. Retrying in 3 seconds..."
+                    f"Failed request to {endpoint_final} with status {status_code}."
                 )
-                time.sleep(3)
-            retry_count += 1
+            elif status_code == 404:
+                self.api_log(f"No entity to pull back on this route. This is expected!")
+        else:
+            while (status_code > 201 or response_text is None) and retry_count < 5:
+                response = self.session["sess"].get(
+                    f'{self.session["base_url"]}{endpoint_final}',
+                    headers=self.session["headers_dict"],
+                )
+                response_text = response.text
+                status_code = response.status_code
+                if retry_count > 0:
+                    self.api_log(
+                        f"Failed request to {endpoint_final} with status {status_code}. Retrying in 3 seconds..."
+                    )
+                    time.sleep(3)
+                retry_count += 1
 
         return response_text
 
