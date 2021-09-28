@@ -27,37 +27,39 @@ def handle_special_cases(table_name, df):
 
 
 def replace_with_sql_friendly_chars(row_as_list):
-    row = [
-        str(
-            x.replace("'", "''")
-            .replace("NaT", "")
-            .replace("<NA>", "")
-            .replace("nan", "")
-            .replace("None", "")
-            .replace("&", "and")
-            .replace(";", "-")
-            .replace("%", "percent")
-        )
-        for x in row_as_list
-    ]
+    # row = [
+    #     str(
+    #         x.replace("'", "''")
+    #         .replace("NaT", "")
+    #         .replace("<NA>", "")
+    #         .replace("nan", "")
+    #         .replace("None", "")
+    #         .replace("&", "and")
+    #         .replace(";", "-")
+    #         .replace("%", "percent")
+    #     )
+    #     for x in row_as_list
+    # ]
+    #
+    # return row
 
-    return row
+    return row_as_list
 
 
 def replace_with_sql_friendly_chars_single(val):
-
-    new_val = str(
-        val.replace("'", "''")
-        .replace("NaT", "")
-        .replace("<NA>", "")
-        .replace("nan", "")
-        .replace("None", "")
-        .replace("&", "and")
-        .replace(";", "-")
-        .replace("%", "percent")
-    )
-
-    return new_val
+    return val
+    # new_val = str(
+    #     val.replace("'", "''")
+    #     .replace("NaT", "")
+    #     .replace("<NA>", "")
+    #     .replace("nan", "")
+    #     .replace("None", "")
+    #     .replace("&", "and")
+    #     .replace(";", "-")
+    #     .replace("%", "percent")
+    # )
+    #
+    # return new_val
 
 
 def get_columns_query(table, schema):

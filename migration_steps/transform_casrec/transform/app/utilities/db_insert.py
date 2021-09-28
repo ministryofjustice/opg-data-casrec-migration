@@ -159,10 +159,10 @@ class InsertData:
                     x.replace("'", "''")
                     .replace("NaT", "")
                     .replace("nan", "")
-                    .replace("<NA>", "")
-                    .replace("&", "and")
-                    .replace(";", "-")
-                    .replace("%", "percent")
+                    # .replace("<NA>", "")
+                    # .replace("&", "and")
+                    # .replace(";", "-")
+                    # .replace("%", "percent")
                 )
                 for x in row
             ]
@@ -408,7 +408,7 @@ class InsertData:
             self.db_engine.execute(insert_statement)
         except Exception as e:
             log.error(
-                f"There was a problem inserting into {table_name}",
+                f"There was a problem inserting into {table_name} {e}",
                 extra={
                     "file_name": "",
                     "error": helpers.format_error_message(e=e),

@@ -116,18 +116,18 @@ def create_insert_statement(db_config, additional_data_table_name, df):
 
     for i, row in enumerate(df.values.tolist()):
         row = [str(x) for x in row]
-        row = [
-            str(
-                x.replace("'", "''")
-                .replace("NaT", "")
-                .replace("nan", "")
-                .replace("<NA>", "")
-                .replace("&", "and")
-                .replace(";", "-")
-                .replace("%", "percent")
-            )
-            for x in row
-        ]
+        # row = [
+        #     str(
+        #         x.replace("'", "''")
+        #         .replace("NaT", "")
+        #         .replace("nan", "")
+        #         .replace("<NA>", "")
+        #         .replace("&", "and")
+        #         .replace(";", "-")
+        #         .replace("%", "percent")
+        #     )
+        #     for x in row
+        # ]
         row = [f"'{str(x)}'" if str(x) != "" else "NULL" for x in row]
         single_row = ", ".join(row)
 

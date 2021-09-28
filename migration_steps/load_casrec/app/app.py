@@ -236,10 +236,10 @@ def create_insert_statement(table_name, schema, columns, df):
         row = [
             str(
                 x.replace("'", "''")
-                .replace("nan", "")
-                .replace("&", "")
-                .replace(";", "")
-                .replace("%", "")
+                # .replace("nan", "")
+                # .replace("&", "")
+                # .replace(";", "")
+                # .replace("%", "")
             )
             for x in row
         ]
@@ -503,7 +503,12 @@ def main(entities, delay, verbose, skip_load):
                     "Letter Sent": convert_datetime_to_date,
                     "Bond Discharge": convert_datetime_to_date,
                 }
-                df = pd.read_excel(io.BytesIO(obj["Body"].read()), engine="openpyxl", converters=xlsx_converters)
+                df = pd.read_excel(
+                    io.BytesIO(obj["Body"].read()),
+                    engine="openpyxl",
+                    converters=xlsx_converters,
+                )
+                # df = pd.read_excel(io.BytesIO(obj["Body"].read()), engine="openpyxl", converters={'Date': str})
             else:
                 log.info("Unknown file format")
                 exit(1)
