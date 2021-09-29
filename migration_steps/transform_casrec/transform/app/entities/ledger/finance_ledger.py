@@ -47,6 +47,10 @@ def insert_finance_ledger_credits(target_db, db_config, mapping_file):
                 right_on="invoice_ref",
             )
 
+            if len(credits_joined_df) == 0:
+                log.debug(f"No data left after inner joining invoices")
+                raise EmptyDataFrame(empty_data_frame_type="chunk with conditions applied")
+
             target_db.insert_data(
                 table_name=table_definition["destination_table_name"],
                 df=credits_joined_df,

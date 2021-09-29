@@ -58,6 +58,10 @@ def insert_finance_allocation_credits(target_db, db_config, mapping_file):
                 right_on="invoice_ref",
             )
 
+            if len(credits_allocations_df) == 0:
+                log.debug(f"No data left after inner joining invoices")
+                raise EmptyDataFrame(empty_data_frame_type="chunk with conditions applied")
+
             credits_allocations_df = credits_allocations_df.merge(
                 ledger_df,
                 how="left",
