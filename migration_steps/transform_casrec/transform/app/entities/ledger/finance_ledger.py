@@ -16,10 +16,6 @@ def insert_finance_ledger_credits(target_db, db_config, mapping_file):
     offset = -chunk_size
     chunk_no = 0
 
-    feecheck_query = f'select "Invoice Number", "GL Date", \'CONFIRMED\' as status from {db_config["source_schema"]}.sop_feecheckcredits;'
-    feecheck_df = pd.read_sql_query(feecheck_query, db_config["db_connection_string"])
-    feecheck_df = feecheck_df[["Invoice Number", "GL Date", "status"]]
-
     invoice_query = f'select reference as invoice_ref from {db_config["target_schema"]}.finance_invoice;'
     invoice_df = pd.read_sql_query(invoice_query, db_config["db_connection_string"])
     invoice_df = invoice_df[["invoice_ref"]]
@@ -50,20 +46,6 @@ def insert_finance_ledger_credits(target_db, db_config, mapping_file):
                 left_on="c_orig_invoice",
                 right_on="invoice_ref",
             )
-
-            # Join sop_feecheckcredits (SSCL Credits Transaction Register) so we can populate finance_ledger.confirmeddate
-            credits_joined_df = credits_joined_df.merge(
-                feecheck_df,
-                how="left",
-                left_on="c_invoice_no",
-                right_on="Invoice Number",
-            )
-            credits_joined_df = credits_joined_df.rename(
-                columns={"GL Date": "confirmeddate"}
-            )
-
-            credits_joined_df['status'] = credits_joined_df['status'].fillna('APPROVED')
-            credits_joined_df = credits_joined_df.drop(columns=["Invoice Number"])
 
             target_db.insert_data(
                 table_name=table_definition["destination_table_name"],

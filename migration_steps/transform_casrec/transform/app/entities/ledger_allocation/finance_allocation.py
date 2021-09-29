@@ -17,13 +17,15 @@ def insert_finance_allocation_credits(target_db, db_config, mapping_file):
     offset = -chunk_size
     chunk_no = 0
 
+    feecheck_query = f'select "Invoice Number", "GL Date" as allocateddate, \'ALLOCATED\' as status from {db_config["source_schema"]}.sop_feecheckcredits;'
+    feecheck_df = pd.read_sql_query(feecheck_query, db_config["db_connection_string"])
+    feecheck_df = feecheck_df[["Invoice Number", "allocateddate", "status"]]
+
     ledger_query = f'''select id as ledger_entry_id,
-                        c_invoice_no as ledger_ref,
-                        confirmeddate as allocateddate,
-                        CASE WHEN status = 'CONFIRMED' THEN 'ALLOCATED' ELSE 'PENDING' END as status
+                        c_invoice_no as ledger_ref
                         from {db_config["target_schema"]}.finance_ledger;'''
     ledger_df = pd.read_sql_query(ledger_query, db_config["db_connection_string"])
-    ledger_df = ledger_df[["ledger_entry_id", "ledger_ref", "allocateddate", "status"]]
+    ledger_df = ledger_df[["ledger_entry_id", "ledger_ref"]]
 
     invoice_query = f'select id as invoice_id, reference as invoice_ref from {db_config["target_schema"]}.finance_invoice;'
     invoice_df = pd.read_sql_query(invoice_query, db_config["db_connection_string"])
@@ -63,7 +65,16 @@ def insert_finance_allocation_credits(target_db, db_config, mapping_file):
                 right_on="ledger_ref",
             )
 
-            credits_allocations_df = credits_allocations_df.drop(columns=["ledger_ref", "invoice_ref"])
+            credits_allocations_df = credits_allocations_df.merge(
+                feecheck_df,
+                how="left",
+                left_on="c_invoice_no",
+                right_on="Invoice Number",
+            )
+
+            credits_allocations_df['status'] = credits_allocations_df['status'].fillna('PENDING')
+
+            credits_allocations_df = credits_allocations_df.drop(columns=["ledger_ref", "invoice_ref", "Invoice Number"])
 
             credits_allocations_df.allocateddate.fillna(value=np.nan, inplace=True)
 
