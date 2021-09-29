@@ -55,14 +55,12 @@ def get_mappings():
             "client_addresses",
             "client_persons",
             "client_phonenumbers",
-            "client_death_notifications",
         ],
         "cases": ["cases"],
         "crec": ["crec_persons",],
         "supervision_level": ["supervision_level_log",],
         "deputies": [
             "deputy_persons",
-            "deputy_death_notifications",
             "deputy_daytime_phonenumbers",
             "deputy_evening_phonenumbers",
         ],
@@ -75,6 +73,10 @@ def get_mappings():
             "deputy_special_warnings",
             "deputy_violent_warnings",
         ],
+        "death": [
+            "client_death_notifications",
+            "deputy_death_notifications",
+        ]
         # "visits": ["visits"],
         # "remarks": ["notes"]
     }
