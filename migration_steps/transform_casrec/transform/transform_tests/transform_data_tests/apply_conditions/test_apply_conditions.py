@@ -1,5 +1,4 @@
 import pandas as pd
-import pytest
 
 from pytest_cases import parametrize_with_cases
 
@@ -10,6 +9,7 @@ from transform_tests.transform_data_tests.apply_conditions import (
     cases_convert_to_timestamp,
     cases_latest,
     cases_greater_than,
+    cases_less_than,
 )
 
 
@@ -21,6 +21,7 @@ from transform_tests.transform_data_tests.apply_conditions import (
         cases_convert_to_timestamp,
         cases_latest,
         cases_greater_than,
+        cases_less_than,
     ],
 )
 def test_apply_conditions(test_data_df, conditions, expected_result_data_data_df):

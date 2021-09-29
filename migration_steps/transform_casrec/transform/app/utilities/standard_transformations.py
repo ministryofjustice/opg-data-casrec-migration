@@ -163,11 +163,11 @@ def credit_type_from_invoice_ref(
 
 
 def get_credit_type(invoice_ref: str) -> str:
-    if invoice_ref[:1] == "Z" or invoice_ref[-1] == "Z":
+    if invoice_ref[:1] == "Z" or invoice_ref[-1:] == "Z":
         return "CREDIT REMISSION"
-    elif invoice_ref[:2] == "CR" or invoice_ref[-2] == "CR":
+    elif invoice_ref[:2] == "CR" or invoice_ref[-2:] == "CR":
         return "CREDIT MEMO"
-    elif invoice_ref[:2] == "WO" or invoice_ref[-2] == "WO":
+    elif invoice_ref[:2] == "WO" or invoice_ref[-2:] == "WO":
         return "CREDIT WRITE OFF"
 
 
