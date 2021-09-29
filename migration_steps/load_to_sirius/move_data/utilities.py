@@ -69,6 +69,6 @@ def get_columns_query(table, schema):
 
 
 def remove_unecessary_columns(columns, cols_to_keep=[]):
-    unecessary_field_names = ["method", "casrec_details"] + cols_to_keep
+    unecessary_field_names = ["migration_method", "casrec_details"] + cols_to_keep
 
     return [column for column in columns if column not in unecessary_field_names]

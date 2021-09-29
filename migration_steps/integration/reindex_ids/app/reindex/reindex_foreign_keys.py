@@ -28,7 +28,7 @@ def generate_fk_update_statement_matched_data(db_schema, table_details):
                 FROM {db_schema}.{key['parent_table']}
                 WHERE cast({table}.{key['column']} as int)
                     = cast({key['parent_table']}.transformation_schema_{key['parent_column']} as int)
-                AND {key['parent_table']}.method = 'UPDATE';
+                AND {key['parent_table']}.migration_method = 'UPDATE';
             """
             update_query += query
     return update_query
@@ -53,7 +53,7 @@ def generate_fk_update_statement_new_data(db_schema, table_details):
                 FROM {db_schema}.{key['parent_table']}
                 WHERE cast({table}.transformation_schema_{key['column']} as int)
                     = cast({key['parent_table']}.transformation_schema_{key['parent_column']} as int)
-                AND {key['parent_table']}.method = 'INSERT';
+                AND {key['parent_table']}.migration_method = 'INSERT';
             """
             update_query += query
     return update_query

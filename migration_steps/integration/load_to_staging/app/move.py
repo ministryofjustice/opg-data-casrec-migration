@@ -72,7 +72,7 @@ def generate_inserts(db_config, db_engine, tables, extra_tables=None):
     else:
         tables_list = tables
 
-    extra_cols_to_move_to_staging = ["method", "casrec_details"]
+    extra_cols_to_move_to_staging = ["migration_method", "casrec_details"]
 
     for i, (table, details) in enumerate(tables_list.items()):
         try:
