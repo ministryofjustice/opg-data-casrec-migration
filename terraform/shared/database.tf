@@ -41,13 +41,3 @@ data "aws_security_group" "etl_ecs_tasks" {
     values = ["etl1-ecs-${terraform.workspace}"]
   }
 }
-
-resource "aws_security_group_rule" "etl_to_casrec_load_db_ingress" {
-  type                     = "ingress"
-  from_port                = 5432
-  to_port                  = 5432
-  protocol                 = "tcp"
-  source_security_group_id = data.aws_security_group.etl_ecs_tasks.id
-  security_group_id        = aws_security_group.casrec_load_db.id
-  description              = "ETL ECS tasks to Casrec Load RDS inbound"
-}

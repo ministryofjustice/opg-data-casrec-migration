@@ -31,6 +31,10 @@ locals {
         name      = "DB_PASSWORD",
         valueFrom = aws_secretsmanager_secret.casrec_migration.arn
       },
+      {
+        name      = "CASREC_DB_PASSWORD",
+        valueFrom = aws_secretsmanager_secret.casrec_migration.arn
+      },
     ],
     environment = [
       {
@@ -48,6 +52,22 @@ locals {
       {
         name  = "DB_USER",
         value = aws_rds_cluster.cluster_serverless.master_username
+      },
+      {
+        name  = "CASREC_DB_HOST",
+        value = data.aws_rds_cluster.casrec_load.endpoint
+      },
+      {
+        name  = "CASREC_DB_PORT",
+        value = tostring(data.aws_rds_cluster.casrec_load.port)
+      },
+      {
+        name  = "CASREC_DB_NAME",
+        value = data.aws_rds_cluster.casrec_load.database_name
+      },
+      {
+        name  = "CASREC_DB_USER",
+        value = data.aws_rds_cluster.casrec_load.master_username
       },
       {
         name  = "ENVIRONMENT",

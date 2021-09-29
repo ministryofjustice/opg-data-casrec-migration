@@ -1,14 +1,4 @@
-data "aws_cloudwatch_log_group" "casrec_migration" {
-  name = "casrec-migration-${local.environment}"
-}
 
-data "aws_iam_role" "etl_task" {
-  name = "casrec-migration-${local.environment}"
-}
-
-data "aws_iam_role" "etl_execution" {
-  name = "migration-execution-role.${local.environment}"
-}
 
 resource "aws_ecs_task_definition" "prepare_load_casrec" {
   family                   = "prepare-${terraform.workspace}"
@@ -43,7 +33,7 @@ locals {
     cpu       = 0,
     essential = true,
     image     = local.images.etl0,
-    name      = "etl0",
+    name      = "prepare",
     logConfiguration = {
       logDriver = "awslogs",
       options = {
@@ -93,7 +83,7 @@ locals {
     cpu       = 0,
     essential = true,
     image     = local.images.etl1,
-    name      = "etl1",
+    name      = "load-casrec-db",
     logConfiguration = {
       logDriver = "awslogs",
       options = {
@@ -136,6 +126,18 @@ locals {
       {
         name  = "DEFAULT_CHUNK_SIZE",
         value = "20000"
+      },
+      {
+        name  = "SIRIUS_ACCOUNT",
+        value = local.account.account_id
+      },
+      {
+        name  = "ACCOUNT_NAME",
+        value = local.account.account_name
+      },
+      {
+        name  = "S3_PATH",
+        value = local.account.s3_path
       }
     ]
   })

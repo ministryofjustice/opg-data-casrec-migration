@@ -40,45 +40,52 @@ workflows:
           requires: [manage workflow]
           environment: Development
           filters: {branches:{ignore:[master]}}
-      - load_casrec:
-          name: load into casrec
+      - infrastructure:
+          name: build shared infra development
           requires: [build and unit tests]
+          tf_workspace: development
+          tf_command: apply
+          environment: Development
+          folder: shared
+          filters: {branches:{ignore:[master]}}
+      - load_casrec_db:
+          name: load casrec db
+          requires: [build shared infra development]
+          environment: Development
+          filters: {branches:{ignore:[master]}}
+      - infrastructure:
+          name: plan infra development
+          requires: [build shared infra development]
+          tf_workspace: development
+          tf_command: plan
+          environment: Development
+          filters: {branches:{ignore:[master]}}
+      - infrastructure:
+          name: build infra development
+          requires: [plan infra development]
+          tf_workspace: development
+          tf_command: apply
+          environment: Development
+          filters: {branches:{ignore:[master]}}
+      - run_step_function:
+          name: run the step function development
+          requires: [build infra development, load casrec db, reset the sirius fixtures development]
           tf_workspace: development
           environment: Development
           filters: {branches:{ignore:[master]}}
-#      - infrastructure:
-#          name: plan infra development
-#          requires: [build and unit tests]
-#          tf_workspace: development
-#          tf_command: plan
-#          environment: Development
-#          filters: {branches:{ignore:[master]}}
-#      - infrastructure:
-#          name: build infra development
-#          requires: [plan infra development]
-#          tf_workspace: development
-#          tf_command: apply
-#          environment: Development
-#          filters: {branches:{ignore:[master]}}
-#      - run_step_function:
-#          name: run the step function development
-#          requires: [build infra development, reset the sirius fixtures development, load into casrec]
-#          tf_workspace: development
-#          environment: Development
-#          filters: {branches:{ignore:[master]}}
-#      - run_api_tests:
-#          name: run api tests
-#          requires: [run the step function development]
-#          tf_workspace: development
-#          environment: Development
-#          filters: {branches:{ignore:[master]}}
-#      - run_api_tests:
-#          name: run functional api tests
-#          requires: [run api tests]
-#          tf_workspace: development
-#          environment: Development
-#          runner_command: functional-api-tests
-#          filters: {branches:{ignore:[master]}}
+      - run_api_tests:
+          name: run api tests
+          requires: [run the step function development]
+          tf_workspace: development
+          environment: Development
+          filters: {branches:{ignore:[master]}}
+      - run_api_tests:
+          name: run functional api tests
+          requires: [run api tests]
+          tf_workspace: development
+          environment: Development
+          runner_command: functional-api-tests
+          filters: {branches:{ignore:[master]}}
 
   master:
     when: << pipeline.parameters.run_master >>
@@ -114,8 +121,21 @@ workflows:
           environment: Preproduction
           filters: {branches:{only:[master]}}
       - infrastructure:
-          name: plan infra preproduction
+          name: build shared infra preproduction
           requires: [get latest tag preproduction]
+          tf_workspace: development
+          tf_command: apply
+          environment: Development
+          folder: shared
+          filters: {branches:{ignore:[master]}}
+      - load_casrec_db:
+          name: load casrec db preproduction
+          requires: [build shared infra development]
+          environment: Development
+          filters: {branches:{ignore:[master]}}
+      - infrastructure:
+          name: plan infra preproduction
+          requires: [load casrec db preproduction]
           tf_workspace: preproduction
           tf_command: plan
           environment: Preproduction
@@ -830,24 +850,12 @@ jobs:
     steps:
       - checkout
       - run:
-          name: check log message
-          command: |
-            git log -1 --oneline
-            if [ `git log -1 --oneline | grep ~nr | wc -l` -gt 0 ]
-            then
-              echo "Detected noreload flag, not running reload steps"
-              echo "export NO_RELOAD=true" >> $BASH_ENV
-            else
-              echo "Running full job normally"
-              echo "export NO_RELOAD=false" >> $BASH_ENV
-            fi
-      - run:
           name: install requirements
           command: pip3 install -r requirements-rsf.txt
           working_directory: ~/project/scripts/ci_scripts
       - run:
           name: run the function
-          command: python3 run_step_function.py --role migrations-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD} --workspace ${TF_WORKSPACE}
+          command: python3 run_step_function.py --role migrations-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --workspace ${TF_WORKSPACE}
           working_directory: ~/project/scripts/ci_scripts
       - notififications/notify_env_vars
       - notififications/notify_if_fail
@@ -872,7 +880,7 @@ jobs:
       ENVIRONMENT: << parameters.environment >>
       TF_WORKSPACE: << parameters.tf_workspace >>
       RUNNER_CMD: << parameters.runner_command >>
-    working_directory: ~/project/terraform
+    working_directory: ~/project/terraform/environment
     steps:
       - checkout:
           path: ~/project
@@ -899,7 +907,7 @@ jobs:
     environment:
       ENVIRONMENT: << parameters.environment >>
       TF_WORKSPACE: << parameters.tf_workspace >>
-    working_directory: ~/project/terraform
+    working_directory: ~/project/terraform/environment
     steps:
       - checkout:
           path: ~/project
@@ -925,7 +933,7 @@ jobs:
     environment:
       ENVIRONMENT: << parameters.environment >>
       TF_WORKSPACE: << parameters.tf_workspace >>
-    working_directory: ~/project/terraform
+    working_directory: ~/project/terraform/environment
     steps:
       - checkout:
           path: ~/project
@@ -959,7 +967,7 @@ jobs:
     environment:
       ENVIRONMENT: << parameters.environment >>
       TF_WORKSPACE: << parameters.tf_workspace >>
-    working_directory: ~/project/terraform
+    working_directory: ~/project/terraform/environment
     steps:
       - checkout:
           path: ~/project
@@ -986,9 +994,6 @@ jobs:
       - run:
           name: Ingest Cases
           command: ecs-runner -task ingest-cases -timeout 600
-      - run:
-          name: Reset Elasticsearch
-          command: ecs-runner -task reset-elasticsearch -timeout 600
       - notififications/notify_env_vars
       - notififications/notify_if_fail
 
@@ -1082,10 +1087,14 @@ jobs:
       tf_command:
         description: terraform command
         type: string
+      folder:
+        description: terraform command
+        type: string
+        default: "environment"
     environment:
       WORKSPACE: << parameters.tf_workspace >>
       ENVIRONMENT: << parameters.environment >>
-    working_directory: ~/project/terraform
+    working_directory: ~/project/terraform/<< parameters.folder >>
     steps:
       - checkout:
           path: ~/project
@@ -1186,51 +1195,48 @@ jobs:
       - notififications/notify_env_vars
       - notififications/notify_if_fail
 
-  load_casrec:
-    executor: terraform/terraform
+  load_casrec_db:
+    executor: migration/python
     resource_class: small
     parameters:
       environment:
         description: environment for step function
         type: string
         default: "Development"
-      tf_workspace:
-        description: terraform workspace
+      account:
+        description: environment for step function
         type: string
         default: "development"
     environment:
-      WORKSPACE: << parameters.tf_workspace >>
       ENVIRONMENT: << parameters.environment >>
-    working_directory: ~/project/terraform/shared
     steps:
       - checkout:
           path: ~/project
       - run:
           name: Check on log
           command: |
-            if [ `git log --raw -n 1 | grep "^:[0-9][0-9][0-9][0-9]*" | awk '{print $6}' \
-            | grep -E '(migration_steps/load_casrec|terraform/terraform.tfvars.json)' | wc -l` -gt 0 ]
+            if [ `git log --raw -n 1 | grep -E "^:[0-9]{6}" | awk '{print $6}' \
+            | grep -E '(migration_steps/load_casrec|terraform/environment/terraform.tfvars.json)' | wc -l` -gt 0 ]
             then
               echo "export RUN_RELOAD=true" >> $BASH_ENV
             else
-              echo "export RUN_RELOAD=true" >> $BASH_ENV
+              echo "export RUN_RELOAD=false" >> $BASH_ENV
             fi
-      - when:
-          condition:
-            and:
-              - equal: [true, $RUN_RELOAD]
-          steps:
-            - terraform/install
-            - attach_workspace: {at: ~/project}
-            - run:
-                name: Initialize
-                command: terraform init
-            - run:
-                name: Set environment
-                command: |
-                  ~/project/.circleci/set_env.sh >> $BASH_ENV
-            - run:
-                name: Run apply
-                command: terraform apply
+      - run:
+          name: install requirements
+          command: |
+            if [ $RUN_RELOAD == "true" ]
+            then
+              pip3 install -r requirements-rsf.txt
+            fi
+          working_directory: ~/project/scripts/ci_scripts
+      - run:
+          name: run the load casrec step function
+          command: |
+            if [ $RUN_RELOAD == "true" ]
+            then
+              python3 run_step_function.py --role migrations-ci --account << parameters.account >> --workspace << parameters.account >> --sf_name_suffix=casrec-mig-load-state-machine
+            fi
+          working_directory: ~/project/scripts/ci_scripts
       - notififications/notify_env_vars
       - notififications/notify_if_fail

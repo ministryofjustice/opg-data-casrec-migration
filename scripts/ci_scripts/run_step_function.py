@@ -33,6 +33,37 @@ class StepFunctionRunner:
         self.latest_timestamp = datetime.fromtimestamp(
             int((datetime.now() - timedelta(hours=12)).timestamp())
         )
+        self.run_migration_sf_input_json = {
+            "prep": ["prepare/prepare.sh"],
+            "load": ["python3", "load_casrec_schema/app/app.py"],
+        }
+        self.load_casrec_db_sf_input_json = {
+            "prep": ["prepare/prepare_load_casrec_db.sh"],
+            "load1": [
+                "python3",
+                "load_casrec/app/app.py",
+                "--skip_load=false",
+                "--delay=0",
+            ],
+            "load2": [
+                "python3",
+                "load_casrec/app/app.py",
+                "--skip_load=false",
+                "--delay=2",
+            ],
+            "load3": [
+                "python3",
+                "load_casrec/app/app.py",
+                "--skip_load=false",
+                "--delay=3",
+            ],
+            "load4": [
+                "python3",
+                "load_casrec/app/app.py",
+                "--skip_load=false",
+                "--delay=4",
+            ],
+        }
 
     def step_function_arn(self, step_function_name):
         state_machines = self.auto_refresh_session_step_func.list_state_machines()
@@ -107,45 +138,14 @@ class StepFunctionRunner:
             for ptr in log_records:
                 self.previous_pointers.append(ptr["ptr"])
 
-    def run_step_function(self, no_reload):
-        if no_reload == "true":
-            print("Starting step function in 'no reload' mode")
-            input_json = {
-                "prep": ["prepare/prepare.sh", "-i", "casrec_csv"],
-                "load1": ["python3", "load_casrec/app/app.py", "--skip_load=true"],
-                "load2": ["python3", "load_casrec/app/app.py", "--skip_load=true"],
-                "load3": ["python3", "load_casrec/app/app.py", "--skip_load=true"],
-                "load4": ["python3", "load_casrec/app/app.py", "--skip_load=true"],
-            }
+    def run_step_function(self, load_casrec_db):
+        if load_casrec_db:
+            print("Starting step function to load into casrec DB")
+            input_json = self.load_casrec_db_sf_input_json
         else:
-            print("Starting step function in 'reload' (normal) mode")
-            input_json = {
-                "prep": ["prepare/prepare.sh"],
-                "load1": [
-                    "python3",
-                    "load_casrec/app/app.py",
-                    "--skip_load=false",
-                    "--delay=0",
-                ],
-                "load2": [
-                    "python3",
-                    "load_casrec/app/app.py",
-                    "--skip_load=false",
-                    "--delay=2",
-                ],
-                "load3": [
-                    "python3",
-                    "load_casrec/app/app.py",
-                    "--skip_load=false",
-                    "--delay=3",
-                ],
-                "load4": [
-                    "python3",
-                    "load_casrec/app/app.py",
-                    "--skip_load=false",
-                    "--delay=4",
-                ],
-            }
+            print("Starting step function to migrate casrec to sirius")
+            input_json = self.load_casrec_db_sf_input_json
+
         response = self.auto_refresh_session_step_func.start_execution(
             stateMachineArn=self.sf_arn, input=str(json.dumps(input_json))
         )
@@ -213,16 +213,25 @@ class StepFunctionRunner:
 
 @click.command()
 @click.option("--role", default="operator")
-@click.option("--account", default="288342028542")
+@click.option("--account", default="development")
 @click.option("--wait_for", default="1800")
-@click.option("--no_reload", default="false")
 @click.option("--workspace", default="development")
 @click.option("--sf_name_suffix", default="casrec-mig-state-machine")
-def main(role, account, wait_for, no_reload, workspace, sf_name_suffix):
+def main(role, account, wait_for, workspace, sf_name_suffix):
     region = "eu-west-1"
+    load_casrec_db = (
+        True if sf_name_suffix == "casrec-mig-load-state-machine" else False
+    )
+    account_map = {
+        "development": "288342028542",
+        "preproduction": "492687888235",
+        "preqa": "492687888235",
+        "qa": "492687888235",
+    }
+    account_id = account_map[account]
     sf_name = f"{sf_name_suffix}-{workspace}"
     log_group = f"casrec-migration-{workspace}"
-    role_to_assume = f"arn:aws:iam::{account}:role/{role}"
+    role_to_assume = f"arn:aws:iam::{account_id}:role/{role}"
     base_client = boto3.client("sts")
 
     step_function_runner = StepFunctionRunner(role_to_assume, base_client, region)
@@ -232,7 +241,7 @@ def main(role, account, wait_for, no_reload, workspace, sf_name_suffix):
     step_function_runner.create_session_logs()
     step_function_runner.step_function_arn(sf_name)
     step_function_runner.step_function_running_wait_for(int(wait_for))
-    response = step_function_runner.run_step_function(no_reload)
+    response = step_function_runner.run_step_function(load_casrec_db)
 
     if response["ResponseMetadata"]["HTTPStatusCode"] == 200:
         print("Step function started correctly")

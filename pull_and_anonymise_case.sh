@@ -10,7 +10,7 @@ do
   esac
 done
 
-cd terraform
+cd terraform/environment
 echo "----- INITIALIZING TERRAFORM -----"
 export TF_WORKSPACE=default
 export TF_VAR_default_role=operator

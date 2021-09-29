@@ -17,6 +17,7 @@ services:
   prepare:
     volumes:
       - ./migration_steps/prepare/prepare.sh:/prepare/prepare.sh
+      - ./migration_steps/prepare/prepare_load_casrec_db.sh:/prepare/prepare_load_casrec_db.sh
       - ./migration_steps/prepare/prepare_target:/prepare/prepare_target
       - ./migration_steps/prepare/create_stage_schema:/prepare/create_stage_schema
       - ./migration_steps/prepare/case_details_to_s3:/prepare/case_details_to_s3
@@ -28,6 +29,8 @@ services:
     volumes:
       - ./migration_steps/load_casrec/app:/load_casrec/app
       - ./migration_steps/load_fees/app:/load_fees/app
+      - ./migration_steps/load_casrec_schema/app:/load_casrec_schema/app
+      - ./migration_steps/shared:/shared
 
   transform_casrec:
     volumes:

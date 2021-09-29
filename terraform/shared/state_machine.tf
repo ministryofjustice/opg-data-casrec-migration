@@ -25,7 +25,7 @@ locals {
                 "LaunchType": "FARGATE",
                 "PlatformVersion": "1.4.0",
                 "Cluster": "${data.aws_ecs_cluster.migration.arn}",
-                "TaskDefinition": "${data.aws_ecs_task_definition.prepare.id}",
+                "TaskDefinition": "${aws_ecs_task_definition.prepare_load_casrec.arn}",
                 "NetworkConfiguration": {
                     "AwsvpcConfiguration": {
                         "Subnets": [${local.subnets_string}],
@@ -35,7 +35,7 @@ locals {
                 },
                 "Overrides": {
                     "ContainerOverrides": [{
-                        "Name": "etl0",
+                        "Name": "prepare",
                         "Command.$": "$.prep"
                     }]
                 }
@@ -54,7 +54,7 @@ locals {
                             "Parameters": {
                                 "LaunchType": "FARGATE",
                                 "Cluster": "${data.aws_ecs_cluster.migration.arn}",
-                                "TaskDefinition": "${data.aws_ecs_task_definition.load_casrec_db.id}",
+                                "TaskDefinition": "${aws_ecs_task_definition.load_casrec_db.arn}",
                                 "NetworkConfiguration": {
                                     "AwsvpcConfiguration": {
                                         "Subnets": [${local.subnets_string}],
@@ -64,7 +64,7 @@ locals {
                                 },
                                 "Overrides": {
                                     "ContainerOverrides": [{
-                                        "Name": "etl1",
+                                        "Name": "load-casrec-db",
                                         "Command.$": "$.load1"
                                     }]
                                 }
@@ -82,7 +82,7 @@ locals {
                             "Parameters": {
                                 "LaunchType": "FARGATE",
                                 "Cluster": "${data.aws_ecs_cluster.migration.arn}",
-                                "TaskDefinition": "${data.aws_ecs_task_definition.load_casrec_db.id}",
+                                "TaskDefinition": "${aws_ecs_task_definition.load_casrec_db.arn}",
                                 "NetworkConfiguration": {
                                     "AwsvpcConfiguration": {
                                         "Subnets": [${local.subnets_string}],
@@ -92,7 +92,7 @@ locals {
                                 },
                                 "Overrides": {
                                     "ContainerOverrides": [{
-                                        "Name": "etl1",
+                                        "Name": "load-casrec-db",
                                         "Command.$": "$.load2"
                                     }]
                                 }
@@ -110,7 +110,7 @@ locals {
                             "Parameters": {
                                 "LaunchType": "FARGATE",
                                 "Cluster": "${data.aws_ecs_cluster.migration.arn}",
-                                "TaskDefinition": "${data.aws_ecs_task_definition.load_casrec_db.id}",
+                                "TaskDefinition": "${aws_ecs_task_definition.load_casrec_db.arn}",
                                 "NetworkConfiguration": {
                                     "AwsvpcConfiguration": {
                                         "Subnets": [${local.subnets_string}],
@@ -120,7 +120,7 @@ locals {
                                 },
                                 "Overrides": {
                                     "ContainerOverrides": [{
-                                        "Name": "etl1",
+                                        "Name": "load-casrec-db",
                                         "Command.$": "$.load3"
                                     }]
                                 }
@@ -138,7 +138,7 @@ locals {
                             "Parameters": {
                                 "LaunchType": "FARGATE",
                                 "Cluster": "${data.aws_ecs_cluster.migration.arn}",
-                                "TaskDefinition": "${data.aws_ecs_task_definition.load_casrec_db.id}",
+                                "TaskDefinition": "${aws_ecs_task_definition.load_casrec_db.arn}",
                                 "NetworkConfiguration": {
                                     "AwsvpcConfiguration": {
                                         "Subnets": [${local.subnets_string}],
@@ -148,7 +148,7 @@ locals {
                                 },
                                 "Overrides": {
                                     "ContainerOverrides": [{
-                                        "Name": "etl1",
+                                        "Name": "load-casrec-db",
                                         "Command.$": "$.load4"
                                     }]
                                 }

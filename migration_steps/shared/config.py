@@ -24,6 +24,13 @@ def get_paramstore_value(param_name):
 class BaseConfig:
     load_env_vars()
     db_config = {
+        "casrec": {
+            "host": os.environ.get("CASREC_DB_HOST"),
+            "port": os.environ.get("CASREC_DB_PORT"),
+            "name": os.environ.get("CASREC_DB_NAME"),
+            "user": os.environ.get("CASREC_DB_USER"),
+            "password": os.environ.get("CASREC_DB_PASSWORD"),
+        },
         "migration": {
             "host": os.environ.get("DB_HOST"),
             "port": os.environ.get("DB_PORT"),
