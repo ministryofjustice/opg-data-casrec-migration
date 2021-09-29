@@ -45,7 +45,7 @@ def set_all_batch_numbers(db_config):
     conn = psycopg2.connect(connection_string)
     cursor = conn.cursor()
 
-    batch_tables = ["finance_invoice"]
+    batch_tables = ["finance_invoice", "finance_ledger", "finance_ledger_allocation"]
 
     try:
         for table in batch_tables:

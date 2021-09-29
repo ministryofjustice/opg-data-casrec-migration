@@ -31,6 +31,32 @@ def set_invoice_finance_person_ids(cursor):
     cursor.execute(query)
 
 
+def set_ledger_finance_person_ids(cursor):
+    if not table_helpers.check_enabled_by_table_name(table_name="finance_ledger"):
+        log.info(
+            f"Skip setting finance_person_id on ledger. Ledger entity disabled."
+        )
+        return
+
+    log.info("Setting finance_person_id on ledger...")
+
+    query = f"""
+        WITH ledger_person AS (
+            SELECT finance_person_id, ledger_entry_id
+            FROM finance_invoice
+            INNER JOIN finance_ledger_allocation ON finance_invoice.id = finance_ledger_allocation.invoice_id
+        )
+
+        UPDATE finance_ledger fl
+        SET finance_person_id = lp.finance_person_id
+        FROM ledger_person AS lp
+        WHERE lp.ledger_entry_id = id
+        AND fl.source = 'CASRECMIGRATION'
+        AND fl.finance_person_id IS NULL;
+    """
+    cursor.execute(query)
+
+
 def set_all_finance_person_ids(db_config):
     connection_string = db_config["target_db_connection_string"]
     conn = psycopg2.connect(connection_string)
@@ -38,6 +64,7 @@ def set_all_finance_person_ids(db_config):
 
     try:
         set_invoice_finance_person_ids(cursor=cursor)
+        set_ledger_finance_person_ids(cursor=cursor)
         conn.commit()
         cursor.close()
         conn.close()
