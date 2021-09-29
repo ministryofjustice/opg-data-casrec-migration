@@ -217,9 +217,10 @@ class StepFunctionRunner:
 @click.option("--wait_for", default="1800")
 @click.option("--no_reload", default="false")
 @click.option("--workspace", default="development")
-def main(role, account, wait_for, no_reload, workspace):
+@click.option("--sf_name_suffix", default="casrec-mig-state-machine")
+def main(role, account, wait_for, no_reload, workspace, sf_name_suffix):
     region = "eu-west-1"
-    sf_name = f"casrec-mig-state-machine-{workspace}"
+    sf_name = f"{sf_name_suffix}-{workspace}"
     log_group = f"casrec-migration-{workspace}"
     role_to_assume = f"arn:aws:iam::{account}:role/{role}"
     base_client = boto3.client("sts")
