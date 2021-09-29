@@ -63,6 +63,13 @@ def do_simple_transformations(
                 t["original_columns"], t["aggregate_col"], transformed_df
             )
 
+    if "absolute_value" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: absolute_value")
+        for t in transformations["absolute_value"]:
+            transformed_df = standard_transformations.absolute_value(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
     if "first_two_chars" in transformations:
         log.log(config.VERBOSE, "Applying transformation: first_two_chars")
         for t in transformations["first_two_chars"]:
@@ -88,6 +95,13 @@ def do_simple_transformations(
         log.log(config.VERBOSE, "Applying transformation: end_of_tax_year")
         for t in transformations["end_of_tax_year"]:
             transformed_df = standard_transformations.end_of_tax_year(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
+    if "credit_type_from_invoice_ref" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: credit_type_from_invoice_ref")
+        for t in transformations["credit_type_from_invoice_ref"]:
+            transformed_df = standard_transformations.credit_type_from_invoice_ref(
                 t["original_columns"], t["aggregate_col"], transformed_df
             )
 

@@ -26,4 +26,10 @@ def do_calculations(
                 t["column_name"], calculations_df
             )
 
+    if "uuid4" in calculated_fields:
+        for t in calculated_fields["uuid4"]:
+            calculations_df = standard_calculations.uuid4(
+                t["column_name"], calculations_df
+            )
+
     return calculations_df

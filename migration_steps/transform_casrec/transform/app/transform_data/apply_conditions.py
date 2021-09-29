@@ -36,6 +36,12 @@ def source_conditions(df, conditions):
         for col in greater_than_cols:
             conditions.pop(col, None)
 
+    less_than_cols = {k: v for k, v in conditions.items() if k == "less_than"}
+    if less_than_cols:
+        df = less_than(df, less_than_cols)
+        for col in less_than_cols:
+            conditions.pop(col, None)
+
     recent_or_open_invoices_cols = {
         k: v for k, v in conditions.items() if k == "recent_or_open_invoices"
     }
@@ -140,6 +146,18 @@ def greater_than(df, cols):
 
     df[col] = df[col].astype(float)
     df = df[df[col] > value]
+
+    return df
+
+
+def less_than(df, cols):
+    col = format_additional_col_alias(cols["less_than"]["col"])
+    value = cols["less_than"]["value"]
+
+    log.debug(f"Removing rows where '{col}' is not less than {value}")
+
+    df[col] = df[col].astype(float)
+    df = df[df[col] < value]
 
     return df
 

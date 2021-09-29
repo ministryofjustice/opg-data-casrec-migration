@@ -96,6 +96,15 @@ def multiply_by_100(
     return df
 
 
+def absolute_value(
+    original_col: str, result_col: str, df: pd.DataFrame
+) -> pd.DataFrame:
+    df[result_col] = df[original_col].apply(lambda x: abs(float(x)))
+    df = df.drop(columns=[original_col])
+
+    return df
+
+
 def first_two_chars(
     original_col: str, result_col: str, df: pd.DataFrame
 ) -> pd.DataFrame:
@@ -143,6 +152,23 @@ def end_of_tax_year(
     df = df.drop(columns=[original_col])
 
     return df
+
+
+def credit_type_from_invoice_ref(
+    original_col: str, result_col: str, df: pd.DataFrame
+) -> pd.DataFrame:
+    df[result_col] = df[original_col].apply(lambda x: get_credit_type(x))
+    df = df.drop(columns=[original_col])
+    return df
+
+
+def get_credit_type(invoice_ref: str) -> str:
+    if invoice_ref[:1] == "Z" or invoice_ref[-1] == "Z":
+        return "CREDIT REMISSION"
+    elif invoice_ref[:2] == "CR" or invoice_ref[-2] == "CR":
+        return "CREDIT MEMO"
+    elif invoice_ref[:2] == "WO" or invoice_ref[-2] == "WO":
+        return "CREDIT WRITE OFF"
 
 
 def round_column(

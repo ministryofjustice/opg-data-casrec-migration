@@ -37,6 +37,8 @@ from entities import (
     visits,
     warnings,
     crec,
+    ledger,
+    ledger_allocation,
 )
 from utilities.clear_database import clear_tables
 from utilities.db_insert import InsertData
@@ -128,6 +130,8 @@ def main(clear, team, chunk_size):
     visits.runner(target_db=target_db, db_config=db_config)
     warnings.runner(target_db=target_db, db_config=db_config)
     crec.runner(target_db=target_db, db_config=db_config)
+    ledger.runner(target_db=target_db, db_config=db_config)
+    ledger_allocation.runner(target_db=target_db, db_config=db_config)
 
     check_row_counts.count_rows(
         connection_string=db_config["db_connection_string"],
