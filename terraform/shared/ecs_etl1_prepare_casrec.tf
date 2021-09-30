@@ -1,10 +1,10 @@
-resource "aws_ecs_task_definition" "prepare_load_casrec" {
-  family                   = "prepare-${terraform.workspace}"
+resource "aws_ecs_task_definition" "load_casrec_db" {
+  family                   = "load-casrec-db-${terraform.workspace}"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = 2048
   memory                   = 4096
-  container_definitions    = "[${local.prepare_load_casrec}]"
+  container_definitions    = "[${local.load_casrec_db}]"
   task_role_arn            = data.aws_iam_role.etl_task.arn
   execution_role_arn       = data.aws_iam_role.etl_execution.arn
   tags = merge(local.default_tags,
@@ -13,11 +13,11 @@ resource "aws_ecs_task_definition" "prepare_load_casrec" {
 }
 
 locals {
-  prepare_load_casrec = jsonencode({
+  load_casrec_db = jsonencode({
     cpu       = 0,
     essential = true,
-    image     = local.images.etl0,
-    name      = "prepare",
+    image     = local.images.etl1,
+    name      = "load-casrec-db",
     logConfiguration = {
       logDriver = "awslogs",
       options = {
@@ -60,6 +60,18 @@ locals {
       {
         name  = "DEFAULT_CHUNK_SIZE",
         value = "20000"
+      },
+      {
+        name  = "SIRIUS_ACCOUNT",
+        value = local.account.account_id
+      },
+      {
+        name  = "ACCOUNT_NAME",
+        value = local.account.account_name
+      },
+      {
+        name  = "S3_PATH",
+        value = local.account.s3_path
       }
     ]
   })

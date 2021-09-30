@@ -150,7 +150,7 @@ workflows:
       - run_step_function:
           name: run the step function preproduction
           requires: [build infra preproduction, run and monitor jenkins restore job pre]
-          account: "492687888235"
+          account: "preproduction"
           wait_for: "18000"
           tf_workspace: preproduction
           environment: Preproduction
@@ -234,7 +234,7 @@ workflows:
       - run_step_function:
           name: run the step function preqa
           requires: [build infra preqa, run and monitor jenkins restore job preqa]
-          account: "492687888235"
+          account: "preproduction"
           wait_for: "18000"
           tf_workspace: preqa
           environment: PreQualityAssurance
@@ -288,7 +288,7 @@ workflows:
       - run_step_function:
           name: run the step function qa
           requires: [build infra qa, run and monitor jenkins restore job qa]
-          account: "492687888235"
+          account: "preproduction"
           wait_for: "18000"
           tf_workspace: qa
           environment: Quality Assurance
@@ -376,7 +376,7 @@ workflows:
             run and monitor jenkins restore job,
             build infra preproduction
           ]
-          account: "492687888235"
+          account: "production"
           wait_for: "18000"
           tf_workspace: preproduction
           environment: Preproduction
@@ -837,7 +837,7 @@ jobs:
       account:
         description: account to run step function in
         type: string
-        default: "288342028542"
+        default: "development"
       wait_for:
         description: how long to wait for step function to finish
         type: string

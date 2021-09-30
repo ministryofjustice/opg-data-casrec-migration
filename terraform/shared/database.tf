@@ -31,7 +31,7 @@ resource "aws_security_group" "casrec_load_db" {
   vpc_id      = data.aws_vpc.sirius.id
   tags = merge(
     local.default_tags,
-    { "Name" = "casrec-migration-${terraform.workspace}" },
+    { "Name" = "casrec-load-${terraform.workspace}" },
   )
 }
 

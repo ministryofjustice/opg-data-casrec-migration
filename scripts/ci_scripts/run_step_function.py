@@ -144,7 +144,7 @@ class StepFunctionRunner:
             input_json = self.load_casrec_db_sf_input_json
         else:
             print("Starting step function to migrate casrec to sirius")
-            input_json = self.load_casrec_db_sf_input_json
+            input_json = self.run_migration_sf_input_json
 
         response = self.auto_refresh_session_step_func.start_execution(
             stateMachineArn=self.sf_arn, input=str(json.dumps(input_json))
