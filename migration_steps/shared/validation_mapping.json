@@ -301,7 +301,9 @@
             "transform": {},
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_phonenumbers exc_table ON exc_table.caserecnumber = pat.\"Case\"",
-            "where_clauses": []
+            "where_clauses": [
+                "casrec_csv.pat.\"Client Phone\" != ''"
+            ]
         },
         "sirius": {
             "from_table": "phonenumbers",
@@ -481,7 +483,9 @@
                 "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\""
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_daytime_phonenumbers exc_table ON exc_table.caserecnumber = casrec_csv.order.\"Case\"",
-            "where_clauses": []
+            "where_clauses": [
+                "casrec_csv.deputy.\"Contact Telephone\" != ''"
+            ]
         },
         "sirius": {
             "from_table": "order_deputy",
@@ -529,7 +533,9 @@
                 "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\""
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_evening_phonenumbers exc_table ON exc_table.caserecnumber = casrec_csv.order.\"Case\"",
-            "where_clauses": []
+            "where_clauses": [
+                "casrec_csv.deputy.\"Contact Tele2\" != ''"
+            ]
         },
         "sirius": {
             "from_table": "order_deputy",
