@@ -60,7 +60,12 @@ def get_mappings():
         "cases": ["cases"],
         "crec": ["crec_persons",],
         "supervision_level": ["supervision_level_log",],
-        "deputies": ["deputy_persons", "deputy_death_notifications",],
+        "deputies": [
+            "deputy_persons",
+            "deputy_death_notifications",
+            "deputy_daytime_phonenumbers",
+            "deputy_evening_phonenumbers",
+        ],
         "bonds": ["bonds_active", "bonds_dispensed"],
         "warnings": [
             "client_nodebtchase_warnings",
