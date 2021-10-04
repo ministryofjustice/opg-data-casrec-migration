@@ -65,3 +65,7 @@ data "aws_secretsmanager_secret" "sirius_db" {
 data "aws_rds_cluster" "sirius" {
   cluster_identifier = "api-${local.account.sirius_env}"
 }
+
+data "aws_rds_cluster" "casrec_load" {
+  cluster_identifier = "casrec-load-${local.account.account_name}"
+}

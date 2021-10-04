@@ -1,6 +1,7 @@
 FROM opg_casrec_migration_base_image:latest
 RUN apt-get install -y postgresql-client
 COPY prepare/prepare.sh /prepare/prepare.sh
+COPY prepare/prepare_load_casrec_db.sh /prepare/prepare_load_casrec_db.sh
 COPY prepare/prepare_target /prepare/prepare_target
 COPY prepare/create_stage_schema /prepare/create_stage_schema
 COPY prepare/case_details_to_s3 /prepare/case_details_to_s3

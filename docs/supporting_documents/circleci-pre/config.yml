@@ -180,15 +180,12 @@ jobs:
     steps:
       - checkout
       - run:
-          name: check log message
-          command: echo "export NO_RELOAD=true" >> $BASH_ENV
-      - run:
           name: install requirements
           command: pip3 install -r requirements-rsf.txt
           working_directory: ~/project/scripts/ci_scripts
       - run:
           name: run the function
-          command: python3 run_step_function.py --role migrations-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --no_reload ${NO_RELOAD}
+          command: python3 run_step_function.py --role migrations-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR}
           working_directory: ~/project/scripts/ci_scripts
 
   run_behat_tests:
@@ -199,7 +196,7 @@ jobs:
         description: terraform workspace
         type: string
         default: "development"
-    working_directory: ~/project/terraform
+    working_directory: ~/project/terraform/environment
     steps:
       - checkout:
           path: ~/project
@@ -216,7 +213,7 @@ jobs:
         description: terraform workspace
         type: string
         default: "development"
-    working_directory: ~/project/terraform
+    working_directory: ~/project/terraform/environment
     steps:
       - checkout:
           path: ~/project
@@ -233,7 +230,7 @@ jobs:
         description: terraform workspace
         type: string
         default: "development"
-    working_directory: ~/project/terraform
+    working_directory: ~/project/terraform/environment
     steps:
       - checkout:
           path: ~/project
@@ -316,7 +313,7 @@ jobs:
         type: string
     environment:
       WORKSPACE: << parameters.tf_workspace >>
-    working_directory: ~/project/terraform
+    working_directory: ~/project/terraform/environment
     steps:
       - checkout:
           path: ~/project

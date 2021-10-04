@@ -11,7 +11,7 @@ services:
       ENVIRONMENT: preproduction
     volumes:
       - ./scripts/case_details_to_s3/case_details_to_s3.py:/case_details_to_s3.py
-      - ./terraform:/terraform
+      - ./terraform/environment:/terraform/environment
   task_runner:
     build:
       context: ./scripts/ecs_task_runner
@@ -25,7 +25,7 @@ services:
     volumes:
       - ./scripts/ecs_task_runner/run_ecs_task.py:/run_ecs_task.py
       - ./scripts/ecs_task_runner/run_ecs_task.sh:/run_ecs_task.sh
-      - ./terraform:/terraform
+      - ./terraform/environment:/terraform/environment
   sync_mapping_json:
     build:
       context: ./scripts/sync_mapping_json

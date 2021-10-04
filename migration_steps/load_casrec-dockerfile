@@ -1,5 +1,7 @@
 FROM opg_casrec_migration_base_image:latest
+RUN apt-get install -y postgresql-client
 COPY load_casrec/app/app.py load_casrec/app/app.py
+COPY load_casrec_schema/app/app.py load_casrec_schema/app/app.py
 COPY load_fees/app/app.py load_fees/app/app.py
 COPY shared /shared
 WORKDIR /

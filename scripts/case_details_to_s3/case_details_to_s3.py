@@ -24,7 +24,9 @@ def operator_session(environment):
 
 
 def run_ecs_task(client, caserecnumber):
-    with open("/terraform/terraform.output_casrec_migration.json") as json_file:
+    with open(
+        "/terraform/environment/terraform.output_casrec_migration.json"
+    ) as json_file:
         data = json.load(json_file)
 
     response = client.run_task(
@@ -64,12 +66,8 @@ def wait_for_task_to_stop(client, cluster_arn, task_arn):
     waiter = client.get_waiter("tasks_stopped")
     response = waiter.wait(
         cluster=cluster_arn,
-        tasks=[
-            task_arn,
-        ],
-        include=[
-            "TAGS",
-        ],
+        tasks=[task_arn,],
+        include=["TAGS",],
         WaiterConfig={"Delay": 6, "MaxAttempts": 100},
     )
 
@@ -78,13 +76,7 @@ def wait_for_task_to_stop(client, cluster_arn, task_arn):
 
 def get_stop_exit_code(client, cluster_arn, task_arn):
     response = client.describe_tasks(
-        cluster=cluster_arn,
-        tasks=[
-            task_arn,
-        ],
-        include=[
-            "TAGS",
-        ],
+        cluster=cluster_arn, tasks=[task_arn,], include=["TAGS",],
     )
     exit_code = response["tasks"][0]["stopCode"]
     stop_reason = response["tasks"][0]["stoppedReason"]

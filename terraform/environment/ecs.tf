@@ -179,6 +179,26 @@ resource "aws_security_group_rule" "etl_to_sirius_db_egress" {
   description              = "Outbound ETL to Sirius DB"
 }
 
+resource "aws_security_group_rule" "etl_to_casrec_load_db_ingress" {
+  type                     = "ingress"
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.etl.id
+  security_group_id        = data.aws_security_group.casrec_load_db.id
+  description              = "ETL ECS tasks to Casrec Load RDS inbound"
+}
+
+resource "aws_security_group_rule" "etl_to_casrec_load_db_egress" {
+  type                     = "egress"
+  protocol                 = "tcp"
+  from_port                = 5432
+  to_port                  = 5432
+  security_group_id        = aws_security_group.etl.id
+  source_security_group_id = data.aws_security_group.casrec_load_db.id
+  description              = "Outbound ETL to Casrec Load DB"
+}
+
 //RULES FOR ENDPOINTS ACCESS
 
 resource "aws_security_group_rule" "etl_to_ecr_api_egress" {
@@ -212,6 +232,13 @@ data "aws_security_group" "sirius_membrane" {
   filter {
     name   = "tag:Name"
     values = ["membrane-ecs-${local.account.sirius_env}"]
+  }
+}
+
+data "aws_security_group" "casrec_load_db" {
+  filter {
+    name   = "tag:Name"
+    values = ["casrec-load-${local.account.account_name}"]
   }
 }
 
