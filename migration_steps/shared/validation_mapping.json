@@ -615,6 +615,29 @@
           "identifiers": []
         }
     },
+    "deputy_feepayer_id": {
+        "exclude": [],
+        "casenumber_source": "client_persons.caserecnumber",
+        "orderby": {},
+        "casrec": {
+            "from_table": "pat",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "",
+            "where_clauses": []
+        },
+        "sirius": {
+            "from_table": "persons",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "",
+            "where_clauses": []
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
+    },
     "deputy_persons": {
         "exclude": [
             "caserecnumber",
