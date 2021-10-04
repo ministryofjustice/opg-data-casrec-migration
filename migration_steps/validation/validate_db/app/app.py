@@ -630,7 +630,7 @@ def pre_validation():
     log.info(f"Merging integrated Sirius IDs with casrec csv source data")
     conn_migration = psycopg2.connect(config.get_db_connection_string("migration"))
     execute_sql_file(
-        current_path / "sql", "merge_integration_ids_up.sql", conn_migration
+        current_path / "sql", "merge_ids_up.sql", conn_migration
     )
 
     if is_staging is False:
@@ -711,7 +711,7 @@ def post_validation():
     log.info(f"Un-Merge integrated Sirius IDs with casrec csv source data")
     conn_migration = psycopg2.connect(config.get_db_connection_string("migration"))
     execute_sql_file(
-        current_path / "sql", "merge_integration_ids_down.sql", conn_migration
+        current_path / "sql", "merge_ids_down.sql", conn_migration
     )
 
     log.info("REPORT")
