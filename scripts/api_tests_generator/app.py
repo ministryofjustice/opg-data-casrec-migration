@@ -365,7 +365,17 @@ client_death_notifications_headers = [
     '["dateNotified"]',
 ]
 
-csvs = ["deputy_death_notifications"]
+invoices_headers = [
+    '["feeType"]',
+    '["reference"]',
+    '["raisedDate"]',
+    '["amount"]',
+    '["amountOutstanding"]',
+    '["status"]["handle"]',
+    '["sopStatus"]["label"]'
+]
+
+csvs = ["invoices"]
 
 search_headers = [
     "endpoint",
