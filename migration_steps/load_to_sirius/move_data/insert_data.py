@@ -83,7 +83,7 @@ def insert_data_into_target(
         query = f"""
             SELECT {', '.join(columns)}
             FROM {db_config["source_schema"]}.{table_name}
-            WHERE method = 'INSERT'
+            WHERE migration_method = 'INSERT'
             ORDER BY {order_by}
             LIMIT {chunk_size} OFFSET {offset};;
         """

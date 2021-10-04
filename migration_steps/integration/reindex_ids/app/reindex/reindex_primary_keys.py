@@ -73,7 +73,7 @@ def update_pks(db_config, table_details):
                 UPDATE {db_config['target_schema']}.{table}
                 SET {pk} = {pk}+{max_val},
                 pk_source = 'reindex_pk'
-                WHERE method = 'INSERT';
+                WHERE migration_method = 'INSERT';
             """
             update_query += query
 

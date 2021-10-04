@@ -71,7 +71,7 @@ def generate_create_tables_query(db_config, table_list):
             CREATE TABLE {db_config['target_schema']}.{table_name}
             AS
                 SELECT *,
-                    'INSERT' as method,
+                    'INSERT' as migration_method,
                     '' as pk_source,
                      {', '.join(select_key_cols)}
                 FROM {db_config['source_schema']}.{table_name};

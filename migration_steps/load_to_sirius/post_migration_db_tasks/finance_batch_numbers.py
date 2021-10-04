@@ -45,17 +45,20 @@ def set_all_batch_numbers(db_config):
     conn = psycopg2.connect(connection_string)
     cursor = conn.cursor()
 
-    batch_tables = ["finance_invoice"]
+    batch_tables = [["finance_invoice"], ["finance_ledger", "finance_ledger_allocation"]]
 
     try:
-        for table in batch_tables:
-            if not table_helpers.check_enabled_by_table_name(table_name=table):
-                log.info(f"Skip setting batch numbers on {table}. Entity disabled.")
-                continue
-            batch_number = create_batch_number(cursor=cursor)
-            set_batch_number_on_table(
-                cursor=cursor, table=table, batch_number=batch_number
-            )
+        for tables in batch_tables:
+            batch_number = None
+            for table in tables:
+                if not table_helpers.check_enabled_by_table_name(table_name=table):
+                    log.info(f"Skip setting batch numbers on {table}. Entity disabled.")
+                    continue
+                if batch_number is None:
+                    batch_number = create_batch_number(cursor=cursor)
+                set_batch_number_on_table(
+                    cursor=cursor, table=table, batch_number=batch_number
+                )
         conn.commit()
         cursor.close()
         conn.close()

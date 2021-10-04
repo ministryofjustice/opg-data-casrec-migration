@@ -159,7 +159,7 @@ def update_casrec_rows(db_config, table_name, table_details):
 
     statement = f"""
         UPDATE {db_config['target_schema']}.{table_name}
-        SET id = existing_id, method='UPDATE'
+        SET id = existing_id, migration_method='UPDATE'
         FROM {db_config['target_schema']}.existing_{table_name}
         WHERE {table_name}.{table_details['match_field']} = existing_{table_name}.{table_details['match_field']};
 
@@ -182,13 +182,13 @@ def get_unmatched_rows(db_config, table_name, table_details):
     target_db_engine = create_engine(db_config["db_connection_string"])
 
     query = f"""
-        SELECT count(*), method FROM {db_config['target_schema']}.{table_name}
+        SELECT count(*), migration_method FROM {db_config['target_schema']}.{table_name}
     """
     if "conditions" in table_details:
         conditions = format_conditions(conditions=table_details.get("conditions"))
         query += conditions
 
-    query += f""" GROUP BY method;"""
+    query += f""" GROUP BY migration_method;"""
 
     try:
         result = target_db_engine.execute(query).fetchall()

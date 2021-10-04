@@ -94,7 +94,7 @@ def update_data_in_target(
             query = f"""
                 SELECT {', '.join(columns)}
                 FROM {db_config["source_schema"]}.{table_name}
-                WHERE method = 'UPDATE'
+                WHERE migration_method = 'UPDATE'
                 ORDER BY {order_by}
                 LIMIT {chunk_size} OFFSET {offset};
             """

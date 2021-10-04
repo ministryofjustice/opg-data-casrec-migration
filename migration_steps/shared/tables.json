@@ -316,5 +316,53 @@
 		"table_type": "data",
 		"sequences": [],
 		"order_by": ["id"]
+	},
+	"finance_ledger": {
+		"sirius_tables": [
+			"finance_ledger"
+		],
+		"entities": {
+			"base_entities": [
+				"ledger"
+			],
+			"relies_on": [
+				"invoice"
+			]
+		},
+		"pk": "id",
+		"fks": [],
+		"table_type": "data",
+		"sequences": [],
+		"order_by": ["id"]
+	},
+	"finance_ledger_allocation": {
+		"sirius_tables": [
+			"finance_ledger_allocation"
+		],
+		"entities": {
+			"base_entities": [
+				"ledger_allocation"
+			],
+			"relies_on": [
+				"invoice",
+				"ledger"
+			]
+		},
+		"pk": "id",
+		"fks": [
+			{
+				"column": "ledger_entry_id",
+				"parent_table": "finance_ledger",
+				"parent_column": "id"
+			},
+			{
+				"column": "invoice_id",
+				"parent_table": "finance_invoice",
+				"parent_column": "id"
+			}
+		],
+		"table_type": "data",
+		"sequences": [],
+		"order_by": ["id"]
 	}
 }

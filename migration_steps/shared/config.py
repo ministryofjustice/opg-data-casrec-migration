@@ -90,6 +90,8 @@ class BaseConfig:
         "supervision_level",
         "deputies",
         "invoice",
+        "ledger",
+        "ledger_allocation",
         "remarks",
         "reporting",
         # "tasks",

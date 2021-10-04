@@ -187,5 +187,23 @@
         "query": "select count(*) from {schema}.finance_invoice;"
       }
     ]
+  },
+  {
+    "ledger": [
+      {
+        "table_name": "credits",
+        "casrec_query": "select count(*) from casrec_csv.feeexport where cast(feeexport.\"Amount\" as double precision) < 0 and feeexport.\"Orig Invoice\" in (select reference from {schema}.finance_invoice);",
+        "query": "select count(*) from {schema}.finance_ledger;"
+      }
+    ]
+  },
+  {
+    "ledger_allocation": [
+      {
+        "table_name": "credits",
+        "casrec_query": "select count(*) from casrec_csv.feeexport where cast(feeexport.\"Amount\" as double precision) < 0 and feeexport.\"Orig Invoice\" in (select reference from {schema}.finance_invoice);",
+        "query": "select count(*) from {schema}.finance_ledger_allocation where invoice_id is not null and ledger_entry_id is not null;"
+      }
+    ]
   }
 ]
