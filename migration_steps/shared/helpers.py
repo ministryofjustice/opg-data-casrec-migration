@@ -236,6 +236,8 @@ def get_json_version():
 
 
 def get_config(env="local"):
+
+    # envcheck - just setting log levels for local dev
     if env == "local":
         config = LocalConfig()
     else:
@@ -244,6 +246,7 @@ def get_config(env="local"):
 
 
 def get_s3_session(session, environment, host, ci="false", account=None):
+    # todo refactor and combine multiple instances of get_s3_session
     s3_session = session
     if environment == "local":
         if host == "localhost":

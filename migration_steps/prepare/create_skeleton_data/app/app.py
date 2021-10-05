@@ -2,18 +2,21 @@ import sys
 import os
 from pathlib import Path
 
+from sqlalchemy import create_engine
+
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
 
+from lookups.check_lookups_in_mapping import check_lookups
+from lookups.sync_lookups_in_staging import sync_lookups
+from lookups.dev_data_fixes import amend_dev_data
+
 from skeleton_data import insert_skeleton_data
 import time
-import psycopg2
 from helpers import get_config
 from dotenv import load_dotenv
 import helpers
-from db_helpers import *
-from helpers import *
 import logging
 import custom_logger
 import pprint
@@ -34,9 +37,12 @@ db_config = {
     "db_connection_string": config.get_db_connection_string("migration"),
     "sirius_db_connection_string": config.get_db_connection_string("target"),
     "source_schema": config.schemas["pre_transform"],
+    "target_schema": config.schemas["pre_migration"],
     "sirius_schema": config.schemas["public"],
     "chunk_size": config.DEFAULT_CHUNK_SIZE,
 }
+target_db_engine = create_engine(db_config["db_connection_string"])
+sirius_db_engine = create_engine(db_config["sirius_db_connection_string"])
 
 
 # logging
@@ -56,11 +62,10 @@ def main():
     log.info("Adding skeleton fixtures\n")
     insert_skeleton_data(db_config=db_config)
 
-    # target_connection = psycopg2.connect(config.get_db_connection_string("target"))
-    # execute_sql_file(
-    #     sql_path, skeleton_sqlfile, target_connection, config.schemas["public"]
-    # )
-    # log.info("Finished loading skeleton fixtures\n")
+    amend_dev_data(db_engine=sirius_db_engine)
+
+    check_lookups(db_config=db_config)
+    sync_lookups(db_engine=target_db_engine, db_config=db_config)
 
 
 if __name__ == "__main__":

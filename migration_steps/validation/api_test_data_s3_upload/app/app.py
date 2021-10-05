@@ -6,7 +6,7 @@ current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
 
 import time
-from config import get_config
+
 from dotenv import load_dotenv
 from helpers import *
 import logging
@@ -35,30 +35,25 @@ log = logging.getLogger("root")
 custom_logger.setup_logging(env=environment, module_name="upload api test data")
 
 
-@click.command()
-@click.option("-v", "--verbose", count=True)
-def main(verbose):
-    # set_logging_level(verbose)
-    if environment in ["local", "development"]:
-        log.info(log_title(message="API CSV Upload"))
+def main():
 
-        log.info("Perform Upload to S3 for API files")
-        log.info("Adding csv and response files to bucket...\n")
+    log.info(log_title(message="API CSV Upload"))
 
-        s3 = get_s3_session(session, environment, host, ci=ci, account=account)
+    log.info("Perform Upload to S3 for API files")
+    log.info("Adding csv and response files to bucket...\n")
 
-        paths = ["validation/responses", "validation/csvs"]
-        for path in paths:
-            for file in os.listdir(current_path / path):
-                file_path = f"{current_path}/{path}/{file}"
-                s3_file_path = f"{path}/{file}"
-                if file.endswith(".json") or file.endswith(".csv"):
-                    upload_file(bucket_name, file_path, s3, log, s3_file_path)
+    s3 = get_s3_session(session, environment, host, ci=ci, account=account)
 
-        # uncomment for troubleshooting
-        # s3_files = get_list_of_s3_files(bucket_name, s3, paths)
-    else:
-        log.info(f"No API upload of s3 files required in environment: {environment}\n")
+    paths = ["validation/responses", "validation/csvs"]
+    for path in paths:
+        for file in os.listdir(current_path / path):
+            file_path = f"{current_path}/{path}/{file}"
+            s3_file_path = f"{path}/{file}"
+            if file.endswith(".json") or file.endswith(".csv"):
+                upload_file(bucket_name, file_path, s3, log, s3_file_path)
+
+    # uncomment for troubleshooting
+    # s3_files = get_list_of_s3_files(bucket_name, s3, paths)
 
 
 if __name__ == "__main__":

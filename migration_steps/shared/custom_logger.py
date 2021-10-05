@@ -92,6 +92,7 @@ def setup_logging(env, level=None, db_config=None, module_name=None):
 
     logging.Logger.data = data
 
+    # envcheck - just setting log levels for local dev
     if env == "local":
         level = level if level else "VERBOSE"
         log.addHandler(MyHandler())

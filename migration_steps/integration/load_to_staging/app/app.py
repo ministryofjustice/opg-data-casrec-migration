@@ -59,6 +59,8 @@ allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
 tables_list = table_helpers.get_table_list(table_helpers.get_table_file())
 
 enabled_tables = table_helpers.get_enabled_table_details()
+
+# feature_flag additional data
 if "additional_data" in config.enabled_feature_flags(env=environment):
     enabled_extra_tables = table_helpers.get_enabled_table_details(
         file_name="additional_data_tables"
@@ -136,8 +138,6 @@ def main(clear, team):
 
     if clear:
         work.insert(0, clear_tables)
-    if environment == "local":
-        work.append(update)
 
     for item in work:
         thread = threading.Thread(target=item)

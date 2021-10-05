@@ -2,6 +2,7 @@
 set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+# envcheck - not sure where this should run so leaving it alone
 if [[ "${ENVIRONMENT}" == "local" || "${ENVIRONMENT}" == "development" ]]
 then
   if [ "${RUN_API_TESTS}" == "True" ]

@@ -316,6 +316,7 @@ def sirius_session(account):
 
 
 def get_s3_session(host, account, ci):
+    # todo refactor and combine multiple instances of get_s3_session
     s3_session = boto3.session.Session()
     if environment == "local":
 
@@ -381,6 +382,7 @@ def initialise_progress_table(
                 processor_id,
             )
         # To allow multiple processes to get involved
+        # envcheck - not sure what this is for so leaving it alone!
         if environment == "local":
             secs = 0
         else:
