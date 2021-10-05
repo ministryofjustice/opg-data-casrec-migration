@@ -2,6 +2,7 @@ import os
 import sys
 from pathlib import Path
 
+from rules.deputy_fee_payer import update_deputy_feepayer_id
 from rules.global_uids import insert_unique_uids
 from utilities.clear_tables import clear_tables
 
@@ -83,6 +84,7 @@ def main(clear, team):
         clear_tables(db_engine=target_db_engine, db_config=db_config)
 
     insert_unique_uids(db_config=db_config, target_db_engine=target_db_engine)
+    update_deputy_feepayer_id(db_config=db_config)
 
     check_row_counts.count_rows(
         connection_string=db_config["db_connection_string"],

@@ -57,13 +57,17 @@ def get_mappings():
             "client_phonenumbers",
         ],
         "cases": ["cases"],
-        "crec": ["crec_persons",],
-        "supervision_level": ["supervision_level_log",],
+        "crec": [
+            "crec_persons",
+        ],
+        "supervision_level": [
+            "supervision_level_log",
+        ],
         "deputies": [
             "deputy_persons",
             "deputy_daytime_phonenumbers",
             "deputy_evening_phonenumbers",
-            # "deputy_feepayer_id"
+            "deputy_feepayer_id",
         ],
         "bonds": ["bonds_active", "bonds_dispensed"],
         "warnings": [
@@ -371,7 +375,8 @@ def build_validation_statements(mapping_name):
 
     # FROM, with JOINs
     sql_add(
-        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}", 2,
+        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}",
+        2,
     )
     for join in validation_dict["casrec"]["joins"]:
         sql_add(f"{join}", 2)
@@ -415,7 +420,8 @@ def build_validation_statements(mapping_name):
 
     # FROM, with JOINs
     sql_add(
-        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}", 2,
+        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}",
+        2,
     )
     for join in validation_dict["sirius"]["joins"]:
         join = join.replace("{target_schema}", str(target_schema))
@@ -477,7 +483,8 @@ def write_column_validation_sql(
     # tested column
     sql_add(f"{col_source_casrec} AS {mapped_item_name}", 4)
     sql_add(
-        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}", 3,
+        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}",
+        3,
     )
     for join in validation_dict["casrec"]["joins"]:
         sql_add(f"{join}", 3)
@@ -509,7 +516,8 @@ def write_column_validation_sql(
     # tested column
     sql_add(f"{col_source_sirius} AS {mapped_item_name}", 4)
     sql_add(
-        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}", 3,
+        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}",
+        3,
     )
     for join in validation_dict["sirius"]["joins"]:
         join = join.replace("{target_schema}", str(target_schema))
@@ -629,9 +637,7 @@ def pre_validation():
 
     log.info(f"Merging integrated Sirius IDs with casrec csv source data")
     conn_migration = psycopg2.connect(config.get_db_connection_string("migration"))
-    execute_sql_file(
-        current_path / "sql", "merge_ids_up.sql", conn_migration
-    )
+    execute_sql_file(current_path / "sql", "merge_ids_up.sql", conn_migration)
 
     if is_staging is False:
         log.info(f"Validating with SIRIUS")
@@ -710,15 +716,13 @@ def post_validation():
 
     log.info(f"Un-Merge integrated Sirius IDs with casrec csv source data")
     conn_migration = psycopg2.connect(config.get_db_connection_string("migration"))
-    execute_sql_file(
-        current_path / "sql", "merge_ids_down.sql", conn_migration
-    )
+    execute_sql_file(current_path / "sql", "merge_ids_down.sql", conn_migration)
 
     log.info("REPORT")
     mapping_df = get_mapping_report_df()
     write_results_sql()
     exceptions_df = df_from_sql_file(sql_path_temp, results_sqlfile, conn_target)
-    report_df = mapping_df.merge(exceptions_df, on="mapping", how='outer')
+    report_df = mapping_df.merge(exceptions_df, on="mapping", how="outer")
     headers = [
         "Casrec Mapping",
         "Rows",
