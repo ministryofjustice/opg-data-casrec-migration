@@ -12,12 +12,10 @@ def insert_addresses_clients(db_config, target_db, mapping_file):
     chunk_no = 0
 
     persons_query = (
-        f'select "id", "caserecnumber" from {db_config["target_schema"]}.persons '
+        f'select "id", "caserecnumber" as "c_caserecnumber" from {db_config["target_schema"]}.persons '
         f"where \"type\" = 'actor_client';"
     )
     persons_df = pd.read_sql_query(persons_query, db_config["db_connection_string"])
-
-    persons_df = persons_df[["id", "caserecnumber"]]
 
     mapping_file_name = f"{mapping_file}_mapping"
     table_definition = get_table_def(mapping_name=mapping_file)
@@ -40,7 +38,7 @@ def insert_addresses_clients(db_config, target_db, mapping_file):
             )
 
             addresses_joined_df = addresses_df.merge(
-                persons_df, how="left", left_on="c_case", right_on="caserecnumber"
+                persons_df, how="left", left_on="c_case", right_on="c_caserecnumber"
             )
 
             addresses_joined_df["person_id"] = addresses_joined_df["id_y"]
@@ -59,7 +57,7 @@ def insert_addresses_clients(db_config, target_db, mapping_file):
             )
 
         except EmptyDataFrame as empty_data_frame:
-            if empty_data_frame.empty_data_frame_type == 'chunk':
+            if empty_data_frame.empty_data_frame_type == "chunk":
                 target_db.create_empty_table(sirius_details=sirius_details)
                 break
             continue
