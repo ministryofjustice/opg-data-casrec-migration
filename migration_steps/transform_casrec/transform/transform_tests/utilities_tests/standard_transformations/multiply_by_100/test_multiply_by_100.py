@@ -14,7 +14,7 @@ def test_multiply_by_100():
     test_data_df = pd.DataFrame(test_data, columns=[x for x in test_data])
 
     expected_data = {
-        new_col: [50.0, 66.0, 200.0, 190.0],
+        new_col: [50, 66, 200, 190],
     }
 
     expected_data_df = pd.DataFrame(expected_data, columns=[x for x in expected_data])
