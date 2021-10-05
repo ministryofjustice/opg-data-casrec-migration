@@ -106,6 +106,7 @@ class ApiTests:
                 "bonds",
                 "client_death_notifications",
                 "deputy_death_notifications",
+                "supervision_level",
             ],
             "preqa": [
                 "clients",
@@ -118,6 +119,7 @@ class ApiTests:
                 "bonds",
                 "client_death_notifications",
                 "deputy_death_notifications",
+                "supervision_level",
             ],
             "qa": [
                 "clients",
@@ -129,6 +131,7 @@ class ApiTests:
                 "bonds",
                 "client_death_notifications",
                 "deputy_death_notifications",
+                "supervision_level",
             ],
             "production": [],
         }
