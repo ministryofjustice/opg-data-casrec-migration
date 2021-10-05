@@ -9,9 +9,6 @@ def update_deputy_feepayer_id(db_config):
     log.info("Updating feepayer id on clients")
 
     query = f"""
-
-        alter table {db_config['target_schema']}.persons add column feepayer_id int;
-
         with feepayer_details as (
                 select persons.id as person_id,  order_deputy.deputy_id
                 from {db_config['target_schema']}.persons
