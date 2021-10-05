@@ -29,7 +29,7 @@ env_path = current_path / "../../../../.env"
 shared_path = current_path / "../../../shared"
 sql_path = shared_path / "sql"
 sql_path_temp = sql_path / "temp"
-fixed_entity_sql_dir = current_path / "fixed_sql"
+fixed_entity_sql_dir = current_path / "sql/fixed_sql"
 load_dotenv(dotenv_path=env_path)
 
 environment = os.environ.get("ENVIRONMENT")
@@ -63,6 +63,7 @@ def get_mappings():
             "deputy_persons",
             "deputy_daytime_phonenumbers",
             "deputy_evening_phonenumbers",
+            # "deputy_feepayer_id"
         ],
         "bonds": ["bonds_active", "bonds_dispensed"],
         "warnings": [
@@ -562,7 +563,6 @@ def write_validation_sql():
 def write_results_sql():
     global validation_dict
     sql_file = open(sql_path_temp / results_sqlfile, "w")
-    print(sql_path_temp / results_sqlfile)
     results_rows = []
     for mapping_name in mappings_to_run:
         validation_dict = get_validation_dict(mapping_name)
@@ -626,6 +626,13 @@ def clear_local_temp_sql():
 
 
 def pre_validation():
+
+    log.info(f"Merging integrated Sirius IDs with casrec csv source data")
+    conn_migration = psycopg2.connect(config.get_db_connection_string("migration"))
+    execute_sql_file(
+        current_path / "sql", "merge_ids_up.sql", conn_migration
+    )
+
     if is_staging is False:
         log.info(f"Validating with SIRIUS")
         log.info(f"Copying casrec csv source data to Sirius for comparison work")
@@ -662,14 +669,6 @@ def pre_validation():
     for mapping_name in mappings_to_run:
         log.info(f"Entity: {mapping_name}")
 
-        mapping_dict = helpers.get_mapping_dict(
-            file_name=mapping_name + "_mapping",
-            only_complete_fields=True,
-            include_pk=False,
-        )
-
-        validation_dict = get_validation_dict(mapping_name)
-
         fixed_sql_path = f"{fixed_entity_sql_dir}/{mapping_name}.sql"
         if os.path.exists(fixed_sql_path):
             log.debug(f"Static validation file found! {fixed_sql_path}")
@@ -678,6 +677,14 @@ def pre_validation():
                 sql_add(line.replace("{target_schema}", str(target_schema)))
             output_statement_to_file()
         else:
+            mapping_dict = helpers.get_mapping_dict(
+                file_name=mapping_name + "_mapping",
+                only_complete_fields=True,
+                include_pk=False,
+            )
+
+            validation_dict = get_validation_dict(mapping_name)
+
             log.debug("Exception Table")
             build_exception_table(mapping_name)
             output_statement_to_file()
@@ -701,11 +708,17 @@ def post_validation():
         config.schemas["public"],
     )
 
+    log.info(f"Un-Merge integrated Sirius IDs with casrec csv source data")
+    conn_migration = psycopg2.connect(config.get_db_connection_string("migration"))
+    execute_sql_file(
+        current_path / "sql", "merge_ids_down.sql", conn_migration
+    )
+
     log.info("REPORT")
     mapping_df = get_mapping_report_df()
     write_results_sql()
     exceptions_df = df_from_sql_file(sql_path_temp, results_sqlfile, conn_target)
-    report_df = mapping_df.merge(exceptions_df, on="mapping")
+    report_df = mapping_df.merge(exceptions_df, on="mapping", how='outer')
     headers = [
         "Casrec Mapping",
         "Rows",
