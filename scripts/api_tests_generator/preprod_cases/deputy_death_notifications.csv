@@ -1,0 +1,6 @@
+endpoint,entity_ref,test_purpose,full_check
+/api/v1/persons/{id}/death-notification,10002199,deputy_proof_true,FALSE
+/api/v1/persons/{id}/death-notification,10001403,deputy_cert_received_date_not_null,FALSE
+/api/v1/persons/{id}/death-notification,10008713,deputy_letter_sent_out_date,FALSE
+/api/v1/persons/{id}/death-notification,10011968,deputy_notified_by_other,FALSE
+/api/v1/persons/{id}/death-notification,10017181,deputy_notified_how_email,FALSE

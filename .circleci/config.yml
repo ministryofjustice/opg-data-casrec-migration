@@ -376,7 +376,7 @@ workflows:
             run and monitor jenkins restore job,
             build infra preproduction
           ]
-          account: "production"
+          account: "preproduction"
           wait_for: "18000"
           tf_workspace: preproduction
           environment: Preproduction

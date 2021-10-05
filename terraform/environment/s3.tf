@@ -10,12 +10,8 @@ resource "aws_s3_bucket" "casrec_migration" {
   lifecycle_rule {
     enabled = true
 
-    expiration {
-      days = 365
-    }
-
     noncurrent_version_expiration {
-      days = 10
+      days = 365
     }
   }
   tags = local.default_tags

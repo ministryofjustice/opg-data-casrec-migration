@@ -236,6 +236,8 @@ def get_endpoint_final(entity_id, endpoint, csv):
 clients_headers = [
     '["clientAccommodation"]["handle"]',
     '["salutation"]',
+    '["firstname"]',
+    '["surname"]',
 ]
 
 deputies_headers = [
@@ -372,7 +374,21 @@ invoices_headers = [
     '["amount"]',
     '["amountOutstanding"]',
     '["status"]["handle"]',
-    '["sopStatus"]["label"]'
+    '["sopStatus"]["label"]',
+]
+
+orders_updated_cases = [
+    '["client"]["firstname"]',
+    '["client"]["surname"]',
+    '["client"]["dob"]',
+    '["client"]["addressLine1"]',
+    '["client"]["postcode"]',
+    '["orderDate"],["orderIssueDate"]',
+    '["orderStatus"]["handle"]',
+    '["deputies"][0]["deputy"]["firstname"]',
+    '["deputies"][0]["deputy"]["surname"]',
+    '["orderSubtype"]["handle"]',
+    '["orderExpiryDate"]',
 ]
 
 csvs = ["invoices"]
