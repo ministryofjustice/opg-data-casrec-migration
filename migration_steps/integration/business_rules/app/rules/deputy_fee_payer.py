@@ -1,4 +1,5 @@
 import logging
+import os
 
 import psycopg2
 
@@ -16,11 +17,11 @@ def update_deputy_feepayer_id(db_config):
                 left outer join {db_config['target_schema']}.order_deputy
                     on person_caseitem.caseitem_id = order_deputy.order_id and order_deputy.c_fee_payer = 'Y'
                 where persons.type='actor_client'
-                and order_deputy.deputy_id is not null
+                and order_deputy.deputy_id not in (select person_id from {db_config['target_schema']}.death_notifications)
             )
 
         update {db_config['target_schema']}.persons
-        set feepayer_id = cast(deputy_id as int)
+        set feepayer_id = deputy_id
         from feepayer_details
         where feepayer_details.person_id = persons.id;
     """
@@ -36,6 +37,7 @@ def update_deputy_feepayer_id(db_config):
 
     except (Exception) as error:
         log.error("Error: %s" % error)
+        os._exit(1)
     finally:
         cursor.close()
         conn.close()
