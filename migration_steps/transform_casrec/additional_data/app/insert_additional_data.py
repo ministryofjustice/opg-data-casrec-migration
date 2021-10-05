@@ -8,6 +8,8 @@ import pandas as pd
 import numpy as np
 from sqlalchemy import create_engine
 
+from db_helpers import replace_string_with_sql_friendly_chars
+
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../shared")
 from helpers import get_additional_data_dict, get_config
@@ -116,18 +118,7 @@ def create_insert_statement(db_config, additional_data_table_name, df):
 
     for i, row in enumerate(df.values.tolist()):
         row = [str(x) for x in row]
-        # row = [
-        #     str(
-        #         x.replace("'", "''")
-        #         .replace("NaT", "")
-        #         .replace("nan", "")
-        #         .replace("<NA>", "")
-        #         .replace("&", "and")
-        #         .replace(";", "-")
-        #         .replace("%", "percent")
-        #     )
-        #     for x in row
-        # ]
+        row = [replace_string_with_sql_friendly_chars(string=x) for x in row]
         row = [f"'{str(x)}'" if str(x) != "" else "NULL" for x in row]
         single_row = ", ".join(row)
 

@@ -4,6 +4,7 @@ import logging
 import sys
 from pathlib import Path
 
+from db_helpers import replace_string_with_sql_friendly_chars
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../shared")
@@ -27,34 +28,13 @@ def handle_special_cases(table_name, df):
 
 
 def replace_with_sql_friendly_chars(row_as_list):
-    row = [
-        str(
-            x.replace("'", "''")
-            .replace("NaT", "")
-            .replace("<NA>", "")
-            .replace("nan", "")
-            .replace("None", "")
-            # .replace("&", "and")
-            # .replace(";", "-")
-            # .replace("%", "percent")
-        )
-        for x in row_as_list
-    ]
+    row = [replace_string_with_sql_friendly_chars(string=x) for x in row_as_list]
 
     return row
 
 
 def replace_with_sql_friendly_chars_single(val):
-    new_val = str(
-        val.replace("'", "''")
-        .replace("NaT", "")
-        .replace("<NA>", "")
-        .replace("nan", "")
-        .replace("None", "")
-        # .replace("&", "and")
-        # .replace(";", "-")
-        # .replace("%", "percent")
-    )
+    new_val = replace_string_with_sql_friendly_chars(string=val)
 
     return new_val
 

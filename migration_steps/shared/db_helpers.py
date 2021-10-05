@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 
 import psycopg2
@@ -285,3 +286,12 @@ def execute_update(conn, df, table, pk_col):
 
     conn.commit()
     cursor.close()
+
+
+def replace_string_with_sql_friendly_chars(string):
+    replacements = {"'": "''", "NaT": "", "<NA>": "", "nan": "", "None": ""}
+
+    for x, y in replacements.items():
+        string = re.sub(r"\b%s\b" % x, y, string)
+
+    return string
