@@ -307,6 +307,7 @@ supervision_level_headers = [
     '["latestSupervisionLevel"]["appliesFrom"]',
     '["latestSupervisionLevel"]["supervisionLevel"]["handle"]',
     '["latestSupervisionLevel"]["assetLevel"]["handle"]',
+    '["latestSupervisionLevel"]["notes"]',
 ]
 
 warnings_headers = ['["warningType"]', '["warningText"]']
@@ -391,7 +392,7 @@ orders_updated_cases = [
     '["orderExpiryDate"]',
 ]
 
-csvs = ["invoices"]
+csvs = []
 
 search_headers = [
     "endpoint",
