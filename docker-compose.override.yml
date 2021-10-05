@@ -28,7 +28,6 @@ services:
   load_casrec:
     volumes:
       - ./migration_steps/load_casrec/app:/load_casrec/app
-      - ./migration_steps/load_fees/app:/load_fees/app
       - ./migration_steps/load_casrec_schema/app:/load_casrec_schema/app
       - ./migration_steps/shared:/shared
 

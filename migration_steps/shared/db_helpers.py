@@ -32,7 +32,7 @@ def delete_all_schemas(log, conn, preserve_schemas):
         information_schema.schemata
         WHERE
         schema_name not like 'pg_%'
-        and schema_name not in ({preserve_schemas}'public', 'information_schema', 'fees');
+        and schema_name not in ({preserve_schemas}'public', 'information_schema');
     """
     cursor.execute(get_schemas_statement)
     schemas = ""
