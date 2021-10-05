@@ -17,7 +17,7 @@ def add_required_columns(
     for col, details in required_columns.items():
 
         default_val = (
-            "" if details["default_value"] == "null" else details["default_value"]
+            "" if details["default_value"] == "none" else details["default_value"]
         )
 
         try:
