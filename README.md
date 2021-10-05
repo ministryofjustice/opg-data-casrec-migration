@@ -561,14 +561,14 @@ aws-vault exec identity -- docker-compose -f docker-compose.commands.yml run --r
 -l casrec-migration-preproduction
 ```
 
-Another example of running a task (this one uploads the fees to preprod):
+Another example of running a task (this one loads casrec data on preprod):
 
 ```
 aws-vault exec identity -- docker-compose -f docker-compose.commands.yml run --rm task_runner ./run_ecs_task.sh \
 -t ecr-tag-you-want-to-use \
 -i load-casrec \
 -n etl1 \
--c python3,load_fees/app/app.py \
+-c python3,load_casrec/app/app.py \
 -l casrec-migration-preproduction
 ```
 

@@ -25,7 +25,6 @@ services:
     environment:
       DEFAULT_CHUNK_SIZE: 20000
       CSV_DIR_SUFFIX: ./data/anon_data
-      FEES_DIR_SUFFIX: ./data/fees
       LOCALSTACK_URL: localstack
     volumes:
       - ./data:/data
