@@ -15,7 +15,9 @@ def update_deputy_feepayer_id(db_config):
                 from {db_config['target_schema']}.persons
                 left outer join {db_config['target_schema']}.person_caseitem on persons.id = person_caseitem.person_id
                 left outer join {db_config['target_schema']}.order_deputy
-                    on person_caseitem.caseitem_id = order_deputy.order_id and order_deputy.c_fee_payer = 'Y'
+                    on person_caseitem.caseitem_id = order_deputy.order_id
+                    and order_deputy.c_fee_payer = 'Y'
+                    and order_deputy.statusoncase = 'ACTIVE'
                 where persons.type='actor_client'
                 and order_deputy.deputy_id not in (select person_id from {db_config['target_schema']}.death_notifications)
             )
