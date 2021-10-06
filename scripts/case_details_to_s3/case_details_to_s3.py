@@ -9,7 +9,9 @@ def operator_session(environment):
     account = {"development": "288342028542", "preproduction": "492687888235"}
     client = boto3.client("sts")
 
-    role_to_assume = f"arn:aws:iam::{account[environment]}:role/migration-pull-case-role.{environment}"
+    role_to_assume = (
+        f"arn:aws:iam::{account[environment]}:role/migration-commands.{environment}"
+    )
     response = client.assume_role(
         RoleArn=role_to_assume, RoleSessionName="assumed_role"
     )
