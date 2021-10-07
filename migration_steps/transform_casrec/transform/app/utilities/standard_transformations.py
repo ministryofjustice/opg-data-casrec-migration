@@ -117,9 +117,7 @@ def first_two_chars(
 
 def add_one_year(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
     df[result_col] = df[original_col].astype(str)
-    df[result_col] = pd.to_datetime(
-        df[result_col], format="%d/%m/%Y %H:%M"
-    ) + pd.offsets.DateOffset(years=1)
+    df[result_col] = pd.to_datetime(df[result_col], dayfirst=True) + pd.offsets.DateOffset(years=1)
     df = df.drop(columns=[original_col])
 
     return df
@@ -129,7 +127,7 @@ def start_of_tax_year(
     original_col: str, result_col: str, df: pd.DataFrame
 ) -> pd.DataFrame:
     df[result_col] = df[original_col].astype(str)
-    df[result_col] = pd.to_datetime(df[result_col], format="%d/%m/%Y %H:%M")
+    df[result_col] = pd.to_datetime(df[result_col], dayfirst=True)
     df[result_col] = (
         df[result_col]
         .dt.to_period("Q-MAR")
@@ -144,7 +142,7 @@ def end_of_tax_year(
     original_col: str, result_col: str, df: pd.DataFrame
 ) -> pd.DataFrame:
     df[result_col] = df[original_col].astype(str)
-    df[result_col] = pd.to_datetime(df[result_col], format="%d/%m/%Y %H:%M")
+    df[result_col] = pd.to_datetime(df[result_col], dayfirst=True)
     df[result_col] = (
         df[result_col]
         .dt.to_period("Q-MAR")

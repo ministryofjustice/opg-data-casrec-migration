@@ -11,7 +11,7 @@ def test_end_of_tax_year():
         "column_1": [
             "28/02/2011 00:00",
             "29/06/2012 00:00",
-            "31/03/2012 00:00",
+            "2012-03-31 00:00:00",
             "01/04/2012 00:00",
         ],
     }
@@ -19,7 +19,12 @@ def test_end_of_tax_year():
     test_data_df = pd.DataFrame(test_data, columns=[x for x in test_data])
 
     expected_data = {
-        new_col: ["2011-03-31", "2013-03-31", "2012-03-31", "2013-03-31"],
+        new_col: [
+            "2011-03-31",
+            "2013-03-31",
+            "2012-03-31",
+            "2013-03-31"
+        ],
     }
 
     expected_data_df = pd.DataFrame(expected_data, columns=[x for x in expected_data])
