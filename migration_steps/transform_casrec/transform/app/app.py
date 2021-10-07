@@ -100,7 +100,9 @@ def main(clear, team, chunk_size):
     log.debug(f"Environment: {environment}")
     log.info(f"Lay Team: {filtered_lay_team}")
     log.info(f"Enabled entities: {', '.join(allowed_entities)}")
-    log.info(f"Enabled features: {', '.join(config.enabled_feature_flags(environment))}")
+    log.info(
+        f"Enabled features: {', '.join(config.enabled_feature_flags(environment))}"
+    )
     log.info(f"Source: {db_config['source_schema']}")
     log.info(f"Target: {db_config['target_schema']}")
     log.info(f"Chunk Size: {db_config['chunk_size']}")
@@ -115,11 +117,11 @@ def main(clear, team, chunk_size):
     if clear:
         clear_tables(db_config=db_config)
 
-    clients.runner(target_db=target_db, db_config=db_config)
     cases.runner(target_db=target_db, db_config=db_config)
+    deputies.runner(target_db=target_db, db_config=db_config)
+    clients.runner(target_db=target_db, db_config=db_config)
     bonds.runner(target_db=target_db, db_config=db_config)
     supervision_level.runner(target_db=target_db, db_config=db_config)
-    deputies.runner(target_db=target_db, db_config=db_config)
     death.runner(target_db=target_db, db_config=db_config)
     events.runner(target_db=target_db, db_config=db_config)
     invoice.runner(target_db=target_db, db_config=db_config)
