@@ -23,6 +23,8 @@ def handle_special_cases(table_name, df):
     if table_name == "persons":
         log.debug("Reformat 'risk_score' to nullable int")
         df["risk_score"] = df["risk_score"].astype("Int64")
+        log.debug("Reformat 'feepayer_id' to nullable int")
+        df["feepayer_id"] = df["feepayer_id"].astype("Int64")
     return df
 
 

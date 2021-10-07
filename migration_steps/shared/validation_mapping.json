@@ -259,7 +259,8 @@
             "createddate",
             "dateofdeath",
             "middlenames",
-            "uid"
+            "uid",
+            "feepayer_id"
         ],
         "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
