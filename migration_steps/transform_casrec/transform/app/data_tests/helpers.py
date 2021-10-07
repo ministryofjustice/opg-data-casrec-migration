@@ -1,6 +1,6 @@
 import pandas as pd
 
-from config import get_config
+from helpers import get_config
 import numpy as np
 
 config = get_config()

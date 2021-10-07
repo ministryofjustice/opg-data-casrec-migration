@@ -172,11 +172,3 @@ class LocalConfig(BaseConfig):
 
         logging.addLevelName(self.DATA, "DATA")
         logging.Logger.data = self.data
-
-
-def get_config(env="local"):
-    if env == "local":
-        config = LocalConfig()
-    else:
-        config = BaseConfig()
-    return config

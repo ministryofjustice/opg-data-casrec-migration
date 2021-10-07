@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-
+# envcheck - leaving this here to make absolutely sure we can't change prod without noticing
 if [ "${ENVIRONMENT}" == "local" ] \
   || [ "${ENVIRONMENT}" == "development" ] \
   || [ "${ENVIRONMENT}" == "preproduction" ] \

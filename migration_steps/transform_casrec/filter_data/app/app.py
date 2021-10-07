@@ -7,7 +7,7 @@ sys.path.insert(0, str(current_path) + "/../../../shared")
 
 import time
 import psycopg2
-from config import get_config
+from helpers import get_config
 from dotenv import load_dotenv
 from helpers import log_title
 from db_helpers import *

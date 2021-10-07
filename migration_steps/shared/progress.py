@@ -19,6 +19,7 @@ config = helpers.get_config(env=environment)
 
 
 def update_progress(module_name, completed_items):
+    # feature_flag generate-progress
     if "generate-progress" not in config.enabled_feature_flags(env=environment):
         return False
 

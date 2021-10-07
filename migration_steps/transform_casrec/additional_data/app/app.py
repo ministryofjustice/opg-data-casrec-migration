@@ -81,6 +81,7 @@ def main(clear):
         f"Using JSON def version '{version_details['version_id']}' last updated {version_details['last_modified']}"
     )
 
+    # feature_flag additional-data
     if "additional-data" not in config.enabled_feature_flags(env=environment):
         log.info("additional-data flag not enabled, exiting")
         return False
