@@ -614,3 +614,24 @@ From the root directory run the following:
 Follow the instructions carefully, being mindful to pick the relevant environment and tag.
 You can then go and have a look at your job running in circle. During the get latest image stage,
 it will actually override with the image you selected and you can check this in the 'show image' stage.
+
+#### Pushing files into S3 in preprod
+
+Because you need more permissions than the operator has in preprod to push files to the s3 bucket,
+you need to assume the role of our migration-command.preproduction role.
+
+To do this you need to put this in `~/.aws/config` (replacing user.name):
+
+```
+[profile mig-s3]
+region=eu-west-1
+role_arn=arn:aws:iam::492687888235:role/migration-commands.preproduction
+source_profile=identity
+mfa_serial=arn:aws:iam::631181914621:mfa/user.name
+```
+
+Then run the following:
+
+```
+aws-vault exec mig-s3 -- aws s3 cp ./my_file s3://casrec-migration-preproduction/folder/my_file --sse AES256
+```

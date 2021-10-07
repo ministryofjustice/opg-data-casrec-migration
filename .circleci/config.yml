@@ -25,66 +25,72 @@ workflows:
   pull_request:
     when: << pipeline.parameters.run_master >>
     jobs:
-      - manage_workflow:
-          name: manage workflow
+#      - manage_workflow:
+#          name: manage workflow
+#          environment: Development
+#          filters: {branches:{ignore:[master]}}
+#      - reset_sirius:
+#          name: reset the sirius fixtures development
+#          requires: [manage workflow]
+#          tf_workspace: development
+#          environment: Development
+#          filters: {branches:{ignore:[master]}}
+#      - build:
+#          name: build and unit tests
+#          requires: [manage workflow]
+#          environment: Development
+#          filters: {branches:{ignore:[master]}}
+#      - infrastructure:
+#          name: build shared infra development
+#          requires: [build and unit tests]
+#          tf_workspace: development
+#          tf_command: apply
+#          environment: Development
+#          folder: shared
+#          filters: {branches:{ignore:[master]}}
+#      - load_casrec_db:
+#          name: load casrec db
+#          requires: [build shared infra development]
+#          environment: Development
+#          filters: {branches:{ignore:[master]}}
+#      - infrastructure:
+#          name: plan infra development
+#          requires: [build shared infra development]
+#          tf_workspace: development
+#          tf_command: plan
+#          environment: Development
+#          filters: {branches:{ignore:[master]}}
+#      - infrastructure:
+#          name: build infra development
+#          requires: [plan infra development]
+#          tf_workspace: development
+#          tf_command: apply
+#          environment: Development
+#          filters: {branches:{ignore:[master]}}
+#      - run_step_function:
+#          name: run the step function development
+#          requires: [build infra development, load casrec db, reset the sirius fixtures development]
+#          tf_workspace: development
+#          environment: Development
+#          filters: {branches:{ignore:[master]}}
+#      - run_api_tests:
+#          name: run api tests
+#          requires: [run the step function development]
+#          tf_workspace: development
+#          environment: Development
+#          filters: {branches:{ignore:[master]}}
+#      - run_api_tests:
+#          name: run functional api tests
+#          requires: [run api tests]
+#          tf_workspace: development
+#          environment: Development
+#          runner_command: functional-api-tests
+#          filters: {branches:{ignore:[master]}}
+      - job_complete:
+          name: job complete notification
+#          requires: [run functional api tests]
+          workspace: development
           environment: Development
-          filters: {branches:{ignore:[master]}}
-      - reset_sirius:
-          name: reset the sirius fixtures development
-          requires: [manage workflow]
-          tf_workspace: development
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-      - build:
-          name: build and unit tests
-          requires: [manage workflow]
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-      - infrastructure:
-          name: build shared infra development
-          requires: [build and unit tests]
-          tf_workspace: development
-          tf_command: apply
-          environment: Development
-          folder: shared
-          filters: {branches:{ignore:[master]}}
-      - load_casrec_db:
-          name: load casrec db
-          requires: [build shared infra development]
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-      - infrastructure:
-          name: plan infra development
-          requires: [build shared infra development]
-          tf_workspace: development
-          tf_command: plan
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-      - infrastructure:
-          name: build infra development
-          requires: [plan infra development]
-          tf_workspace: development
-          tf_command: apply
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-      - run_step_function:
-          name: run the step function development
-          requires: [build infra development, load casrec db, reset the sirius fixtures development]
-          tf_workspace: development
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-      - run_api_tests:
-          name: run api tests
-          requires: [run the step function development]
-          tf_workspace: development
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-      - run_api_tests:
-          name: run functional api tests
-          requires: [run api tests]
-          tf_workspace: development
-          environment: Development
-          runner_command: functional-api-tests
           filters: {branches:{ignore:[master]}}
 
   master:
@@ -155,29 +161,28 @@ workflows:
           tf_workspace: preproduction
           environment: Preproduction
           filters: {branches:{only:[master]}}
+      - run_api_tests:
+          name: run api tests preproduction
+          requires: [tag image for qa]
+          tf_workspace: preproduction
+          environment: Preproduction
+          filters: {branches:{only:[master]}}
+      - run_elasticsearch_reset:
+          name: full reindex elasticsearch preprod
+          requires: [run the step function preproduction]
+          tf_workspace: preproduction
+          environment: Preproduction
+          filters: {branches:{only:[master]}}
+      - job_complete:
+          name: job complete notification
+          requires: [run api tests preproduction]
+          environment: Preproduction
+          filters: {branches:{ignore:[master]}}
       - tag_image_for_environment:
           name: tag image for qa
           environment: Preproduction
           environment_tag: qa
           requires: [run the step function preproduction]
-          filters: {branches:{only:[master]}}
-      - run_api_tests:
-          name: run api tests
-          requires: [tag image for qa]
-          tf_workspace: preproduction
-          environment: Preproduction
-          filters: {branches:{only:[master]}}
-      - approve:
-          name: approve full elastic reset preprod
-          type: approval
-          requires: [build infra preproduction]
-          environment: Preproduction
-          filters: {branches:{only:[master]}}
-      - run_elasticsearch_reset:
-          name: full reindex elasticsearch preprod
-          requires: [approve full elastic reset preprod]
-          tf_workspace: preproduction
-          environment: Preproduction
           filters: {branches:{only:[master]}}
       - approve:
           name: approve qa kick off
@@ -203,7 +208,12 @@ workflows:
           requires: [approve preqa kick off]
           environment: Preproduction
           filters: {branches:{only:[master]}}
-
+      - job_complete:
+          name: job complete notification
+          requires: [run api tests]
+          environment: Preproduction
+          workspace: preproduction
+          filters: {branches:{ignore:[master]}}
   preqa:
     when: << pipeline.parameters.run_preqa >>
     jobs:
@@ -245,19 +255,18 @@ workflows:
           tf_workspace: preqa
           environment: PreQualityAssurance
           filters: {branches:{only:[master]}}
-      - approve:
-          name: approve full elastic reset preqa
-          type: approval
-          requires: [build infra preqa]
-          environment: PreQualityAssurance
-          filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch preqa
-          requires: [approve full elastic reset preqa]
+          requires: [run the step function preqa]
           tf_workspace: preqa
           environment: PreQualityAssurance
           filters: {branches:{only:[master]}}
-
+      - job_complete:
+          name: job complete notification
+          requires: [run api tests preqa]
+          environment: PreQualityAssurance
+          workspace: preqa
+          filters: {branches:{ignore:[master]}}
   qa:
     when: << pipeline.parameters.run_qa >>
     jobs:
@@ -299,18 +308,18 @@ workflows:
           environment_tag: production
           requires: [run the step function qa]
           filters: {branches:{only:[master]}}
-      - approve:
-          name: approve full elastic reset qa
-          type: approval
-          requires: [build infra qa]
-          environment: Quality Assurance
-          filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch qa
-          requires: [approve full elastic reset qa]
+          requires: [run the step function qa]
           tf_workspace: qa
           environment: Quality Assurance
           filters: {branches:{only:[master]}}
+      - job_complete:
+          name: job complete notification
+          requires: [run the step function qa]
+          environment: Quality Assurance
+          workspace: qa
+          filters: {branches:{ignore:[master]}}
 
   production:
     when: << pipeline.parameters.run_production >>
@@ -388,14 +397,14 @@ workflows:
           requires: [run the step function preproduction]
           filters: {branches:{only:[master]}}
       - run_api_tests:
-          name: run api tests
+          name: run api tests preproduction
           requires: [tag image for qa]
           tf_workspace: preproduction
           environment: Preproduction
           filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
-          name: full reindex elasticsearch preprod
-          requires: [run api tests]
+          name: full reindex elasticsearch preproduction
+          requires: [run api tests preproduction]
           tf_workspace: preproduction
           environment: Preproduction
           filters: {branches:{only:[master]}}
@@ -423,6 +432,59 @@ workflows:
           requires: [approve preqa kick off]
           environment: Preproduction
           filters: {branches:{only:[master]}}
+      - job_complete:
+          name: job complete notification
+          requires: [run api tests preproduction]
+          environment: Preproduction
+          workspace: preproduction
+          filters: {branches:{ignore:[master]}}
+
+  nightly_preqa_run:
+    triggers:
+      - schedule:
+          cron: "10 07 * * *"
+          filters: {branches:{only:[master]}}
+    jobs:
+      - get_latest_image:
+          name: get latest tag preqa
+          image_tag: qa
+          environment: PreQA
+          filters: {branches:{only:[master]}}
+      - reset_sirius_full_restore:
+          name: run and monitor jenkins restore job
+          environment: PreQA
+          sirius_environment: casrecdmpp
+          filters: {branches:{only:[master]}}
+      - infrastructure:
+          name: build infra preqa
+          requires: [get latest tag preqa]
+          tf_workspace: preqa
+          tf_command: apply
+          environment: PreQA
+          filters: {branches:{only:[master]}}
+      - run_step_function:
+          name: run the step function preqa
+          requires: [
+            run and monitor jenkins restore job,
+            build infra preqa
+          ]
+          account: "preqa"
+          wait_for: "18000"
+          tf_workspace: preqa
+          environment: PreQA
+          filters: {branches:{only:[master]}}
+      - run_elasticsearch_reset:
+          name: full reindex elasticsearch preqa
+          requires: [run the step function preqa]
+          tf_workspace: preqa
+          environment: PreQA
+          filters: {branches:{only:[master]}}
+      - job_complete:
+          name: job complete notification
+          requires: [run the step function preqa]
+          environment: PreQA
+          workspace: preqa
+          filters: {branches:{ignore:[master]}}
 
 orbs:
   aws-cli: circleci/aws-cli@1.3.0
@@ -563,6 +625,7 @@ orbs:
               name: set entities environment variables
               when: always
               command: |
+                pip3 install boto3 click
                 python3 get_environment_entities.py --environment ${TF_WORKSPACE} --role migrations-ci >> ENTITIES
                 ENTITIES=$(cat ENTITIES)
                 echo "export ENTITIES=\"${ENTITIES}\"" >> $BASH_ENV
@@ -859,7 +922,7 @@ jobs:
           working_directory: ~/project/scripts/ci_scripts
       - notififications/notify_env_vars
       - notififications/notify_if_fail
-      - notififications/notify_if_success
+
   run_api_tests:
     executor: terraform/terraform
     resource_class: small
@@ -1240,3 +1303,28 @@ jobs:
           working_directory: ~/project/scripts/ci_scripts
       - notififications/notify_env_vars
       - notififications/notify_if_fail
+
+  job_complete:
+    executor: migration/python
+    resource_class: small
+    parameters:
+      environment:
+        description: environment for step function
+        type: string
+        default: "Development"
+      workspace:
+        description: workspace to get entities from
+        type: string
+        default: "development"
+    environment:
+      ENVIRONMENT: << parameters.environment >>
+      TF_WORKSPACE: << parameters.workspace >>
+    steps:
+      - checkout:
+          path: ~/project
+      - run:
+          name: Job Completed Successfully
+          command: echo "Job Completed Successfully"
+      - notififications/notify_env_vars
+      - notififications/notify_if_fail
+      - notififications/notify_if_success

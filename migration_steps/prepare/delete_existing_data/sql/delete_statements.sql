@@ -27,7 +27,7 @@ delete from cases where feepayer_id in (select id from persons where type in ('a
 delete from cases where correspondent_id in (select id from persons where type in ('actor_client', 'actor_deputy') and caseactorgroup is null);
 delete from annual_report_logs where client_id in (select id from persons where type in ('actor_client', 'actor_deputy') and caseactorgroup is null);
 delete from addresses where person_id in (select id from persons where type in ('actor_client', 'actor_deputy') and caseactorgroup is null);
-delete from bonds where order_id in (select id from cases where client_id in (select id from persons where type in ('actor_client', 'actor_deputy') and caseactorgroup is null));
+delete from bonds where order_id in (select id from cases where client_id in (select id from persons where (type in ('actor_client', 'actor_deputy') and caseactorgroup is null) or clientsource = 'CASRECMIGRATION'));
 delete from document_secondaryrecipient where person_id in (select id from persons where type in ('actor_client', 'actor_deputy') and caseactorgroup is null);
 delete from documents where correspondent_id in (select id from persons where type in ('actor_client', 'actor_deputy') and caseactorgroup is null);
 delete from cases where client_id in (select id from persons where type in ('actor_client', 'actor_deputy') and caseactorgroup is null);
