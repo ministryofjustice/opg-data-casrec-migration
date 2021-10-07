@@ -33,7 +33,7 @@ locals {
       },
       {
         name      = "CASREC_DB_PASSWORD",
-        valueFrom = aws_secretsmanager_secret.casrec_migration.arn
+        valueFrom = data.aws_secretsmanager_secret.casrec_migration_load.arn
       },
     ],
     environment = [

@@ -1,7 +1,7 @@
-data "aws_secretsmanager_secret" "casrec_migration" {
-  name = "${local.account.name}/casrec-migration-database-password"
+resource "aws_secretsmanager_secret" "casrec_migration_load" {
+  name = "${local.account.name}/casrec-migration-load-database-password"
 }
 
-data "aws_secretsmanager_secret_version" "database_password" {
-  secret_id = data.aws_secretsmanager_secret.casrec_migration.id
+data "aws_secretsmanager_secret_version" "casrec_migration_load" {
+  secret_id = aws_secretsmanager_secret.casrec_migration_load.id
 }
