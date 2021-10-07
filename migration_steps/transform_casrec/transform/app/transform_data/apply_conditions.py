@@ -192,8 +192,13 @@ def filter_recent_or_open_invoices(df, cols, debt_col):
         f"Removing rows where '{col}' is on or before {date_from} and {debt_col} is null"
     )
 
-    df[col] = pd.to_datetime(df[col], format="%d/%m/%Y %H:%M")
-    df = df[(df[col] > date_from) | (df[debt_col].notnull())]
+    def is_recent_or_open(date_col, debt_col):
+        src_date = pd.to_datetime(date_col, dayfirst=True)
+        src_datetime = src_date.to_pydatetime()
+        is_recent = src_datetime > date_from
+        return is_recent | pd.notnull(debt_col)
+
+    df = df[df.apply(lambda x: is_recent_or_open(x[col], x[debt_col]), axis=1)]
 
     return df
 
