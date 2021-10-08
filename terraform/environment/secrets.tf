@@ -26,3 +26,7 @@ data "aws_secretsmanager_secret_version" "circle_token" {
   count     = local.account.name == "development" ? 1 : 0
   secret_id = aws_secretsmanager_secret.circle_token.0.id
 }
+
+data "aws_secretsmanager_secret" "casrec_migration_load" {
+  name = "${local.account.name}/casrec-migration-load-database-password"
+}

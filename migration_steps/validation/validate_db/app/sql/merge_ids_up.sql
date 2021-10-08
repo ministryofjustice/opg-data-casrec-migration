@@ -3,5 +3,6 @@ ALTER TABLE casrec_csv.deputy ADD sirius_id int;
 UPDATE casrec_csv.deputy
     SET sirius_id = persons.id
     FROM integration.persons
-    WHERE CAST(integration.persons.casrec_row_id AS INT) = deputy.casrec_row_id;
+    WHERE CAST(integration.persons.casrec_row_id AS INT) = deputy.casrec_row_id
+    AND integration.persons.type = 'actor_deputy';
 CREATE INDEX ON casrec_csv.deputy (sirius_id);

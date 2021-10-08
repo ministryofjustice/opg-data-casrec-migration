@@ -6,6 +6,7 @@ from transform_data.unique_id import add_unique_id
 from utilities.basic_data_table import get_basic_data_table
 import pandas as pd
 from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
+from utilities.generate_source_query import format_additional_col_alias
 
 log = logging.getLogger("root")
 
@@ -53,7 +54,9 @@ def insert_order_deputies(db_config, target_db, mapping_file):
         deputies_df = existing_deputies_merged_df.drop(columns=["id_x"])
 
         # deputyship
-        deputyship_query = f"""select "Deputy No", "CoP Case" from {db_config["source_schema"]}.deputyship;"""
+        deputyship_query = f"""select "Deputy No", "CoP Case",
+            "Fee Payer" as {format_additional_col_alias(original_column_name='Fee Payer')}
+            from {db_config["source_schema"]}.deputyship;"""
         deputyship_df = pd.read_sql_query(
             deputyship_query, db_config["db_connection_string"]
         )
@@ -111,5 +114,8 @@ def insert_order_deputies(db_config, target_db, mapping_file):
     except Exception as e:
         log.debug(
             "No data to insert",
-            extra={"file_name": "", "error": format_error_message(e=e),},
+            extra={
+                "file_name": "",
+                "error": format_error_message(e=e),
+            },
         )

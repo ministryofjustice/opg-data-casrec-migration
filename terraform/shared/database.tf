@@ -8,7 +8,7 @@ resource "aws_rds_cluster" "casrec_load_db" {
   engine                       = "aurora-postgresql"
   engine_mode                  = "serverless"
   master_username              = "casrec"
-  master_password              = data.aws_secretsmanager_secret_version.database_password.secret_string
+  master_password              = data.aws_secretsmanager_secret_version.casrec_migration_load.secret_string
   preferred_backup_window      = "04:15-04:45"
   preferred_maintenance_window = "mon:04:50-mon:05:20"
   storage_encrypted            = true
