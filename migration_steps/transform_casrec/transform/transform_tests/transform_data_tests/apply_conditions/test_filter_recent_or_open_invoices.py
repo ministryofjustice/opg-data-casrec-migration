@@ -1,5 +1,3 @@
-import datetime
-
 import pandas as pd
 from pandas._testing import assert_frame_equal
 
@@ -9,16 +7,21 @@ from transform_data.apply_conditions import filter_recent_or_open_invoices
 def test_filter_recent_or_open_invoices():
     debt_col = "Outstanding Amount"
     test_data = {
-        "c_test_date_col": ["10/10/2014 00:00", "31/03/2015 23:59", "01/04/2015 00:00", "01/04/2017 00:00"],
+        "c_test_date_col": [
+            "10/10/2014 00:00:00",
+            "31/03/2015 23:59:00",
+            "01/04/2015 00:00",
+            "2017-04-01 00:00:00"
+        ],
         debt_col: ["100", None, None, None],
     }
     test_data_df = pd.DataFrame(test_data, columns=[x for x in test_data])
 
     expected_data = {
         "c_test_date_col": [
-            datetime.datetime(2014, 10, 10, 0, 0),
-            datetime.datetime(2015, 4, 1, 0, 0),
-            datetime.datetime(2017, 4, 1, 0, 0)
+            "10/10/2014 00:00:00",
+            "01/04/2015 00:00",
+            "2017-04-01 00:00:00"
         ],
         debt_col: ["100", None, None],
     }

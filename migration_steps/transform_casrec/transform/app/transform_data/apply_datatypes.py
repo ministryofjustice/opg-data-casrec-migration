@@ -34,6 +34,10 @@ def apply_datatypes(mapping_details: Dict, df: pd.DataFrame) -> pd.DataFrame:
         try:
             if datatype == "datetime64[ns]":
                 df[col] = pd.to_datetime(df[col], errors="ignore")
+            elif datatype == "int":
+                df[col] = df[col].apply(lambda x: np.nan if x == "" else x)
+                df[col] = df[col].astype("float")
+                df[col] = df[col].astype("Int64")
             elif datatype == "bool":
                 df[col] = np.where(
                     df[col].isnull(),
@@ -55,12 +59,13 @@ def apply_datatypes(mapping_details: Dict, df: pd.DataFrame) -> pd.DataFrame:
 
 def reapply_datatypes_to_fk_cols(columns, df):
     log.debug("Reapplying fk datatypes")
+    final_df = df.copy()
     for col in columns:
         try:
             log.debug(f"Changing {col} to int64")
-            df[col] = df[col].astype("float")
-            df[col] = df[col].astype("Int64")
+            final_df[col] = final_df[col].astype("float")
+            final_df[col] = final_df[col].astype("Int64")
         except Exception as e:
             log.error(f"Error reapplying datatypes to fks: {e}")
             os._exit(1)
-    return df
+    return final_df

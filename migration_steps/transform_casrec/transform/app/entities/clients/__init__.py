@@ -1,6 +1,7 @@
 import logging
 
 from entities.clients.addresses import insert_addresses_clients
+from entities.clients.person_caseitem import insert_person_caseitem
 from entities.clients.persons import insert_persons_clients
 from entities.clients.phonenumbers import insert_phonenumbers_clients
 from helpers import log_title, check_entity_enabled
@@ -19,7 +20,8 @@ def runner(target_db, db_config):
     """
 
     entity_name = "clients"
-    if not check_entity_enabled(entity_name):
+    extra_entities = ["cases", "deputies"]
+    if not check_entity_enabled(entity_name, extra_entities):
         return False
 
     log.info(log_title(message=entity_name))
@@ -43,6 +45,10 @@ def runner(target_db, db_config):
         mapping_file="client_phonenumbers",
         target_db=target_db,
         db_config=db_config,
+    )
+    log.debug("insert_person_caseitem")
+    insert_person_caseitem(
+        target_db=target_db, db_config=db_config, mapping_file="person_caseitem"
     )
 
 
