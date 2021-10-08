@@ -28,5 +28,5 @@ data "aws_secretsmanager_secret_version" "circle_token" {
 }
 
 data "aws_secretsmanager_secret" "casrec_migration_load" {
-  name = "${local.account.name}/casrec-migration-load-database-password"
+  name = "${local.account.account_name}/casrec-migration-load-database-password"
 }
