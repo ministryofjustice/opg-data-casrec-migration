@@ -453,7 +453,7 @@ workflows:
       - reset_sirius_full_restore:
           name: run and monitor jenkins restore job
           environment: PreQA
-          sirius_environment: casrecdmpp
+          sirius_environment: casrecdmpq
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: build infra preqa
