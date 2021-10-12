@@ -1,4 +1,7 @@
 delete from visits where client_id in (select id from persons where type in ('actor_client', 'actor_deputy') and caseactorgroup is null);
+
+
+
 delete from supervision_notes where person_id in (select id from persons where type in ('actor_client', 'actor_deputy') and caseactorgroup is null);
 delete from supervision_notes where source_clientriskscore_id in (select id from persons where type in ('actor_client', 'actor_deputy') and caseactorgroup is null);
 delete from powerofattorney_person where person_id in (select id from persons where type in ('actor_client', 'actor_deputy') and caseactorgroup is null);
