@@ -81,8 +81,8 @@ def get_mappings():
         "death": [
             "client_death_notifications",
             "deputy_death_notifications",
-        ]
-        # "visits": ["visits"],
+        ],
+        "visits": ["visits"],
         # "remarks": ["notes"]
     }
 
