@@ -34,7 +34,8 @@ def insert_tasks(db_config, target_db, mapping_file):
                 chunk_details={"chunk_size": chunk_size, "offset": offset},
             )
 
-            # TODO filter by status
+            # filter so we only have ACTIVE and INACTIVE statuses
+            tasks_df = tasks_df[tasks_df['status'].str.strip().isin(['ACTIVE', 'INACTIVE'])]
 
             target_db.insert_data(
                 table_name=table_definition["destination_table_name"],
