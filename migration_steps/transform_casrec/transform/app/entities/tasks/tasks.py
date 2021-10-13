@@ -1,9 +1,12 @@
+import logging
+
 import pandas as pd
 from utilities.basic_data_table import get_basic_data_table
 
 from custom_errors import EmptyDataFrame
 from helpers import get_mapping_dict, get_table_def
 
+log = logging.getLogger("root")
 
 def insert_tasks(db_config, target_db, mapping_file):
     chunk_size = db_config["chunk_size"]
@@ -30,6 +33,8 @@ def insert_tasks(db_config, target_db, mapping_file):
                 sirius_details=sirius_details,
                 chunk_details={"chunk_size": chunk_size, "offset": offset},
             )
+
+            # TODO filter by status
 
             target_db.insert_data(
                 table_name=table_definition["destination_table_name"],

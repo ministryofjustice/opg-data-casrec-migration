@@ -2,6 +2,7 @@ import logging
 
 from helpers import log_title, check_entity_enabled
 from entities.tasks.tasks import insert_tasks
+from entities.tasks.person_task import insert_person_task
 
 log = logging.getLogger("root")
 
@@ -24,6 +25,9 @@ def runner(target_db, db_config):
 
     log.debug("insert_tasks")
     insert_tasks(target_db=target_db, db_config=db_config, mapping_file="tasks")
+
+    log.debug("insert_person_task")
+    insert_person_task(target_db=target_db, db_config=db_config, mapping_file="person_task")
 
 
 if __name__ == "__main__":
