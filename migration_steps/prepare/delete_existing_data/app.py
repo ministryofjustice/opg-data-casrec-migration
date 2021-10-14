@@ -46,7 +46,7 @@ completed_tables = []
 def main():
     log.info(helpers.log_title(message="Delete data adjoining sirius data"))
     log.critical(
-        "THIS IS A DEVELOPMENT ONLY SCRIPT - IT MUST NEVER RUN ON PRODUCTION DATA"
+        "THIS IS A DEVELOPMENT ONLY SCRIPT - IT MUST NOT BE RUN ON PRODUCTION DATA UNTIL FULLY TESTED AND APPROVED!"
     )
     log.info(
         helpers.log_title(
@@ -55,17 +55,26 @@ def main():
     )
     log.info(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
+    sql_statements = []
+    sql_statement = ""
+
+    with open(f"{current_path}/sql/delete_statements.sql", "r") as lines:
+
+        for line in lines:
+            if len(line) > 0:
+                if ";" not in line:
+                    sql_statement += f"{line.strip()}\n"
+                else:
+                    sql_statement += f"{line.strip()}\n"
+                    sql_statements.append(sql_statement)
+                    sql_statement = ""
+    log.info(f"Finished preparing delete statements to run")
+
     if os.environ.get("ENVIRONMENT") in ["local", "preproduction", "preqa", "qa"]:
-        with open(
-            f"{current_path}/sql/delete_statements.sql", "r"
-        ) as delete_statements:
-            for delete_statement in delete_statements:
-                if len(delete_statement) > 0:
-                    log.info(f"Running delete statement - {delete_statement}")
-                    delete_statement = delete_statement.strip()
-                    response = target_db_engine.execute(delete_statement)
-                    log.info(f"{response.rowcount} rows updated\n")
-        log.info(f"Finished running delete statements on skeleton cases")
+        for statement in sql_statements:
+            log.info(f"Running statement: \n{statement}")
+            response = target_db_engine.execute(statement)
+            log.info(f"{response.rowcount} rows updated\n")
     else:
         log.info(f"Not running delete statements {os.environ.get('ENVIRONMENT')}!")
 
