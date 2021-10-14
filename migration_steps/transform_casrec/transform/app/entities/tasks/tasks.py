@@ -41,7 +41,7 @@ def insert_tasks(db_config, target_db, mapping_file):
             tasks_df = tasks_df[tasks_df['status'].str.contains(r'ACTIVE|INACTIVE')]
 
             # only attempt the insert if we have tasks left to insert
-            if num_tasks > 0:
+            if len(tasks_df) > 0:
                 # set status to 'Not started'; note that we have to do this here,
                 # as we need the original status as-is to filter out undesirable records
                 tasks_df['status'] = 'Not started'
