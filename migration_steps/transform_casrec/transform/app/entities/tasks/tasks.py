@@ -35,7 +35,7 @@ def insert_tasks(db_config, target_db, mapping_file):
             )
 
             # filter so we only have ACTIVE and INACTIVE statuses
-            tasks_df = tasks_df[tasks_df['status'].str.strip().isin(['ACTIVE', 'INACTIVE'])]
+            tasks_df = tasks_df[tasks_df['status'].str.contains(r'ACTIVE|INACTIVE')]
 
             target_db.insert_data(
                 table_name=table_definition["destination_table_name"],
@@ -45,6 +45,7 @@ def insert_tasks(db_config, target_db, mapping_file):
             )
 
         except EmptyDataFrame as empty_data_frame:
+            log.info('Creating empty tasks table')
             target_db.create_empty_table(sirius_details=sirius_details)
             break
 
