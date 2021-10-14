@@ -368,7 +368,7 @@ workflows:
           environment: PreproductionNightly
           filters: {branches:{only:[master]}}
       - reset_sirius_full_restore:
-          name: run and monitor jenkins restore job
+          name: run and monitor jenkins restore job pre
           environment: PreproductionNightly
           sirius_environment: casrecdmpp
           filters: {branches:{only:[master]}}
@@ -382,7 +382,7 @@ workflows:
       - run_step_function:
           name: run the step function preproduction
           requires: [
-            run and monitor jenkins restore job,
+            run and monitor jenkins restore job pre,
             build infra preproduction
           ]
           account: "preproduction"
@@ -451,7 +451,7 @@ workflows:
           environment: PreQANightly
           filters: {branches:{only:[master]}}
       - reset_sirius_full_restore:
-          name: run and monitor jenkins restore job
+          name: run and monitor jenkins restore job preqa
           environment: PreQANightly
           sirius_environment: casrecdmpq
           filters: {branches:{only:[master]}}
@@ -465,7 +465,7 @@ workflows:
       - run_step_function:
           name: run the step function preqa
           requires: [
-            run and monitor jenkins restore job,
+            run and monitor jenkins restore job preqa,
             build infra preqa
           ]
           account: "preqa"
@@ -560,7 +560,7 @@ orbs:
     executors:
       python:
         docker:
-          - image: circleci/python:3
+          - image: cimg/python:3.9.5
             auth:
               username: $DOCKER_USER
               password: $DOCKER_ACCESS_TOKEN
