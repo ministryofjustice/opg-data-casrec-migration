@@ -874,6 +874,45 @@
           "identifiers": []
         }
     },
+    "tasks": {
+        "exclude": [
+            "completedby_id"
+        ],
+        "casenumber_source": "client_persons.caserecnumber",
+        "orderby": {},
+        "casrec": {
+            "from_table": "SUP_ACTIVITY",
+            "transform": {},
+            "joins": [
+                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.sup_activity.\"Case\""
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_tasks exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "where_clauses": [
+                "casrec_csv.sup_activity.\"Status\" IN ('INACTIVE','ACTIVE')"
+            ]
+        },
+        "sirius": {
+            "from_table": "tasks",
+            "transform": {
+                "createdtime": "to_char({col}, 'YYYY-MM-DD')",
+                "activedate": "to_char({col}, 'YYYY-MM-DD')",
+                "duedate": "to_char({col}, 'YYYY-MM-DD')"
+            },
+            "joins": [
+                "LEFT JOIN {target_schema}.person_task pt ON pt.task_id = tasks.id",
+                "LEFT JOIN {target_schema}.persons ON persons.id = pt.person_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_tasks exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "tasks.status = 'Not started'",
+                "persons.type = 'actor_client'"
+            ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
+    },
     "visits": {
         "exclude": [
             "client_id"
