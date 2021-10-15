@@ -26,7 +26,7 @@ def insert_tasks(db_config, target_db, mapping_file):
         chunk_no += 1
 
         try:
-            # this throws EmptyDataFrame exception if there are no more records
+            # this raises EmptyDataFrame exception if there are no more records
             tasks_df = get_basic_data_table(
                 db_config=db_config,
                 mapping_file_name=mapping_file_name,
@@ -37,12 +37,12 @@ def insert_tasks(db_config, target_db, mapping_file):
 
             num_tasks = len(tasks_df)
 
-            # filter so we only have ACTIVE and INACTIVE statuses
             tasks_df = tasks_df[tasks_df['status'].str.contains(r'ACTIVE|INACTIVE')]
 
-            # only attempt the insert if we have tasks left to insert
+            # check before insert, otherwise an empty dataframe causes EmptyDataFrame
+            # exception, which would lead to skipping later chunks
             if len(tasks_df) > 0:
-                # set status to 'Not started'; note that we have to do this here,
+                # set status to 'Not started'; we have to do this here,
                 # as we need the original status as-is to filter out undesirable records
                 tasks_df['status'] = 'Not started'
 
