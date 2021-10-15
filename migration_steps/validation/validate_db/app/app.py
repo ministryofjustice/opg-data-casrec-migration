@@ -570,13 +570,7 @@ def write_results_sql():
         results_rows.append(
             f"SELECT '{mapping_name}' AS mapping,\n"
             f"(SELECT COUNT(*) FROM {source_schema}.{casrec_table_name}) as attempted,\n"
-            f"(SELECT COUNT(*) FROM {get_exception_table(mapping_name)}),\n"
-            f"(SELECT CONCAT( CAST( CAST( (\n"
-            f"    (SELECT COUNT(*) FROM {get_exception_table(mapping_name)}) / \n"
-            f"    (SELECT COUNT(*) FROM {source_schema}.{casrec_table_name})::FLOAT) * 100 AS NUMERIC) AS TEXT), '%'))\n"
-            # f"CAST((SELECT json_agg(vary) AS affected_columns FROM (\n"
-            # f"    SELECT DISTINCT unnest(vary_columns) as vary FROM {get_exception_table(mapping_name)}\n"
-            # f") t1) AS TEXT)\n"
+            f"(SELECT COUNT(*) FROM {get_exception_table(mapping_name)})\n"
         )
     separator = "UNION\n"
     sql_file.writelines(separator.join(results_rows))
@@ -722,9 +716,7 @@ def post_validation():
         "Mapped",
         "Complete (%)",
         "Attempted",
-        "Failed",
-        "Fail rate",
-        # "Mismatches in...",
+        "Failed"
     ]
     report_table = tabulate(report_df, headers, tablefmt="psql")
     print(report_table)
