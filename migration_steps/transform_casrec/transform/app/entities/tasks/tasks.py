@@ -37,15 +37,9 @@ def insert_tasks(db_config, target_db, mapping_file):
 
             num_tasks = len(tasks_df)
 
-            tasks_df = tasks_df[tasks_df['status'].str.contains(r'ACTIVE|INACTIVE')]
-
             # check before insert, otherwise an empty dataframe causes EmptyDataFrame
             # exception, which would lead to skipping later chunks
             if len(tasks_df) > 0:
-                # set status to 'Not started'; we have to do this here,
-                # as we need the original status as-is to filter out undesirable records
-                tasks_df['status'] = 'Not started'
-
                 target_db.insert_data(
                     table_name=table_definition["destination_table_name"],
                     df=tasks_df,
