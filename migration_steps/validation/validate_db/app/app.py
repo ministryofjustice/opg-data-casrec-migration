@@ -51,10 +51,10 @@ def get_mappings():
 
     allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
     all_mappings = {
-        "clients": ["client_addresses", "client_persons", "client_phonenumbers",],
+        "clients": ["client_addresses", "client_persons", "client_phonenumbers"],
         "cases": ["cases"],
-        "crec": ["crec_persons",],
-        "supervision_level": ["supervision_level_log",],
+        "crec": ["crec_persons"],
+        "supervision_level": ["supervision_level_log"],
         "deputies": [
             "deputy_persons",
             "deputy_daytime_phonenumbers",
@@ -70,7 +70,7 @@ def get_mappings():
             "deputy_special_warnings",
             "deputy_violent_warnings",
         ],
-        "death": ["client_death_notifications", "deputy_death_notifications",],
+        "death": ["client_death_notifications", "deputy_death_notifications"],
         "visits": ["visits"],
         "tasks": ["tasks"]
         # "remarks": ["notes"]
@@ -787,13 +787,6 @@ def main(team, staging):
 
     log.info("RUN POST VALIDATION")
     post_validation()
-
-    if get_exception_count() > 0:
-        if environment in ["local"]:
-            exit(1)
-        log.info("Exceptions WERE found: override / continue anyway\n")
-    else:
-        log.info("No exceptions found: continue...\n")
 
 
 if __name__ == "__main__":
