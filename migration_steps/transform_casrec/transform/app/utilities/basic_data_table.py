@@ -57,7 +57,7 @@ def get_basic_data_table(
 
     if len(source_data_df) == 0:
         log.debug(f"No data returned from database")
-        raise EmptyDataFrame
+        raise EmptyDataFrame(df=source_data_df)
 
     result_df = transform.perform_transformations(
         mapping_definitions=mapping_dict,

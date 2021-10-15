@@ -259,13 +259,13 @@ class InsertData:
             log.error("Multiple dest tables")
             return ""
 
-    def create_empty_table(self, sirius_details):
+    def create_empty_table(self, sirius_details, df=None):
         table_name = self._get_dest_table(mapping_dict=sirius_details)
         if self._check_table_exists(table_name=table_name):
             pass
         else:
             create_statement = self._create_table_statement_with_datatype(
-                mapping_details=sirius_details, table_name=table_name
+                mapping_details=sirius_details, table_name=table_name, df=df
             )
 
             try:
@@ -362,7 +362,7 @@ class InsertData:
 
         if len(df) == 0:
             log.info(f"0 records to insert into '{table_name}' table")
-            raise EmptyDataFrame
+            raise EmptyDataFrame(df=df)
 
         if not table_name:
             table_name = self._get_dest_table(mapping_dict=sirius_details)
