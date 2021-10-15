@@ -54,3 +54,4 @@ migration_steps/validation/api_tests/response_tests/api_tests_*.log
 validation.sql
 /scripts/api_tests_generator/responses/*.csv
 /scripts/api_tests_generator/responses/*.json
+migration_steps/shared/temp/report_table.txt

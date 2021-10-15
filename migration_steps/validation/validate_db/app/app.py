@@ -51,18 +51,10 @@ def get_mappings():
 
     allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
     all_mappings = {
-        "clients": [
-            "client_addresses",
-            "client_persons",
-            "client_phonenumbers",
-        ],
+        "clients": ["client_addresses", "client_persons", "client_phonenumbers",],
         "cases": ["cases"],
-        "crec": [
-            "crec_persons",
-        ],
-        "supervision_level": [
-            "supervision_level_log",
-        ],
+        "crec": ["crec_persons",],
+        "supervision_level": ["supervision_level_log",],
         "deputies": [
             "deputy_persons",
             "deputy_daytime_phonenumbers",
@@ -78,10 +70,7 @@ def get_mappings():
             "deputy_special_warnings",
             "deputy_violent_warnings",
         ],
-        "death": [
-            "client_death_notifications",
-            "deputy_death_notifications",
-        ],
+        "death": ["client_death_notifications", "deputy_death_notifications",],
         "visits": ["visits"],
         # "remarks": ["notes"]
     }
@@ -103,7 +92,10 @@ ci = os.getenv("CI")
 account_name = os.environ.get("ACCOUNT_NAME")
 bucket_name = f"casrec-migration-{account_name.lower()}"
 account = os.environ["SIRIUS_ACCOUNT"]
+# S3
 session = boto3.session.Session()
+s3 = get_s3_session(session, environment, host)
+# SQL
 sql_lines = []
 sql_statement_lines = []
 statement_count = 0
@@ -378,8 +370,7 @@ def build_validation_statements(mapping_name):
 
     # FROM, with JOINs
     sql_add(
-        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}",
-        2,
+        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}", 2,
     )
     for join in validation_dict["casrec"]["joins"]:
         sql_add(f"{join}", 2)
@@ -423,8 +414,7 @@ def build_validation_statements(mapping_name):
 
     # FROM, with JOINs
     sql_add(
-        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}",
-        2,
+        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}", 2,
     )
     for join in validation_dict["sirius"]["joins"]:
         join = join.replace("{target_schema}", str(target_schema))
@@ -486,8 +476,7 @@ def write_column_validation_sql(
     # tested column
     sql_add(f"{col_source_casrec} AS {mapped_item_name}", 4)
     sql_add(
-        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}",
-        3,
+        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}", 3,
     )
     for join in validation_dict["casrec"]["joins"]:
         sql_add(f"{join}", 3)
@@ -519,8 +508,7 @@ def write_column_validation_sql(
     # tested column
     sql_add(f"{col_source_sirius} AS {mapped_item_name}", 4)
     sql_add(
-        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}",
-        3,
+        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}", 3,
     )
     for join in validation_dict["sirius"]["joins"]:
         join = join.replace("{target_schema}", str(target_schema))
@@ -737,7 +725,18 @@ def post_validation():
         "Fail rate",
         # "Mismatches in...",
     ]
-    print(tabulate(report_df, headers, tablefmt="psql"))
+    report_table = tabulate(report_df, headers, tablefmt="psql")
+    print(report_table)
+
+    file_name = "report_table.txt"
+    file_path = f"{shared_path}/temp/{file_name}"
+    f = open(file_path, "w")
+    f.write(report_table)
+    f.close()
+
+    if ci != "true":
+        s3_file_path = f"validation/report/{file_name}"
+        upload_file(bucket_name, file_path, s3, log, s3_file_path)
 
 
 def set_validation_target():
@@ -779,7 +778,6 @@ def main(team, staging):
     pre_validation()
 
     log.info("Adding sql files to bucket...\n")  #
-    s3 = get_s3_session(session, environment, host)
     if ci != "true":
         for file in os.listdir(sql_path_temp):
             file_path = f"{sql_path_temp}/{file}"
