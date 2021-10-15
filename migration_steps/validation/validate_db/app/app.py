@@ -189,6 +189,9 @@ def build_lookup_functions():
                 if isinstance(escape_quotes, str)
                 else escape_quotes
             )
+
+            k = k.replace("'", "''")
+
             sql_add(f"WHEN ($1 = '{k}') THEN {value}", 2)
 
         sql_add("END", 1)
