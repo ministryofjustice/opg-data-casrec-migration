@@ -4,7 +4,8 @@ CREATE SCHEMA deletions;
 CREATE TABLE IF NOT EXISTS deletions.base_clients_persons (id int);
 INSERT INTO deletions.base_clients_persons (id)
 SELECT distinct p.id
-FROM persons p ;
+FROM persons p
+WHERE p.type = 'actor_client' and (caseactorgroup <> 'CLIENT-PILOT-ONE' or caseactorgroup is null);
 
 CREATE UNIQUE INDEX stub_person_id_idx ON deletions.base_clients_persons (id);
 
@@ -98,6 +99,8 @@ SELECT pn.id
 FROM phonenumbers pn
 INNER JOIN deletions.base_clients_persons bcp ON bcp.id = pn.person_id;
 
+CREATE UNIQUE INDEX client_phone_number_id_idx ON deletions.deletions_client_phonenumbers (id);
+
 CREATE TABLE IF NOT EXISTS deletions.deletions_deputy_phonenumbers (id int);
 INSERT INTO deletions.deletions_deputy_phonenumbers (id)
 SELECT pn.id
@@ -106,6 +109,8 @@ INNER JOIN persons dep ON dep.id = pn.person_id
 INNER JOIN order_deputy od ON dep.id = od.deputy_id
 INNER JOIN cases c  ON c.id = od.order_id
 INNER JOIN deletions.base_clients_persons bcp ON bcp.id = c.client_id;
+
+CREATE INDEX deputy_phone_number_id_idx ON deletions.deletions_deputy_phonenumbers (id);
 
 CREATE TABLE IF NOT EXISTS deletions.deletions_client_addresses (id int);
 INSERT INTO deletions.deletions_client_addresses (id)
@@ -153,6 +158,8 @@ FROM tasks t
 INNER JOIN person_task pt ON t.id = pt.task_id
 INNER JOIN deletions.base_clients_persons bcp ON bcp.id = pt.person_id;
 
+CREATE UNIQUE INDEX client_tasks_id_idx ON deletions.deletions_client_tasks (id);
+
 CREATE TABLE IF NOT EXISTS deletions.deletions_deputy_tasks (id int);
 INSERT INTO deletions.deletions_deputy_tasks (id)
 SELECT t.id
@@ -163,6 +170,8 @@ INNER JOIN order_deputy od ON dep.id = od.deputy_id
 INNER JOIN cases c  ON c.id = od.order_id
 INNER JOIN deletions.base_clients_persons bcp ON bcp.id = c.client_id;
 
+CREATE UNIQUE INDEX deputy_tasks_id_idx ON deletions.deletions_deputy_tasks (id);
+
 CREATE TABLE IF NOT EXISTS deletions.deletions_deputy_documents (id int);
 INSERT INTO deletions.deletions_deputy_documents (id)
 SELECT d.id
@@ -170,6 +179,8 @@ FROM documents d
 INNER JOIN caseitem_document cd ON d.id = cd.document_id
 INNER JOIN cases c ON c.id = cd.caseitem_id
 INNER JOIN deletions.base_clients_persons bcp ON bcp.id = c.client_id;
+
+CREATE UNIQUE INDEX deputy_documents_id_idx ON deletions.deletions_deputy_documents (id);
 
 CREATE TABLE IF NOT EXISTS deletions.deletions_client_persons (id int);
 INSERT INTO deletions.deletions_client_persons (id)
@@ -280,292 +291,178 @@ WHERE id in (
     SELECT id FROM deletions.deletions_client_cases
 );
 
-DELETE FROM events
-WHERE source_complaint_id in (
-    SELECT id FROM deletions.deletions_client_complaints
-);
+DELETE FROM events e
+USING deletions.deletions_client_complaints bcp bcp WHERE bcp.id = e.source_complaint_id;
 
-DELETE FROM events
-WHERE source_page_id in (
-    SELECT id FROM deletions.deletions_deputy_document_pages
-);
+DELETE FROM events e
+USING deletions.deletions_deputy_document_pages bcp WHERE bcp.id = e.source_page_id;
 
-DELETE FROM events
-WHERE source_annualreportlog_id in (
-    SELECT id FROM deletions.deletions_client_annual_report_logs
-);
+DELETE FROM events e
+USING deletions.deletions_client_annual_report_logs bcp WHERE bcp.id = e.source_annualreportlog_id;
 
-DELETE FROM events
-WHERE source_holdperiod_id in (
-    SELECT id FROM deletions.deletions_client_hold_period
-);
+DELETE FROM events e
+USING deletions.deletions_client_hold_period bcp WHERE bcp.id = e.source_holdperiod_id;
 
-DELETE FROM events
-WHERE source_holdperiod_id in (
-    SELECT id FROM deletions.deletions_deputy_hold_period
-);
+DELETE FROM events e
+USING deletions.deletions_deputy_hold_period bcp WHERE bcp.id = e.source_holdperiod_id;
 
-DELETE FROM events
-WHERE source_investigation_id in (
-    SELECT id FROM deletions.deletions_client_investigation
-);
+DELETE FROM events e
+USING deletions.deletions_client_investigation bcp WHERE bcp.id = e.source_investigation_id;
 
-DELETE FROM events
-WHERE source_investigation_id in (
-    SELECT id FROM deletions.deletions_deputy_investigation
-);
+DELETE FROM events e
+USING deletions.deletions_deputy_investigation bcp WHERE bcp.id = e.source_investigation_id;
 
-DELETE FROM events
-WHERE source_phonenumber_id in (
-    SELECT id FROM deletions.deletions_client_phonenumbers
-);
+DELETE FROM events e
+USING deletions.deletions_client_phonenumbers bcp WHERE bcp.id = e.source_phonenumber_id;
 
-DELETE FROM events
-WHERE source_phonenumber_id in (
-    SELECT id FROM deletions.deletions_deputy_phonenumbers
-);
+DELETE FROM events e
+USING deletions.deletions_deputy_phonenumbers bcp WHERE bcp.id = e.source_phonenumber_id;
 
-DELETE FROM events
-WHERE source_address_id in (
-    SELECT id FROM deletions.deletions_client_addresses
-);
+DELETE FROM events e
+USING deletions.deletions_client_addresses bcp WHERE bcp.id = e.source_address_id;
 
-DELETE FROM events
-WHERE source_address_id in (
-    SELECT id FROM deletions.deletions_deputy_addresses
-);
+DELETE FROM events e
+USING deletions.deletions_deputy_addresses bcp WHERE bcp.id = e.source_address_id;
 
-DELETE FROM events
-WHERE source_validationcheck_id in (
-    SELECT id FROM deletions.deletions_validation_check
-);
+DELETE FROM events e
+USING deletions.deletions_validation_check bcp WHERE bcp.id = e.source_validationcheck_id;
 
-DELETE FROM events
-WHERE source_warning_id in (
-    SELECT id FROM deletions.deletions_client_warnings
-);
+DELETE FROM events e
+USING deletions.deletions_client_warnings bcp WHERE bcp.id = e.source_warning_id;
 
-DELETE FROM events
-WHERE source_warning_id in (
-    SELECT id FROM deletions.deletions_deputy_warnings
-);
+DELETE FROM events e
+USING deletions.deletions_deputy_warnings bcp WHERE bcp.id = e.source_warning_id;
 
-DELETE FROM events
-WHERE source_task_id in (
-    SELECT id FROM deletions.deletions_client_tasks
-);
+DELETE FROM events e
+USING deletions.deletions_client_tasks bcp WHERE bcp.id = e.source_task_id;
 
-DELETE FROM events
-WHERE source_task_id in (
-    SELECT id FROM deletions.deletions_deputy_tasks
-);
+DELETE FROM events e
+USING deletions.deletions_deputy_tasks bcp WHERE bcp.id = e.source_task_id;
 
-DELETE FROM events
-WHERE source_document_id in (
-    SELECT id FROM deletions.deletions_deputy_documents
-);
+DELETE FROM events e
+USING deletions.deletions_deputy_documents bcp WHERE bcp.id = e.source_document_id;
 
-DELETE FROM events
-WHERE owning_donor_id in (
-    SELECT id FROM deletions.deletions_client_persons
-);
+DELETE FROM events e
+USING deletions.deletions_client_persons bcp WHERE bcp.id = e.owning_donor_id;
 
-DELETE FROM events
-WHERE owning_case_id in (
-    SELECT id FROM deletions.deletions_client_cases
-);
+DELETE FROM events e
+USING deletions.deletions_client_cases bcp WHERE bcp.id = e.owning_case_id;
 
-DELETE FROM complaints
-WHERE id in (
-    SELECT id FROM deletions.deletions_client_complaints
-);
+DELETE FROM complaints a USING deletions.deletions_client_complaints b
+WHERE a.id = b.id;
 
-DELETE FROM document_pages
-WHERE id in (
-    SELECT id FROM deletions.deletions_deputy_document_pages
-);
+DELETE FROM document_pages a USING deletions.deletions_deputy_document_pages b
+WHERE a.id = b.id;
 
-DELETE FROM annual_report_logs
-WHERE id in (
-    SELECT id FROM deletions.deletions_client_annual_report_logs
-);
+DELETE FROM annual_report_logs a USING deletions.deletions_client_annual_report_logs b
+WHERE a.id = b.id;
 
-DELETE FROM annual_report_logs
-WHERE id in (
-    SELECT id FROM deletions.deletions_deputy_annual_report_logs
-);
+DELETE FROM annual_report_logs a USING deletions.deletions_deputy_annual_report_logs b
+WHERE a.id = b.id;
 
-DELETE FROM hold_period
-WHERE id in (
-    SELECT id FROM deletions.deletions_client_hold_period
-);
+DELETE FROM hold_period a USING deletions.deletions_client_hold_period b
+WHERE a.id = b.id;
 
-DELETE FROM hold_period
-WHERE id in (
-    SELECT id FROM deletions.deletions_deputy_hold_period
-);
+DELETE FROM hold_period a USING deletions.deletions_deputy_hold_period b
+WHERE a.id = b.id;
 
-DELETE FROM investigation
-WHERE id in (
-    SELECT id FROM deletions.deletions_client_investigation
-);
+DELETE FROM investigation a USING deletions.deletions_client_investigation b
+WHERE a.id = b.id;
 
-DELETE FROM investigation
-WHERE id in (
-    SELECT id FROM deletions.deletions_deputy_investigation
-);
+DELETE FROM investigation a USING deletions.deletions_deputy_investigation b
+WHERE a.id = b.id;
 
-DELETE FROM phonenumbers
-WHERE id in (
-    SELECT id FROM deletions.deletions_client_phonenumbers
-);
+DELETE FROM phonenumbers a USING deletions.deletions_client_phonenumbers b
+WHERE a.id = b.id;
 
-DELETE FROM phonenumbers
-WHERE id in (
-    SELECT id FROM deletions.deletions_deputy_phonenumbers
-);
+DELETE FROM phonenumbers a USING deletions.deletions_deputy_phonenumbers b
+WHERE a.id = b.id;
 
-DELETE FROM addresses
-WHERE id in (
-    SELECT id FROM deletions.deletions_client_addresses
-);
+DELETE FROM addresses a USING deletions.deletions_client_addresses b
+WHERE a.id = b.id;
 
-DELETE FROM addresses
-WHERE id in (
-    SELECT id FROM deletions.deletions_deputy_addresses
-);
+DELETE FROM addresses a USING deletions.deletions_deputy_addresses b
+WHERE a.id = b.id;
 
-DELETE FROM validation_check
-WHERE id in (
-    SELECT id FROM deletions.deletions_validation_check
-);
+DELETE FROM validation_check a USING deletions.deletions_validation_check b
+WHERE a.id = b.id;
 
-DELETE FROM warnings
-WHERE id in (
-    SELECT id FROM deletions.deletions_client_warnings
-);
+DELETE FROM warnings a USING deletions.deletions_client_warnings b
+WHERE a.id = b.id;
 
-DELETE FROM warnings
-WHERE id in (
-    SELECT id FROM deletions.deletions_deputy_warnings
-);
+DELETE FROM warnings a USING deletions.deletions_deputy_warnings b
+WHERE a.id = b.id;
 
-DELETE FROM person_warning
-WHERE warning_id in (
-    SELECT id FROM deletions.deletions_client_warnings
-);
+DELETE FROM person_warning a USING deletions.deletions_client_warnings b
+WHERE a.warning_id = b.id;
 
-DELETE FROM person_warning
-WHERE warning_id in (
-    SELECT id FROM deletions.deletions_deputy_warnings
-);
+DELETE FROM person_warning a USING deletions.deletions_deputy_warnings b
+WHERE a.warning_id = b.id;
 
-DELETE FROM tasks
-WHERE id in (
-    SELECT id FROM deletions.deletions_client_tasks
-);
+DELETE FROM tasks a USING deletions.deletions_client_tasks b
+WHERE a.id = b.id;
 
-DELETE FROM tasks
-WHERE id in (
-    SELECT id FROM deletions.deletions_deputy_tasks
-);
+DELETE FROM tasks a USING deletions.deletions_deputy_tasks b
+WHERE a.id = b.id;
 
-DELETE FROM person_task
-WHERE task_id in (
-    SELECT id FROM deletions.deletions_client_tasks
-);
+DELETE FROM person_task a USING deletions.deletions_client_tasks b
+WHERE a.task_id = b.id;
 
-DELETE FROM person_task
-WHERE task_id in (
-    SELECT id FROM deletions.deletions_deputy_tasks
-);
+DELETE FROM person_task a USING deletions.deletions_deputy_tasks b
+WHERE a.task_id = b.id;
 
-DELETE FROM supervision_notes
-WHERE id in (
-    SELECT id FROM deletions.deletions_client_supervision_notes
-);
+DELETE FROM supervision_notes a USING deletions.deletions_client_supervision_notes b
+WHERE a.id = b.id;
 
-DELETE FROM supervision_notes
-WHERE id in (
-    SELECT id FROM deletions.deletions_deputy_supervision_notes
-);
+DELETE FROM supervision_notes a USING deletions.deletions_deputy_supervision_notes b
+WHERE a.id = b.id;
 
-DELETE FROM powerofattorney_person
-WHERE person_id in (
-    SELECT person_id FROM deletions.deletions_deputy_powerofattorney_person
-);
+DELETE FROM powerofattorney_person a USING deletions.deletions_deputy_powerofattorney_person b
+WHERE a.person_id = b.person_id;
 
-DELETE FROM powerofattorney_person
-WHERE person_id in (
-    SELECT person_id FROM deletions.deletions_client_powerofattorney_person
-);
+DELETE FROM powerofattorney_person a USING deletions.deletions_client_powerofattorney_person b
+WHERE a.person_id = b.person_id;
 
-DELETE FROM person_timeline
-WHERE id in (
-    SELECT id FROM deletions.deletions_client_person_timeline
-);
+DELETE FROM person_timeline a USING deletions.deletions_client_person_timeline b
+WHERE a.id = b.id;
 
-DELETE FROM person_timeline
-WHERE id in (
-    SELECT id FROM deletions.deletions_deputy_person_timeline
-);
+DELETE FROM person_timeline a USING deletions.deletions_deputy_person_timeline b
+WHERE a.id = b.id;
 
-DELETE FROM person_caseitem
-WHERE person_id in (
-    SELECT person_id FROM deletions.deletions_client_person_caseitem
-);
+DELETE FROM person_caseitem a USING deletions.deletions_client_person_caseitem b
+WHERE a.person_id = b.person_id;
 
-DELETE FROM bonds
-WHERE id in (
-    SELECT id FROM deletions.deletions_deputy_bonds
-);
+DELETE FROM bonds a USING deletions.deletions_deputy_bonds b
+WHERE a.id = b.id;
 
-DELETE FROM death_notifications
-WHERE id in (
-    SELECT id FROM deletions.deletions_client_death_notifications
-);
+DELETE FROM death_notifications a USING deletions.deletions_client_death_notifications b
+WHERE a.id = b.id;
 
-DELETE FROM death_notifications
-WHERE id in (
-    SELECT id FROM deletions.deletions_deputy_death_notifications
-);
+DELETE FROM death_notifications a USING deletions.deletions_deputy_death_notifications b
+WHERE a.id = b.id;
 
-DELETE FROM addresses
-WHERE id in (
-    SELECT id FROM deletions.deletions_client_addresses
-);
+DELETE FROM addresses a USING deletions.deletions_client_addresses b
+WHERE a.id = b.id;
 
-DELETE FROM addresses
-WHERE id in (
-    SELECT id FROM deletions.deletions_deputy_addresses
-);
+DELETE FROM addresses a USING deletions.deletions_deputy_addresses b
+WHERE a.id = b.id;
 
-DELETE FROM person_research_preferences
-WHERE person_id in (
-    SELECT id FROM deletions.deletions_deputy_person
-);
+DELETE FROM person_research_preferences a USING deletions.deletions_deputy_person b
+WHERE a.person_id = b.id;
 
-DELETE FROM person_personreference
-WHERE person_id in (
-    SELECT id FROM deletions.deletions_deputy_person
-);
+DELETE FROM person_personreference a USING deletions.deletions_deputy_person b
+WHERE a.person_id = b.id;
 
-UPDATE persons set feepayer_id = null
+UPDATE persons p set feepayer_id = null
 WHERE id in (
  SELECT id FROM deletions.base_clients_persons
 );
 
-DELETE FROM persons
-WHERE id in (
-    SELECT id FROM deletions.deletions_deputy_person
-);
+DELETE FROM persons a USING deletions.deletions_deputy_person b
+WHERE a.id = b.id;
 
-DELETE FROM order_deputy
-WHERE deputy_id in (
-    SELECT id FROM deletions.deletions_deputy_person
-);
+DELETE FROM order_deputy a USING deletions.deletions_deputy_person b
+WHERE a.deputy_id = b.id;
 
-DELETE FROM cases
-WHERE id in (
-    SELECT id FROM deletions.deletions_client_cases
-);
+DELETE FROM cases a USING deletions.deletions_client_cases b
+WHERE a.id = b.id;
