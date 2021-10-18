@@ -49,10 +49,11 @@ def insert_tasks(db_config, target_db, mapping_file):
             else:
                 log.info(f'Chunk originally had {num_tasks} tasks, but was filtered to 0; ignoring')
 
-        except EmptyDataFrame:
-            log.info('Creating empty tasks table')
-            target_db.create_empty_table(sirius_details=sirius_details)
-            break
+        except EmptyDataFrame as empty_data_frame:
+            if empty_data_frame.empty_data_frame_type == "chunk":
+                target_db.create_empty_table(sirius_details=sirius_details)
+                break
+            continue
 
         except Exception as e:
             log.exception(e)
