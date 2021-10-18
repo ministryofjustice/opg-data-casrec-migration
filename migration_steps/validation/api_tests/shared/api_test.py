@@ -69,6 +69,7 @@ class ApiTests:
                 "deputies",
                 "deputy_orders",
                 "deputy_clients_count",
+                "deputy_fee_payer",
                 "supervision_level",
                 "bonds",
                 "client_death_notifications",
@@ -85,6 +86,7 @@ class ApiTests:
                 "deputies",
                 "deputy_orders",
                 "deputy_clients_count",
+                "deputy_fee_payer",
                 "supervision_level",
                 "bonds",
                 "client_death_notifications",
@@ -269,7 +271,7 @@ class ApiTests:
                     deputies = self.get_deputy_entity_ids(entity_id)
                     for deputy in deputies:
                         ids.append(deputy)
-                elif self.csv in ["deputy_orders"]:
+                elif self.csv in ["deputy_orders", "deputy_fee_payer"]:
                     deputy_orders = self.get_deputy_order_entity_ids(entity_id)
                     for deputy_order in deputy_orders:
                         ids.append(deputy_order)
@@ -315,6 +317,7 @@ class ApiTests:
             "deputy_orders",
             "deputy_clients_count",
             "deputy_death_notifications",
+            "deputy_fee_payer"
         ]:
             ids = self.get_entity_ids_from_order_source(order_id_sql, caserecnumber)
         log.debug(f"returning ids: {ids}")
@@ -562,7 +565,7 @@ class ApiTests:
 
     def get_endpoint_final(self, entity_id, endpoint):
         log.debug(f"get_endpoint_final: entity_id {entity_id} endpoint {endpoint}")
-        if self.csv == "deputy_orders":
+        if self.csv in ["deputy_orders", "deputy_fee_payer"]:
             endpoint_final = (
                 str(endpoint)
                 .replace("{id1}", str(entity_id["order_id"]))

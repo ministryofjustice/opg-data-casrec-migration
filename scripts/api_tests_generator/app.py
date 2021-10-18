@@ -94,6 +94,7 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
         "deputy_clients",
         "deputy_orders",
         "deputy_death_notifications",
+        "deputy_fee_payer"
     ]:
         entity_ids = engine.execute(order_id_sql)
         if entity_ids.rowcount < 1:
@@ -109,7 +110,7 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
                     deputies = get_deputy_entity_ids(entity_id, conn)
                     for deputy in deputies:
                         ids.append(deputy)
-                elif csv_type in ["deputy_orders"]:
+                elif csv_type in ["deputy_orders", "deputy_fee_payer"]:
                     deputy_orders = get_deputy_order_entity_ids(entity_id, conn)
                     for deputy_order in deputy_orders:
                         ids.append(deputy_order)
@@ -221,7 +222,7 @@ def get_deputy_person_entity_ids(entity_id, conn):
 
 
 def get_endpoint_final(entity_id, endpoint, csv):
-    if csv == "deputy_orders":
+    if csv in ["deputy_orders", "deputy_fee_payer"]:
         endpoint_final = (
             str(endpoint)
             .replace("{id1}", str(entity_id["order_id"]))
@@ -392,7 +393,11 @@ orders_updated_cases = [
     '["orderExpiryDate"]',
 ]
 
-csvs = []
+deputy_fee_payer_headers = [
+    '["feePayer"]'
+]
+
+csvs = ["deputy_fee_payer"]
 
 search_headers = [
     "endpoint",
