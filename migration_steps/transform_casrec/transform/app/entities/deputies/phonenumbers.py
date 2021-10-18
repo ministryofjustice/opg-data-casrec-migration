@@ -33,7 +33,8 @@ def get_phonenumbers_deputies_chunk(
             chunk_details={"chunk_size": chunk_size, "offset": offset},
         )
     except EmptyDataFrame as e:
-        return (e.df, False)
+        more_records = (e.empty_data_frame_type != 'chunk')
+        return (e.df, more_records)
 
     deputies_df = prep['deputies_df']
 

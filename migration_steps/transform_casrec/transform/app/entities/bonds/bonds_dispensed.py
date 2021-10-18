@@ -13,7 +13,8 @@ def get_bonds_dispensed_chunk(db_config, mapping_file_name, table_definition, si
             chunk_details={"chunk_size": chunk_size, "offset": offset},
         )
     except EmptyDataFrame as e:
-        return (e.df, False)
+        more_records = (e.empty_data_frame_type != 'chunk')
+        return (e.df, more_records)
 
     existing_cases_df = prep['existing_cases_df']
 
