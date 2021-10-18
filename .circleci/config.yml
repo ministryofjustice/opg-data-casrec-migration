@@ -129,15 +129,15 @@ workflows:
       - infrastructure:
           name: build shared infra preproduction
           requires: [get latest tag preproduction]
-          tf_workspace: development
+          tf_workspace: preproduction
           tf_command: apply
-          environment: Development
+          environment: Preproduction
           folder: shared
           filters: {branches:{ignore:[master]}}
       - load_casrec_db:
           name: load casrec db preproduction
-          requires: [build shared infra development]
-          environment: Development
+          requires: [build shared infra preproduction]
+          environment: Preproduction
           filters: {branches:{ignore:[master]}}
       - infrastructure:
           name: plan infra preproduction
@@ -155,7 +155,11 @@ workflows:
           filters: {branches:{only:[master]}}
       - run_step_function:
           name: run the step function preproduction
-          requires: [build infra preproduction, run and monitor jenkins restore job pre]
+          requires: [
+            build infra preproduction,
+            run and monitor jenkins restore job pre,
+            load casrec db preproduction
+          ]
           account: "preproduction"
           wait_for: "18000"
           tf_workspace: preproduction
@@ -219,27 +223,27 @@ workflows:
     jobs:
       - reset_sirius_full_restore:
           name: run and monitor jenkins restore job preqa
-          environment: PreQualityAssurance
+          environment: PreQA
           sirius_environment: casrecdmpq
           filters: {branches:{only:[master]}}
       - get_latest_image:
           name: get latest tag preqa
           image_tag: qa
-          environment: PreQualityAssurance
+          environment: PreQA
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra preqa
           requires: [get latest tag preqa]
           tf_workspace: preqa
           tf_command: plan
-          environment: PreQualityAssurance
+          environment: PreQA
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: build infra preqa
           requires: [plan infra preqa]
           tf_workspace: preqa
           tf_command: apply
-          environment: PreQualityAssurance
+          environment: PreQA
           filters: {branches:{only:[master]}}
       - run_step_function:
           name: run the step function preqa
@@ -247,24 +251,24 @@ workflows:
           account: "preproduction"
           wait_for: "18000"
           tf_workspace: preqa
-          environment: PreQualityAssurance
+          environment: PreQA
           filters: {branches:{only:[master]}}
       - run_api_tests:
           name: run api tests preqa
           requires: [run the step function preqa]
           tf_workspace: preqa
-          environment: PreQualityAssurance
+          environment: PreQA
           filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch preqa
           requires: [run the step function preqa]
           tf_workspace: preqa
-          environment: PreQualityAssurance
+          environment: PreQA
           filters: {branches:{only:[master]}}
       - job_complete:
           name: job complete notification
           requires: [run api tests preqa]
-          environment: PreQualityAssurance
+          environment: PreQA
           workspace: preqa
           filters: {branches:{ignore:[master]}}
   qa:
@@ -365,34 +369,48 @@ workflows:
       - get_latest_image:
           name: get latest tag preproduction
           image_tag: master
-          environment: Preproduction
+          environment: PreproductionNightly
           filters: {branches:{only:[master]}}
       - reset_sirius_full_restore:
-          name: run and monitor jenkins restore job
-          environment: Preproduction
+          name: run and monitor jenkins restore job pre
+          environment: PreproductionNightly
           sirius_environment: casrecdmpp
           filters: {branches:{only:[master]}}
+      - infrastructure:
+          name: build shared infra preproduction
+          requires: [get latest tag preproduction]
+          tf_workspace: preproduction
+          tf_command: apply
+          environment: Preproduction
+          folder: shared
+          filters: {branches:{ignore:[master]}}
+      - load_casrec_db:
+          name: load casrec db preproduction
+          requires: [build shared infra preproduction]
+          environment: Preproduction
+          filters: {branches:{ignore:[master]}}
       - infrastructure:
           name: build infra preproduction
           requires: [get latest tag preproduction]
           tf_workspace: preproduction
           tf_command: apply
-          environment: Preproduction
+          environment: PreproductionNightly
           filters: {branches:{only:[master]}}
       - run_step_function:
           name: run the step function preproduction
           requires: [
-            run and monitor jenkins restore job,
-            build infra preproduction
+            run and monitor jenkins restore job pre,
+            build infra preproduction,
+            load casrec db preproduction
           ]
           account: "preproduction"
           wait_for: "18000"
           tf_workspace: preproduction
-          environment: Preproduction
+          environment: PreproductionNightly
           filters: {branches:{only:[master]}}
       - tag_image_for_environment:
           name: tag image for qa
-          environment: Preproduction
+          environment: PreproductionNightly
           environment_tag: qa
           requires: [run the step function preproduction]
           filters: {branches:{only:[master]}}
@@ -400,42 +418,42 @@ workflows:
           name: run api tests preproduction
           requires: [tag image for qa]
           tf_workspace: preproduction
-          environment: Preproduction
+          environment: PreproductionNightly
           filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch preproduction
           requires: [run api tests preproduction]
           tf_workspace: preproduction
-          environment: Preproduction
+          environment: PreproductionNightly
           filters: {branches:{only:[master]}}
       - approve:
           name: approve qa kick off
           type: approval
           requires: [tag image for qa]
-          environment: Preproduction
+          environment: PreproductionNightly
           filters: {branches:{only:[master]}}
       - kick_off_environment:
           name: kick off qa
           workspace: qa
           requires: [approve qa kick off]
-          environment: Preproduction
+          environment: PreproductionNightly
           filters: {branches:{only:[master]}}
       - approve:
           name: approve preqa kick off
           type: approval
           requires: [tag image for qa]
-          environment: Preproduction
+          environment: PreproductionNightly
           filters: {branches:{only:[master]}}
       - kick_off_environment:
           name: kick off preqa
           workspace: preqa
           requires: [approve preqa kick off]
-          environment: Preproduction
+          environment: PreproductionNightly
           filters: {branches:{only:[master]}}
       - job_complete:
           name: job complete notification
           requires: [run api tests preproduction]
-          environment: Preproduction
+          environment: PreproductionNightly
           workspace: preproduction
           filters: {branches:{ignore:[master]}}
 
@@ -448,11 +466,11 @@ workflows:
       - get_latest_image:
           name: get latest tag preqa
           image_tag: qa
-          environment: PreQA
+          environment: PreQANightly
           filters: {branches:{only:[master]}}
       - reset_sirius_full_restore:
-          name: run and monitor jenkins restore job
-          environment: PreQA
+          name: run and monitor jenkins restore job preqa
+          environment: PreQANightly
           sirius_environment: casrecdmpq
           filters: {branches:{only:[master]}}
       - infrastructure:
@@ -460,29 +478,29 @@ workflows:
           requires: [get latest tag preqa]
           tf_workspace: preqa
           tf_command: apply
-          environment: PreQA
+          environment: PreQANightly
           filters: {branches:{only:[master]}}
       - run_step_function:
           name: run the step function preqa
           requires: [
-            run and monitor jenkins restore job,
+            run and monitor jenkins restore job preqa,
             build infra preqa
           ]
           account: "preqa"
           wait_for: "18000"
           tf_workspace: preqa
-          environment: PreQA
+          environment: PreQANightly
           filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch preqa
           requires: [run the step function preqa]
           tf_workspace: preqa
-          environment: PreQA
+          environment: PreQANightly
           filters: {branches:{only:[master]}}
       - job_complete:
           name: job complete notification
           requires: [run the step function preqa]
-          environment: PreQA
+          environment: PreQANightly
           workspace: preqa
           filters: {branches:{ignore:[master]}}
 
@@ -560,7 +578,7 @@ orbs:
     executors:
       python:
         docker:
-          - image: circleci/python:3
+          - image: cimg/python:3.9.5
             auth:
               username: $DOCKER_USER
               password: $DOCKER_ACCESS_TOKEN
@@ -746,7 +764,44 @@ orbs:
                         }
                     ]
                 }
-
+      notify_validation_results:
+        steps:
+          - slack/notify:
+              channel: casrec-migration-standup
+              custom: |
+                {
+                    "blocks": [
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": ":see_no_evil: *Validation results for ${ENVIRONMENT}*\n*Entity_Processed_Failed*"
+                            }
+                        },
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "${V_ERR_1}\n${V_ERR_2}\n${V_ERR_3}\n${V_ERR_4}\n${V_ERR_5}"
+                            }
+                        },
+                        {
+                           "type": "actions",
+                           "elements": [
+                               {
+                                   "type": "button",
+                                   "text": {
+                                       "type": "plain_text",
+                                       "text": "Go to Circle Job",
+                                       "emoji": true
+                                   },
+                                   "value": "circle_job",
+                                   "url": "${CIRCLE_BUILD_URL}"
+                               }
+                           ]
+                        }
+                    ]
+                }
 jobs:
   manage_workflow:
     executor: migration/python
@@ -910,6 +965,7 @@ jobs:
       ENVIRONMENT: << parameters.environment >>
       TF_WORKSPACE: << parameters.tf_workspace >>
       WAIT_FOR: << parameters.wait_for >>
+      AWS_CONFIG_FILE: ~/project/aws_config
     steps:
       - checkout
       - run:
@@ -920,6 +976,26 @@ jobs:
           name: run the function
           command: python3 run_step_function.py --role migrations-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --workspace ${TF_WORKSPACE}
           working_directory: ~/project/scripts/ci_scripts
+      - when:
+          condition:
+            and:
+              - equal: [PreproductionNightly, << parameters.environment >>]
+          steps:
+            - aws-cli/install
+            - run:
+                name: download results file
+                command: aws s3 cp s3://casrec-migration-preproduction/validation/report/report_table.txt . --profile migrations-ci-sirius-pre
+            - run:
+                name: export variables for notification
+                command: |
+                  cat report_table.txt | awk -F'|' '$9>0' | awk -F'|' '{print $3 $8 $9}' | tr -s ' ' | tr ' ' '_' > error_list.txt
+                  i=1; while read line$((i++)); do :;done < error_list.txt
+                  echo "export V_ERR_1=${line1}" >> $BASH_ENV
+                  echo "export V_ERR_2=${line2}" >> $BASH_ENV
+                  echo "export V_ERR_3=${line3}" >> $BASH_ENV
+                  echo "export V_ERR_4=${line4}" >> $BASH_ENV
+                  echo "export V_ERR_5=${line5}" >> $BASH_ENV
+            - notififications/notify_validation_results
       - notififications/notify_env_vars
       - notififications/notify_if_fail
 
@@ -1219,6 +1295,15 @@ jobs:
           root: .
           paths:
             - VERSION
+      - when:
+          condition:
+            and:
+              - equal: [PreQANightly, << parameters.environment >>]
+          steps:
+            - run:
+                name: Run preprod previous build success test
+                command: python3 last_pre_migration_success.py --role migrations-ci
+                working_directory: ~/project/scripts/ci_scripts
       - notififications/notify_env_vars
       - notififications/notify_if_fail
 

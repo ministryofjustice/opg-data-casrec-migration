@@ -2,3 +2,8 @@
 region=eu-west-1
 role_arn=arn:aws:iam::311462405659:role/migrations-ci
 credential_source=Environment
+
+[profile migrations-ci-sirius-pre]
+region=eu-west-1
+role_arn=arn:aws:iam::492687888235:role/migrations-ci
+credential_source=Environment
