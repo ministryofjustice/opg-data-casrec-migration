@@ -138,8 +138,9 @@ def rationalise_var(v, json_item_to_inspect):
     return response_var
 
 
-def restructure_text(col):
-    col_restructured = sorted(set(col.split("|")))
+def restructure_text(col, dedupe):
+    col_vals = set(col.split("|")) if dedupe else col.split("|")
+    col_restructured = sorted(col_vals)
     col_restructured_text = "|".join(str(e) for e in col_restructured)
     try:
         if col_restructured_text.startswith("|"):
@@ -479,14 +480,26 @@ for csv in csvs:
                     except Exception:
                         line_struct[header] = rationalised_var + "|"
 
-        for header in eval(f"{csv}_headers") + search_headers:
-            try:
-                line_struct_header = line_struct[header]
-            except KeyError:
-                line_struct_header = ""
+        all_headers = [
+            {
+                'dedupe': False,
+                'headers': eval(f"{csv}_headers")
+            },
+            {
+                'dedupe': True,
+                'headers': search_headers
+            }
+        ]
 
-            col_restruct_text = restructure_text(line_struct_header)
-            line_struct[header] = col_restruct_text
+        for header_data in all_headers:
+            for header in header_data['headers']:
+                try:
+                    line_struct_header = line_struct[header]
+                except KeyError:
+                    line_struct_header = ""
+
+                col_restruct_text = restructure_text(line_struct_header, dedupe=header_data['dedupe'])
+                line_struct[header] = col_restruct_text
 
         for attr, value in line_struct.items():
             line = line + value + ","

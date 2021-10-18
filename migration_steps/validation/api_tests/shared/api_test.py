@@ -503,7 +503,7 @@ class ApiTests:
         return count
 
     def restructure_text(self, col):
-        col_restructured = sorted(set(col.split("|")))
+        col_restructured = sorted(col.split("|"))
         col_restructured_text = "|".join(str(e) for e in col_restructured)
         try:
             if col_restructured_text.startswith("|"):
