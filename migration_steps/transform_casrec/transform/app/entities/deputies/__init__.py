@@ -1,16 +1,14 @@
 import logging
 
-# from entities.deputies.addresses import insert_addresses_deputies
 from entities.deputies.order_deputy import insert_order_deputies
 from entities.deputies.addresses import insert_addresses_deputies
 from entities.deputies.persons import insert_persons_deputies
+from entities.deputies.phonenumbers import get_phonenumbers_deputies_chunk, do_deputies_prep
 from helpers import log_title, check_entity_enabled
+from transform_data.transformer import transformer
 
-from entities.deputies.phonenumbers_daytime import insert_phonenumbers_deputies_daytime
-from entities.deputies.phonenumbers_evening import insert_phonenumbers_deputies_evening
 
 log = logging.getLogger("root")
-
 
 def runner(target_db, db_config):
     """
@@ -34,16 +32,22 @@ def runner(target_db, db_config):
         target_db=target_db, db_config=db_config, mapping_file="deputy_persons"
     )
 
-    log.debug("insert_phonenumbers_deputies")
-    insert_phonenumbers_deputies_daytime(
-        mapping_file="deputy_daytime_phonenumbers",
-        target_db=target_db,
-        db_config=db_config,
+    log.debug("insert_phonenumbers_deputies - daytime")
+    transformer(
+        db_config,
+        target_db,
+        "deputy_daytime_phonenumbers",
+        get_phonenumbers_deputies_chunk,
+        do_deputies_prep
     )
-    insert_phonenumbers_deputies_evening(
-        mapping_file="deputy_evening_phonenumbers",
-        target_db=target_db,
-        db_config=db_config,
+
+    log.debug("insert_phonenumbers_deputies - evening")
+    transformer(
+        db_config,
+        target_db,
+        "deputy_evening_phonenumbers",
+        get_phonenumbers_deputies_chunk,
+        do_deputies_prep
     )
 
     log.debug("insert_addresses_deputies")
