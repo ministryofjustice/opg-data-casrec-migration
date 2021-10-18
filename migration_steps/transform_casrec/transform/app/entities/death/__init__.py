@@ -1,11 +1,12 @@
 import logging
 
-from entities.death.client_death_notifications import insert_client_death_notifications
-from entities.death.deputy_death_notifications import insert_deputy_death_notifications
+from entities.death.client_death_notifications import get_client_death_notifications_chunk, do_clients_prep
+from entities.death.deputy_death_notifications import get_deputy_death_notifications_chunk, do_deputies_prep
 from helpers import log_title, check_entity_enabled
+from transform_data.transformer import transformer
+
 
 log = logging.getLogger("root")
-
 
 def runner(target_db, db_config):
     """
@@ -25,19 +26,22 @@ def runner(target_db, db_config):
     log.info(log_title(message=entity_name))
 
     log.info("Inserting client_death_notifications")
-    insert_client_death_notifications(
-        mapping_file="client_death_notifications",
-        target_db=target_db,
-        db_config=db_config,
+    transformer(
+        db_config,
+        target_db,
+        "client_death_notifications",
+        get_client_death_notifications_chunk,
+        do_clients_prep
     )
 
     log.info("Inserting deputy_death_notifications")
-    insert_deputy_death_notifications(
-        mapping_file="deputy_death_notifications",
-        target_db=target_db,
-        db_config=db_config,
+    transformer(
+        db_config,
+        target_db,
+        "deputy_death_notifications",
+        get_deputy_death_notifications_chunk,
+        do_deputies_prep
     )
-
 
 if __name__ == "__main__":
 
