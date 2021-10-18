@@ -984,7 +984,7 @@ jobs:
             - aws-cli/install
             - run:
                 name: download results file
-                command: aws s3 cp s3://casrec-migration-development/validation/report/report_table.txt . --profile migrations-ci-sirius-pre
+                command: aws s3 cp s3://casrec-migration-preproduction/validation/report/report_table.txt . --profile migrations-ci-sirius-pre
             - run:
                 name: export variables for notification
                 command: |
