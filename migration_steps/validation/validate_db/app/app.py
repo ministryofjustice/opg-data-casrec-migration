@@ -788,6 +788,14 @@ def main(team, staging):
     log.info("RUN POST VALIDATION")
     post_validation()
 
+    if get_exception_count() > 0:
+        # TODO: remove conditional once all validation errors are fixed in preproduction
+        if environment in ["local", "development"]:
+            exit(1)
+        log.info("Exceptions WERE found: override / continue anyway\n")
+    else:
+        log.info("No exceptions found: continue...\n")
+
 
 if __name__ == "__main__":
     t = time.process_time()

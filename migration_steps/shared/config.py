@@ -94,7 +94,7 @@ class BaseConfig:
         "ledger_allocation",
         "remarks",
         "reporting",
-        "tasks",
+        # "tasks",
         "visits",
         "warnings",
         "death",
