@@ -98,22 +98,27 @@ def source_conditions(df, conditions):
 
 def convert_to_timestamp(df, cols):
 
-    empty_date = ["", "NaT", "nan"]
+    empty_data = ["", "NaT", "nan"]
 
     source_date = format_additional_col_alias(cols["convert_to_timestamp"]["date"])
     source_time = format_additional_col_alias(cols["convert_to_timestamp"]["time"])
 
+    def timestamp(x):
+        date = (
+            x[source_date][0:10] if x[source_date] not in empty_data else "1900-01-01"
+        )
+        time = (
+            x[source_time].split(".")[0]
+            if x[source_time] not in empty_data
+            else "00:00:00"
+        )
+
+        return dt.datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M:%S")
+
     df["c_timestamp"] = (
         df[[source_date, source_time]]
         .astype(str)
-        .apply(
-            lambda x: dt.datetime.strptime(
-                x[source_date][0:10] + x[source_time].split(".")[0], "%Y-%m-%d%H:%M:%S"
-            )
-            if x[source_date] not in empty_date
-            else dt.datetime.strptime("1900-01-01 00:00:00", "%Y-%m-%d %H:%M:%S"),
-            axis=1,
-        )
+        .apply(lambda x: timestamp(x), axis=1,)
     )
 
     df = df.astype({"c_timestamp": "datetime64[ns]"})
