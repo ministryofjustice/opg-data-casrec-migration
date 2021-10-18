@@ -59,6 +59,7 @@ def get_basic_data_table(
         log.debug(f"No data returned from database")
         raise EmptyDataFrame(df=source_data_df)
 
+    # this may raise EmptyDataFrame with type != 'chunk'
     result_df = transform.perform_transformations(
         mapping_definitions=mapping_dict,
         table_definition=table_definition,

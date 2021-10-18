@@ -14,4 +14,5 @@ def get_client_persons_chunk(db_config, mapping_file_name, table_definition, sir
 
         return (df, True)
     except EmptyDataFrame as e:
-        return (e.df, False)
+        more_records = (e.empty_data_frame_type != 'chunk')
+        return (e.df, more_records)

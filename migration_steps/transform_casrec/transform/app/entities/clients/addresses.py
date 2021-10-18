@@ -13,7 +13,8 @@ def get_addresses_clients_chunk(db_config, mapping_file_name, table_definition, 
             chunk_details={"chunk_size": chunk_size, "offset": offset},
         )
     except EmptyDataFrame as e:
-        return (e.df, False)
+        more_records = (e.empty_data_frame_type != 'chunk')
+        return (e.df, more_records)
 
     persons_df = prep['persons_df']
 

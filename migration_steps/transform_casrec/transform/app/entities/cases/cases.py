@@ -14,7 +14,8 @@ def get_cases_chunk(db_config, mapping_file_name, table_definition, sirius_detai
 
         return (df, True)
     except EmptyDataFrame as e:
-        return (e.df, False)
+        more_records = (e.empty_data_frame_type != 'chunk')
+        return (e.df, more_records)
 
     # persons_query = (
     #     f'select "id", "caserecnumber" from {db_config["target_schema"]}.persons '
