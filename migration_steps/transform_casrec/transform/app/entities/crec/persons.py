@@ -1,17 +1,16 @@
-from custom_errors import EmptyDataFrame
-from utilities.basic_data_table import get_basic_data_table
 import logging
 import os
 import pandas as pd
 
+from custom_errors import EmptyDataFrame
 from helpers import get_mapping_dict, get_table_def
 from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
+from utilities.basic_data_table import get_basic_data_table
+
 
 log = logging.getLogger("root")
 
-
 def insert_persons_crec(db_config, target_db, mapping_file):
-
     persons_query = (
         f'select "id", "caserecnumber", "casrec_details" from {db_config["target_schema"]}.persons '
         f"where \"type\" = 'actor_client' order by caserecnumber;"
@@ -77,7 +76,7 @@ def insert_persons_crec(db_config, target_db, mapping_file):
 
     except EmptyDataFrame as empty_data_frame:
         if empty_data_frame.empty_data_frame_type == "chunk":
-            target_db.create_empty_table(sirius_details=sirius_details)
+            target_db.create_empty_table(sirius_details=sirius_details, df=empty_data_frame.df)
 
     except Exception as e:
         log.error(f"Unexpected error: {e}")
