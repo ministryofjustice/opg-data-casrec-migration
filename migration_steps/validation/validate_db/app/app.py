@@ -716,7 +716,7 @@ def post_validation():
         "Mapped",
         "Complete (%)",
         "Attempted",
-        "Failed"
+        "Failed",
     ]
     report_table = tabulate(report_df, headers, tablefmt="psql")
     print(report_table)
