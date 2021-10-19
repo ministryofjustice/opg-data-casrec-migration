@@ -1,11 +1,13 @@
 import logging
 
-
 from helpers import log_title, check_entity_enabled
-from entities.ledger_allocation.finance_allocation import insert_finance_allocation_credits
+from entities.ledger_allocation.finance_allocation import (
+    do_finance_allocation_credits_prep, get_finance_allocation_credits_chunk
+)
+from transform_data.transformer import transformer
+
 
 log = logging.getLogger("root")
-
 
 def runner(target_db, db_config):
     """
@@ -23,8 +25,12 @@ def runner(target_db, db_config):
     log.info(log_title(message=entity_name))
 
     log.debug("insert_finance_allocation_credits")
-    insert_finance_allocation_credits(
-        target_db=target_db, db_config=db_config, mapping_file="finance_allocation_credits"
+    transformer(
+        db_config,
+        target_db,
+        "finance_allocation_credits",
+        get_finance_allocation_credits_chunk,
+        do_finance_allocation_credits_prep
     )
 
 
