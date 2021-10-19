@@ -1,0 +1,10 @@
+endpoint,entity_ref,test_purpose,full_check
+/api/v1/orders/{id},10000037,supervision_level_general_high_assets,FALSE
+/api/v1/orders/{id},13601750,supervision_level_general_low_assets,FALSE
+/api/v1/orders/{id},13395795,supervision_level_general_unknown_assets,FALSE
+/api/v1/orders/{id},13582649,supervision_level_general_null_assets,FALSE
+/api/v1/orders/{id},13540946,supervision_level_minimal_high_assets,FALSE
+/api/v1/orders/{id},10002199,supervision_level_minimal_low_assets,FALSE
+/api/v1/orders/{id},13415271,supervision_level_minimal_unknown_assets,FALSE
+/api/v1/orders/{id},11197726,supervision_level_null_high_assets,FALSE
+/api/v1/orders/{id},12587836,supervision_level_null_low_assets,FALSE
