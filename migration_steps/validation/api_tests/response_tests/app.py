@@ -18,6 +18,7 @@ def main():
         "orders",
         "bonds",
         "deputies",
+        "deputy_fee_payer",
         "deputy_orders",
         "deputy_clients_count",
         "supervision_level",
