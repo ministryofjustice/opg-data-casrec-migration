@@ -229,7 +229,7 @@ def wrap_casrec_col(col_name: str, col_definition, sql: str):
         col_definition["sirius_details"]["data_type"] not in ["bool", "int"]
         and col_name != "caserecnumber"
     ):
-        sql = f"NULLIF(TRIM({sql}), '')"
+        sql = f"NULLIF(NULLIF(TRIM({sql}), ''), 'NaT')"
 
     # wrap transform, if required
     if col_definition["transform_casrec"]["requires_transformation"]:
@@ -716,7 +716,7 @@ def post_validation():
         "Mapped",
         "Complete (%)",
         "Attempted",
-        "Failed"
+        "Failed",
     ]
     report_table = tabulate(report_df, headers, tablefmt="psql")
     print(report_table)
