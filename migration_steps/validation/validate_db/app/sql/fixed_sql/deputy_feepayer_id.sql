@@ -14,11 +14,16 @@ INSERT INTO casrec_csv.exceptions_deputy_feepayer_id(
         FROM casrec_csv.pat
         LEFT JOIN casrec_csv.deputyship
             ON deputyship."Case" = pat."Case"
-            AND deputyship."Fee Payer" = 'Y'
         LEFT JOIN casrec_csv.deputy
             ON deputy."Deputy No" = deputyship."Deputy No"
-            AND deputy."Stat" = '1'
         WHERE True
+            AND deputy."Stat" = '1'
+            AND deputyship."Fee Payer" = 'Y'
+            AND pat."Case" NOT IN (
+                    '11065340',
+                    '13097967',
+                    '11854030'
+                )
         ORDER BY pat."Case"
      ) as csv_data
     EXCEPT
@@ -30,6 +35,11 @@ INSERT INTO casrec_csv.exceptions_deputy_feepayer_id(
         WHERE True
             AND persons.type = 'actor_client'
             AND persons.clientsource = 'CASRECMIGRATION'
+            AND persons.caserecnumber NOT IN (
+                    '11065340',
+                    '13097967',
+                    '11854030'
+                )
         ORDER BY caserecnumber ASC
      ) as sirius_data
 );
