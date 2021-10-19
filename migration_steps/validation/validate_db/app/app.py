@@ -569,7 +569,6 @@ def write_results_sql():
         casrec_table_name = validation_dict["casrec"]["from_table"]
         results_rows.append(
             f"SELECT '{mapping_name}' AS mapping,\n"
-            f"(SELECT COUNT(*) FROM {source_schema}.{casrec_table_name}) as attempted,\n"
             f"(SELECT COUNT(*) FROM {get_exception_table(mapping_name)})\n"
         )
     separator = "UNION\n"
@@ -715,7 +714,6 @@ def post_validation():
         "Unmapped",
         "Mapped",
         "Complete (%)",
-        "Attempted",
         "Failed"
     ]
     report_table = tabulate(report_df, headers, tablefmt="psql")

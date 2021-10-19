@@ -502,8 +502,17 @@ def main(entities, delay, verbose, skip_load):
                     "Notified": convert_datetime_to_date,
                     "Letter Sent": convert_datetime_to_date,
                     "Bond Discharge": convert_datetime_to_date,
+                    "Date Completed": convert_datetime_to_date,
+                    "Report Rcvd.": convert_datetime_to_date,
+                    "Review Date": convert_datetime_to_date,
+                    "Extension 1": convert_datetime_to_date,
+                    "Extension 2": convert_datetime_to_date,
                 }
-                df = pd.read_excel(io.BytesIO(obj["Body"].read()), engine="openpyxl", converters=xlsx_converters)
+                df = pd.read_excel(
+                    io.BytesIO(obj["Body"].read()),
+                    engine="openpyxl",
+                    converters=xlsx_converters,
+                )
             else:
                 log.info("Unknown file format")
                 exit(1)
