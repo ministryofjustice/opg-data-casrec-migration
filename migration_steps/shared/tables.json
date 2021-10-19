@@ -365,5 +365,50 @@
 		"table_type": "data",
 		"sequences": [],
 		"order_by": ["id"]
+	},
+	"tasks": {
+		"sirius_tables": [
+			"tasks"
+		],
+		"entities": {
+			"base_entities": [
+				"tasks"
+			],
+			"relies_on": [
+				"clients",
+				"deputies"
+			]
+		},
+		"pk": "id",
+		"fks": [],
+		"table_type": "data",
+		"sequences": [{
+			"name": "tasks_id_seq",
+			"column": "id",
+			"type": "pk"
+		}],
+		"order_by": ["id"]
+	},
+	"person_task": {
+		"sirius_tables": ["person_task"],
+		"entities": {
+			"base_entities": ["tasks"],
+			"relies_on": ["clients"]
+		},
+		"pk": "",
+		"fks": [
+			{
+				"column":"person_id",
+				"parent_table" : "persons",
+				"parent_column": "id"
+			},
+			{
+				"column":"task_id",
+				"parent_table" : "tasks",
+				"parent_column": "id"
+			}],
+		"table_type": "join",
+		"sequences": [],
+		"order_by": ["person_id", "task_id"]
 	}
 }
