@@ -1,5 +1,7 @@
 endpoint,entity_ref,test_purpose,full_check
 /api/v1/orders/{id},10000037,supervision_level_general_high_assets,FALSE
+/api/v1/orders/{id},10175556,supervision_level_general_high_assets,FALSE
+/api/v1/orders/{id},1028453T,supervision_level_null_null_assets,FALSE
 /api/v1/orders/{id},13601750,supervision_level_general_low_assets,FALSE
 /api/v1/orders/{id},13395795,supervision_level_general_unknown_assets,FALSE
 /api/v1/orders/{id},13582649,supervision_level_general_null_assets,FALSE
