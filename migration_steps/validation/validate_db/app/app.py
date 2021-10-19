@@ -229,7 +229,7 @@ def wrap_casrec_col(col_name: str, col_definition, sql: str):
         col_definition["sirius_details"]["data_type"] not in ["bool", "int"]
         and col_name != "caserecnumber"
     ):
-        sql = f"NULLIF(NULLIF(TRIM({sql}), ''), 'NaT')"
+        sql = f"NULLIF(TRIM({sql}), '')"
 
     # wrap transform, if required
     if col_definition["transform_casrec"]["requires_transformation"]:
