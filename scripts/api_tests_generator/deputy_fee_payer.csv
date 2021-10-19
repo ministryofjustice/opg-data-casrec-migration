@@ -1,0 +1,3 @@
+endpoint,entity_ref,test_purpose,full_check
+/api/v1/orders/{id1}/deputies/{id2},10007163,dev_api_tests,FALSE
+/api/v1/orders/{id1}/deputies/{id2},10317585,dev_api_tests,FALSE
