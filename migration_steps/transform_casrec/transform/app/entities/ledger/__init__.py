@@ -1,11 +1,11 @@
 import logging
 
-
 from helpers import log_title, check_entity_enabled
-from entities.ledger.finance_ledger import insert_finance_ledger_credits
+from entities.ledger.finance_ledger import get_finance_ledger_credits_chunk, do_finance_ledger_credits_prep
+from transform_data.transformer import transformer
+
 
 log = logging.getLogger("root")
-
 
 def runner(target_db, db_config):
     """
@@ -23,8 +23,12 @@ def runner(target_db, db_config):
     log.info(log_title(message=entity_name))
 
     log.debug("insert_finance_ledger_credits")
-    insert_finance_ledger_credits(
-        target_db=target_db, db_config=db_config, mapping_file="finance_ledger_credits"
+    transformer(
+        db_config,
+        target_db,
+        "finance_ledger_credits",
+        get_finance_ledger_credits_chunk,
+        do_finance_ledger_credits_prep
     )
 
 
