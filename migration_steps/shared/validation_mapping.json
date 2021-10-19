@@ -822,12 +822,12 @@
             "where_clauses": []
         },
         "sirius": {
-            "from_table": "supervision_notes",
+            "from_table": "supervision_notes as notes",
             "transform": {
                 "createdtime": "to_char({col}, 'YYYY-MM-DD')"
             },
             "joins": [
-                "LEFT JOIN {target_schema}.persons ON persons.id = supervision_notes.person_id"
+                "LEFT JOIN {target_schema}.persons ON persons.id = notes.person_id"
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_notes exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
