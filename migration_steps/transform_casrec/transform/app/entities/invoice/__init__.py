@@ -1,11 +1,11 @@
 import logging
 
-
 from helpers import log_title, check_entity_enabled
-from entities.invoice.finance_invoice import insert_finance_invoice
+from entities.invoice.finance_invoice import do_finance_invoice_prep, get_finance_invoice_chunk
+from transform_data.transformer import transformer
+
 
 log = logging.getLogger("root")
-
 
 def runner(target_db, db_config):
     """
@@ -24,14 +24,10 @@ def runner(target_db, db_config):
     log.info(log_title(message=entity_name))
 
     log.debug("insert_finance_invoice - AD")
-    insert_finance_invoice(
-        target_db=target_db, db_config=db_config, mapping_file="finance_invoice_ad"
-    )
+    transformer(db_config, target_db, "finance_invoice_ad", get_finance_invoice_chunk, do_finance_invoice_prep)
 
     log.debug("insert_finance_invoice - non-AD")
-    insert_finance_invoice(
-        target_db=target_db, db_config=db_config, mapping_file="finance_invoice_non_ad"
-    )
+    transformer(db_config, target_db, "finance_invoice_non_ad", get_finance_invoice_chunk, do_finance_invoice_prep)
 
 
 if __name__ == "__main__":
