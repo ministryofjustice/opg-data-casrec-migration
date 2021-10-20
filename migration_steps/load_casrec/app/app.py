@@ -398,6 +398,14 @@ def convert_datetime_to_date(val):
     return val
 
 
+def remove_nat_from_datetime(val):
+    if isinstance(val, datetime):
+        return val.strftime("%Y-%m-%d %H:%M:%S")
+    elif val == "NaT":
+        return ""
+    return val
+
+
 @click.command()
 @click.option("-e", "--entities", default="all", help="list of entities to load")
 @click.option("-d", "--delay", default="0", help="delay in seconds for process")
@@ -502,11 +510,11 @@ def main(entities, delay, verbose, skip_load):
                     "Notified": convert_datetime_to_date,
                     "Letter Sent": convert_datetime_to_date,
                     "Bond Discharge": convert_datetime_to_date,
-                    "Date Completed": convert_datetime_to_date,
-                    "Report Rcvd.": convert_datetime_to_date,
-                    "Review Date": convert_datetime_to_date,
-                    "Extension 1": convert_datetime_to_date,
-                    "Extension 2": convert_datetime_to_date,
+                    "Date Completed": remove_nat_from_datetime,
+                    "Report Rcvd.": remove_nat_from_datetime,
+                    "Review Date": remove_nat_from_datetime,
+                    "Extension 1": remove_nat_from_datetime,
+                    "Extension 2": remove_nat_from_datetime,
                 }
                 df = pd.read_excel(
                     io.BytesIO(obj["Body"].read()),
