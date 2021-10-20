@@ -72,8 +72,8 @@ def get_mappings():
         ],
         "death": ["client_death_notifications", "deputy_death_notifications"],
         "visits": ["visits"],
-        "tasks": ["tasks"]
-        # "remarks": ["notes"]
+        "tasks": ["tasks"],
+        "remarks": ["notes"]
     }
 
     for entity, mapping in all_mappings.items():
@@ -787,9 +787,6 @@ def main(team, staging):
     post_validation()
 
     if get_exception_count() > 0:
-        # TODO: remove conditional once all validation errors are fixed in preproduction
-        if environment in ["local", "development"]:
-            exit(1)
         log.info("Exceptions WERE found: override / continue anyway\n")
     else:
         log.info("No exceptions found: continue...\n")

@@ -806,9 +806,9 @@
     },
     "notes": {
         "exclude": [
-            "createdtime",
             "upload_id",
-            "document_id"
+            "document_id",
+            "person_id"
         ],
         "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
@@ -822,14 +822,12 @@
             "where_clauses": []
         },
         "sirius": {
-            "from_table": "caseitem_note",
+            "from_table": "supervision_notes as notes",
             "transform": {
                 "createdtime": "to_char({col}, 'YYYY-MM-DD')"
             },
             "joins": [
-                "LEFT JOIN {target_schema}.cases ON cases.id = caseitem_note.caseitem_id",
-                "LEFT JOIN {target_schema}.notes ON notes.id = caseitem_note.note_id",
-                "LEFT JOIN {target_schema}.persons ON persons.id = cases.client_id"
+                "LEFT JOIN {target_schema}.persons ON persons.id = notes.person_id"
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_notes exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [

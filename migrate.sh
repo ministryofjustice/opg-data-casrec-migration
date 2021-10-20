@@ -113,7 +113,7 @@ docker-compose ${COMPOSE_ARGS} run --rm validation validation/validate.sh --team
 echo "=== Step 6 - API Tests ==="
 docker-compose ${COMPOSE_ARGS} run --rm validation validation/api_tests.sh
 echo "=== Step 7 - Functional API Tests ==="
-docker-compose ${COMPOSE_ARGS} run --rm validation validation/functional_api_tests.sh
+#docker-compose ${COMPOSE_ARGS} run --rm validation validation/functional_api_tests.sh
 
 if [ "${GENERATE_DOCS}" == "true" ]
   then
