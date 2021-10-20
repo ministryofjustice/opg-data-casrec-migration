@@ -3,8 +3,10 @@ import re
 import pandas as pd
 
 from datetime import datetime
+from pytest_cases import parametrize_with_cases
 
 from transform_data.calculations import do_calculations
+
 
 # creates a function which returns True if the value in the specified column is a UUID4;
 # applied to a dataframe to select all rows where column is a UUID
@@ -14,6 +16,11 @@ def _make_uuid4_check_fn(column):
 
 def test_multiple_calculations_applied():
     # test data
+    test_calculations = {
+        'current_date': ['todays_date', 'another_date'],
+        'uuid4': ['unique_identifier', 'another_identifier']
+    }
+
     untouched_field_values = ['one', 'two', 'three']
 
     test_data = {
@@ -25,11 +32,6 @@ def test_multiple_calculations_applied():
     }
 
     test_df = pd.DataFrame(test_data)
-
-    test_calculations = {
-        'current_date': ['todays_date', 'another_date'],
-        'uuid4': ['unique_identifier', 'another_identifier']
-    }
 
     # function under test
     now = datetime.now()
@@ -47,3 +49,91 @@ def test_multiple_calculations_applied():
     # untouched_field should contain one of each value across the three rows
     for value in untouched_field_values:
         assert len(result.loc[result['untouched_field'] == value]) == 1
+
+# test data for calculate_date calculations; the test cases include both datetimes and strings
+# in the reportingperiodenddate, as I'm not sure what type they'll be at this point in
+# the transform, so do_calculations() should cope with both
+def case_reporting_dates_not_weekend():
+    end_date = '2021-10-20'
+    expected = {
+        'reportingperiodenddate': end_date,
+        'duedate': '2021-11-10',
+        'reportingperiodstartdate': '2020-10-19',
+        'reportduereminderdate': '2021-09-29'
+    }
+    return end_date, expected
+
+def case_reporting_dates_saturday():
+    end_date = '2021-10-02'
+    expected = {
+        'reportingperiodenddate': end_date,
+        'duedate': '2021-10-25',
+        'reportingperiodstartdate': '2020-10-01',
+        'reportduereminderdate': '2021-09-10'
+    }
+    return end_date, expected
+
+def case_reporting_dates_sunday():
+    end_date = '2021-11-21'
+    expected = {
+        'reportingperiodenddate': end_date,
+        'duedate': '2021-12-13',
+        'reportingperiodstartdate': '2020-11-20',
+        'reportduereminderdate': '2021-10-29'
+    }
+    return end_date, expected
+
+def case_reporting_dates_datetime():
+    end_date = datetime.strptime('2021-10-20', '%Y-%m-%d')
+    expected = {
+        'reportingperiodenddate': end_date,
+        'duedate': '2021-11-10',
+        'reportingperiodstartdate': '2020-10-19',
+        'reportduereminderdate': '2021-09-29'
+    }
+    return end_date, expected
+
+def case_reporting_dates_end_date_is_None():
+    end_date = None
+    expected = {
+        'reportingperiodenddate': end_date,
+        'duedate': None,
+        'reportingperiodstartdate': None,
+        'reportduereminderdate': None
+    }
+    return end_date, expected
+
+@parametrize_with_cases("end_date, expected", cases=".", prefix="case_reporting_dates")
+def test_reporting_dates_calculations(end_date, expected):
+    # calculations specific to reporting which use reportingperiodenddate
+    # as their baseline
+    test_calculations = {
+        'calculate_date:reportingperiodenddate+21|next-working-day': [
+            'duedate'
+        ],
+        'calculate_date:reportingperiodenddate-21|previous-working-day': [
+            'reportduereminderdate'
+        ],
+        'calculate_date:reportingperiodenddate-366': [
+            'reportingperiodstartdate'
+        ],
+    }
+
+    # test data: only reportingperiodenddate is set from casrec data,
+    # other fields are calculated
+    test_data = {
+        'reportingperiodenddate': [end_date],
+        'duedate': [None],
+        'reportingperiodstartdate': [None],
+        'reportduereminderdate': [None],
+    }
+
+    test_df = pd.DataFrame(test_data)
+
+    # function under test
+    result = do_calculations(test_calculations, test_df)
+
+    # assertions
+    for index, row in result.iterrows():
+        for column in expected:
+            assert row[column] == expected[column], f'{column} values did not match'
