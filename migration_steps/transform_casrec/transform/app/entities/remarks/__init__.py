@@ -1,13 +1,13 @@
 import logging
 
-
+from entities.remarks.notes import get_notes_chunk, do_notes_prep
 from helpers import log_title, check_entity_enabled
+from transform_data.transformer import transformer
 
 from entities.remarks.client_notes import insert_client_notes
 from entities.remarks.deputy_notes import insert_deputy_notes
 
 log = logging.getLogger("root")
-
 
 def runner(target_db, db_config):
     """
