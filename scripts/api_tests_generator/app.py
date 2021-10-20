@@ -182,7 +182,24 @@ orders_updated_cases = [
 
 deputy_fee_payer_headers = ['["feePayer"]']
 
-csvs = ["deputy_fee_payer"]
+csvs = [
+    "deputy_fee_payer",
+    "clients",
+    "orders",
+    "bonds",
+    "deputies",
+    "deputy_fee_payer",
+    "deputy_orders",
+    "deputy_clients",
+    "supervision_level",
+    "client_death_notifications",
+    "deputy_death_notifications",
+    "warnings",
+    "crec",
+    "visits",
+    "reports",
+    "invoices",
+]
 
 search_headers = [
     "endpoint",
@@ -449,7 +466,7 @@ def get_list_of_json_blocks_from_response(csv, response_as_json):
 
 
 def get_line_structure_object_from_json_blocks(
-    json_blocks_to_loop_through, row, line_structure
+    json_blocks_to_loop_through, row, line_structure, csv
 ):
     for json_block in json_blocks_to_loop_through:
         for search_header in search_headers:
@@ -475,7 +492,7 @@ def get_line_structure_object_from_json_blocks(
     return line_structure
 
 
-def deduplicate_and_clean(line_structure):
+def deduplicate_and_clean(line_structure, csv):
     all_headers = [
         {"dedupe": False, "headers": eval(f"{csv}_headers")},
         {"dedupe": True, "headers": search_headers},
@@ -497,6 +514,7 @@ def deduplicate_and_clean(line_structure):
 
 
 def convert_structure_to_line(line_structure):
+    line = ""
     for attr, value in line_structure.items():
         line = line + value + ","
 
@@ -535,10 +553,10 @@ def main():
                     csv, response_as_json
                 )
                 line_structure = get_line_structure_object_from_json_blocks(
-                    json_blocks_from_response, row, line_structure
+                    json_blocks_from_response, row, line_structure, csv
                 )
 
-            line_structure = deduplicate_and_clean(line_structure)
+            line_structure = deduplicate_and_clean(line_structure, csv)
             line = convert_structure_to_line(line_structure)
 
             with open(f"responses/{csv}_output.csv", "a") as csv_outfile:

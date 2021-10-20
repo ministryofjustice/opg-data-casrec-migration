@@ -1,4 +1,4 @@
-endpoint,entity_ref,test_purpose,full_check,["latestSupervisionLevel"]["supervisionLevel"]["handle"],["latestSupervisionLevel"]["assetLevel"]["handle"]
-/api/v1/orders/{id},10003409,dev_api_tests,FALSE,GENERAL,HIGH
-/api/v1/orders/{id},10006413,dev_api_tests,FALSE,GENERAL,HIGH
-/api/v1/orders/{id},10007163,dev_api_tests,FALSE,GENERAL,HIGH
+endpoint,entity_ref,test_purpose,full_check,["latestSupervisionLevel"]["appliesFrom"],["latestSupervisionLevel"]["supervisionLevel"]["handle"],["latestSupervisionLevel"]["assetLevel"]["handle"],["latestSupervisionLevel"]["notes"]
+/api/v1/orders/{id},10003409,dev_api_tests,FALSE,19/10/2021|19/10/2021|19/10/2021,GENERAL|GENERAL|GENERAL,HIGH|HIGH|HIGH,placeholder note|placeholder note|placeholder note
+/api/v1/orders/{id},10006413,dev_api_tests,FALSE,19/10/2021|19/10/2021,GENERAL|GENERAL,HIGH|HIGH,placeholder note|placeholder note
+/api/v1/orders/{id},10007163,dev_api_tests,FALSE,19/10/2021|19/10/2021,GENERAL|GENERAL,HIGH|HIGH,placeholder note|placeholder note
