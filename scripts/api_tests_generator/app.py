@@ -186,8 +186,8 @@ csvs = [
     # "deputy_death_notifications",
     # "warnings",
     # "crec",
-    "visits",
-    # "reports",
+    # "visits",
+    "reports",
     # "invoices",
 ]
 
