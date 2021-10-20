@@ -1,35 +1,39 @@
-import logging
-import os
-
 import pandas as pd
 
-import helpers
-
-
-from utilities import standard_calculations
-
-
-log = logging.getLogger("root")
-environment = os.environ.get("ENVIRONMENT")
-
-config = helpers.get_config(env=environment)
+from uuid import uuid4
+from datetime import datetime
 
 
 def do_calculations(
-    calculated_fields: dict, source_data_df: pd.DataFrame
+    calculated_fields: dict,
+    df: pd.DataFrame,
+    now: datetime=datetime.now()
 ) -> pd.DataFrame:
-    calculations_df = source_data_df
+    """
+    Apply calculated values to specified fields in a dataframe.
+    Configuration is done in the calculated_fields property of a mapping.
+    Note that the dataframe has already been populated by the time
+    do_calculations() is called (see transform.py), so calculations
+    can make use of values in other fields, and not just casrec fields.
 
-    if "current_date" in calculated_fields:
-        for t in calculated_fields["current_date"]:
-            calculations_df = standard_calculations.current_date(
-                t["column_name"], calculations_df
-            )
+    :param calculated_fields: dictionary of fields to which calculations
+        should be applied, where keys are calculations and values
+        are column names; for example:
+        {
+            'current_date': ['todays_date', 'another_date'],
+            'uuid4': ['identifier']
+        }
+    :param df: dataframe to apply calculations to
+    :param now: default value to set fields to if current_date calculation
+        is being applied
+    """
+    for calculation, column_names in calculated_fields.items():
+        if calculation == "current_date":
+            for column_name in column_names:
+                df[column_name] = now.strftime("%Y-%m-%d")
 
-    if "uuid4" in calculated_fields:
-        for t in calculated_fields["uuid4"]:
-            calculations_df = standard_calculations.uuid4(
-                t["column_name"], calculations_df
-            )
+        elif calculation == "uuid4":
+            for column_name in column_names:
+                df[column_name] = df.apply(lambda x: uuid4(), axis=1)
 
-    return calculations_df
+    return df
