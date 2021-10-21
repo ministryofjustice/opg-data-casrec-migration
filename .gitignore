@@ -20,6 +20,7 @@ __pycache__/
 # IDE & development
 .vscode/
 *.iml
+**/build
 
 # Mac
 .DS_Store
