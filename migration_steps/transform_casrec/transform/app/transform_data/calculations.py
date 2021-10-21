@@ -9,39 +9,32 @@ from datetime import datetime, timedelta
 
 log = logging.getLogger('root')
 
-# regex for delta_date calculation formulae
+# regex for delta_date calculation formulae; matching this regex implicitly
+# performs validation on any delta_date calculation formulae
 _delta_date_regex = re.compile(
     r"^delta_date:" + \
     r"(?P<base_field>[^\+\-]+)" + \
     r"(?P<operator>[\+\-])" + \
     r"(?P<days>\d+)" + \
-    r"\|{0,1}(?P<weekend_adjustment>[^\|]*)$"
+    r"\|{0,1}(?P<weekend_adjustment>(previous-working-day|next-working-day){0,1})$"
 )
 
-# base_date: pd.Timestamp
-# operator: delta modifier, '+' or '-'; if neither of these, return None
-# days: str; delta number of days; if not parseable as an int, return None
+# base_date: date to use as the basis for the delta date
+# operator: delta modifier, '+' or '-'
+# days: delta number of days
 # weekend_adjustment: 'previous-working-day' or 'next-working-day' or None;
-#     if None, no adjustment will not be applied; if any other value, return None
-# return: datetime or None
-def _calculate_date(base_date: pd.Timestamp, operator: str, days: str, weekend_adjustment: str):
+#     if None, no adjustment will not be applied
+# return: datetime, or None if the base_date is None
+def _calculate_date(base_date: pd.Timestamp, operator: str, days: int, weekend_adjustment: str):
     if base_date is None or base_date == '':
-        log.error('Invalid base date value for calculation of date delta')
         return None
 
-    try:
-        delta = timedelta(days=int(days))
-    except TypeError:
-        log.error(f'Invalid delta for number of days: {days}')
-        return None
+    delta = timedelta(days=days)
 
     if operator == '+':
         base_date = base_date + delta
     elif operator == '-':
         base_date = base_date - delta
-    else:
-        log.error(f'Invalid delta operator: {operator}')
-        return None
 
     # Saturday, Sunday = [5, 6]
     weekday = base_date.weekday()
@@ -50,9 +43,6 @@ def _calculate_date(base_date: pd.Timestamp, operator: str, days: str, weekend_a
             base_date = base_date - timedelta(days=weekday-4)
         elif weekend_adjustment == 'next-working-day':
             base_date = base_date + timedelta(days=7-weekday)
-        elif weekend_adjustment is not None:
-            log.error(f'Weekend adjustment has invalid value: {weekend_adjustment}')
-            return None
 
     return base_date
 
@@ -114,6 +104,9 @@ def do_calculations(
     :param df: dataframe to apply calculations to
     :param now: default value to set fields to if current_date calculation
         is being applied
+
+    :raise: ValueError if calculation has an invalid format or refers to a
+        source column which does not exist
     """
     for calculation, column_names in calculated_fields.items():
         if calculation == "current_date":
@@ -126,16 +119,22 @@ def do_calculations(
 
         elif calculation.startswith('delta_date'):
             parts = _delta_date_regex.match(calculation)
+            if parts is None:
+                raise ValueError(f'delta_date calculation "{calculation}" does not match required format')
 
             base_field = parts.group('base_field')
             operator = parts.group('operator')
-            days = parts.group('days')
+            days = int(parts.group('days'))
             weekend_adjustment = parts.group('weekend_adjustment')
 
             for column_name in column_names:
-                df[column_name] = df.apply(
-                    lambda row: _calculate_date(row[base_field], operator, days, weekend_adjustment),
-                    axis=1
-                )
+                try:
+                    df[column_name] = df.apply(
+                        lambda row: _calculate_date(row[base_field], operator, days, weekend_adjustment),
+                        axis=1
+                    )
+                except KeyError as e:
+                    raise ValueError(f'Base field {base_field} in delta_date calculation ' + \
+                        f'"{calculation}" does not exist in row')
 
     return df

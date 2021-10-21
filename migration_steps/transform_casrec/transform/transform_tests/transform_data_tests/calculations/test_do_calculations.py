@@ -1,6 +1,6 @@
-import re
-
 import pandas as pd
+import pytest
+import re
 
 from datetime import datetime
 from pytest_cases import parametrize_with_cases
@@ -93,7 +93,7 @@ def case_reporting_dates_datetime():
     }
     return end_date, expected
 
-def case_reporting_dates_end_date_is_None():
+def case_reporting_dates_base_date_is_not_a_date():
     end_date = None
     expected = {
         'reportingperiodenddate': end_date,
@@ -105,6 +105,8 @@ def case_reporting_dates_end_date_is_None():
 
 @parametrize_with_cases("end_date, expected", cases=".", prefix="case_reporting_dates")
 def test_do_calculations_delta_date(end_date, expected):
+    """ Tests for actual delta_date formulae used for reporting dates """
+
     # calculations specific to reporting which use reportingperiodenddate
     # as their baseline
     test_calculations = {
@@ -144,6 +146,36 @@ def test_do_calculations_delta_date(end_date, expected):
                 expected_value = pd.Timestamp(expected_value)
             assert row[column] == expected_value, f'{column} values did not match'
 
-def test_do_calculations_delta_date_incorrect_formats():
+def case_delta_date_exception_missing_base_field():
+    return 'delta_date:foo+21|next-working-day'
+
+def case_delta_date_exception_bad_operator():
+    return 'delta_date:enddate/21|previous-working-day'
+
+def case_delta_date_exception_bad_weekend_adjustment():
+    return 'delta_date:enddate+21|same-old-working-day'
+
+def case_delta_date_exception_non_integer_days():
+    return 'delta_date:enddate-aaaa'
+
+def case_delta_date_exception_format_just_way_off():
+    return 'delta_date=enddate-+++1'
+
+@parametrize_with_cases("delta_formula", cases=".", prefix="case_delta_date_exception")
+def test_do_calculations_delta_date_exceptions(delta_formula):
     """ Tests for incorrect delta_date formulae """
-    pass
+
+    # test data
+    test_calculations = {}
+    test_calculations[delta_formula] = ['duedate']
+
+    test_data = {
+        'enddate': [datetime.strptime('2021-10-21', '%Y-%m-%d')],
+        'duedate1': [None],
+    }
+
+    test_df = pd.DataFrame(test_data)
+
+    # function under test
+    with pytest.raises(ValueError):
+        do_calculations(test_calculations, test_df)
