@@ -96,10 +96,15 @@ def do_calculations(
 
     :param calculated_fields: dictionary of fields to which calculations
         should be applied, where keys are calculations and values
-        are column names; for example:
+        are dicts each containing a column_name property; for example:
         {
-            'current_date': ['todays_date', 'another_date'],
-            'uuid4': ['identifier']
+            'current_date': [
+                {'column_name': 'todays_date'},
+                {'column_name': 'another_date'}
+            ],
+            'uuid4': [
+                {'column_name': 'identifier'}
+            ]
         }
     :param df: dataframe to apply calculations to
     :param now: default value to set fields to if current_date calculation
@@ -109,6 +114,9 @@ def do_calculations(
         source column which does not exist
     """
     for calculation, column_names in calculated_fields.items():
+        column_names = map(lambda item: item['column_name'], column_names)
+        log.debug(f'Applying calculation {calculation} to columns {column_names}')
+
         if calculation == "current_date":
             for column_name in column_names:
                 df[column_name] = now.strftime("%Y-%m-%d")
