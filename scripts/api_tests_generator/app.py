@@ -38,14 +38,10 @@ deputies_headers = [
     '["specialCorrespondenceRequirements"]["hearingImpaired"]',
     '["specialCorrespondenceRequirements"]["spellingOfNameRequiresCare"]',
     '["deputyStatus"]',
-    '["workPhoneNumber"]["id"]',
-    '["workPhoneNumber"]["phoneNumber"]',
-    '["workPhoneNumber"]["type"]',
-    '["workPhoneNumber"]["default"]',
-    '["homePhoneNumber"]["id"]',
-    '["homePhoneNumber"]["phoneNumber"]',
-    '["homePhoneNumber"]["type"]',
-    '["homePhoneNumber"]["default"]',
+    '["phoneNumber"]',
+    '["phoneNumbers"][0]["phoneNumber"]',
+    '["phoneNumbers"][0]["type"]',
+    '["mobileNumber"]',
     '["email"]',
     '["dob"]',
     '["dateOfDeath"]',
@@ -61,7 +57,6 @@ deputies_headers = [
     '["postcode"]',
     '["country"]',
     '["isAirmailRequired"]',
-    '["phoneNumber"]',
 ]
 
 orders_headers = [
@@ -177,7 +172,7 @@ csvs = [
     # "clients",
     # "orders",
     # "bonds",
-    # "deputies",
+    "deputies",
     # "deputy_fee_payer",
     # "deputy_orders",
     # "deputy_clients",
@@ -186,8 +181,8 @@ csvs = [
     # "deputy_death_notifications",
     # "warnings",
     # "crec",
-    # "visits",
-    "reports",
+    "visits",
+    # "reports",
     # "invoices",
 ]
 
@@ -533,8 +528,8 @@ def main():
 
             print(f"Case Reference: {entity_ref}")
             entity_ids = get_entity_ids(csv, entity_ref, engine, sirius_app_session)
+            # Line structure is an object that we use before converting to a a line string later
             line_structure = {}
-            line = ""
 
             for entity_id in entity_ids:
                 endpoint_final = get_endpoint_final(entity_id, endpoint, csv)

@@ -2,4 +2,3 @@ endpoint,entity_ref,test_purpose,full_check,[0]["visitType"]["handle"],[0]["visi
 /api/v1/clients/{id}/visits,10003409,dev_api_tests,FALSE,VT-SUP,VST-PRO,{'handle': 'VPT-CLIENT' 'label': 'Client' 'deprecated': None},,2008-05-29T00:00:00+00:00,,{'handle': 'ABORTED' 'label': 'Aborted' 'deprecated': None},
 /api/v1/clients/{id}/visits,10005237,dev_api_tests,FALSE,VT-SUP,VST-PRO,{'handle': 'VPT-CLIENT' 'label': 'Client' 'deprecated': None},,2008-06-10T00:00:00+00:00,,{'handle': 'ABORTED' 'label': 'Aborted' 'deprecated': None},
 /api/v1/clients/{id}/visits,10009307,dev_api_tests,FALSE,VT-SUP,VST-PRO,{'handle': 'VPT-CLIENT' 'label': 'Client' 'deprecated': None},,2008-06-27T00:00:00+00:00,,{'handle': 'ABORTED' 'label': 'Aborted' 'deprecated': None},
-
