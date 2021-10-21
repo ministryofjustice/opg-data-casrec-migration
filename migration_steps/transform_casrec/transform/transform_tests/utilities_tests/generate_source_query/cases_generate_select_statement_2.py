@@ -131,7 +131,7 @@ def case_mapping_persons_client():
         "dob": {
             "casrec_table": "pat",
             "casrec_column_name": "DOB",
-            "transformation": "date_format_standard",
+            "transformation": "",
         },
         "uid": {
             "casrec_table": "",

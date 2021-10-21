@@ -640,7 +640,7 @@ class ApiTests:
             self.bucket_name, self.api_log_file, self.s3_sess, log, self.s3_file_path
         )
 
-    def run_success_tests(self):
+    def run_response_tests(self):
         self.api_log(f"Starting tests against '{self.csv}'")
         if self.csv in self.entities[self.environment]:
             s3_csv_path = f"validation/csvs/{self.csv}.csv"

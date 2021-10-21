@@ -26,7 +26,7 @@ def main():
         "deputy_death_notifications",
         "warnings",
         "crec",
-        # "visits",
+        "visits",
         "reports",
         "invoice",
     ]
@@ -37,7 +37,7 @@ def main():
     for csv in csvs:
         api_tests.create_a_session()
         api_tests.csv = csv
-        api_tests.run_success_tests()
+        api_tests.run_response_tests()
     api_tests.upload_log_file()
 
     if api_tests.failed:
