@@ -3,6 +3,7 @@ import pytest
 import re
 
 from datetime import datetime
+from pandas.testing import assert_frame_equal
 from pytest_cases import parametrize_with_cases
 
 from transform_data.calculations import do_calculations
@@ -17,8 +18,14 @@ def _make_uuid4_check_fn(column):
 def test_do_calculations_multiple_applied():
     # test data
     test_calculations = {
-        'current_date': ['todays_date', 'another_date'],
-        'uuid4': ['unique_identifier', 'another_identifier']
+        'current_date': [
+            {'column_name': 'todays_date'},
+            {'column_name': 'another_date'}
+        ],
+        'uuid4': [
+            {'column_name': 'unique_identifier'},
+            {'column_name': 'another_identifier'}
+        ]
     }
 
     untouched_field_values = ['one', 'two', 'three']
@@ -111,13 +118,13 @@ def test_do_calculations_delta_date(end_date, expected):
     # as their baseline
     test_calculations = {
         'delta_date:reportingperiodenddate+21|next-working-day': [
-            'duedate'
+            {'column_name': 'duedate'}
         ],
         'delta_date:reportingperiodenddate-21|previous-working-day': [
-            'reportduereminderdate'
+            {'column_name': 'reportduereminderdate'}
         ],
         'delta_date:reportingperiodenddate-366': [
-            'reportingperiodstartdate'
+            {'column_name': 'reportingperiodstartdate'}
         ],
     }
 
@@ -167,7 +174,7 @@ def test_do_calculations_delta_date_exceptions(delta_formula):
 
     # test data
     test_calculations = {}
-    test_calculations[delta_formula] = ['duedate']
+    test_calculations[delta_formula] = [{'column_name': 'duedate'}]
 
     test_data = {
         'enddate': [datetime.strptime('2021-10-21', '%Y-%m-%d')],
@@ -179,3 +186,22 @@ def test_do_calculations_delta_date_exceptions(delta_formula):
     # function under test
     with pytest.raises(ValueError):
         do_calculations(test_calculations, test_df)
+
+def test_do_calculations_unrecognised_calculation():
+    # test data
+    test_calculations = {
+        'no-idea-what-to-do-with-this': [{'column_name': 'duedate'}]
+    }
+
+    test_data = {
+        'enddate': [None],
+        'duedate1': [None],
+    }
+
+    test_df = pd.DataFrame(test_data)
+
+    # function under test
+    new_df = do_calculations(test_calculations, test_df)
+
+    # dataframe values should not be touched as the calculation is not applied
+    assert_frame_equal(test_df, new_df)

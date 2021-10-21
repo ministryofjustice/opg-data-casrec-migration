@@ -25,26 +25,27 @@ _delta_date_regex = re.compile(
 # weekend_adjustment: 'previous-working-day' or 'next-working-day' or None;
 #     if None, no adjustment will not be applied
 # return: datetime, or None if the base_date is None
-def _calculate_date(base_date: pd.Timestamp, operator: str, days: int, weekend_adjustment: str):
+def _calculate_date(base_date, operator: str, days: int, weekend_adjustment: str, row):
     if base_date is None or base_date == '':
         return None
+    elif not isinstance(base_date, pd.Timestamp):
+        base_date = pd.Timestamp(base_date)
 
     delta = timedelta(days=days)
-
     if operator == '+':
-        base_date = base_date + delta
+        new_date = base_date + delta
     elif operator == '-':
-        base_date = base_date - delta
+        new_date = base_date - delta
 
     # Saturday, Sunday = [5, 6]
-    weekday = base_date.weekday()
+    weekday = new_date.weekday()
     if weekday in [5, 6]:
         if weekend_adjustment == 'previous-working-day':
-            base_date = base_date - timedelta(days=weekday-4)
+            new_date = new_date - timedelta(days=weekday-4)
         elif weekend_adjustment == 'next-working-day':
-            base_date = base_date + timedelta(days=7-weekday)
+            new_date = new_date + timedelta(days=7-weekday)
 
-    return base_date
+    return new_date
 
 def do_calculations(
     calculated_fields: dict,
@@ -110,12 +111,12 @@ def do_calculations(
     :param now: default value to set fields to if current_date calculation
         is being applied
 
-    :raise: ValueError if calculation has an invalid format or refers to a
-        source column which does not exist
+    :raise: ValueError if calculation has an invalid format, is unrecognised, or
+        refers to a source column which does not exist
     """
     for calculation, column_names in calculated_fields.items():
-        column_names = map(lambda item: item['column_name'], column_names)
-        log.debug(f'Applying calculation {calculation} to columns {column_names}')
+        column_names = list(map(lambda item: item['column_name'], column_names))
+        log.debug(f'Applying calculation "{calculation}" to columns {column_names}')
 
         if calculation == "current_date":
             for column_name in column_names:
@@ -138,11 +139,15 @@ def do_calculations(
             for column_name in column_names:
                 try:
                     df[column_name] = df.apply(
-                        lambda row: _calculate_date(row[base_field], operator, days, weekend_adjustment),
+                        lambda row: _calculate_date(row[base_field], operator, days, weekend_adjustment, row),
                         axis=1
                     )
                 except KeyError as e:
                     raise ValueError(f'Base field {base_field} in delta_date calculation ' + \
                         f'"{calculation}" does not exist in row')
+
+        else:
+            # if calculation is unrecognised, current approach is to leave the calculated column alone
+            log.error(f'Unrecognised calculation "{calculation}" for columns {column_names}')
 
     return df
