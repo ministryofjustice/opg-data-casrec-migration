@@ -133,12 +133,12 @@ workflows:
           tf_command: apply
           environment: Preproduction
           folder: shared
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
       - load_casrec_db:
           name: load casrec db preproduction
           requires: [build shared infra preproduction]
           environment: Preproduction
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra preproduction
           requires: [load casrec db preproduction]
@@ -181,7 +181,7 @@ workflows:
           name: job complete notification
           requires: [run api tests preproduction]
           environment: Preproduction
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
       - tag_image_for_environment:
           name: tag image for qa
           environment: Preproduction
@@ -214,10 +214,10 @@ workflows:
           filters: {branches:{only:[master]}}
       - job_complete:
           name: job complete notification
-          requires: [run api tests]
+          requires: [run api tests preproduction]
           environment: Preproduction
           workspace: preproduction
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
   preqa:
     when: << pipeline.parameters.run_preqa >>
     jobs:
@@ -270,7 +270,7 @@ workflows:
           requires: [run api tests preqa]
           environment: PreQA
           workspace: preqa
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
   qa:
     when: << pipeline.parameters.run_qa >>
     jobs:
@@ -323,7 +323,7 @@ workflows:
           requires: [run the step function qa]
           environment: Quality Assurance
           workspace: qa
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
 
   production:
     when: << pipeline.parameters.run_production >>
@@ -383,12 +383,12 @@ workflows:
           tf_command: apply
           environment: Preproduction
           folder: shared
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
       - load_casrec_db:
           name: load casrec db preproduction
           requires: [build shared infra preproduction]
           environment: Preproduction
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
       - infrastructure:
           name: build infra preproduction
           requires: [get latest tag preproduction]
@@ -455,7 +455,7 @@ workflows:
           requires: [run api tests preproduction]
           environment: PreproductionNightly
           workspace: preproduction
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
 
   nightly_preqa_run:
     triggers:
@@ -502,7 +502,7 @@ workflows:
           requires: [run the step function preqa]
           environment: PreQANightly
           workspace: preqa
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{only:[master]}}
 
 orbs:
   aws-cli: circleci/aws-cli@1.3.0

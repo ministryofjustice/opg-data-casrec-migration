@@ -62,6 +62,12 @@ def source_conditions(df, conditions):
         for col in exclude_values_cols:
             conditions.pop(col, None)
 
+    include_values_cols = {k: v for k, v in conditions.items() if k == "include_values"}
+    if include_values_cols:
+        df = include_values(df, include_values_cols)
+        for col in include_values_cols:
+            conditions.pop(col, None)
+
     not_null_cols = [k for k, v in conditions.items() if v == "not null"]
     if not_null_cols:
         df = remove_empty_rows(df, not_null_cols)
@@ -142,6 +148,14 @@ def exclude_values(df, cols):
 
     return df
 
+def include_values(df, cols):
+    col = format_additional_col_alias(cols["include_values"]["col"])
+
+    values_to_include = cols["include_values"]["values"]
+
+    log.debug(f"Keeping rows where '{col}' is one of {values_to_include}")
+
+    return df[df[col].isin(values_to_include)]
 
 def greater_than(df, cols):
     col = format_additional_col_alias(cols["greater_than"]["col"])

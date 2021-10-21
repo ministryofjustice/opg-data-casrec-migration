@@ -317,7 +317,11 @@ def get_casrec_col_source(col_key: str, col_definition):
         sql = f'{source_schema}.{table}."{col_name}"'
         if "" != col_definition["lookup_table"]:
             db_lookup_func = col_definition["lookup_table"]
-            sql = f"{source_schema}.{db_lookup_func}({sql})"
+            if "" != col_definition["default_value"]:
+                sql = f"CASE WHEN {source_schema}.{db_lookup_func}({sql}) is null " \
+                      f"THEN {get_casrec_default_value(col_key)} ELSE {source_schema}.{db_lookup_func}({sql}) END"
+            else:
+                sql = f"{source_schema}.{db_lookup_func}({sql})"
     elif "" != col_definition["default_value"]:
         sql = get_casrec_default_value(col_key)
     elif "" != col_definition["calculated"]:
