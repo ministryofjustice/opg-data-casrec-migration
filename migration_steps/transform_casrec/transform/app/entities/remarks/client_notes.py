@@ -6,7 +6,7 @@ from custom_errors import EmptyDataFrame
 from helpers import get_mapping_dict, get_table_def
 
 
-def insert_notes(db_config, target_db, mapping_file):
+def insert_client_notes(db_config, target_db, mapping_file):
     chunk_size = db_config["chunk_size"]
     offset = -chunk_size
     chunk_no = 0
