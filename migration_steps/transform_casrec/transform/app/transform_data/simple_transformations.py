@@ -123,6 +123,27 @@ def do_simple_transformations(
                 t["original_columns"], t["aggregate_col"], transformed_df
             )
 
+    if "calculate_duedate" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: calculate_duedate")
+        for t in transformations["calculate_duedate"]:
+            transformed_df = standard_transformations.calculate_duedate(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
+    if "calculate_reminderdate" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: calculate_reminderdate")
+        for t in transformations["calculate_reminderdate"]:
+            transformed_df = standard_transformations.calculate_reminderdate(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
+    if "calculate_startdate" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: calculate_startdate")
+        for t in transformations["calculate_startdate"]:
+            transformed_df = standard_transformations.calculate_startdate(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
     log.log(
         config.VERBOSE, f"Dataframe size after transformations: {len(transformed_df)}"
     )
