@@ -21,6 +21,7 @@ __pycache__/
 .vscode/
 *.iml
 **/build
+docker_load.log
 
 # Mac
 .DS_Store
