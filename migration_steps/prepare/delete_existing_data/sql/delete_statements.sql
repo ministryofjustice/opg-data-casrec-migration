@@ -201,8 +201,6 @@ INNER JOIN caseitem_document cd ON d.id = cd.document_id
 INNER JOIN cases c ON c.id = cd.caseitem_id
 INNER JOIN deletions.base_clients_persons bcp ON bcp.id = c.client_id;
 
-CREATE UNIQUE INDEX deputy_documents_id_idx ON deletions.deletions_deputy_documents (id);
-
 CREATE TABLE IF NOT EXISTS deletions.deletions_client_persons (id int);
 INSERT INTO deletions.deletions_client_persons (id)
 SELECT p.id
