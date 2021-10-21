@@ -14,7 +14,7 @@ def _make_uuid4_check_fn(column):
     uuid4_regex = re.compile(r'^[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}\Z', re.I)
     return lambda row: uuid4_regex.match(f'{row[column]}') != None
 
-def test_multiple_calculations_applied():
+def test_do_calculations_multiple_applied():
     # test data
     test_calculations = {
         'current_date': ['todays_date', 'another_date'],
@@ -50,7 +50,7 @@ def test_multiple_calculations_applied():
     for value in untouched_field_values:
         assert len(result.loc[result['untouched_field'] == value]) == 1
 
-# test data for calculate_date calculations; the test cases include both datetimes and strings
+# test data for delta_date calculations; the test cases include both datetimes and strings
 # in the reportingperiodenddate, as I'm not sure what type they'll be at this point in
 # the transform, so do_calculations() should cope with both
 def case_reporting_dates_not_weekend():
@@ -104,23 +104,26 @@ def case_reporting_dates_end_date_is_None():
     return end_date, expected
 
 @parametrize_with_cases("end_date, expected", cases=".", prefix="case_reporting_dates")
-def test_reporting_dates_calculations(end_date, expected):
+def test_do_calculations_delta_date(end_date, expected):
     # calculations specific to reporting which use reportingperiodenddate
     # as their baseline
     test_calculations = {
-        'calculate_date:reportingperiodenddate+21|next-working-day': [
+        'delta_date:reportingperiodenddate+21|next-working-day': [
             'duedate'
         ],
-        'calculate_date:reportingperiodenddate-21|previous-working-day': [
+        'delta_date:reportingperiodenddate-21|previous-working-day': [
             'reportduereminderdate'
         ],
-        'calculate_date:reportingperiodenddate-366': [
+        'delta_date:reportingperiodenddate-366': [
             'reportingperiodstartdate'
         ],
     }
 
     # test data: only reportingperiodenddate is set from casrec data,
     # other fields are calculated
+    if isinstance(end_date, str):
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+
     test_data = {
         'reportingperiodenddate': [end_date],
         'duedate': [None],
@@ -136,4 +139,11 @@ def test_reporting_dates_calculations(end_date, expected):
     # assertions
     for index, row in result.iterrows():
         for column in expected:
-            assert row[column] == expected[column], f'{column} values did not match'
+            expected_value = expected[column]
+            if expected_value is not None:
+                expected_value = pd.Timestamp(expected_value)
+            assert row[column] == expected_value, f'{column} values did not match'
+
+def test_do_calculations_delta_date_incorrect_formats():
+    """ Tests for incorrect delta_date formulae """
+    pass
