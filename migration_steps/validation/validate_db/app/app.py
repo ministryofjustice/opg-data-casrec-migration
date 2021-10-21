@@ -72,8 +72,8 @@ def get_mappings():
         ],
         "death": ["client_death_notifications", "deputy_death_notifications"],
         "visits": ["visits"],
-        "tasks": ["tasks"]
-        # "remarks": ["notes"]
+        "tasks": ["tasks"],
+        "remarks": ["notes"]
     }
 
     for entity, mapping in all_mappings.items():
@@ -303,7 +303,11 @@ def get_casrec_col_source(col_key: str, col_definition):
         sql = f'{source_schema}.{table}."{col_name}"'
         if "" != col_definition["lookup_table"]:
             db_lookup_func = col_definition["lookup_table"]
-            sql = f"{source_schema}.{db_lookup_func}({sql})"
+            if "" != col_definition["default_value"]:
+                sql = f"CASE WHEN {source_schema}.{db_lookup_func}({sql}) is null " \
+                      f"THEN {get_casrec_default_value(col_key)} ELSE {source_schema}.{db_lookup_func}({sql}) END"
+            else:
+                sql = f"{source_schema}.{db_lookup_func}({sql})"
     elif "" != col_definition["default_value"]:
         sql = get_casrec_default_value(col_key)
     elif "" != col_definition["calculated"]:
@@ -569,7 +573,6 @@ def write_results_sql():
         casrec_table_name = validation_dict["casrec"]["from_table"]
         results_rows.append(
             f"SELECT '{mapping_name}' AS mapping,\n"
-            f"(SELECT COUNT(*) FROM {source_schema}.{casrec_table_name}) as attempted,\n"
             f"(SELECT COUNT(*) FROM {get_exception_table(mapping_name)})\n"
         )
     separator = "UNION\n"
@@ -715,7 +718,6 @@ def post_validation():
         "Unmapped",
         "Mapped",
         "Complete (%)",
-        "Attempted",
         "Failed"
     ]
     report_table = tabulate(report_df, headers, tablefmt="psql")
@@ -789,9 +791,6 @@ def main(team, staging):
     post_validation()
 
     if get_exception_count() > 0:
-        # TODO: remove conditional once all validation errors are fixed in preproduction
-        if environment in ["local", "development"]:
-            exit(1)
         log.info("Exceptions WERE found: override / continue anyway\n")
     else:
         log.info("No exceptions found: continue...\n")

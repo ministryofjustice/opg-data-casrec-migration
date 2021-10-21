@@ -101,6 +101,7 @@ class ApiTests:
                 "clients",
                 "orders",
                 "deputies",
+                "deputy_fee_payer",
                 "deputy_orders",
                 "deputy_clients_count",
                 "warnings",
@@ -114,6 +115,7 @@ class ApiTests:
                 "clients",
                 "orders",
                 "deputies",
+                "deputy_fee_payer",
                 "deputy_orders",
                 "deputy_clients_count",
                 "warnings",
@@ -127,6 +129,7 @@ class ApiTests:
                 "clients",
                 "orders",
                 "deputies",
+                "deputy_fee_payer",
                 "deputy_orders",
                 "deputy_clients_count",
                 "warnings",
@@ -140,6 +143,7 @@ class ApiTests:
         self.all_allowed_entities = self.config.allowed_entities(self.environment) + [
             "deputy_clients",
             "deputy_clients_count",
+            "deputy_fee_payer",
         ]
         self.no_retry_entities = ["deputy_death_notifications"]
 
@@ -317,7 +321,7 @@ class ApiTests:
             "deputy_orders",
             "deputy_clients_count",
             "deputy_death_notifications",
-            "deputy_fee_payer"
+            "deputy_fee_payer",
         ]:
             ids = self.get_entity_ids_from_order_source(order_id_sql, caserecnumber)
         log.debug(f"returning ids: {ids}")

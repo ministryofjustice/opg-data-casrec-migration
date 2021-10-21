@@ -210,7 +210,11 @@
 				"parent_column": "id"
 			}],
 		"table_type": "data",
-		"sequences": [],
+		"sequences": [{
+			"name": "death_notifications_id_seq",
+			"column": "id",
+			"type": "pk"
+		}],
 		"order_by": ["id"]
 	},
 	"warnings": {
