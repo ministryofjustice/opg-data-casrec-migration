@@ -221,6 +221,7 @@ def get_max_col(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.Da
 
     return df
 
+<<<<<<< HEAD
 # base_date: date to use as the basis for the delta date
 # operator: delta modifier, '+' or '-'
 # days: delta number of days
@@ -261,4 +262,14 @@ def calculate_startdate(original_col: str, result_col: str, df: pd.DataFrame) ->
     df[result_col] = df[original_col].apply(
         lambda base_date: _calculate_date(base_date, '-', 366)
     )
+
+def is_at_least_one_set(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Set result_col to true if at least one of the values in the columns
+    original_cols has a non-null/non-NaT/non-NaN etc. value
+    """
+    log.debug('+++++++++++++++++++++++++++++++++++++++++++++ TRANSFORMATION: is_at_least_one_set()')
+    log.debug(f'original_cols: {original_cols}')
+    log.debug(f'result_col: {result_col}')
+
     return df

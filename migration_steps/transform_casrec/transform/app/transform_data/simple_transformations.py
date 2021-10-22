@@ -151,6 +151,13 @@ def do_simple_transformations(
                 t["original_columns"], t["aggregate_col"], transformed_df
             )
 
+    if "is_at_least_one_set" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: is_at_least_one_set")
+        for t in transformations["is_at_least_one_set"]:
+            transformed_df = standard_transformations.is_at_least_one_set(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
     log.log(
         config.VERBOSE, f"Dataframe size after transformations: {len(transformed_df)}"
     )
