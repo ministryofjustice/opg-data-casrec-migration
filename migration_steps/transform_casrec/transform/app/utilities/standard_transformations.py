@@ -214,7 +214,6 @@ def get_max_col(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.Da
         pass
 
     df["temp"] = df[original_cols].values.tolist()
-    df["temp"] = df[original_cols].values.tolist()
     df[result_col] = df["temp"].apply(lambda x: max(x))
 
     df = df.drop(columns=original_cols)
