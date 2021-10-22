@@ -1,8 +1,10 @@
 import logging
 
 from helpers import log_title, check_entity_enabled
-from entities.tasks.tasks import insert_tasks
-from entities.tasks.person_task import insert_person_task
+from entities.tasks.tasks import get_tasks_chunk
+from entities.tasks.person_task import get_person_task_records
+from transform_data.transformer import transformer
+
 
 log = logging.getLogger("root")
 
@@ -24,10 +26,10 @@ def runner(target_db, db_config):
     log.info(log_title(message=entity_name))
 
     log.debug("insert_tasks")
-    insert_tasks(target_db=target_db, db_config=db_config, mapping_file="tasks")
+    transformer(db_config, target_db, "tasks", get_tasks_chunk)
 
     log.debug("insert_person_task")
-    insert_person_task(target_db=target_db, db_config=db_config, mapping_file="person_task")
+    transformer(db_config, target_db, "person_task", get_person_task_records)
 
 
 if __name__ == "__main__":
