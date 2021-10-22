@@ -1,10 +1,11 @@
 import logging
 
-from entities.visits.visits import insert_visits
+from entities.visits.visits import get_visits_chunk, do_visits_prep
 from helpers import log_title, check_entity_enabled
+from transform_data.transformer import transformer
+
 
 log = logging.getLogger("root")
-
 
 def runner(target_db, db_config):
     """
@@ -23,11 +24,7 @@ def runner(target_db, db_config):
     log.info(log_title(message=entity_name))
 
     log.debug("insert_visits")
-    insert_visits(
-        mapping_file="visits",
-        target_db=target_db,
-        db_config=db_config,
-    )
+    transformer(db_config, target_db, "visits", get_visits_chunk, do_visits_prep)
 
 
 if __name__ == "__main__":
