@@ -57,7 +57,11 @@ class InsertData:
 
         try:
             columns_from_df = self._list_table_columns(df=df)
-        except Exception:
+            log.debug('Got columns from dataframe')
+            log.debug(columns_from_df)
+        except Exception as e:
+            log.error('Unable to list columns for dataframe')
+            log.error(e)
             columns_from_df = []
 
         columns_from_mapping = mapping_details.keys()
@@ -75,6 +79,8 @@ class InsertData:
         statement += ", ".join(columns)
 
         statement += ");"
+
+        log.debug(f'create statement for {table_name}: {statement}')
 
         return statement
 

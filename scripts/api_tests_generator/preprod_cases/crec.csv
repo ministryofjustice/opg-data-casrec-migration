@@ -1,5 +1,6 @@
 endpoint,entity_ref,test_purpose,full_check
 /api/v1/clients/{id},11488678,score_3,FALSE
 /api/v1/clients/{id},12185940,score_2,FALSE
+/api/v1/clients/{id},13136815,score_2,FALSE
 /api/v1/clients/{id},11808610,score_1,FALSE
 /api/v1/clients/{id},11239526,score_none,FALSE
