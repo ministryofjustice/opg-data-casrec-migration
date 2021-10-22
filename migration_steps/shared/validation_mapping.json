@@ -11,6 +11,10 @@
             "orderdate": {
                 "mapping_table": "cases.orderdate",
                 "direction": "ASC"
+            },
+            "securitybond": {
+                "mapping_table": "cases.securitybond",
+                "direction": "ASC"
             }
         },
         "casrec": {
@@ -58,6 +62,10 @@
         "orderby": {
             "orderdate": {
                 "mapping_table": "cases.orderdate",
+                "direction": "ASC"
+            },
+            "securitybond": {
+                "mapping_table": "cases.securitybond",
                 "direction": "ASC"
             }
         },
