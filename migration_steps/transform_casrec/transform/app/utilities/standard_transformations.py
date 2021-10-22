@@ -64,19 +64,6 @@ def unique_number(new_col: str, df: pd.DataFrame, length: int = 12) -> pd.DataFr
     return df
 
 
-def date_format_standard(
-    original_col: str, aggregate_col: str, df: pd.DataFrame
-) -> pd.DataFrame:
-    df["new"] = df[original_col].astype(str)
-    df["new"] = pd.to_datetime(df["new"], dayfirst=True)
-    df["new"] = [x.strftime("%Y-%m-%d") for x in df.new]
-
-    df = df.drop(columns=original_col)
-    df = df.rename(columns={"new": aggregate_col})
-
-    return df
-
-
 def capitalise(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
     df[result_col] = df[original_col].apply(lambda x: x.upper())
     df = df.drop(columns=[original_col])

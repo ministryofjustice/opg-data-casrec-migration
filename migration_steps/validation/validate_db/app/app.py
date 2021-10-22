@@ -318,8 +318,10 @@ def get_casrec_col_source(col_key: str, col_definition):
         if "" != col_definition["lookup_table"]:
             db_lookup_func = col_definition["lookup_table"]
             if "" != col_definition["default_value"]:
-                sql = f"CASE WHEN {source_schema}.{db_lookup_func}({sql}) is null " \
-                      f"THEN {get_casrec_default_value(col_key)} ELSE {source_schema}.{db_lookup_func}({sql}) END"
+                sql = (
+                    f"CASE WHEN {source_schema}.{db_lookup_func}({sql}) is null "
+                    f"THEN {get_casrec_default_value(col_key)} ELSE {source_schema}.{db_lookup_func}({sql}) END"
+                )
             else:
                 sql = f"{source_schema}.{db_lookup_func}({sql})"
     elif "" != col_definition["default_value"]:
@@ -585,7 +587,6 @@ def write_results_sql():
     results_rows = []
     for mapping_name in mappings_to_run:
         validation_dict = get_validation_dict(mapping_name)
-        # casrec_table_name = validation_dict["casrec"]["from_table"]
         results_rows.append(
             f"SELECT '{mapping_name}' AS mapping,\n"
             f"(SELECT COUNT(*) FROM {get_exception_table(mapping_name)})\n"
