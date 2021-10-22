@@ -1,5 +1,5 @@
 endpoint,entity_ref,test_purpose,full_check,["feeType"],["reference"],["raisedDate"],["amount"],["amountOutstanding"],["status"]["handle"],["sopStatus"]["label"]
 /api/v1/finance/{id}/invoices,10041221,dev_api_tests,FALSE,B3,B300052/19,16/03/2020,35,35,OPEN,Reported
-/api/v1/finance/{id}/invoices,10162667,dev_api_tests,FALSE,AD|B2,AD51849/19|B200201/19,16/03/2020|19/03/2020,100|320,100|320,OPEN,Confirmed|Reported
-/api/v1/finance/{id}/invoices,10015105,dev_api_tests,FALSE,AD|B2|B3,AD40912/19|B200022/19|B300022/19,05/03/2019|16/03/2020,100|292.02|3.06,100|292.02|3.06,OPEN,Reported
+/api/v1/finance/{id}/invoices,10162667,dev_api_tests,FALSE,AD|B2,AD51849/19|B200201/19,16/03/2020|19/03/2020,100|320,100|320,OPEN|OPEN,Confirmed|Reported
+/api/v1/finance/{id}/invoices,10015105,dev_api_tests,FALSE,AD|B2|B3,AD40912/19|B200022/19|B300022/19,05/03/2019|16/03/2020|16/03/2020,100|292.02|3.06,100|292.02|3.06,OPEN|OPEN|OPEN,Reported|Reported|Reported
 /api/v1/finance/{id}/invoices,10050512,dev_api_tests,FALSE,S2,S200075/19,16/03/2020,320,320,OPEN,Reported
