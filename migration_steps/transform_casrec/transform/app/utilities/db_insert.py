@@ -53,7 +53,7 @@ class InsertData:
                 if details["data_type"] in self.datatype_remap
                 else details["data_type"]
             )
-            columns.append(f"{col} {details['remapped_data_type']}")
+            columns.append(f"\"{col}\" {details['remapped_data_type']}")
 
         try:
             columns_from_df = self._list_table_columns(df=df)
@@ -72,9 +72,9 @@ class InsertData:
 
         for col in temp_columns:
             if col in self.standard_columns:
-                columns.append(f"{col} {self.standard_columns[col]}")
+                columns.append(f"\"{col}\" {self.standard_columns[col]}")
             else:
-                columns.append(f"{col} text")
+                columns.append(f"\"{col}\" text")
 
         statement += ", ".join(columns)
 
