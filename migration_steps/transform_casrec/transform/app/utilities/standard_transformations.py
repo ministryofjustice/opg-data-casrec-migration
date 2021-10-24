@@ -47,10 +47,7 @@ def squash_columns(
 
 
 def convert_to_bool(
-    original_col: str,
-    new_col: str,
-    df: pd.DataFrame,
-    drop_original_col: bool = True,
+    original_col: str, new_col: str, df: pd.DataFrame, drop_original_col: bool = True,
 ) -> pd.DataFrame:
 
     df[new_col] = df[original_col] == "1.0"
@@ -63,19 +60,6 @@ def unique_number(new_col: str, df: pd.DataFrame, length: int = 12) -> pd.DataFr
     df[new_col] = df.apply(
         lambda x: random.randint(10 ** (length - 1), 10 ** length - 1), axis=1
     )
-
-    return df
-
-
-def date_format_standard(
-    original_col: str, aggregate_col: str, df: pd.DataFrame
-) -> pd.DataFrame:
-    df["new"] = df[original_col].astype(str)
-    df["new"] = pd.to_datetime(df["new"], format="%Y-%m-%d %H:%M:%S")
-    df["new"] = [x.strftime("%Y-%m-%d") for x in df.new]
-
-    df = df.drop(columns=original_col)
-    df = df.rename(columns={"new": aggregate_col})
 
     return df
 
@@ -117,7 +101,9 @@ def first_two_chars(
 
 def add_one_year(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
     df[result_col] = df[original_col].astype(str)
-    df[result_col] = pd.to_datetime(df[result_col], dayfirst=True) + pd.offsets.DateOffset(years=1)
+    df[result_col] = pd.to_datetime(
+        df[result_col], dayfirst=True
+    ) + pd.offsets.DateOffset(years=1)
     df = df.drop(columns=[original_col])
 
     return df
