@@ -753,7 +753,7 @@
           "identifiers": []
         }
     },
-    "notes": {
+    "client_notes": {
         "exclude": [
             "upload_id",
             "document_id",
@@ -779,6 +779,45 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_notes exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
+                "persons.clientsource = 'CASRECMIGRATION'"
+            ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
+    },
+    "deputy_notes": {
+        "exclude": [
+            "upload_id",
+            "document_id",
+            "person_id"
+        ],
+        "casenumber_source": "cases.caserecnumber",
+        "orderby": {},
+        "casrec": {
+            "from_table": "deputy_remarks",
+            "transform": {},
+            "joins": [
+                "LEFT JOIN casrec_csv.deputyship ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy_remarks.\"Deputy No\"",
+                "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\""
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_notes exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "where_clauses": []
+        },
+        "sirius": {
+            "from_table": "supervision_notes as notes",
+            "transform": {
+                "createdtime": "to_char({col}, 'YYYY-MM-DD')"
+            },
+            "joins": [
+                "LEFT JOIN {target_schema}.persons ON persons.id = notes.person_id",
+                "LEFT JOIN {target_schema}.order_deputy ON order_deputy.deputy_id = notes.person_id",
+                "LEFT JOIN {target_schema}.cases ON cases.id = order_deputy.order_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_notes exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "persons.type = 'actor_deputy'",
                 "persons.clientsource = 'CASRECMIGRATION'"
             ]
         },
