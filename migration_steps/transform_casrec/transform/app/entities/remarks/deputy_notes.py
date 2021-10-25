@@ -1,12 +1,9 @@
-import logging
 import pandas as pd
 from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 from utilities.basic_data_table import get_basic_data_table
 
 from custom_errors import EmptyDataFrame
 from helpers import get_mapping_dict, get_table_def
-
-log = logging.getLogger("root")
 
 
 def insert_deputy_notes(db_config, target_db, mapping_file):
@@ -54,6 +51,8 @@ def insert_deputy_notes(db_config, target_db, mapping_file):
             notes_joined_df = reapply_datatypes_to_fk_cols(
                 columns=["person_id"], df=notes_joined_df
             )
+
+            notes_joined_df["description"].replace("", "-", inplace=True)
 
             if len(notes_df) > 0:
                 target_db.insert_data(
