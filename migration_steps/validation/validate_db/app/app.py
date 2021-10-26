@@ -73,7 +73,8 @@ def get_mappings():
         "death": ["client_death_notifications", "deputy_death_notifications"],
         "visits": ["visits"],
         "tasks": ["tasks"],
-        "remarks": ["client_notes", "deputy_notes"]
+        "remarks": ["client_notes", "deputy_notes"],
+        "reporting": ["annual_report_logs"],
     }
 
     for entity, mapping in all_mappings.items():
