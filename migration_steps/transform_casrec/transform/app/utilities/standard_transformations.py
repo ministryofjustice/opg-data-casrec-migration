@@ -261,14 +261,23 @@ def calculate_startdate(original_col: str, result_col: str, df: pd.DataFrame) ->
     df[result_col] = df[original_col].apply(
         lambda base_date: _calculate_date(base_date, '-', 366)
     )
+    return df
 
 def is_at_least_one_set(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
     """
     Set result_col to true if at least one of the values in the columns
     original_cols has a non-null/non-NaT/non-NaN etc. value
     """
-    log.debug('+++++++++++++++++++++++++++++++++++++++++++++ TRANSFORMATION: is_at_least_one_set()')
-    log.debug(f'original_cols: {original_cols}')
-    log.debug(f'result_col: {result_col}')
+    def _transform(row):
+        result = False
 
-    return df
+        for column in original_cols:
+            value = row[column]
+            if value != None and value != '':
+                result = True
+                break
+
+        row[result_col] = result
+        return row
+
+    return df.apply(_transform, axis=1)
