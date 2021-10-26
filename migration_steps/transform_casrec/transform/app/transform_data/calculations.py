@@ -1,10 +1,9 @@
 import logging
-import re
 
 import pandas as pd
 
 from uuid import uuid4
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 log = logging.getLogger('root')
