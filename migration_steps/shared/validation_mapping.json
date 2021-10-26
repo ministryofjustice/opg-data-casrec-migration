@@ -23,7 +23,8 @@
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_bonds_active exc_table ON exc_table.caserecnumber = pat.\"Case\"\n",
             "where_clauses": [
-                "casrec_csv.order.\"Bond Rqd\" = 'Y'"
+                "casrec_csv.order.\"Bond Rqd\" = 'Y'",
+                "casrec_csv.order.\"Ord Stat\" != 'Open'"
             ]
         },
         "sirius": {
@@ -68,7 +69,8 @@
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_bonds_dispensed exc_table ON exc_table.caserecnumber = pat.\"Case\"\n",
             "where_clauses": [
-                "casrec_csv.order.\"Bond Rqd\" = 'S'"
+                "casrec_csv.order.\"Bond Rqd\" = 'S'",
+                "casrec_csv.order.\"Ord Stat\" != 'Open'"
             ]
         },
         "sirius": {
@@ -114,7 +116,9 @@
                 "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\""
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_cases exc_table ON exc_table.caserecnumber = pat.\"Case\"",
-            "where_clauses": []
+            "where_clauses": [
+                "casrec_csv.order.\"Ord Stat\" != 'Open'"
+            ]
         },
         "sirius": {
             "from_table": "cases",
@@ -840,7 +844,9 @@
                 "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\""
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_supervision_level_log exc_table ON exc_table.caserecnumber = pat.\"Case\"",
-            "where_clauses": []
+            "where_clauses": [
+                "casrec_csv.order.\"Ord Stat\" != 'Open'"
+            ]
         },
         "sirius": {
             "from_table": "supervision_level_log",
