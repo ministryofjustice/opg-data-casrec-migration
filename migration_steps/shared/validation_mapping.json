@@ -808,7 +808,8 @@
         "sirius": {
             "from_table": "supervision_notes as notes",
             "transform": {
-                "createdtime": "to_char({col}, 'YYYY-MM-DD')"
+                "createdtime": "to_char({col}, 'YYYY-MM-DD')",
+                "description": "NULLIF({col}, '-')"
             },
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = notes.person_id",
