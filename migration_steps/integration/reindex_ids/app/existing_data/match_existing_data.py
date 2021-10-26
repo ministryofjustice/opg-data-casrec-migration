@@ -108,6 +108,10 @@ def get_existing_data(db_config, table_name, table_details):
             sql=query, con=db_config["sirius_db_connection_string"]
         )
 
+        if len(existing_data.index) == 0:
+            log.debug(f"empty offset {offset} for table {table_name}")
+            break
+
         insert_statement = create_insert_into_temp_table(
             db_config=db_config,
             df=existing_data,
