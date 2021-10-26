@@ -168,22 +168,22 @@ orders_updated_cases = [
 deputy_fee_payer_headers = ['["feePayer"]']
 
 csvs = [
-    # "deputy_fee_payer",
-    # "clients",
-    # "orders",
-    # "bonds",
+    "deputy_fee_payer",
+    "clients",
+    "orders",
+    "bonds",
     "deputies",
-    # "deputy_fee_payer",
-    # "deputy_orders",
-    # "deputy_clients",
-    # "supervision_level",
-    # "client_death_notifications",
-    # "deputy_death_notifications",
-    # "warnings",
-    # "crec",
+    "deputy_fee_payer",
+    "deputy_orders",
+    "deputy_clients",
+    "supervision_level",
+    "client_death_notifications",
+    "deputy_death_notifications",
+    "warnings",
+    "crec",
     "visits",
-    # "reports",
-    # "invoices",
+    "reports",
+    "invoices",
 ]
 
 search_headers = [

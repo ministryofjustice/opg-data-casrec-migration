@@ -234,14 +234,7 @@ def create_insert_statement(table_name, schema, columns, df):
     for i, row in enumerate(df.values.tolist()):
         row = [str(x) for x in row]
         row = [
-            str(
-                x.replace("'", "''")
-                .replace("nan", "")
-                .replace("&", "")
-                .replace(";", "")
-                .replace("%", "")
-            )
-            for x in row
+            str(x.replace("'", "''").replace("%", "%%").replace("nan", "")) for x in row
         ]
         row = [f"'{str(x)}'" for x in row]
         single_row = ", ".join(row)
@@ -390,14 +383,6 @@ def initialise_progress_table(
         time.sleep(secs)
 
 
-def convert_datetime_to_date(val):
-    if isinstance(val, datetime):
-        return val.strftime("%Y-%m-%d")
-    elif val == "NaT":
-        return ""
-    return val
-
-
 @click.command()
 @click.option("-e", "--entities", default="all", help="list of entities to load")
 @click.option("-d", "--delay", default="0", help="delay in seconds for process")
@@ -491,28 +476,7 @@ def main(entities, delay, verbose, skip_load):
             if file.split(".")[1] == "csv":
                 df = pd.read_csv(io.BytesIO(obj["Body"].read()))
             elif file.split(".")[1] == "xlsx":
-                xlsx_converters = {
-                    "Made Date": convert_datetime_to_date,
-                    "DOB": convert_datetime_to_date,
-                    "Disch Death": convert_datetime_to_date,
-                    "Issue Date": convert_datetime_to_date,
-                    "Spvn Received": convert_datetime_to_date,
-                    "Expiry Date": convert_datetime_to_date,
-                    "Clause Expiry": convert_datetime_to_date,
-                    "Notified": convert_datetime_to_date,
-                    "Letter Sent": convert_datetime_to_date,
-                    "Bond Discharge": convert_datetime_to_date,
-                    "Date Completed": convert_datetime_to_date,
-                    "Report Rcvd.": convert_datetime_to_date,
-                    "Review Date": convert_datetime_to_date,
-                    "Extension 1": convert_datetime_to_date,
-                    "Extension 2": convert_datetime_to_date,
-                }
-                df = pd.read_excel(
-                    io.BytesIO(obj["Body"].read()),
-                    engine="openpyxl",
-                    converters=xlsx_converters,
-                )
+                df = pd.read_excel(io.BytesIO(obj["Body"].read()), engine="openpyxl",)
             else:
                 log.info("Unknown file format")
                 exit(1)

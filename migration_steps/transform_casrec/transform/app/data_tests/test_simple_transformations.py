@@ -84,16 +84,14 @@ def test_simple_transformations(
         for i in v:
 
             try:
-                result_df[k] = pd.to_datetime(result_df[k], format="%Y-%m-%d")
-                result_df[i] = pd.to_datetime(result_df[i], format="%Y-%m-%d")
+                result_df[k] = pd.to_datetime(result_df[k], dayfirst=True)
+                result_df[i] = pd.to_datetime(result_df[i], dayfirst=True)
             except Exception:
                 result_df[k] = result_df[k].apply(lambda x: f"{x}")
                 result_df[i] = result_df[i].apply(lambda x: f"{x}")
 
             match = result_df[k].equals(result_df[i])
 
-            print(
-                f"checking {k} == {i}.... " f"{'OK' if match is True else 'oh no'} ",
-            )
+            print(f"checking {k} == {i}.... " f"{'OK' if match is True else 'oh no'} ",)
 
             assert match is True

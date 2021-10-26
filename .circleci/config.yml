@@ -221,15 +221,16 @@ workflows:
   preqa:
     when: << pipeline.parameters.run_preqa >>
     jobs:
-      - reset_sirius_full_restore:
-          name: run and monitor jenkins restore job preqa
-          environment: PreQA
-          sirius_environment: casrecdmpq
-          filters: {branches:{only:[master]}}
       - get_latest_image:
           name: get latest tag preqa
           image_tag: qa
           environment: PreQA
+          filters: {branches:{only:[master]}}
+      - reset_sirius_full_restore:
+          name: run and monitor jenkins restore job preqa
+          requires: [get latest tag preqa]
+          environment: PreQA
+          sirius_environment: casrecdmpq
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra preqa

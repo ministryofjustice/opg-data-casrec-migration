@@ -28,10 +28,7 @@
         },
         "sirius": {
             "from_table": "bonds",
-            "transform": {
-                "orderdate": "to_char({col}, 'YYYY-MM-DD')",
-                "dischargedate": "to_char({col}, 'YYYY-MM-DD')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.cases ON cases.id = bonds.order_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = cases.client_id"
@@ -76,10 +73,7 @@
         },
         "sirius": {
             "from_table": "bonds",
-            "transform": {
-                "orderdate": "to_char({col}, 'YYYY-MM-DD')",
-                "dischargedate": "to_char({col}, 'YYYY-MM-DD')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.cases ON cases.id = bonds.order_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = cases.client_id"
@@ -124,15 +118,7 @@
         },
         "sirius": {
             "from_table": "cases",
-            "transform": {
-                "orderdate": "to_char({col}, 'YYYY-MM-DD')",
-                "createddate": "to_char({col}, 'YYYY-MM-DD')",
-                "orderissuedate": "to_char({col}, 'YYYY-MM-DD')",
-                "receiptdate": "to_char({col}, 'YYYY-MM-DD')",
-                "orderexpirydate": "to_char({col}, 'YYYY-MM-DD')",
-                "updateddate": "to_char({col}, 'YYYY-MM-DD')",
-                "clauseexpirydate": "to_char({col}, 'YYYY-MM-DD')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = cases.client_id"
             ],
@@ -200,10 +186,7 @@
         },
         "sirius": {
             "from_table": "death_notifications",
-            "transform": {
-                "datelettersentout": "to_char({col}, 'YYYY-MM-DD')",
-                "datenotified": "to_char({col}, 'YYYY-MM-DD')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = death_notifications.person_id"
             ],
@@ -233,9 +216,7 @@
         },
         "sirius": {
             "from_table": "person_warning",
-            "transform": {
-                "dateadded": "to_char({col}, 'YYYY-MM-DD')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = person_warning.person_id",
                 "LEFT JOIN {target_schema}.warnings ON warnings.id = person_warning.warning_id"
@@ -274,10 +255,7 @@
         "sirius": {
             "from_table": "persons",
             "transform": {
-                "dob": "to_char({col}, 'YYYY-MM-DD')",
-                "createddate": "to_char({col}, 'YYYY-MM-DD')",
-                "statusdate": "to_char({col}, 'YYYY-MM-DD')",
-                "updateddate": "to_char({col}, 'YYYY-MM-DD')"
+                "updateddate": "cast({col} as date)"
             },
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_persons exc_table ON exc_table.caserecnumber = persons.caserecnumber",
@@ -308,9 +286,7 @@
         },
         "sirius": {
             "from_table": "phonenumbers",
-            "transform": {
-                "updateddate": "to_char({col}, 'YYYY-MM-DD')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = phonenumbers.person_id"
             ],
@@ -340,9 +316,7 @@
         },
         "sirius": {
             "from_table": "person_warning",
-            "transform": {
-                "dateadded": "to_char({col}, 'YYYY-MM-DD')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = person_warning.person_id",
                 "LEFT JOIN {target_schema}.warnings ON warnings.id = person_warning.warning_id"
@@ -376,9 +350,7 @@
         },
         "sirius": {
             "from_table": "person_warning",
-            "transform": {
-                "dateadded": "to_char({col}, 'YYYY-MM-DD')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = person_warning.person_id",
                 "LEFT JOIN {target_schema}.warnings ON warnings.id = person_warning.warning_id"
@@ -413,9 +385,7 @@
         },
         "sirius": {
             "from_table": "person_warning",
-            "transform": {
-                "dateadded": "to_char({col}, 'YYYY-MM-DD')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = person_warning.person_id",
                 "LEFT JOIN {target_schema}.warnings ON warnings.id = person_warning.warning_id"
@@ -490,10 +460,7 @@
         },
         "sirius": {
             "from_table": "order_deputy",
-            "transform": {
-                "orderdate": "to_char({col}, 'YYYY-MM-DD')",
-                "updateddate": "to_char({col}, 'YYYY-MM-DD')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.cases ON cases.id = order_deputy.order_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = order_deputy.deputy_id",
@@ -540,10 +507,7 @@
         },
         "sirius": {
             "from_table": "order_deputy",
-            "transform": {
-                "orderdate": "to_char({col}, 'YYYY-MM-DD')",
-                "updateddate": "to_char({col}, 'YYYY-MM-DD')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.cases ON cases.id = order_deputy.order_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = order_deputy.deputy_id",
@@ -594,12 +558,7 @@
         },
         "sirius": {
             "from_table": "death_notifications",
-            "transform": {
-                "datelettersentout": "to_char({col}, 'YYYY-MM-DD')",
-                "datedeathcertificatereceived": "to_char({col}, 'YYYY-MM-DD')",
-                "datenotified": "to_char({col}, 'YYYY-MM-DD')",
-                "orderdate": "to_char({col}, 'YYYY-MM-DD')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = death_notifications.person_id",
                 "LEFT JOIN {target_schema}.order_deputy ON order_deputy.deputy_id = death_notifications.person_id",
@@ -670,11 +629,7 @@
         },
         "sirius": {
             "from_table": "order_deputy",
-            "transform": {
-                "orderdate": "to_char({col}, 'YYYY-MM-DD')",
-                "dateofdeath": "to_char({col}, 'YYYY-MM-DD')",
-                "updateddate": "to_char({col}, 'YYYY-MM-DD')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.cases ON cases.id = order_deputy.order_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = order_deputy.deputy_id",
@@ -718,9 +673,7 @@
         },
         "casrec": {
             "from_table": "deputyship",
-            "transform": {
-                "dateadded": "to_char({col}, 'YYYY-MM-DD')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\"",
                 "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\""
@@ -733,9 +686,7 @@
         },
         "sirius": {
             "from_table": "order_deputy",
-            "transform": {
-                "orderdate": "to_char({col}, 'YYYY-MM-DD')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.cases ON cases.id = order_deputy.order_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = order_deputy.deputy_id",
@@ -782,9 +733,7 @@
         },
         "sirius": {
             "from_table": "order_deputy",
-            "transform": {
-                "orderdate": "to_char({col}, 'YYYY-MM-DD')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.cases ON cases.id = order_deputy.order_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = order_deputy.deputy_id",
@@ -804,7 +753,7 @@
           "identifiers": []
         }
     },
-    "notes": {
+    "client_notes": {
         "exclude": [
             "upload_id",
             "document_id",
@@ -823,15 +772,53 @@
         },
         "sirius": {
             "from_table": "supervision_notes as notes",
-            "transform": {
-                "createdtime": "to_char({col}, 'YYYY-MM-DD')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = notes.person_id"
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_notes exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
+                "persons.clientsource = 'CASRECMIGRATION'"
+            ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
+    },
+    "deputy_notes": {
+        "exclude": [
+            "upload_id",
+            "document_id",
+            "person_id"
+        ],
+        "casenumber_source": "cases.caserecnumber",
+        "orderby": {},
+        "casrec": {
+            "from_table": "deputy_remarks",
+            "transform": {},
+            "joins": [
+                "LEFT JOIN casrec_csv.deputyship ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy_remarks.\"Deputy No\"",
+                "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\""
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_notes exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "where_clauses": []
+        },
+        "sirius": {
+            "from_table": "supervision_notes as notes",
+            "transform": {
+                "createdtime": "to_char({col}, 'YYYY-MM-DD')",
+                "description": "NULLIF({col}, '-')"
+            },
+            "joins": [
+                "LEFT JOIN {target_schema}.persons ON persons.id = notes.person_id",
+                "LEFT JOIN {target_schema}.order_deputy ON order_deputy.deputy_id = notes.person_id",
+                "LEFT JOIN {target_schema}.cases ON cases.id = order_deputy.order_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_notes exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "persons.type = 'actor_deputy'",
                 "persons.clientsource = 'CASRECMIGRATION'"
             ]
         },
@@ -857,9 +844,7 @@
         },
         "sirius": {
             "from_table": "supervision_level_log",
-            "transform": {
-                "createddate": "to_char({col}, 'YYYY-MM-DD')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.cases ON cases.id = supervision_level_log.order_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = cases.client_id"
@@ -891,11 +876,7 @@
         },
         "sirius": {
             "from_table": "tasks",
-            "transform": {
-                "createdtime": "to_char({col}, 'YYYY-MM-DD')",
-                "activedate": "to_char({col}, 'YYYY-MM-DD')",
-                "duedate": "to_char({col}, 'YYYY-MM-DD')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.person_task pt ON pt.task_id = tasks.id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = pt.person_id"
@@ -928,16 +909,7 @@
         },
         "sirius": {
             "from_table": "visits",
-            "transform": {
-                "visitcreateddate": "to_char({col}, 'YYYY-MM-DD HH24:MI:SS')",
-                "visitreportduedate": "to_char({col}, 'YYYY-MM-DD HH24:MI:SS')",
-                "visitcompleteddate": "to_char({col}, 'YYYY-MM-DD HH24:MI:SS')",
-                "visitreportreceiveddate": "to_char({col}, 'YYYY-MM-DD HH24:MI:SS')",
-                "visitreportrevieweddate": "to_char({col}, 'YYYY-MM-DD HH24:MI:SS')",
-                "visitcommissiondate": "to_char({col}, 'YYYY-MM-DD HH24:MI:SS')",
-                "firstextendedvisitreportduedate": "to_char({col}, 'YYYY-MM-DD HH24:MI:SS')",
-                "secondextendedvisitreportduedate": "to_char({col}, 'YYYY-MM-DD HH24:MI:SS')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = visits.client_id"
             ],

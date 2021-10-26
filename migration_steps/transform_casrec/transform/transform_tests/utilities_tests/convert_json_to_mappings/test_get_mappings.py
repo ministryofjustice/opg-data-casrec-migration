@@ -66,11 +66,11 @@ test_mapping = {
         "casrec_table": "PAT",
         "casrec_column_name": "DOB",
         "alias": "DOB",
-        "requires_transformation": "date_format_standard",
+        "requires_transformation": "",
         "default_value": "",
         "calculated": "",
         "lookup_table": "",
-        "test_comments": "has 'date_format_standard' transformation",
+        "test_comments": "",
     },
     "todays_date": {
         "casrec_table": "",
@@ -140,11 +140,11 @@ expected_simple_mapping_dict = {
         "casrec_table": "PAT",
         "casrec_column_name": "DOB",
         "alias": "DOB",
-        "requires_transformation": "date_format_standard",
+        "requires_transformation": "",
         "default_value": "",
         "calculated": "",
         "lookup_table": "",
-        "test_comments": "has 'date_format_standard' transformation",
+        "test_comments": "",
     },
 }
 
@@ -164,23 +164,13 @@ expected_default_values_dict = {
 
 expected_transformations_dict = {
     "unique_number": [
-        {
-            "original_columns": "",
-            "aggregate_col": "uid",
-        },
-        {
-            "original_columns": "",
-            "aggregate_col": "another_uid",
-        },
+        {"original_columns": "", "aggregate_col": "uid",},
+        {"original_columns": "", "aggregate_col": "another_uid",},
     ],
 }
 
 expected_calculated_fields_dict = {
-    "current_date": [
-        {
-            "column_name": "todays_date",
-        },
-    ],
+    "current_date": [{"column_name": "todays_date",},],
     # "conditional_lookup": [
     #     {
     #         "column_name": "dateofdeath",

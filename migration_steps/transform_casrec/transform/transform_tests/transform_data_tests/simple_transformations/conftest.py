@@ -28,10 +28,6 @@ def mock_standard_transformations(monkeypatch):
         logger.info("mock convert_to_bool")
         return df
 
-    def mock_date_format_standard(original_cols, final_cols, df):
-        logger.info("mock date_format_standard")
-        return df
-
     def mock_unique_number(final_cols, df):
         logger.info("mock unique_number")
         return df
@@ -46,11 +42,7 @@ def mock_standard_transformations(monkeypatch):
     monkeypatch.setattr(
         utilities.standard_transformations, "convert_to_bool", mock_convert_to_bool
     )
-    monkeypatch.setattr(
-        utilities.standard_transformations,
-        "date_format_standard",
-        mock_date_format_standard,
-    )
+
     monkeypatch.setattr(
         utilities.standard_transformations, "unique_number", mock_unique_number
     )

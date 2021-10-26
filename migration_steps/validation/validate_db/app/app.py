@@ -73,7 +73,7 @@ def get_mappings():
         "death": ["client_death_notifications", "deputy_death_notifications"],
         "visits": ["visits"],
         "tasks": ["tasks"],
-        "remarks": ["notes"]
+        "remarks": ["client_notes", "deputy_notes"]
     }
 
     for entity, mapping in all_mappings.items():
@@ -217,6 +217,13 @@ def wrap_sirius_col(col_name: str, col_definition, sql: str):
         and col_name != "caserecnumber"
     ):
         sql = f"NULLIF(TRIM({sql}), '')"
+
+    if col_definition["sirius_details"]["data_type"] == "date":
+        sql = f"CAST({sql} AS date)"
+
+    if col_definition["sirius_details"]["data_type"] == "datetime":
+        sql = f"CAST({sql} AS timestamp)"
+
     return sql
 
 
@@ -226,10 +233,17 @@ def wrap_casrec_col(col_name: str, col_definition, sql: str):
 
     # convert empty strings to NULL
     if (
-        col_definition["sirius_details"]["data_type"] not in ["bool", "int"]
+        col_definition["sirius_details"]["data_type"]
+        not in ["bool", "int", "date", "datetime"]
         and col_name != "caserecnumber"
     ):
         sql = f"NULLIF(TRIM({sql}), '')"
+
+    if col_definition["sirius_details"]["data_type"] == "date":
+        sql = f"CAST(NULLIF(NULLIF(TRIM({sql}), 'NaT'), '') AS date)"
+
+    if col_definition["sirius_details"]["data_type"] == "datetime":
+        sql = f"CAST(NULLIF(NULLIF(TRIM({sql}), 'NaT'), '') AS timestamp)"
 
     # wrap transform, if required
     if col_definition["transform_casrec"]["requires_transformation"]:
@@ -304,8 +318,10 @@ def get_casrec_col_source(col_key: str, col_definition):
         if "" != col_definition["lookup_table"]:
             db_lookup_func = col_definition["lookup_table"]
             if "" != col_definition["default_value"]:
-                sql = f"CASE WHEN {source_schema}.{db_lookup_func}({sql}) is null " \
-                      f"THEN {get_casrec_default_value(col_key)} ELSE {source_schema}.{db_lookup_func}({sql}) END"
+                sql = (
+                    f"CASE WHEN {source_schema}.{db_lookup_func}({sql}) is null "
+                    f"THEN {get_casrec_default_value(col_key)} ELSE {source_schema}.{db_lookup_func}({sql}) END"
+                )
             else:
                 sql = f"{source_schema}.{db_lookup_func}({sql})"
     elif "" != col_definition["default_value"]:
@@ -347,6 +363,7 @@ def build_validation_statements(mapping_name):
     )
     col_separator = ",\n"
 
+    sql_add('SET datestyle = "ISO, DMY";')
     sql_add(f"INSERT INTO {get_exception_table(mapping_name)}(")
 
     # CASREC half
@@ -570,7 +587,6 @@ def write_results_sql():
     results_rows = []
     for mapping_name in mappings_to_run:
         validation_dict = get_validation_dict(mapping_name)
-        casrec_table_name = validation_dict["casrec"]["from_table"]
         results_rows.append(
             f"SELECT '{mapping_name}' AS mapping,\n"
             f"(SELECT COUNT(*) FROM {get_exception_table(mapping_name)})\n"
@@ -712,14 +728,7 @@ def post_validation():
     write_results_sql()
     exceptions_df = df_from_sql_file(sql_path_temp, results_sqlfile, conn_target)
     report_df = mapping_df.merge(exceptions_df, on="mapping", how="outer")
-    headers = [
-        "Casrec Mapping",
-        "Rows",
-        "Unmapped",
-        "Mapped",
-        "Complete (%)",
-        "Failed"
-    ]
+    headers = ["Casrec Mapping", "Rows", "Unmapped", "Mapped", "Complete (%)", "Failed"]
     report_table = tabulate(report_df, headers, tablefmt="psql")
     print(report_table)
 
