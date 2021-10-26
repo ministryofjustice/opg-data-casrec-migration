@@ -221,7 +221,6 @@ def get_max_col(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.Da
 
     return df
 
-<<<<<<< HEAD
 # base_date: date to use as the basis for the delta date
 # operator: delta modifier, '+' or '-'
 # days: delta number of days
