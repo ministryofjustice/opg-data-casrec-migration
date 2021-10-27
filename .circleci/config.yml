@@ -25,72 +25,59 @@ workflows:
   pull_request:
     when: << pipeline.parameters.run_master >>
     jobs:
-      - manage_workflow:
-          name: manage workflow
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-      - reset_sirius:
-          name: reset the sirius fixtures development
-          requires: [manage workflow]
-          tf_workspace: development
-          environment: Development
-          filters: {branches:{ignore:[master]}}
       - build:
-          name: build and unit tests
-          requires: [manage workflow]
-          environment: Development
+          name: build and unit tests preproduction
+          environment: Preproduction
+          filters: {branches:{ignore:[master]}}
+      - reset_sirius_full_restore:
+          name: run and monitor jenkins restore job pre
+          environment: Preproduction
+          sirius_environment: casrecdmpp
           filters: {branches:{ignore:[master]}}
       - infrastructure:
-          name: build shared infra development
-          requires: [build and unit tests]
-          tf_workspace: development
+          name: build shared infra preproduction
+          requires: [build and unit tests preproduction]
+          tf_workspace: preproduction
           tf_command: apply
-          environment: Development
+          environment: Preproduction
           folder: shared
           filters: {branches:{ignore:[master]}}
       - load_casrec_db:
-          name: load casrec db
-          requires: [build shared infra development]
-          environment: Development
+          name: load casrec db preproduction
+          requires: [build shared infra preproduction]
+          environment: Preproduction
           filters: {branches:{ignore:[master]}}
       - infrastructure:
-          name: plan infra development
-          requires: [build shared infra development]
-          tf_workspace: development
+          name: plan infra preproduction
+          requires: [load casrec db preproduction]
+          tf_workspace: preproduction
           tf_command: plan
-          environment: Development
+          environment: Preproduction
           filters: {branches:{ignore:[master]}}
       - infrastructure:
-          name: build infra development
-          requires: [plan infra development]
-          tf_workspace: development
+          name: build infra preproduction
+          requires: [plan infra preproduction]
+          tf_workspace: preproduction
           tf_command: apply
-          environment: Development
+          environment: Preproduction
           filters: {branches:{ignore:[master]}}
       - run_step_function:
-          name: run the step function development
-          requires: [build infra development, load casrec db, reset the sirius fixtures development]
-          tf_workspace: development
-          environment: Development
+          name: run the step function preproduction
+          requires: [
+            build infra preproduction,
+            run and monitor jenkins restore job pre,
+            load casrec db preproduction
+          ]
+          account: "preproduction"
+          wait_for: "18000"
+          tf_workspace: preproduction
+          environment: Preproduction
           filters: {branches:{ignore:[master]}}
       - run_api_tests:
-          name: run api tests
-          requires: [run the step function development]
-          tf_workspace: development
-          environment: Development
-          filters: {branches:{ignore:[master]}}
-      - run_api_tests:
-          name: run functional api tests
-          requires: [run api tests]
-          tf_workspace: development
-          environment: Development
-          runner_command: functional-api-tests
-          filters: {branches:{ignore:[master]}}
-      - job_complete:
-          name: job complete notification
-          requires: [run functional api tests]
-          workspace: development
-          environment: Development
+          name: run api tests preproduction
+          requires: [run the step function preproduction]
+          tf_workspace: preproduction
+          environment: Preproduction
           filters: {branches:{ignore:[master]}}
 
   master:
