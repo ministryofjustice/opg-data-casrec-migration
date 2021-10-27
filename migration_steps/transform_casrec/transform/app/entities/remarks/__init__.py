@@ -1,11 +1,10 @@
 import logging
 
-from entities.remarks.notes import get_notes_chunk, do_notes_prep
+from entities.remarks.client_notes import get_client_notes_chunk, do_client_notes_prep
+from entities.remarks.deputy_notes import get_deputy_notes_chunk, do_deputy_notes_prep
 from helpers import log_title, check_entity_enabled
 from transform_data.transformer import transformer
 
-from entities.remarks.client_notes import insert_client_notes
-from entities.remarks.deputy_notes import insert_deputy_notes
 
 log = logging.getLogger("root")
 
@@ -27,11 +26,10 @@ def runner(target_db, db_config):
     log.info(log_title(message=entity_name))
 
     log.debug("insert_client_notes")
-    insert_client_notes(target_db=target_db, db_config=db_config, mapping_file="client_notes")
+    transformer(db_config, target_db, "client_notes", get_client_notes_chunk, do_client_notes_prep)
 
     log.debug("insert_deputy_notes")
-    insert_deputy_notes(target_db=target_db, db_config=db_config, mapping_file="deputy_notes")
-
+    transformer(db_config, target_db, "deputy_notes", get_deputy_notes_chunk, do_deputy_notes_prep)
 
 if __name__ == "__main__":
     runner()
