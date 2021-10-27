@@ -305,7 +305,6 @@ def replace_panda_nulls(x):
 
 
 def replace_with_sql_friendly_chars(row_as_list):
-    print(row_as_list)
     row = [str(replace_panda_nulls(x)) for x in row_as_list]
 
     return row

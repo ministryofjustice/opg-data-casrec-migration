@@ -400,7 +400,6 @@ class InsertData:
 
             self.db_engine.execute(insert_statement)
         except Exception as e:
-            log.error(insert_statement)
             log.error(
                 f"There was a problem inserting into {table_name}",
                 extra={"file_name": "", "error": helpers.format_error_message(e=e),},
