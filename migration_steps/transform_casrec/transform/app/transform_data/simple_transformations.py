@@ -130,13 +130,6 @@ def do_simple_transformations(
                 t["original_columns"], t["aggregate_col"], transformed_df
             )
 
-    if "calculate_reminderdate" in transformations:
-        log.log(config.VERBOSE, "Applying transformation: calculate_reminderdate")
-        for t in transformations["calculate_reminderdate"]:
-            transformed_df = standard_transformations.calculate_reminderdate(
-                t["original_columns"], t["aggregate_col"], transformed_df
-            )
-
     if "calculate_startdate" in transformations:
         log.log(config.VERBOSE, "Applying transformation: calculate_startdate")
         for t in transformations["calculate_startdate"]:

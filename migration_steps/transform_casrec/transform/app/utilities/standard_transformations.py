@@ -220,12 +220,6 @@ def calculate_duedate(original_col: str, result_col: str, df: pd.DataFrame) -> p
     )
     return df
 
-def calculate_reminderdate(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
-    df[result_col] = df[original_col].apply(
-        lambda base_date: _calculate_date(base_date, '-', 21, 'previous')
-    )
-    return df
-
 def calculate_startdate(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
     df[result_col] = df[original_col].apply(
         lambda base_date: _calculate_date(base_date, '-', 366)
