@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 
 import psycopg2
@@ -143,18 +144,14 @@ def copy_schema(
     with fileinput.FileInput(str(schema_dump), inplace=True) as file:
         for line in file:
             print(
-                line.replace(
-                    f'TO {from_config["user"]}',
-                    f'TO {to_config["user"]}',
-                ),
+                line.replace(f'TO {from_config["user"]}', f'TO {to_config["user"]}',),
                 end="",
             )
     with fileinput.FileInput(str(schema_dump), inplace=True) as file:
         for line in file:
             print(
                 line.replace(
-                    f'Owner: {from_config["user"]}',
-                    f'Owner: {to_config["user"]}',
+                    f'Owner: {from_config["user"]}', f'Owner: {to_config["user"]}',
                 ),
                 end="",
             )
@@ -285,3 +282,34 @@ def execute_update(conn, df, table, pk_col):
 
     conn.commit()
     cursor.close()
+
+
+def replace_panda_nulls(x):
+    full_replacements = [
+        ("nan", ""),
+        ("NaT", ""),
+        ("<NA>", ""),
+        ("None", ""),
+    ]
+
+    substring_replacements = [("'", "''"), ("%", "%%")]
+
+    x = str(x)
+    for old_value, new_value in full_replacements:
+        x = re.sub(rf"^{old_value}[ ]?$", new_value, x)
+
+    for old_value, new_value in substring_replacements:
+        x = x.replace(old_value, new_value)
+
+    return x
+
+
+def replace_with_sql_friendly_chars(row_as_list):
+    print(row_as_list)
+    row = [str(replace_panda_nulls(x)) for x in row_as_list]
+
+    return row
+
+
+def replace_with_sql_friendly_chars_single(val):
+    return str(replace_panda_nulls(val))

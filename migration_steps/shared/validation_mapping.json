@@ -15,9 +15,7 @@
         },
         "casrec": {
             "from_table": "order",
-            "transform": {
-              "bondcompanyname": "replace({col}, '&', 'and')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\""
             ],
@@ -60,9 +58,7 @@
         },
         "casrec": {
             "from_table": "order",
-            "transform": {
-              "bondcompanyname": "replace({col}, '&', 'and')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\""
             ],

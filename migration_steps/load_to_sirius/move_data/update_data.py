@@ -16,6 +16,7 @@ current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../shared")
 
 from helpers import format_error_message
+from db_helpers import replace_with_sql_friendly_chars_single
 import db_helpers
 
 
@@ -41,7 +42,7 @@ def create_update_statement(schema, table_name, columns, df):
 
         row = {col: str(data) for col, data in row.items()}
         row = {
-            col: utilities.replace_with_sql_friendly_chars_single(val=data)
+            col: replace_with_sql_friendly_chars_single(val=data)
             for col, data in row.items()
         }
 

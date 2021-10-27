@@ -1,6 +1,5 @@
 import sys
 import os
-from datetime import datetime
 from pathlib import Path
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -18,6 +17,7 @@ from dotenv import load_dotenv
 from helpers import get_config, log_title
 import logging
 import click
+from db_helpers import replace_with_sql_friendly_chars
 
 environment = os.environ.get("ENVIRONMENT")
 account_name = os.environ.get("ACCOUNT_NAME")
@@ -233,9 +233,7 @@ def create_insert_statement(table_name, schema, columns, df):
 
     for i, row in enumerate(df.values.tolist()):
         row = [str(x) for x in row]
-        row = [
-            str(x.replace("'", "''").replace("%", "%%").replace("nan", "")) for x in row
-        ]
+        row = replace_with_sql_friendly_chars(row_as_list=row)
         row = [f"'{str(x)}'" for x in row]
         single_row = ", ".join(row)
 
