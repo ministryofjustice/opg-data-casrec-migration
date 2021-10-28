@@ -53,7 +53,7 @@ def test_order_deputy_joins(
                    deputy."Dep Forename" as firstname,
                    deputy."Dep Surname" as surname
             from casrec_csv.order
-            left outer join casrec_csv.deputyship on "order"."CoP Case" = deputyship."CoP Case"
+            left outer join casrec_csv.deputyship on "order"."Order No" = deputyship."Order No"
             left outer join casrec_csv.deputy on deputyship."Deputy No" = deputy."Deputy No"
             where "order"."Case" = '{single_case}'
             order by "order"."Case", "Dep Forename", "Dep Surname";
