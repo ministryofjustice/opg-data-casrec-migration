@@ -10,6 +10,7 @@ current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
 
 from decorators import timer
+from db_helpers import replace_with_sql_friendly_chars
 import logging
 import helpers
 import pandas as pd
@@ -57,10 +58,10 @@ class InsertData:
 
         try:
             columns_from_df = self._list_table_columns(df=df)
-            log.debug('Got columns from dataframe')
+            log.debug("Got columns from dataframe")
             log.debug(columns_from_df)
         except Exception as e:
-            log.error('Unable to list columns for dataframe')
+            log.error("Unable to list columns for dataframe")
             log.error(e)
             columns_from_df = []
 
@@ -80,7 +81,7 @@ class InsertData:
 
         statement += ");"
 
-        log.debug(f'create statement for {table_name}: {statement}')
+        log.debug(f"create statement for {table_name}: {statement}")
 
         return statement
 
@@ -160,18 +161,7 @@ class InsertData:
         for i, row in enumerate(df.values.tolist()):
 
             row = [str(x) for x in row]
-            row = [
-                str(
-                    x.replace("'", "''")
-                    .replace("NaT", "")
-                    .replace("nan", "")
-                    .replace("<NA>", "")
-                    .replace("&", "and")
-                    .replace(";", "-")
-                    .replace("%", "percent")
-                )
-                for x in row
-            ]
+            row = replace_with_sql_friendly_chars(row_as_list=row)
             row = [f"'{str(x)}'" if str(x) != "" else "NULL" for x in row]
 
             single_row = ", ".join(row)
@@ -363,10 +353,7 @@ class InsertData:
         except Exception as e:
             log.error(
                 f"There was a problem dropping {temp_table}",
-                extra={
-                    "file_name": "",
-                    "error": helpers.format_error_message(e=e),
-                },
+                extra={"file_name": "", "error": helpers.format_error_message(e=e),},
             )
             os._exit(1)
 
@@ -415,10 +402,7 @@ class InsertData:
         except Exception as e:
             log.error(
                 f"There was a problem inserting into {table_name}",
-                extra={
-                    "file_name": "",
-                    "error": helpers.format_error_message(e=e),
-                },
+                extra={"file_name": "", "error": helpers.format_error_message(e=e),},
             )
             os._exit(1)
         inserted_count = len(df)
