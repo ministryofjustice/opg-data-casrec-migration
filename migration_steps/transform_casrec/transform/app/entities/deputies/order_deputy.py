@@ -54,7 +54,7 @@ def insert_order_deputies(db_config, target_db, mapping_file):
         deputies_df = existing_deputies_merged_df.drop(columns=["id_x"])
 
         # deputyship
-        deputyship_query = f"""select "Deputy No", "CoP Case",
+        deputyship_query = f"""select "Deputy No", "Order No",
             "Fee Payer" as {format_additional_col_alias(original_column_name='Fee Payer')}
             from {db_config["source_schema"]}.deputyship;"""
         deputyship_df = pd.read_sql_query(
@@ -62,7 +62,7 @@ def insert_order_deputies(db_config, target_db, mapping_file):
         )
 
         order_query = (
-            f"""select "id", "c_cop_case" from {db_config["target_schema"]}.cases;"""
+            f"""select "id", "c_order_no" from {db_config["target_schema"]}.cases;"""
         )
         order_df = pd.read_sql_query(order_query, db_config["db_connection_string"])
 
@@ -76,12 +76,15 @@ def insert_order_deputies(db_config, target_db, mapping_file):
         deputyship_persons_joined_df = deputyship_persons_joined_df.drop(columns=["id"])
 
         deputyship_persons_order_df = deputyship_persons_joined_df.merge(
-            order_df, how="left", left_on="CoP Case", right_on="c_cop_case"
+            order_df, how="left", left_on="Order No", right_on="c_order_no"
         )
 
         deputyship_persons_order_df["order_id"] = deputyship_persons_order_df["id"]
+        deputyship_persons_order_df["order_id"] = deputyship_persons_order_df[
+            "order_id"
+        ].astype("Int64")
         deputyship_persons_order_df = deputyship_persons_order_df.drop(
-            columns=["id", "Deputy No", "CoP Case"]
+            columns=["id", "Deputy No", "Order No"]
         )
 
         remove_nulls = ["casrec_mapping_file_name", "order_id", "deputy_id"]
