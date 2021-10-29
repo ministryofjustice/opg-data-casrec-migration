@@ -46,6 +46,7 @@ services:
       - ./migration_steps/integration/load_to_staging:/integration/load_to_staging
       - ./migration_steps/integration/integration.sh:/integration/integration.sh
       - ./migration_steps/integration/reindex_ids:/integration/reindex_ids
+      - ./migration_steps/integration/copy_from_sirius:/integration/copy_from_sirius
       - ./migration_steps/integration/business_rules:/integration/business_rules
       - ./migration_steps/shared:/shared
 
