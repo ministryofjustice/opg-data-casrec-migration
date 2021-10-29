@@ -931,5 +931,28 @@
           "column": "",
           "identifiers": []
         }
+    },
+    "annual_report_logs": {
+        "exclude": [],
+        "casenumber_source": "",
+        "orderby": {},
+        "casrec": {
+            "from_table": "Account",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "",
+            "where_clauses": []
+        },
+        "sirius": {
+            "from_table": "annual_report_logs",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "",
+            "where_clauses": []
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
     }
 }
