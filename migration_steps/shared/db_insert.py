@@ -22,9 +22,10 @@ config = helpers.get_config(env=environment)
 
 
 class InsertData:
-    def __init__(self, db_engine, schema):
+    def __init__(self, db_engine, schema, empty_string_to_null=True):
         self.db_engine = db_engine
         self.schema = schema
+        self.empty_string_to_null = empty_string_to_null
         self.standard_columns = {"casrec_details": "jsonb not null default '{}'::jsonb"}
         self.datatype_remap = {
             "str": "text",
@@ -162,7 +163,7 @@ class InsertData:
 
             row = [str(x) for x in row]
             row = replace_with_sql_friendly_chars(row_as_list=row)
-            row = [f"'{str(x)}'" if str(x) != "" else "NULL" for x in row]
+            row = ["NULL" if str(x) == "" and self.empty_string_to_null else f"'{str(x)}'" for x in row]
 
             single_row = ", ".join(row)
 
