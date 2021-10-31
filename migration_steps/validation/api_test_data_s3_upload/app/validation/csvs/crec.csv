@@ -1,4 +1,4 @@
-endpoint,entity_ref,test_purpose,full_check,["riskScore"]
-/api/v1/clients/{id},10109006,dev_api_tests,FALSE,3
-/api/v1/clients/{id},10109755,dev_api_tests,FALSE,
-/api/v1/clients/{id},1011017T,dev_api_tests,FALSE,1
+endpoint,entity_ref,test_purpose,full_check,items_in_field,["riskScore"]
+/api/v1/clients/{id},10109006,dev_api_tests,FALSE,,3
+/api/v1/clients/{id},10109755,dev_api_tests,FALSE,,
+/api/v1/clients/{id},1011017T,dev_api_tests,FALSE,,1

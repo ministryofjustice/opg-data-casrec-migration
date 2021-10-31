@@ -340,6 +340,7 @@ class ApiTests:
                 "entity_ref",
                 "test_purpose",
                 "full_check",
+                "items_in_field",
             ]:
                 headers_to_check.append(header)
 
@@ -399,10 +400,9 @@ class ApiTests:
         return items_to_loop_through
 
     def get_formatted_api_response(
-        self, entity_ids, endpoint, headers_to_check, row, entity_ref
+        self, entity_ids, endpoint, headers_to_check, row, entity_ref, items_in_field
     ):
         log.debug(
-            f"get_formatted_api_response: entity_ids: {entity_ids} entity_ref: {entity_ref} endpoint {endpoint}"
             f"get_formatted_api_response: entity_ids: {entity_ids} entity_ref: {entity_ref} endpoint: {endpoint}"
         )
         response_struct = {}
@@ -412,6 +412,9 @@ class ApiTests:
 
             response_text = self.get_response_object(endpoint_final)
             json_obj = json.loads(response_text)
+
+            if not pd.isna(items_in_field):
+                json_obj = json_obj[items_in_field]
 
             json_items_to_loop_through = self.get_json_items_to_loop_through(json_obj)
 
@@ -661,6 +664,7 @@ class ApiTests:
                 count = count + 1
                 endpoint = row["endpoint"]
                 entity_ref = row["entity_ref"]
+                items_in_field = row["items_in_field"]
 
                 # Create a list of headers to verify
                 headers_to_check = self.get_headers_to_check(row)
@@ -674,7 +678,7 @@ class ApiTests:
                     )
                 else:
                     formatted_api_response = self.get_formatted_api_response(
-                        entity_ids, endpoint, headers_to_check, row, entity_ref
+                        entity_ids, endpoint, headers_to_check, row, entity_ref, items_in_field
                     )
                 # Check we haven't brought back an empty dict as response
                 if formatted_api_response:
