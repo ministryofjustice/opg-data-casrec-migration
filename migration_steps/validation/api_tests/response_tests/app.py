@@ -29,6 +29,7 @@ def main():
         "visits",
         "reports",
         "invoice",
+        "tasks",
     ]
 
     api_tests = ApiTests()

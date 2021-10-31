@@ -61,7 +61,7 @@ class ApiTests:
         )
         self.s3_file_path = f"validation/logs/{self.api_log_file}"
         self.s3_sess = None
-        self.list_entity_returned = ["warnings", "invoice"]
+        self.list_entity_returned = ["warnings", "invoice", "tasks"]
         self.entities = {
             "local": [
                 "clients",
@@ -79,6 +79,7 @@ class ApiTests:
                 "visits",
                 "reports",
                 "invoice",
+                "tasks",
             ],
             "development": [
                 "clients",
@@ -96,6 +97,7 @@ class ApiTests:
                 "visits",
                 "reports",
                 "invoice",
+                "tasks",
             ],
             "preproduction": [
                 "clients",
@@ -110,6 +112,7 @@ class ApiTests:
                 "client_death_notifications",
                 "deputy_death_notifications",
                 "supervision_level",
+                "tasks",
             ],
             "preqa": [
                 "clients",
@@ -124,6 +127,7 @@ class ApiTests:
                 "client_death_notifications",
                 "deputy_death_notifications",
                 "supervision_level",
+                "tasks",
             ],
             "qa": [
                 "clients",
@@ -310,6 +314,7 @@ class ApiTests:
             "visits",
             "reports",
             "invoice",
+            "tasks",
         ]:
             ids = self.get_entity_ids_from_person_source(person_id_sql, caserecnumber)
         elif self.csv in [
@@ -398,6 +403,7 @@ class ApiTests:
     ):
         log.debug(
             f"get_formatted_api_response: entity_ids: {entity_ids} entity_ref: {entity_ref} endpoint {endpoint}"
+            f"get_formatted_api_response: entity_ids: {entity_ids} entity_ref: {entity_ref} endpoint: {endpoint}"
         )
         response_struct = {}
         for entity_id in entity_ids:
