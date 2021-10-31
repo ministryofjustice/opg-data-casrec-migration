@@ -220,11 +220,20 @@ make ingest
 ### Run the tests
 
 ```bash
-# export test paths to PYTHONPATH with something like
-export PYTHONPATH=[project root]/migration_steps/transform_casrec/transform/transform_tests:[project root]/migration_steps/transform_casrec/transform/app:[project root]/migration_steps/transform_casrec/transform
-
-python3 -m pytest migration_steps/transform_casrec/transform/transform_tests
+./unit_tests.sh
 ```
+
+You can pass arguments to this script which are forwarded to pytest, e.g.
+
+```bash
+# write coverage HTML to build/coverage
+./unit_tests.sh --cov=migration_steps --cov-report=html:build/coverage
+
+# run single test (can also point at a directory)
+./unit_tests.sh migration_steps/transform_casrec/transform/transform_tests/transform_data_tests/conditional_lookup/test_conditional_lookup.py
+```
+
+Note that by default, the tests in the `migration_steps/transform_casrec/transform/transform_tests directory` are run.
 
 ### Python linting - run precommit
 

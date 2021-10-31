@@ -20,6 +20,8 @@ __pycache__/
 # IDE & development
 .vscode/
 *.iml
+**/build
+docker_load.log
 
 # Mac
 .DS_Store

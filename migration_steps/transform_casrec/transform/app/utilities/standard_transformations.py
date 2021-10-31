@@ -183,3 +183,45 @@ def get_max_col(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.Da
     df = df.drop(columns=["temp"])
 
     return df
+
+# base_date: date to use as the basis for the delta date
+# operator: delta modifier, '+' or '-'
+# days: delta number of days
+# weekend_adjustment: 'previous' or 'next' or None;
+#     if 'previous' and calculated date is on a weekend, move to previous working day;
+#     if 'next' and calculated date is aon a weekend, move to next working day;
+#     if None, apply no adjustment
+# return: datetime, or None if the base_date is None
+def _calculate_date(base_date, operator: str, days: int, weekend_adjustment: str=None):
+    if base_date is None or base_date == '':
+        return None
+
+    new_date = pd.to_datetime(base_date, dayfirst=True)
+
+    delta = pd.offsets.DateOffset(days=days)
+    if operator == '+':
+        new_date += delta
+    elif operator == '-':
+        new_date -= delta
+
+    # Saturday, Sunday = [5, 6]
+    weekday = new_date.weekday()
+    if weekday in [5, 6]:
+        if weekend_adjustment == 'previous':
+            new_date = new_date - pd.offsets.DateOffset(days=weekday-4)
+        elif weekend_adjustment == 'next':
+            new_date = new_date + pd.offsets.DateOffset(days=7-weekday)
+
+    return new_date
+
+def calculate_duedate(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+    df[result_col] = df[original_col].apply(
+        lambda base_date: _calculate_date(base_date, '+', 21, 'next')
+    )
+    return df
+
+def calculate_startdate(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+    df[result_col] = df[original_col].apply(
+        lambda base_date: _calculate_date(base_date, '-', 366)
+    )
+    return df
