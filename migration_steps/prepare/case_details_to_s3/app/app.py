@@ -304,7 +304,7 @@ def get_primary_keys(case_ref):
     FROM casrec_csv.pat as p
     LEFT JOIN casrec_csv.order as o ON p."Case" = o."Case"
     LEFT JOIN casrec_csv.remarks r ON p."Case" = r."Case"
-    LEFT JOIN casrec_csv.deputyship  as ds ON o."CoP Case" = ds."CoP Case"
+    LEFT JOIN casrec_csv.deputyship  as ds ON o."Order No" = ds."Order No"
     LEFT JOIN casrec_csv.deputy as d ON ds."Deputy No"::numeric::integer = d."Deputy No"::numeric::integer
     LEFT JOIN casrec_csv.deputy_address as da ON da."Dep Addr No"::numeric::integer = ds."Dep Addr No"::numeric::integer
     WHERE p."Case" = '{case_ref}'
@@ -386,7 +386,7 @@ def main(verbose, caserecnumber):
     table_names = [
         {"table": "pat", "pk": "Case"},
         {"table": "order", "pk": "Order No"},
-        {"table": "deputyship", "pk": "CoP Case"},
+        {"table": "deputyship", "pk": "Order No"},
         {"table": "deputy", "pk": "Deputy No"},
         {"table": "remarks", "pk": "Case"},
         {"table": "deputy_address", "pk": "Dep Addr No"},

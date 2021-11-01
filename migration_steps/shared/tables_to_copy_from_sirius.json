@@ -1,0 +1,32 @@
+{
+  "finance_person": {
+    "id": {
+      "is_pk": true,
+      "fk_parents": "",
+      "data_type": "int",
+      "table_name": "finance_person",
+      "entity": ""
+    },
+    "person_id": {
+      "is_pk": "",
+      "fk_parents": "",
+      "data_type": "int",
+      "table_name": "finance_person",
+      "entity": ""
+    },
+    "finance_billing_reference": {
+      "is_pk": "",
+      "fk_parents": "",
+      "data_type": "str",
+      "table_name": "finance_person",
+      "entity": ""
+    },
+    "payment_method": {
+      "is_pk": "",
+      "fk_parents": "",
+      "data_type": "str",
+      "table_name": "finance_person",
+      "entity": ""
+    }
+  }
+}

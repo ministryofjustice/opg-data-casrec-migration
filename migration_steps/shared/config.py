@@ -92,6 +92,7 @@ class BaseConfig:
         "invoice",
         "ledger",
         "ledger_allocation",
+        "fee_reductions",
         "remarks",
         "reporting",
         "tasks",

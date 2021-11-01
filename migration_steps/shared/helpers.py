@@ -43,11 +43,11 @@ def check_entity_enabled(entity_name, extra_entities=None):
         required_entities = [entity_name]
 
     if all(x in allowed_entities for x in required_entities):
-        log.info(f"Entity '{entity_name}' is enabled, transforming...")
+        log.info(f"Entity '{entity_name}' is enabled")
         return True
     else:
         if entity_name not in allowed_entities:
-            log.info(f"Entity '{entity_name}' is disabled, moving on")
+            log.info(f"Entity '{entity_name}' is disabled")
         else:
             if extra_entities:
                 disabled_entities = [
@@ -57,7 +57,7 @@ def check_entity_enabled(entity_name, extra_entities=None):
                     f"Entity '{entity_name}' relies on disabled entities {', '.join(disabled_entities)}, moving on"
                 )
             else:
-                log.info(f"Entity '{entity_name}' is disabled, moving on")
+                log.info(f"Entity '{entity_name}' is disabled")
         return False
 
 

@@ -1,35 +1,52 @@
 import logging
-import os
 
 import pandas as pd
 
-import helpers
+from uuid import uuid4
+from datetime import datetime
 
 
-from utilities import standard_calculations
-
-
-log = logging.getLogger("root")
-environment = os.environ.get("ENVIRONMENT")
-
-config = helpers.get_config(env=environment)
-
+log = logging.getLogger('root')
 
 def do_calculations(
-    calculated_fields: dict, source_data_df: pd.DataFrame
+    calculated_fields: dict,
+    df: pd.DataFrame,
+    now: datetime=datetime.now()
 ) -> pd.DataFrame:
-    calculations_df = source_data_df
+    """
+    Apply calculated values to specified fields in a dataframe.
+    Configuration is done in the calculated_fields property of a mapping.
 
-    if "current_date" in calculated_fields:
-        for t in calculated_fields["current_date"]:
-            calculations_df = standard_calculations.current_date(
-                t["column_name"], calculations_df
-            )
+    :param calculated_fields: dictionary of fields to which calculations
+        should be applied, where keys are calculations and values
+        are dicts each containing a column_name property; for example:
+        {
+            'current_date': [
+                {'column_name': 'todays_date'},
+                {'column_name': 'another_date'}
+            ],
+            'uuid4': [
+                {'column_name': 'identifier'}
+            ]
+        }
+    :param df: dataframe to apply calculations to
+    :param now: default value to set fields to if current_date calculation
+        is being applied
+    """
+    for calculation, column_names in calculated_fields.items():
+        column_names = list(map(lambda item: item['column_name'], column_names))
+        log.debug(f'Applying calculation "{calculation}" to columns {column_names}')
 
-    if "uuid4" in calculated_fields:
-        for t in calculated_fields["uuid4"]:
-            calculations_df = standard_calculations.uuid4(
-                t["column_name"], calculations_df
-            )
+        if calculation == "current_date":
+            for column_name in column_names:
+                df[column_name] = now.strftime("%Y-%m-%d")
 
-    return calculations_df
+        elif calculation == "uuid4":
+            for column_name in column_names:
+                df[column_name] = df.apply(lambda x: uuid4(), axis=1)
+
+        else:
+            # if calculation is unrecognised, current approach is to leave the calculated column alone
+            log.error(f'Unrecognised calculation "{calculation}" for columns {column_names}')
+
+    return df

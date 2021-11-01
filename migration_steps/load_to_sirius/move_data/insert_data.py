@@ -12,7 +12,7 @@ sys.path.insert(0, str(current_path) + "/../../shared")
 import utilities
 
 from helpers import format_error_message
-
+from db_helpers import replace_with_sql_friendly_chars
 
 log = logging.getLogger("root")
 
@@ -38,7 +38,7 @@ def create_insert_statement(schema, table_name, columns, df):
     for i, row in enumerate(df.values.tolist()):
 
         row = [str(x) for x in row]
-        row = utilities.replace_with_sql_friendly_chars(row_as_list=row)
+        row = replace_with_sql_friendly_chars(row_as_list=row)
         row = [f"'{str(x)}'" if str(x) != "" else "NULL" for x in row]
 
         single_row = ", ".join(row)
@@ -107,7 +107,6 @@ def insert_data_into_target(
         try:
             target_db_engine.execute(insert_statement)
         except Exception as e:
-
             log.error(
                 f"There was an error inserting {len(data_to_insert)} rows "
                 f"into {db_config['target_schema']}.{table_name}",

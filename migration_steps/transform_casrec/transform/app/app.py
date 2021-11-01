@@ -39,9 +39,10 @@ from entities import (
     crec,
     ledger,
     ledger_allocation,
+    fee_reductions,
 )
 from utilities.clear_database import clear_tables
-from utilities.db_insert import InsertData
+from db_insert import InsertData
 
 # set config
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -134,6 +135,7 @@ def main(clear, team, chunk_size):
     crec.runner(target_db=target_db, db_config=db_config)
     ledger.runner(target_db=target_db, db_config=db_config)
     ledger_allocation.runner(target_db=target_db, db_config=db_config)
+    fee_reductions.runner(target_db=target_db, db_config=db_config)
 
     check_row_counts.count_rows(
         connection_string=db_config["db_connection_string"],

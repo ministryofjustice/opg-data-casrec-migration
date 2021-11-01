@@ -20,7 +20,8 @@ def runner(target_db, db_config):
     """
 
     entity_name = "reporting"
-    if not check_entity_enabled(entity_name):
+    extra_entities = ["cases", "clients", "deputies"]
+    if not check_entity_enabled(entity_name=entity_name, extra_entities=extra_entities):
         return False
 
     log.info(log_title(message=entity_name))
