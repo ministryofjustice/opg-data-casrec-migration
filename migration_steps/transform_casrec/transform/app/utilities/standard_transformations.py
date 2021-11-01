@@ -139,6 +139,44 @@ def end_of_tax_year(
     return df
 
 
+def fee_reduction_start_date(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+    df[result_col] = df[original_col].astype(str)
+    df[result_col] = pd.to_datetime(df[result_col], dayfirst=True)
+
+    def start_date_from_award_date(x):
+        date = x.strftime("%d/%m")
+        year = int(x.strftime("%Y"))
+        if date in ["31/03", "01/04"]:
+            return datetime.datetime.strptime("01/04/" + str(year - 1), "%d/%m/%Y")
+        else:
+            # TODO: need a sensible default value here
+            return None
+
+    df[result_col] = df[result_col].apply(lambda x: start_date_from_award_date(x))
+    df = df.drop(columns=[original_col])
+
+    return df
+
+
+def fee_reduction_end_date(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+    df[result_col] = df[original_col].astype(str)
+    df[result_col] = pd.to_datetime(df[result_col], dayfirst=True)
+
+    def end_date_from_award_date(x):
+        date = x.strftime("%d/%m")
+        year = x.strftime("%Y")
+        if date in ["31/03", "01/04"]:
+            return datetime.datetime.strptime("31/03/" + year, "%d/%m/%Y")
+        else:
+            # TODO: need a sensible default value here
+            return None
+
+    df[result_col] = df[result_col].apply(lambda x: end_date_from_award_date(x))
+    df = df.drop(columns=[original_col])
+
+    return df
+
+
 def credit_type_from_invoice_ref(
     original_col: str, result_col: str, df: pd.DataFrame
 ) -> pd.DataFrame:

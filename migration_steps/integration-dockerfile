@@ -2,6 +2,7 @@ FROM opg_casrec_migration_base_image:latest
 RUN apt-get install -y postgresql-client
 COPY integration/integration.sh /integration/integration.sh
 COPY integration/reindex_ids /integration/reindex_ids
+COPY integration/copy_from_sirius /integration/copy_from_sirius
 COPY integration/business_rules /integration/business_rules
 COPY integration/load_to_staging /integration/load_to_staging
 COPY shared /shared
