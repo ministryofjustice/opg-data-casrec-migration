@@ -68,6 +68,7 @@ if "additional_data" in config.enabled_feature_flags(env=environment):
 else:
     enabled_extra_tables = {}
 
+tables_copied_from_sirius = table_helpers.get_table_file(file_name="tables_to_copy_from_sirius")
 
 all_enabled_tables = {**enabled_tables, **enabled_extra_tables}
 
@@ -78,6 +79,7 @@ def clear_tables():
         db_engine=target_db_engine,
         tables=tables_list[:],
         extra_tables=enabled_extra_tables,
+        tables_copied_from_sirius=tables_copied_from_sirius
     )
 
     global result
@@ -96,6 +98,7 @@ def inserts():
         db_engine=target_db_engine,
         tables=enabled_tables,
         extra_tables=enabled_extra_tables,
+        tables_copied_from_sirius=tables_copied_from_sirius
     )
     global result
     result = "inserts complete"

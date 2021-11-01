@@ -17,7 +17,6 @@ mapping_file_path = (
 )
 backup_file_path = str(current_path) + "/../../data/anon_data_backup"
 anon_data_file_path = str(current_path) + "/../../data/anon_data"
-output_path = str(current_path) + "/../../data/extra_data_output/"
 data_path = f"{current_path}/../../data/anon_data/"
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 env_path = current_path / "../../migration_steps/.env"
@@ -174,19 +173,16 @@ def backup_anon_data():
 
 
 def get_max_case_reference():
-    print("PAT CSV")
     df = pd.read_csv(data_path + "pat.csv")
     return df["Case"].max()
 
 
 def get_max_order_no():
-    print("ORDER CSV")
     df = pd.read_csv(data_path + "order.csv")
     return df["Order No"].max()
 
 
 def get_max_deputy_no():
-    print("DEPUTY CSV")
     df = pd.read_csv(data_path + "deputy.csv")
     return df["Deputy No"].max()
 

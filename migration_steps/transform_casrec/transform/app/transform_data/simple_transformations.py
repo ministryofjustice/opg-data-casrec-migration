@@ -98,6 +98,20 @@ def do_simple_transformations(
                 t["original_columns"], t["aggregate_col"], transformed_df
             )
 
+    if "fee_reduction_start_date" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: fee_reduction_start_date")
+        for t in transformations["fee_reduction_start_date"]:
+            transformed_df = standard_transformations.fee_reduction_start_date(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
+    if "fee_reduction_end_date" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: fee_reduction_end_date")
+        for t in transformations["fee_reduction_end_date"]:
+            transformed_df = standard_transformations.fee_reduction_end_date(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
     if "credit_type_from_invoice_ref" in transformations:
         log.log(config.VERBOSE, "Applying transformation: credit_type_from_invoice_ref")
         for t in transformations["credit_type_from_invoice_ref"]:

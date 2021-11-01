@@ -29,6 +29,10 @@ custom_logger.setup_logging(env=environment, level="INFO", module_name="API test
 class ApiTests:
     def __init__(self):
         self.csv = None
+        self.identifier = None
+        self.assert_on_list = None
+        self.no_retries = None
+        self.assert_on_count = None
         self.host = os.environ.get("DB_HOST")
         self.ci = os.getenv("CI")
         self.base_url = os.environ.get("SIRIUS_FRONT_URL")
@@ -61,91 +65,6 @@ class ApiTests:
         )
         self.s3_file_path = f"validation/logs/{self.api_log_file}"
         self.s3_sess = None
-        self.list_entity_returned = ["warnings", "invoice"]
-        self.entities = {
-            "local": [
-                "clients",
-                "orders",
-                "deputies",
-                "deputy_orders",
-                "deputy_clients_count",
-                "deputy_fee_payer",
-                "supervision_level",
-                "bonds",
-                "client_death_notifications",
-                "deputy_death_notifications",
-                "warnings",
-                "crec",
-                "visits",
-                "reports",
-                "invoice",
-            ],
-            "development": [
-                "clients",
-                "orders",
-                "deputies",
-                "deputy_orders",
-                "deputy_clients_count",
-                "deputy_fee_payer",
-                "supervision_level",
-                "bonds",
-                "client_death_notifications",
-                "deputy_death_notifications",
-                "warnings",
-                "crec",
-                "visits",
-                "reports",
-                "invoice",
-            ],
-            "preproduction": [
-                "clients",
-                "orders",
-                "deputies",
-                "deputy_fee_payer",
-                "deputy_orders",
-                "deputy_clients_count",
-                "warnings",
-                "crec",
-                "bonds",
-                "client_death_notifications",
-                "deputy_death_notifications",
-                "supervision_level",
-            ],
-            "preqa": [
-                "clients",
-                "orders",
-                "deputies",
-                "deputy_fee_payer",
-                "deputy_orders",
-                "deputy_clients_count",
-                "warnings",
-                "crec",
-                "bonds",
-                "client_death_notifications",
-                "deputy_death_notifications",
-                "supervision_level",
-            ],
-            "qa": [
-                "clients",
-                "orders",
-                "deputies",
-                "deputy_fee_payer",
-                "deputy_orders",
-                "deputy_clients_count",
-                "warnings",
-                "bonds",
-                "client_death_notifications",
-                "deputy_death_notifications",
-                "supervision_level",
-            ],
-            "production": [],
-        }
-        self.all_allowed_entities = self.config.allowed_entities(self.environment) + [
-            "deputy_clients",
-            "deputy_clients_count",
-            "deputy_fee_payer",
-        ]
-        self.no_retry_entities = ["deputy_death_notifications"]
 
     def get_session(self):
         response = requests.get(self.base_url)
@@ -266,16 +185,11 @@ class ApiTests:
         else:
             for entity_id_row in entity_ids:
                 entity_id = entity_id_row._mapping["id"]
-                if self.csv in [
-                    "deputies",
-                    "deputy_clients",
-                    "deputy_clients_count",
-                    "deputy_death_notifications",
-                ]:
+                if self.identifier == "deputy":
                     deputies = self.get_deputy_entity_ids(entity_id)
                     for deputy in deputies:
                         ids.append(deputy)
-                elif self.csv in ["deputy_orders", "deputy_fee_payer"]:
+                elif self.identifier == "order_deputy":
                     deputy_orders = self.get_deputy_order_entity_ids(entity_id)
                     for deputy_order in deputy_orders:
                         ids.append(deputy_order)
@@ -302,27 +216,9 @@ class ApiTests:
         person_id_sql = self.get_person_sql(caserecnumber)
         order_id_sql = self.get_order_sql(caserecnumber)
         ids = []
-        if self.csv in [
-            "clients",
-            "client_death_notifications",
-            "warnings",
-            "crec",
-            "visits",
-            "reports",
-            "invoice",
-        ]:
+        if self.identifier == "client":
             ids = self.get_entity_ids_from_person_source(person_id_sql, caserecnumber)
-        elif self.csv in [
-            "orders",
-            "bonds",
-            "supervision_level",
-            "deputies",
-            "deputy_clients",
-            "deputy_orders",
-            "deputy_clients_count",
-            "deputy_death_notifications",
-            "deputy_fee_payer",
-        ]:
+        elif self.identifier in ["order", "deputy", "order_deputy"]:
             ids = self.get_entity_ids_from_order_source(order_id_sql, caserecnumber)
         log.debug(f"returning ids: {ids}")
         return ids
@@ -354,7 +250,7 @@ class ApiTests:
         status_code = 500
         response_text = None
         retry_count = 0
-        if self.csv in self.no_retry_entities:
+        if self.no_retries:
             response = self.session["sess"].get(
                 f'{self.session["base_url"]}{endpoint_final}',
                 headers=self.session["headers_dict"],
@@ -386,7 +282,7 @@ class ApiTests:
 
     def get_json_items_to_loop_through(self, json_object):
         items_to_loop_through = []
-        if self.csv in self.list_entity_returned:
+        if self.assert_on_list:
             for list_item in json_object:
                 items_to_loop_through.append(list_item)
         else:
@@ -569,7 +465,7 @@ class ApiTests:
 
     def get_endpoint_final(self, entity_id, endpoint):
         log.debug(f"get_endpoint_final: entity_id {entity_id} endpoint {endpoint}")
-        if self.csv in ["deputy_orders", "deputy_fee_payer"]:
+        if self.identifier == "order_deputy":
             endpoint_final = (
                 str(endpoint)
                 .replace("{id1}", str(entity_id["order_id"]))
@@ -642,47 +538,42 @@ class ApiTests:
 
     def run_response_tests(self):
         self.api_log(f"Starting tests against '{self.csv}'")
-        if self.csv in self.entities[self.environment]:
-            s3_csv_path = f"validation/csvs/{self.csv}.csv"
-            obj = self.session["s3_sess"].get_object(
-                Bucket=self.bucket_name, Key=s3_csv_path
-            )
-            csv_data = pd.read_csv(io.BytesIO(obj["Body"].read()), dtype=str)
 
-            count = 0
-            # Iterate over rows in the input spreadsheet
-            for index, row in csv_data.iterrows():
-                count = count + 1
-                endpoint = row["endpoint"]
-                entity_ref = row["entity_ref"]
+        s3_csv_path = f"validation/csvs/{self.csv}.csv"
+        obj = self.session["s3_sess"].get_object(
+            Bucket=self.bucket_name, Key=s3_csv_path
+        )
+        csv_data = pd.read_csv(io.BytesIO(obj["Body"].read()), dtype=str)
 
-                # Create a list of headers to verify
-                headers_to_check = self.get_headers_to_check(row)
-                # Get the ids to perform the search on based on the caserecnumber
-                entity_ids = self.get_processed_entity_ids(entity_ref)
+        count = 0
+        # Iterate over rows in the input spreadsheet
+        for index, row in csv_data.iterrows():
+            count = count + 1
+            endpoint = row["endpoint"]
+            entity_ref = row["entity_ref"]
 
-                # Because some of our searches may bring back multiple entities we need an object to aggregate them
-                if self.csv in ["deputy_clients_count"]:
-                    formatted_api_response = self.get_count_api_response(
-                        entity_ids, endpoint, headers_to_check
-                    )
-                else:
-                    formatted_api_response = self.get_formatted_api_response(
-                        entity_ids, endpoint, headers_to_check, row, entity_ref
-                    )
-                # Check we haven't brought back an empty dict as response
-                if formatted_api_response:
-                    # Loop through and check expected results against actual for each field
-                    self.assert_on_fields(
-                        headers_to_check, formatted_api_response, row, entity_ref
-                    )
-                else:
-                    self.api_log("empty dictionary returned!")
-            self.api_log(f"Ran happy path tests against {count} cases in {self.csv}")
-        else:
-            self.api_log(
-                f"CSV '{self.csv}' doesn't exist in this environment. Skipping..."
-            )
+            # Create a list of headers to verify
+            headers_to_check = self.get_headers_to_check(row)
+            # Get the ids to perform the search on based on the caserecnumber
+            entity_ids = self.get_processed_entity_ids(entity_ref)
+
+            if self.assert_on_count:
+                formatted_api_response = self.get_count_api_response(
+                    entity_ids, endpoint, headers_to_check
+                )
+            else:
+                formatted_api_response = self.get_formatted_api_response(
+                    entity_ids, endpoint, headers_to_check, row, entity_ref
+                )
+            # Check we haven't brought back an empty dict as response
+            if formatted_api_response:
+                # Loop through and check expected results against actual for each field
+                self.assert_on_fields(
+                    headers_to_check, formatted_api_response, row, entity_ref
+                )
+            else:
+                self.api_log("empty dictionary returned!")
+        self.api_log(f"Ran happy path tests against {count} cases in {self.csv}")
 
     def functional_tests_by_method(self, method, entity_setup_objects):
         for entity_setup_object in entity_setup_objects:

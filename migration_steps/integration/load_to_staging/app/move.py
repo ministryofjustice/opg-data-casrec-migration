@@ -62,15 +62,23 @@ def create_missing_extra_tables(db_config, db_engine, extra_tables):
             os._exit(1)
 
 
-def generate_inserts(db_config, db_engine, tables, extra_tables=None):
+def generate_inserts(db_config, db_engine, tables, extra_tables=None, tables_copied_from_sirius=None):
 
     if extra_tables:
         create_missing_extra_tables(
             db_config=db_config, db_engine=db_engine, extra_tables=extra_tables
         )
-        tables_list = {**tables, **extra_tables}
     else:
-        tables_list = tables
+        extra_tables = {}
+
+    if not tables_copied_from_sirius:
+        tables_copied_from_sirius = {}
+
+    tables_list = {
+        **tables_copied_from_sirius,
+        **tables,
+        **extra_tables
+    }
 
     extra_cols_to_move_to_staging = ["migration_method", "casrec_details"]
 
@@ -99,21 +107,20 @@ def generate_inserts(db_config, db_engine, tables, extra_tables=None):
         target_columns = [
             x[0] for x in db_engine.execute(get_target_cols_query).fetchall()
         ]
+        extra_columns = extra_cols_to_move_to_staging if table not in tables_copied_from_sirius.keys() else []
 
         cols_to_move = list(
             set(
                 [x for x in source_columns if x in target_columns]
-                + extra_cols_to_move_to_staging
+                + extra_columns
             )
         )
 
-        columns_missing_from_target = extra_cols_to_move_to_staging
-
-        if len(columns_missing_from_target) > 0:
+        if len(extra_columns) > 0:
             alter_target_query = add_missing_columns_query(
                 table=destination_table,
                 schema=db_config["target_schema"],
-                columns=columns_missing_from_target,
+                columns=extra_columns,
             )
 
             db_engine.execute(alter_target_query)

@@ -298,6 +298,24 @@
 		"sequences": [],
 		"order_by": ["id"]
 	},
+	"finance_remission_exemption": {
+		"sirius_tables": [
+			"finance_remission_exemption"
+		],
+		"entities": {
+			"base_entities": [
+				"fee_reductions"
+			],
+			"relies_on": [
+				"clients"
+			]
+		},
+		"pk": "id",
+		"fks": [],
+		"table_type": "data",
+		"sequences": [],
+		"order_by": ["id"]
+	},
 	"finance_invoice": {
 		"sirius_tables": [
 			"finance_invoice"

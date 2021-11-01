@@ -4,7 +4,6 @@ import threading
 from pathlib import Path
 
 from finance_batch_numbers import set_all_batch_numbers
-from finance_person_ids import set_all_finance_person_ids
 from reindex_db import reindex_db
 from reset_sequences import reset_all_sequences, reset_all_uid_sequences
 
@@ -72,13 +71,6 @@ def reindex():
     result = "reindex complete"
 
 
-def set_finance_person_ids():
-    log.info("Starting set_finance_person_ids")
-    set_all_finance_person_ids(db_config=db_config)
-    global result
-    result = "set_finance_person_ids complete"
-
-
 def set_batch_numbers():
     log.info("Starting set_batch_numbers")
     set_all_batch_numbers(db_config=db_config)
@@ -94,7 +86,6 @@ def main():
     jobs = [
         reset_sequences,
         reset_uid_sequences,
-        set_finance_person_ids,
         set_batch_numbers,
     ]
 
