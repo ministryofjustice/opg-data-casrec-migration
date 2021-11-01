@@ -49,9 +49,9 @@ def insert_annual_report_type_assignments(db_config, target_db, mapping_file):
     #         offset += chunk_size
     #         chunk_no += 1
     #
-    #     except EmptyDataFrame:
+    #     except EmptyDataFrame as empty_data_frame:
     #
-    #         target_db.create_empty_table(sirius_details=sirius_details)
+    #         target_db.create_empty_table(sirius_details=sirius_details, df=empty_data_frame.df)
     #
     #         break
     #
