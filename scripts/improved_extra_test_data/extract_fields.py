@@ -38,14 +38,14 @@ anon_types = {
     },
     "full_name": {"include": ["name"], "exclude": [], "faker": "name"},
     "title": {"include": ["title"], "exclude": [], "faker": "prefix_nonbinary"},
-    "initial": {"include": ["init"], "exclude": ["Rev_Init"],},
+    "initial": {"include": ["init"], "exclude": ["rev_init"],},
     "dob": {"include": ["dob"], "exclude": [], "faker": "date"},
     "birth_year": {"include": ["birth_yr"], "exclude": [],},
     "date": {"include": ["date", "sent1"], "exclude": [], "faker": "datetime"},
-    "email": {"include": ["email"], "exclude": ["by_Email"], "faker": "email"},
+    "email": {"include": ["email"], "exclude": ["by_email"], "faker": "email"},
     "phone": {
         "include": ["phone", "mobile", "tele"],
-        "exclude": ["Papers_to_Phone", "Papers to Phone", "Assrc_Tele_Comp"],
+        "exclude": ["papers_to_phone", "papers to phone", "assrc_tele_comp"],
         "faker": "phone_number",
     },
     "address1": {"include": ["adrs1"], "exclude": [], "faker": "street_address"},
@@ -56,6 +56,7 @@ anon_types = {
         "exclude": [],
         "faker": "company",
     },
+    "invoice_number": {"include": ["invoice no"], "exclude": [], "faker": "invoice_no"},
 }
 
 edge_cases = [
@@ -196,6 +197,7 @@ def get_max_rct_no(df):
 
 def get_field_value(field_info_obj, current_col_value):
     anon_type = field_info_obj["anon_type"]
+
     if anon_type == "first_name_nonbinary":
         column_value = fake.first_name_nonbinary()
     elif anon_type == "last_name_nonbinary":
@@ -211,7 +213,7 @@ def get_field_value(field_info_obj, current_col_value):
     elif anon_type == "email":
         column_value = fake.email()
     elif anon_type == "phone_number":
-        column_value = fake.phone_number()
+        column_value = fake.phone_number()[:10]
     elif anon_type == "street_address":
         column_value = fake.street_address().replace("\n", "")
     elif anon_type == "city":
@@ -220,6 +222,8 @@ def get_field_value(field_info_obj, current_col_value):
         column_value = fake.postcode()
     elif anon_type == "company":
         column_value = fake.company()
+    elif anon_type == "invoice_no":
+        column_value = fake.bothify(text="S3#####/##")
     else:
         column_value = current_col_value
 
@@ -239,7 +243,17 @@ def get_final_replacement_value(replace_value, edge_case_object):
 
 
 def in_ignore_list(col):
-    ignore_list = ["Marital Status"]
+    ignore_list = [
+        "Marital Status",
+        "c_amount",
+        "Amount",
+        "Date Create",
+        "Log Date",
+        "Logdate",
+        "Score",
+        "End Date",
+        "Bond Co",
+    ]
     if col in ignore_list:
         return True
     else:
@@ -320,24 +334,7 @@ def reformat_mappings_object(unique_tables, casrec_fields):
     return all_tables
 
 
-def main():
-    backup_anon_data()
-
-    unique_tables, casrec_fields = get_mappings_objects()
-
-    print(unique_tables)
-
-    all_tables = reformat_mappings_object(unique_tables, casrec_fields)
-
-    initial_seed_caserec_number = 99990001
-
-    initial_seed_order_number = get_max_order_no()
-    initial_seed_deputy_number = get_max_deputy_no()
-    print(f"ORDER: {initial_seed_order_number}")
-    print(f"DEPUTY: {initial_seed_deputy_number}")
-
-    empty_output_directory(output_path)
-
+def get_initial_table_rows(unique_tables):
     initial_table_rows = {}
     for table_name in unique_tables:
         print(f"Replacing fields in table: {table_name}")
@@ -346,9 +343,69 @@ def main():
         df = pd.read_csv(file_path)
         print("Getting last col")
         df_single_row = df.iloc[[-1]]
+        df_single_row = df_single_row.copy()
         initial_table_rows[table_name] = df_single_row
+        file = open(f"{anon_data_file_path}/{table_name}.csv", "a")
+        file.write("\n")
+        file.close()
 
-    print(initial_table_rows["sup_activity"].columns.values)
+    return initial_table_rows
+
+
+def update_row_key(df_single_row, df_single_row_modified, seed_modifier):
+    try:
+        record_id = get_max_rct_no(df_single_row) + seed_modifier
+        df_single_row_modified["rct"] = record_id
+        df_single_row_modified.iloc[0, 0] = record_id
+    except Exception as e:
+        pass
+
+    return df_single_row_modified
+
+
+def update_row_primary_keys(df_single_row_modified, primary_keys):
+    for primary_key in primary_keys:
+        try:
+            # print(f'Replacing {primary_key["column"]}')
+            if primary_key["column"] in df_single_row_modified:
+                df_single_row_modified[primary_key["column"]] = primary_key["id"]
+        except Exception as e:
+            pass
+
+    return df_single_row_modified
+
+
+def update_row_fields(field_info, df_single_row, edge_case):
+    initial_replacement_value = str(
+        get_field_value(field_info, df_single_row[field_info["column"]].values[0])
+    )
+
+    if field_info["data_type"] == edge_case["data_type"] and not in_ignore_list(
+        field_info["column"]
+    ):
+        final_replacement_value = get_final_replacement_value(
+            initial_replacement_value, edge_case
+        )
+    else:
+        final_replacement_value = initial_replacement_value
+
+    print(f'Replacing {field_info["column"]}')
+
+    return final_replacement_value
+
+
+def main():
+    backup_anon_data()
+    unique_tables, casrec_fields = get_mappings_objects()
+    print(unique_tables)
+    all_tables = reformat_mappings_object(unique_tables, casrec_fields)
+    initial_seed_caserec_number = 99990001
+    initial_seed_order_number = get_max_order_no()
+    initial_seed_deputy_number = get_max_deputy_no()
+
+    empty_output_directory(output_path)
+
+    initial_table_rows = get_initial_table_rows(unique_tables)
 
     seed_modifier = 0
     for edge_case in edge_cases:
@@ -357,60 +414,35 @@ def main():
 
         primary_keys = [
             {"column": "Case", "id": initial_seed_caserec_number + seed_modifier},
+            {
+                "column": "CoP Case",
+                "id": f"{str(initial_seed_caserec_number + seed_modifier)}01",
+            },
             {"column": "Order No", "id": initial_seed_order_number + seed_modifier},
             {"column": "Deputy No", "id": initial_seed_deputy_number + seed_modifier},
         ]
 
-        pd.set_option("display.max_colwidth", None)
         for table_row in initial_table_rows:
-            df_single_row = initial_table_rows[table_row]
-            df_single_row = df_single_row.copy()
-
-            try:
-                print(f"table is: {table_row}")
-                print(f"seed modifier is: {seed_modifier}")
-                print(df_single_row["rct"].max())
-                record_id = get_max_rct_no(df_single_row) + seed_modifier
-
-                print(f"record_id is: {record_id}")
-                with pd.option_context(
-                    "display.max_rows", None, "display.max_columns", None
-                ):  # more options can be specified also
-                    print(df_single_row)
-                df_single_row["rct"] = record_id
-                df_single_row.iloc[0, 0] = record_id
-            except Exception as e:
-                pass
-
-            for primary_key in primary_keys:
-                try:
-                    print(f'Replacing {primary_key["column"]}')
-                    if primary_key["column"] in df_single_row:
-                        df_single_row[primary_key["column"]] = primary_key["id"]
-                except Exception as e:
-                    pass
+            print(f"Starting replacements on table: {table_row}")
+            df_single_row = initial_table_rows[table_row].copy()
+            df_single_row_modified = df_single_row.copy()
+            df_single_row_modified = update_row_key(
+                df_single_row, df_single_row_modified.copy(), seed_modifier
+            )
+            df_single_row_modified = update_row_primary_keys(
+                df_single_row_modified.copy(), primary_keys
+            )
 
             for field_info in all_tables[table_row]:
-                initial_replacement_value = str(
-                    get_field_value(
-                        field_info, df_single_row[field_info["column"]].values[0]
-                    )
+                final_replacement_value = update_row_fields(
+                    field_info, df_single_row, edge_case
                 )
+                if field_info["column"] in df_single_row_modified:
+                    df_single_row_modified[
+                        field_info["column"]
+                    ] = final_replacement_value
 
-                if field_info["data_type"] == edge_case[
-                    "data_type"
-                ] and not in_ignore_list(field_info["column"]):
-                    final_replacement_value = get_final_replacement_value(
-                        initial_replacement_value, edge_case
-                    )
-                else:
-                    final_replacement_value = initial_replacement_value
-
-                print(f'Replacing {field_info["column"]}')
-                if field_info["column"] in df_single_row:
-                    df_single_row[field_info["column"]] = final_replacement_value
-
-            df_single_row.to_csv(
+            df_single_row_modified.to_csv(
                 f"{anon_data_file_path}/{table_row}.csv",
                 mode="a",
                 index=False,

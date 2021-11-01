@@ -50,6 +50,12 @@ def source_conditions(df, conditions):
         for col in recent_or_open_invoices_cols:
             conditions.pop(col, None)
 
+    date_since_cols = {k: v for k, v in conditions.items() if k == "date_since"}
+    if date_since_cols:
+        df = date_since(df, date_since_cols)
+        for col in date_since_cols:
+            conditions.pop(col, None)
+
     first_x_chars_cols = {k: v for k, v in conditions.items() if k == "first_x_chars"}
     if first_x_chars_cols:
         df = first_x_chars(df, first_x_chars_cols)
@@ -148,6 +154,7 @@ def exclude_values(df, cols):
 
     return df
 
+
 def include_values(df, cols):
     col = format_additional_col_alias(cols["include_values"]["col"])
 
@@ -156,6 +163,7 @@ def include_values(df, cols):
     log.debug(f"Keeping rows where '{col}' is one of {values_to_include}")
 
     return df[df[col].isin(values_to_include)]
+
 
 def greater_than(df, cols):
     col = format_additional_col_alias(cols["greater_than"]["col"])
@@ -196,6 +204,23 @@ def recent_or_open_invoices(df, cols):
 
     filtered_df = filter_recent_or_open_invoices(df=df, cols=cols, debt_col=debt_col)
     filtered_df = filtered_df.drop(columns=["Trx Number", debt_col])
+
+    return filtered_df
+
+
+def date_since(df, cols):
+    col = format_additional_col_alias(cols["date_since"]["col"])
+    since_datetime = datetime.datetime.strptime(cols["date_since"]["date"], "%d/%m/%Y")
+
+    log.debug(f"Removing rows where '{col}' is before {since_datetime}")
+
+    filtered_df = df[
+        df.apply(
+            lambda x: pd.to_datetime(x[col], dayfirst=True).to_pydatetime()
+            >= since_datetime,
+            axis=1,
+        )
+    ]
 
     return filtered_df
 
