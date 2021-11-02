@@ -125,6 +125,8 @@ def main():
             api_tests.no_retries = "no_retries" in test and test["no_retries"] is True
             api_tests.assert_on_list = "assert_on_list" in test and test["assert_on_list"] is True
             api_tests.assert_on_count = "assert_on_count" in test and test["assert_on_count"] is True
+            if "list_in_field" in test:
+                api_tests.list_in_field = test["list_in_field"]
             api_tests.run_response_tests()
     api_tests.upload_log_file()
 

@@ -303,6 +303,9 @@ class ApiTests:
             response_text = self.get_response_object(endpoint_final)
             json_obj = json.loads(response_text)
 
+            if self.list_in_field:
+                json_obj = json_obj[self.list_in_field]
+
             json_items_to_loop_through = self.get_json_items_to_loop_through(json_obj)
 
             for json_item_to_inspect in json_items_to_loop_through:
