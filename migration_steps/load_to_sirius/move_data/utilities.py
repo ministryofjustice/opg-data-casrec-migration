@@ -14,7 +14,13 @@ completed_tables = []
 
 log = logging.getLogger("root")
 
-SPECIAL_CASES = ["addresses", "persons"]
+SPECIAL_CASES = [
+    "addresses",
+    "persons",
+    "finance_invoice",
+    "finance_ledger",
+    "finance_remission_exemption"
+]
 
 
 def handle_special_cases(table_name, df):
@@ -26,6 +32,15 @@ def handle_special_cases(table_name, df):
         df["risk_score"] = df["risk_score"].astype("Int64")
         log.debug("Reformat 'feepayer_id' to nullable int")
         df["feepayer_id"] = df["feepayer_id"].astype("Int64")
+    if table_name == "finance_invoice":
+        log.debug("Reformat 'finance_person_id' to nullable int")
+        df["finance_person_id"] = df["finance_person_id"].astype("Int64")
+    if table_name == "finance_ledger":
+        log.debug("Reformat 'finance_person_id' to nullable int")
+        df["finance_person_id"] = df["finance_person_id"].astype("Int64")
+    if table_name == "finance_remission_exemption":
+        log.debug("Reformat 'finance_person_id' to nullable int")
+        df["finance_person_id"] = df["finance_person_id"].astype("Int64")
     return df
 
 
