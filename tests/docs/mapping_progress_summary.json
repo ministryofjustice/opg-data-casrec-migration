@@ -1,0 +1,22 @@
+{
+    "worksheets": {
+        "rainbows": {
+            "total_rows": 11,
+            "total_unmapped": 1,
+            "total_mapped": 10,
+            "percentage_complete": 91
+        }
+    },
+    "total": {
+        "worksheets": {
+            "total_sheets": 1,
+            "total_complete": 0
+        },
+        "fields": {
+            "total_fields": 11,
+            "total_unmapped": 1,
+            "total_mapped": 10,
+            "percentage_complete": 91
+        }
+    }
+}

@@ -1,0 +1,98 @@
+{
+    "id": {
+        "casrec_table": "colours",
+        "casrec_column_name": "colour_identifier",
+        "alias": "colour_identifier",
+        "requires_transformation": "",
+        "lookup_table": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": "",
+        "fk_parents": "",
+        "is_complete": true
+    },
+    "red": {
+        "casrec_table": "colours",
+        "casrec_column_name": "ruby",
+        "alias": "ruby",
+        "requires_transformation": "",
+        "lookup_table": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": "",
+        "fk_parents": "",
+        "is_complete": true
+    },
+    "orange": {
+        "casrec_table": "colours",
+        "casrec_column_name": "tangerine",
+        "alias": "tangerine",
+        "requires_transformation": "",
+        "lookup_table": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": "",
+        "fk_parents": "",
+        "is_complete": true
+    },
+    "yellow": {
+        "casrec_table": "colours",
+        "casrec_column_name": "amber",
+        "alias": "amber",
+        "requires_transformation": "",
+        "lookup_table": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": "",
+        "fk_parents": "",
+        "is_complete": true
+    },
+    "green": {
+        "casrec_table": "colours",
+        "casrec_column_name": "verdant",
+        "alias": "verdant",
+        "requires_transformation": "",
+        "lookup_table": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": "",
+        "fk_parents": "",
+        "is_complete": true
+    },
+    "blue": {
+        "casrec_table": "colours",
+        "casrec_column_name": "cerulean",
+        "alias": "cerulean",
+        "requires_transformation": "",
+        "lookup_table": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": "",
+        "fk_parents": "",
+        "is_complete": true
+    },
+    "indigo": {
+        "casrec_table": "colours",
+        "casrec_column_name": "dark_blue",
+        "alias": "dark_blue",
+        "requires_transformation": "",
+        "lookup_table": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": "",
+        "fk_parents": "",
+        "is_complete": true
+    },
+    "violet": {
+        "casrec_table": "colours",
+        "casrec_column_name": "purple",
+        "alias": "purple",
+        "requires_transformation": "",
+        "lookup_table": "",
+        "default_value": "",
+        "calculated": "",
+        "is_pk": "",
+        "fk_parents": "",
+        "is_complete": true
+    }
+}

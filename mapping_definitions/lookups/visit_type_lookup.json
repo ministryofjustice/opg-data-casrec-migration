@@ -1,0 +1,44 @@
+{
+    "1": {
+        "sirius_mapping": "VST-PRO"
+    },
+    "2": {
+        "sirius_mapping": "VST-LAY"
+    },
+    "3": {
+        "sirius_mapping": "VST-PA"
+    },
+    "4": {
+        "sirius_mapping": "VST-HW"
+    },
+    "5": {
+        "sirius_mapping": "VST-MED"
+    },
+    "6": {
+        "sirius_mapping": "VST-MED"
+    },
+    "7": {
+        "sirius_mapping": ""
+    },
+    "8": {
+        "sirius_mapping": "VST-CPRO"
+    },
+    "9": {
+        "sirius_mapping": "VST-CPA"
+    },
+    "10": {
+        "sirius_mapping": "VST-DEP"
+    },
+    "11": {
+        "sirius_mapping": "VST-LPA"
+    },
+    "12": {
+        "sirius_mapping": "VST-MLPA"
+    },
+    "13": {
+        "sirius_mapping": "VST-MDEP"
+    },
+    "14": {
+        "sirius_mapping": "VST-S58"
+    }
+}

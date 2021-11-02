@@ -1,0 +1,227 @@
+{
+    "id": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": true,
+            "fk_parents": "",
+            "data_type": "int",
+            "table_name": "death_notifications",
+            "entity": "death_notification"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
+    "person_id": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "persons:id",
+            "data_type": "int",
+            "table_name": "death_notifications",
+            "entity": "death_notification"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
+    "proofofdeathreceived": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "bool",
+            "table_name": "death_notifications",
+            "entity": "death_notification"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": true,
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
+    "datelettersentout": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "date",
+            "table_name": "death_notifications",
+            "entity": "death_notification"
+        },
+        "transform_casrec": {
+            "casrec_table": "Deputy",
+            "casrec_column_name": "Disch Death",
+            "alias": "Disch Death",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
+    "datedeathcertificatereceived": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "date",
+            "table_name": "death_notifications",
+            "entity": "death_notification"
+        },
+        "transform_casrec": {
+            "casrec_table": "Deputy",
+            "casrec_column_name": "Disch Death",
+            "alias": "Disch Death 1",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
+    "datenotified": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "date",
+            "table_name": "death_notifications",
+            "entity": "death_notification"
+        },
+        "transform_casrec": {
+            "casrec_table": "Deputy",
+            "casrec_column_name": "Disch Death",
+            "alias": "Disch Death 2",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
+    "notifiedby": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str",
+            "table_name": "death_notifications",
+            "entity": "death_notification"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "OTHER",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
+    "notificationmethod": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str",
+            "table_name": "death_notifications",
+            "entity": "death_notification"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "EMAIL",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
+    "notes": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str",
+            "table_name": "death_notifications",
+            "entity": "death_notification"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "Migrated",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    }
+}
