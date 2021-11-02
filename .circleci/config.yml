@@ -471,6 +471,7 @@ workflows:
           filters: {branches:{only:[master]}}
       - reset_sirius_full_restore:
           name: run and monitor jenkins restore job preqa
+          requires: [get latest tag preqa]
           environment: PreQANightly
           sirius_environment: casrecdmpq
           filters: {branches:{only:[master]}}
