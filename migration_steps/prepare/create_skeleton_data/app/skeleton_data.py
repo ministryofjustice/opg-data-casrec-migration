@@ -1096,7 +1096,7 @@ def insert_finance_person_data_into_sirius(db_config, sirius_db_engine):
             id as person_id,
             row_number() over () + 990000 as finance_billing_reference,
             'DEMANDED'
-        from persons where clientsource = 'SKELETON';
+        from persons where clientsource = 'SKELETON' and id <> 520;
     """
     sirius_db_engine.execute(insert_statement)
 
