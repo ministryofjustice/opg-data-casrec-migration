@@ -20,6 +20,7 @@ environment = os.environ.get("ENVIRONMENT")
 config = get_config(environment)
 db_conn_string = config.get_db_connection_string("target")
 engine = create_engine(db_conn_string)
+response_dir = "responses"
 
 clients_headers = [
     '["clientAccommodation"]["handle"]',
@@ -511,13 +512,15 @@ def convert_structure_to_line(line_structure):
 
 def main():
     print(f"You are running this script against: {environment}")
+    if not os.path.exists(response_dir):
+        os.makedirs(response_dir)
 
     sirius_app_session = create_a_session(base_url, password)
 
     for csv in csvs:
         full_header_line = generate_csv_headers_line(search_headers, csv)
 
-        with open(f"responses/{csv}_output.csv", "w") as csv_out_file:
+        with open(f"{response_dir}/{csv}_output.csv", "w") as csv_out_file:
             csv_out_file.write(full_header_line)
 
         input_csv_data = pd.read_csv(f"{csv}.csv", dtype=str)
