@@ -46,21 +46,31 @@ def main(circle_builds_token, circle_project_username, circle_project_reponame):
 
     time_taken = 0
     secs = 10
-    while (
-        len(
-            get_running_jobs(
-                circle_builds_token,
-                circle_project_username,
-                circle_project_reponame,
-                current_workflow_id,
+    all_clear_count = 0
+    while all_clear_count < 3:
+        if (
+            len(
+                get_running_jobs(
+                    circle_builds_token,
+                    circle_project_username,
+                    circle_project_reponame,
+                    current_workflow_id,
+                )
             )
-        )
-        > 0
-    ):
-        time.sleep(secs)
-        time_taken += secs
-        print(f"Waited {time_taken} seconds for previous job to finish")
-    print("Nothing currently running")
+            > 0
+        ):
+            time.sleep(secs)
+            time_taken += secs
+            print(f"Waited {time_taken} seconds for previous job to finish")
+        else:
+            if time_taken < 10:
+                print("No jobs running")
+                continue
+            else:
+                all_clear_count += 1
+                print(f"No jobs running - Check {all_clear_count} of 3")
+
+    print("Ready to kick off our job")
 
 
 if __name__ == "__main__":
