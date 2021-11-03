@@ -1,11 +1,5 @@
-import inspect
-import json
-import os
 import logging
-import time
 from datetime import datetime
-import socket
-
 import colorlog as colourlog
 from pythonjsonlogger import jsonlogger
 
@@ -16,13 +10,8 @@ class MyHandler(colourlog.StreamHandler):
 
         colourlog.StreamHandler.__init__(self)
 
-        fmt = "%(log_color)s %(asctime)s %(filename)-18s %(levelname)-8s: %(message)s"
-
-        fmt_date = "%Y-%m-%dT%T%Z"
-
-        formatter = colourlog.ColoredFormatter(
-            fmt,
-            fmt_date,
+        formatter = CustomColouredFormatter(
+            datefmt="%Y-%m-%dT%T%Z",
             reset=True,
             log_colors={
                 "DEBUG": "cyan",
@@ -38,6 +27,20 @@ class MyHandler(colourlog.StreamHandler):
         )
 
         self.setFormatter(formatter)
+
+
+class CustomColouredFormatter(colourlog.ColoredFormatter):
+    def format(self, record: logging.LogRecord) -> str:
+        default_attrs = logging.LogRecord(None, None, None, None, None, None, None).__dict__.keys()
+        extras = set(record.__dict__.keys()) - default_attrs
+
+        fmt = "%(log_color)s %(asctime)s %(filename)-18s %(levelname)-8s: %(message)s"
+        for attr in extras:
+            fmt += f'; "{attr}": "%({attr})s"'
+
+        self._style._fmt = fmt
+
+        return super().format(record)
 
 
 class CustomJsonFormatter(jsonlogger.JsonFormatter):
