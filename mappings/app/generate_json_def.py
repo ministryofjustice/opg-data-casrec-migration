@@ -11,7 +11,7 @@ import pandas as pd
 
 pd.options.mode.chained_assignment = None
 
-json_def_config = config['JSON_DEFS']
+json_def_config = config["JSON_DEFS"]
 
 
 def apply_column_alias(df: pd.DataFrame) -> pd.DataFrame:
@@ -21,13 +21,14 @@ def apply_column_alias(df: pd.DataFrame) -> pd.DataFrame:
     transformations easier as some of the duplicates are handled differently
     """
 
-    df["count"] = df.groupby(json_def_config['source_column_name']).cumcount()
-    df["alias"] = df[[json_def_config['source_column_name'], "count"]].values.tolist()
+    df["count"] = df.groupby(json_def_config["source_column_name"]).cumcount()
+    df["alias"] = df[[json_def_config["source_column_name"], "count"]].values.tolist()
     df["alias"] = df["alias"].apply(
         lambda x: f"{x[0]} {x[1]}" if str(x[0]) != "nan" and int(x[1]) > 0 else x[0]
     )
 
     return df
+
 
 def clean_up_and_convert_to_dict(df: pd.DataFrame) -> Dict:
     """
@@ -54,7 +55,7 @@ def clean_up_and_convert_to_dict(df: pd.DataFrame) -> Dict:
     mapping_df = apply_column_alias(df=df)
     # only select the columns we are interested in
     # add any missing columns with empty string as value
-    wanted_cols = json_def_config['default_columns'] + [json_def_config['index_column']]
+    wanted_cols = json_def_config["default_columns"] + [json_def_config["index_column"]]
     existing_cols = mapping_df.columns.values.tolist()
     cols_to_select = list(set(wanted_cols) & set(existing_cols))
     cols_to_add = [x for x in wanted_cols if x not in existing_cols]
@@ -105,7 +106,9 @@ def clean_up_and_convert_to_dict(df: pd.DataFrame) -> Dict:
     )
 
     # drop any rows that have no value in all interesting cols
-    mapping_df = mapping_df.dropna(axis=0, how="all", subset=json_def_config['default_columns'])
+    mapping_df = mapping_df.dropna(
+        axis=0, how="all", subset=json_def_config["default_columns"]
+    )
     # fill 'nan' with empty string
     mapping_df = mapping_df.fillna("")
 
@@ -115,13 +118,12 @@ def clean_up_and_convert_to_dict(df: pd.DataFrame) -> Dict:
     mapping_df.drop("include", axis=1, inplace=True)
 
     # set index to the column name so the to_dict pivots on the sirius column name
-    mapping_df = mapping_df.set_index(json_def_config['index_column'])
+    mapping_df = mapping_df.set_index(json_def_config["index_column"])
     # convert to dictionary
 
     mapping_dict = mapping_df.to_dict("index")
 
     return mapping_dict
-
 
 
 def format_multiple_columns(mapping_dict: Dict) -> Dict:
@@ -132,7 +134,11 @@ def format_multiple_columns(mapping_dict: Dict) -> Dict:
     Easier to do it once it's a dict than in the dataframe, as the numpy concept of
     'list' doesn't map easily using 'to_dict'!
     """
-    multi_fields = [json_def_config['source_column_name'], "alias", "additional_columns"]
+    multi_fields = [
+        json_def_config["source_column_name"],
+        "alias",
+        "additional_columns",
+    ]
 
     for col, details in mapping_dict.items():
         for field in multi_fields:
@@ -141,11 +147,11 @@ def format_multiple_columns(mapping_dict: Dict) -> Dict:
 
     return mapping_dict
 
+
 def convert_dict_to_new_format(mapping_dict: Dict) -> Dict:
     dirname = os.path.dirname(__file__)
     path = "template"
     file_path = os.path.join(dirname, path, "mapping_template.json")
-
 
     with open(file_path, "r") as template_json:
         template_data = template_json.read()
@@ -163,7 +169,10 @@ def convert_dict_to_new_format(mapping_dict: Dict) -> Dict:
 
     return from_template
 
-def export_single_module_as_json_file(module_name: str, mapping_dict: Dict, destination: str):
+
+def export_single_module_as_json_file(
+    module_name: str, mapping_dict: Dict, destination: str
+):
 
     path = f"{destination}"
 
@@ -174,19 +183,14 @@ def export_single_module_as_json_file(module_name: str, mapping_dict: Dict, dest
         json.dump(mapping_dict, json_out, indent=4)
 
 
-
 def generate_json_files(df, name, destination):
     print(f"creating json defs: {name}")
     module_dict = clean_up_and_convert_to_dict(df=df)
 
-
     if len(module_dict) > 0:
-        module_dict = format_multiple_columns(
-            mapping_dict=module_dict
-        )
+        module_dict = format_multiple_columns(mapping_dict=module_dict)
 
         module_dict = convert_dict_to_new_format(mapping_dict=module_dict)
-
 
         export_single_module_as_json_file(
             module_name=name, mapping_dict=module_dict, destination=destination

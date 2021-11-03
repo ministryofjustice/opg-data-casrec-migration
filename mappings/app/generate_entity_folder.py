@@ -9,7 +9,7 @@ def get_entity_name_from_file(file_name):
         print(f"starting entity: {entity_name}")
         return entity_name
 
-    except Exception:
+    except Exception as e:
         print(f"problem getting entity name from '{file_name}' {e}")
 
 

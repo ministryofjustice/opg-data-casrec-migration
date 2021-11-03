@@ -1,11 +1,28 @@
 import difflib
 import logging
 import os
+import sys
 import zipfile
-from pathlib import Path
-
+import click as click
 import boto3
 from botocore.exceptions import ClientError
+from pathlib import Path
+
+current_path = Path(os.path.dirname(os.path.realpath(__file__)))
+sys.path.insert(0, str(current_path) + "/../../migration_steps/shared")
+from helpers import assume_aws_session
+
+current_path = Path(os.path.dirname(os.path.realpath(__file__)))
+shared_path = f"{current_path}/../../migration_steps/shared"
+mappings_path = f"{current_path}/../../mappings"
+
+account = "288342028542"
+previous_folder = "mapping_definitions_previous"
+bucket_name = "casrec-migration-mappings-development"
+output_file = "./mapping_definitions/summary/file_diffs.txt"
+zip_file_prefix = "mappings"
+ext = ".zip"
+s3_folder = "test_script"
 
 
 def zip_dir(dirs_to_zip, zip_file):
@@ -118,3 +135,24 @@ def get_latest_version(bucket, key, client):
     for version in [*versions["Versions"]]:
         if version["IsLatest"]:
             return version["VersionId"]
+
+
+@click.command()
+@click.option("--role", default="operator")
+def main(role):
+    dirs_to_zip = [
+        f"{shared_path}/mapping_spreadsheet",
+        f"{mappings_path}/mapping_definitions",
+    ]
+    zip_file = f"{zip_file_prefix}{ext}"
+    zip_dir(dirs_to_zip, zip_file)
+    s3_file_path = f"{s3_folder}/{zip_file_prefix}{ext}"
+    s3 = assume_aws_session(account, role).client("s3")
+    zip_dir(dirs_to_zip, zip_file)
+    upload_file(bucket_name, zip_file, s3, s3_file_path)
+    print(get_latest_version(bucket_name, s3_file_path, s3))
+
+
+if __name__ == "__main__":
+
+    main()

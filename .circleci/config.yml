@@ -1177,9 +1177,6 @@ jobs:
             pip3 install -r base_image/requirements.txt
             pip3 install -r migration_steps/shared/shared_tests/requirements.txt
       - run:
-          name: Sync mapping json files
-          command: python3 ~/project/scripts/sync_mapping_json/sync_mapping_json.py
-      - run:
           name: Run transform_casrec unit tests
           command: |
             export PYTHONPATH=~/project/migration_steps/transform_casrec:~/project/migration_steps/transform_casrec/transform/app
@@ -1189,6 +1186,10 @@ jobs:
           command: |
             export PYTHONPATH=~/project/migration_steps/shared:~/project/migration_steps/shared/shared_tests
             python3 -m pytest migration_steps/shared/shared_tests
+      - run:
+          name: Zip and upload mappings zip file
+          command: python3 upload_mappings.py --role migrations-ci
+          working_directory: ~/project/scripts/upload_mappings
       - run:
           name: Docker login
           command: aws ecr get-login-password --region $AWS_REGION --profile migrations-ci | docker login --username AWS --password-stdin $AWS_REGISTRY

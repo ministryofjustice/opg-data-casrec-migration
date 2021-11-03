@@ -13,6 +13,7 @@ _Any tips and tricks, blog posts or tools which helped you. Plus anything notabl
 ## Checklist
 
 * [ ] I have performed a self-review of my own code
+* [ ] I have done an adhoc run against preprod (only needed for high complexity PRs)
 * [ ] I have added relevant logging with appropriate levels to my code
 * [ ] I have updated documentation where relevant
 * [ ] I have added tests to prove my work
