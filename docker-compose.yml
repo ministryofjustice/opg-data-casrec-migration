@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./mappings/app:/generate/app
-      - ./mappings/mapping_spreadsheet:/generate/mapping_spreadsheet
+      - ./migration_steps/shared/mapping_spreadsheet:/generate/mapping_spreadsheet
       - ./migration_steps/shared/mapping_definitions:/generate/mapping_definitions
   casrec_db:
     image: postgres:10.11

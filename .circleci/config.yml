@@ -472,6 +472,7 @@ workflows:
           filters: {branches:{only:[master]}}
       - reset_sirius_full_restore:
           name: run and monitor jenkins restore job preqa
+          requires: [get latest tag preqa]
           environment: PreQANightly
           sirius_environment: casrecdmpq
           filters: {branches:{only:[master]}}
@@ -1195,7 +1196,7 @@ jobs:
           condition: << parameters.push_mappings >>
           steps:
             - run:
-                name: Zip and upload mappings zip file
+                name: zip and upload mappings zip file
                 command: python3 upload_mappings.py --role migrations-ci
                 working_directory: ~/project/scripts/upload_mappings
       - run:

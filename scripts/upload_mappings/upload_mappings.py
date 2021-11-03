@@ -22,7 +22,7 @@ bucket_name = "casrec-migration-mappings-development"
 output_file = "./mapping_definitions/summary/file_diffs.txt"
 zip_file_prefix = "mappings"
 ext = ".zip"
-s3_folder = "test_script"
+s3_folder = "merged"
 
 
 def zip_dir(dirs_to_zip, zip_file):

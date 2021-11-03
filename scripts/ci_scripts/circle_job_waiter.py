@@ -59,16 +59,20 @@ def main(circle_builds_token, circle_project_username, circle_project_reponame):
             )
             > 0
         ):
+            print(f"Waited {time_taken} seconds for previous job to finish")
             time.sleep(secs)
             time_taken += secs
-            print(f"Waited {time_taken} seconds for previous job to finish")
         else:
             if time_taken < 10:
                 print("No jobs running")
-                continue
+                all_clear_count = 3
             else:
                 all_clear_count += 1
-                print(f"No jobs running - Check {all_clear_count} of 3")
+                time.sleep(secs)
+                time_taken += secs
+                print(
+                    f"No jobs running for {time_taken} seconds - Check {all_clear_count} of 3"
+                )
 
     print("Ready to kick off our job")
 

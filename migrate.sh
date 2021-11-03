@@ -3,13 +3,13 @@ set -e
 
 REBUILD_CASREC_CSV_SCHEMA="y"
 SYNC_CASREC_CSVS="y"
-SYNC_MAPPINGS="n"
 SKIP_LOAD="false"
 PRESERVE_SCHEMAS=""
 LAY_TEAM=""
 GENERATE_DOCS="false"
 FULL_SIRIUS_APP="n"
 COMPOSE_ARGS=""
+MAPPING_SHA=$(find migration_steps/shared/mapping_spreadsheet/ -type f -print0 | sort -z | xargs -0 sha1sum | sha1sum | awk '{print $1}')
 
 if [ "${CI}" != "true" ]
 then
@@ -27,10 +27,6 @@ then
     SKIP_LOAD="true"
   fi
 
-  read -rp "Sync local mapping definition json files from S3? (y/n) [n]: " SYNC_MAPPINGS
-  SYNC_MAPPINGS=${SYNC_MAPPINGS:-n}
-  echo "${SYNC_MAPPINGS}"
-
   read -rp "Migrate specific Lay Team? (1-9) [All]: " LAY_TEAM
   if [ "${LAY_TEAM}" == "" ]
   then
@@ -46,6 +42,15 @@ then
   then
       COMPOSE_ARGS="-f docker-compose.sirius.yml -f docker-compose.override.yml"
   fi
+
+  if [[ "$(cat mappings/spreadsheet_sha | awk '{print $1}')" == "$MAPPING_SHA" ]]
+  then
+    echo "Mapping spreadsheets unchanged"
+  else
+    echo "Difference in mapping spreadsheets detected, running mapping generation"
+    docker-compose run --rm generate python3 app/app.py
+    find migration_steps/shared/mapping_spreadsheet/ -type f -print0 | sort -z | xargs -0 sha1sum | sha1sum | awk '{print $1}' > mappings/spreadsheet_sha
+  fi
 fi
 
 START_TIME=$(date +%s)
@@ -53,6 +58,7 @@ START_TIME=$(date +%s)
 # Docker compose file for circle build
 docker-compose ${COMPOSE_ARGS} up --no-deps -d casrec_db localstack
 docker build base_image -t opg_casrec_migration_base_image:latest
+
 if [ "${FULL_SIRIUS_APP}" == "n" ]
 then
   docker-compose ${COMPOSE_ARGS} up --no-deps -d postgres-sirius
@@ -77,11 +83,6 @@ then
     docker cp sirius_db/db_snapshots/api.backup "${RESTORE_DOCKER_ID}":/db_snapshots/api.backup
     docker-compose up --no-deps -d postgres-sirius-restore
   fi
-fi
-
-if [ "${SYNC_MAPPINGS}" == "y" ]
-then
-  aws-vault exec identity -- docker-compose -f docker-compose.commands.yml run --rm sync_mapping_json python3 /scripts/sync_mapping_json/sync_mapping_json.py
 fi
 
 docker-compose ${COMPOSE_ARGS} run --rm prepare prepare/prepare.sh -i "${PRESERVE_SCHEMAS}"
