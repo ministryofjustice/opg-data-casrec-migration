@@ -109,6 +109,14 @@ def main():
                 "assert_on_list": True
             },
         ],
+        "tasks": [
+            {
+                "csv": "tasks",
+                "identifier": "client",
+                "assert_on_list": True,
+                "list_in_field": "tasks"
+            },
+        ],
     }
 
     api_tests = ApiTests()
