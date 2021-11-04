@@ -129,12 +129,24 @@ def main(s3_source, version):
         pass
 
     try:
+        if os.path.isdir(f"{shared_path}/mapping_spreadsheet_old"):
+            shutil.rmtree(f"{shared_path}/mapping_spreadsheet_old")
+    except FileNotFoundError:
+        pass
+
+    try:
         if os.path.isdir(f"{shared_path}/mapping_definitions"):
             rename_folder(
                 f"{shared_path}/mapping_definitions",
                 f"{shared_path}/mapping_definitions_old",
             )
             shutil.rmtree(f"{shared_path}/mapping_definitions")
+
+        if os.path.isdir(f"{shared_path}/mapping_spreadsheet"):
+            rename_folder(
+                f"{shared_path}/mapping_spreadsheet",
+                f"{shared_path}/mapping_spreadsheet_old",
+            )
             shutil.rmtree(f"{shared_path}/mapping_spreadsheet")
     except FileNotFoundError:
         pass

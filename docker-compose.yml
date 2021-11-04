@@ -1,6 +1,14 @@
 ---
 version: '3.6'
 services:
+  generate:
+    build:
+      context: ./mappings
+      dockerfile: Dockerfile
+    volumes:
+      - ./mappings/app:/generate/app
+      - ./migration_steps/shared/mapping_spreadsheet:/generate/mapping_spreadsheet
+      - ./migration_steps/shared/mapping_definitions:/generate/mapping_definitions
   casrec_db:
     image: postgres:10.11
     ports:

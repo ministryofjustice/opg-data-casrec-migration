@@ -1,0 +1,9 @@
+{
+    "requires_transformation": [
+        "squash_columns",
+        "convert_to_bool"
+    ],
+    "calculated": [
+        "current_date"
+    ]
+}

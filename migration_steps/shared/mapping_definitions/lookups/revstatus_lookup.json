@@ -1,0 +1,23 @@
+{
+    "X": {
+        "sirius_mapping": "STAFF_REFERRED"
+    },
+    "S": {
+        "sirius_mapping": "NO_REVIEW"
+    },
+    "R": {
+        "sirius_mapping": "REVIEWED"
+    },
+    "I": {
+        "sirius_mapping": ""
+    },
+    "N": {
+        "sirius_mapping": ""
+    },
+    "M": {
+        "sirius_mapping": ""
+    },
+    "G": {
+        "sirius_mapping": ""
+    }
+}

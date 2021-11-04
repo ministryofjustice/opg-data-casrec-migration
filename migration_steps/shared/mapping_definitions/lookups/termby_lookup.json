@@ -1,0 +1,11 @@
+{
+    "D": {
+        "sirius_mapping": "DEPUTY"
+    },
+    "E": {
+        "sirius_mapping": "EXECUTOR"
+    },
+    "O": {
+        "sirius_mapping": "OTHER"
+    }
+}
