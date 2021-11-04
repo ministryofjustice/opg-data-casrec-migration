@@ -74,7 +74,7 @@ def get_mappings():
         "visits": ["visits"],
         "tasks": ["tasks"],
         "remarks": ["client_notes", "deputy_notes"],
-        "reporting": ["annual_report_logs"],
+        "reporting": ["annual_report_logs", "annual_report_lodging_details"]
     }
 
     for entity, mapping in all_mappings.items():
