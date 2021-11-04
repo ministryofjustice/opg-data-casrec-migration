@@ -811,12 +811,12 @@
             "entity": "client"
         },
         "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
+            "casrec_table": "PAT",
+            "casrec_column_name": "PFCWorker",
+            "alias": "PFCWorker",
             "requires_transformation": "",
-            "lookup_table": "",
-            "default_value": 10,
+            "lookup_table": "caseowner_lookup",
+            "default_value": 2657,
             "calculated": "",
             "additional_columns": ""
         },
