@@ -31,6 +31,7 @@ class ApiTests:
         self.csv = None
         self.identifier = None
         self.assert_on_list = None
+        self.list_in_field = None
         self.no_retries = None
         self.assert_on_count = None
         self.host = os.environ.get("DB_HOST")
