@@ -770,7 +770,9 @@
         "orderby": {},
         "casrec": {
             "from_table": "remarks",
-            "transform": {},
+            "transform": {
+                "description": "NULLIF({col}, 'no description migrated')"
+            },
             "joins": [
                 "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.remarks.\"Case\""
             ],
