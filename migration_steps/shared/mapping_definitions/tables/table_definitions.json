@@ -8,7 +8,35 @@
             ""
         ],
         "source_table_name": "account",
-        "table_transforms": {},
+        "table_transforms": {
+            "set_annual_report_lodging_details_status": {
+                "source_cols": [
+                    "Rev Stat",
+                    "End Date",
+                    "Rcvd Date",
+                    "Rcvd Date1",
+                    "Rcvd Date2",
+                    "Rcvd Date3",
+                    "Rcvd Date4",
+                    "Rcvd Date5",
+                    "Rcvd Date6",
+                    "Review Date",
+                    "Next Yr",
+                    "Revise Date",
+                    "Further Code",
+                    "Sent1",
+                    "Sent2",
+                    "Sent3",
+                    "Sent4",
+                    "Sent5",
+                    "Sent6",
+                    "Followup Date"
+                ],
+                "target_cols": [
+                    "lodgedstatus"
+                ]
+            }
+        },
         "table_type": "data"
     },
     "annual_report_logs": {
@@ -20,7 +48,27 @@
             "Case"
         ],
         "source_table_name": "account",
-        "table_transforms": {},
+        "table_transforms": {
+            "set_annual_report_logs_status": {
+                "source_cols": [
+                    "Rev Stat",
+                    "End Date",
+                    "Rcvd Date",
+                    "Rcvd Date1",
+                    "Rcvd Date2",
+                    "Rcvd Date3",
+                    "Rcvd Date4",
+                    "Rcvd Date5",
+                    "Rcvd Date6",
+                    "Review Date",
+                    "Next Yr"
+                ],
+                "target_cols": [
+                    "status",
+                    "reviewstatus"
+                ]
+            }
+        },
         "table_type": "data"
     },
     "bonds_active": {
