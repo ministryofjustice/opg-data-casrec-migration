@@ -214,7 +214,6 @@ def get_max_col(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.Da
         pass
 
     df["temp"] = df[original_cols].values.tolist()
-    df["temp"] = df[original_cols].values.tolist()
     df[result_col] = df["temp"].apply(lambda x: max(x))
 
     df = df.drop(columns=original_cols)
@@ -263,3 +262,22 @@ def calculate_startdate(original_col: str, result_col: str, df: pd.DataFrame) ->
         lambda base_date: _calculate_date(base_date, '-', 366)
     )
     return df
+
+def is_at_least_one_set(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Set result_col to true if at least one of the values in the columns
+    original_cols has a non-null/non-NaT/non-NaN etc. value
+    """
+    def _transform(row):
+        result = False
+
+        for column in original_cols:
+            value = row[column]
+            if value != None and value != '':
+                result = True
+                break
+
+        row[result_col] = result
+        return row
+
+    return df.apply(_transform, axis=1)

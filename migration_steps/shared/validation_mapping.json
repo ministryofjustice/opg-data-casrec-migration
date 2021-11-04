@@ -956,5 +956,30 @@
           "column": "",
           "identifiers": []
         }
+    },
+    "annual_report_lodging_details": {
+        "exclude": [
+            "lodgedby_id"
+        ],
+        "casenumber_source": "",
+        "orderby": {},
+        "casrec": {
+            "from_table": "account",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "",
+            "where_clauses": []
+        },
+        "sirius": {
+            "from_table": "annual_report_lodging_details",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "",
+            "where_clauses": []
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
     }
 }
