@@ -168,6 +168,16 @@ orders_updated_cases = [
 
 deputy_fee_payer_headers = ['["feePayer"]']
 
+tasks_headers = [
+    '["assignee"]["id"]',
+    '["type"]',
+    '["status"]',
+    '["dueDate"]',
+    '["activeDate"]',
+    '["createdTime"]',
+    '["description"]',
+]
+
 csvs = [
     "deputy_fee_payer",
     "clients",
@@ -185,6 +195,7 @@ csvs = [
     "visits",
     "reports",
     "invoices",
+    "tasks",
 ]
 
 search_headers = [
@@ -194,7 +205,7 @@ search_headers = [
     "full_check",
 ]
 
-entities_of_type_list = ["warnings", "invoices"]
+entities_of_type_list = ["warnings", "invoices", "tasks"]
 
 
 def get_session(base_url, user, password):
@@ -255,6 +266,7 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
         "visits",
         "reports",
         "invoices",
+        "tasks",
     ]:
         entity_ids = engine.execute(person_id_sql)
         if entity_ids.rowcount > 1:
