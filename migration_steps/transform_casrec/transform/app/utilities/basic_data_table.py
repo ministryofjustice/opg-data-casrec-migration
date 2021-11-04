@@ -42,11 +42,22 @@ def get_basic_data_table(
 
     source_table = get_source_table(mapping_dict=mapping_dict)
 
+    additional_columns = table_definition["source_table_additional_columns"]
+    if not isinstance(additional_columns, list):
+        additional_columns = []
+
+    # extra source columns needed for table_transforms
+    table_transforms = table_definition.get("table_transforms")
+    for _, transform_config in table_transforms.items():
+        if "source_cols" in transform_config:
+            additional_columns += transform_config["source_cols"]
+            additional_columns = list(set(additional_columns))
+
     source_data_query = generate_select_string_from_mapping(
         mapping=mapping_dict,
         source_table_name=source_table,
         order_by_cols=order_by_cols,
-        additional_columns=table_definition["source_table_additional_columns"],
+        additional_columns=additional_columns,
         db_schema=db_config["source_schema"],
         chunk_details=chunk_details,
     )
