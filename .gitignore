@@ -35,6 +35,8 @@ process.yml
 # Misc
 *crash.log
 
+~$*.xlsx
+
 sirius_db/db_snapshots/*.sql
 
 scripts/do_anonymising/change_log.txt
