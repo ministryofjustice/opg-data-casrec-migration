@@ -138,6 +138,7 @@
         "transform_casrec": {
             "casrec_table": "ACCOUNT",
             "casrec_column_name": [
+                "Rcvd Date",
                 "Rcvd Date1",
                 "Rcvd Date2",
                 "Rcvd Date3",
@@ -146,6 +147,7 @@
                 "Rcvd Date6"
             ],
             "alias": [
+                "Rcvd Date",
                 "Rcvd Date1",
                 "Rcvd Date2",
                 "Rcvd Date3",
