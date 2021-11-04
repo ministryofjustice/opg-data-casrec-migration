@@ -31,6 +31,7 @@ class ApiTests:
         self.csv = None
         self.identifier = None
         self.assert_on_list = None
+        self.list_in_field = None
         self.no_retries = None
         self.assert_on_count = None
         self.host = os.environ.get("DB_HOST")
@@ -302,6 +303,9 @@ class ApiTests:
 
             response_text = self.get_response_object(endpoint_final)
             json_obj = json.loads(response_text)
+
+            if self.list_in_field:
+                json_obj = json_obj[self.list_in_field]
 
             json_items_to_loop_through = self.get_json_items_to_loop_through(json_obj)
 
