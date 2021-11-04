@@ -213,16 +213,16 @@ def get_max_col(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.Da
     return df
 
 
-# base_date: date to use as the basis for the delta date
+# base_date: date to use as the basis for the delta date in DD/MM/YYYY format
 # operator: delta modifier, '+' or '-'
 # days: delta number of days
 # weekend_adjustment: 'previous' or 'next' or None;
 #     if 'previous' and calculated date is on a weekend, move to previous working day;
-#     if 'next' and calculated date is aon a weekend, move to next working day;
+#     if 'next' and calculated date is on a weekend, move to next working day;
 #     if None, apply no adjustment
-# return: datetime, or None if the base_date is None
+# return: datetime, or None if the base_date is None or ""
 def _calculate_date(
-    base_date, operator: str, days: int, weekend_adjustment: str = None
+    base_date, operator: str, days: int, weekend_adjustment: str=None
 ):
     if base_date is None or base_date == "":
         return None
