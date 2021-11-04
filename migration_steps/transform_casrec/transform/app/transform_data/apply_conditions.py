@@ -154,6 +154,7 @@ def exclude_values(df, cols):
 
     return df
 
+
 def include_values(df, cols):
     col = format_additional_col_alias(cols["include_values"]["col"])
 
@@ -162,6 +163,7 @@ def include_values(df, cols):
     log.debug(f"Keeping rows where '{col}' is one of {values_to_include}")
 
     return df[df[col].isin(values_to_include)]
+
 
 def greater_than(df, cols):
     col = format_additional_col_alias(cols["greater_than"]["col"])
@@ -210,11 +212,15 @@ def date_since(df, cols):
     col = format_additional_col_alias(cols["date_since"]["col"])
     since_datetime = datetime.datetime.strptime(cols["date_since"]["date"], "%d/%m/%Y")
 
-    log.debug(
-        f"Removing rows where '{col}' is before {since_datetime}"
-    )
+    log.debug(f"Removing rows where '{col}' is before {since_datetime}")
 
-    filtered_df = df[df.apply(lambda x: pd.to_datetime(x[col], dayfirst=True).to_pydatetime() >= since_datetime, axis=1)]
+    filtered_df = df[
+        df.apply(
+            lambda x: pd.to_datetime(x[col], dayfirst=True).to_pydatetime()
+            >= since_datetime,
+            axis=1,
+        )
+    ]
 
     return filtered_df
 
