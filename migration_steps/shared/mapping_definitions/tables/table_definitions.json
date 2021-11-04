@@ -3,22 +3,24 @@
         "destination_table_name": "annual_report_lodging_details",
         "entity_name": "reporting",
         "required_entities": "",
-        "source_conditions": "",
+        "source_conditions": {},
         "source_table_additional_columns": [
             ""
         ],
         "source_table_name": "account",
+        "table_transforms": {},
         "table_type": "data"
     },
     "annual_report_logs": {
         "destination_table_name": "annual_report_logs",
         "entity_name": "reporting",
         "required_entities": "",
-        "source_conditions": "",
+        "source_conditions": {},
         "source_table_additional_columns": [
             "Case"
         ],
         "source_table_name": "account",
+        "table_transforms": {},
         "table_type": "data"
     },
     "bonds_active": {
@@ -40,6 +42,7 @@
             "Ord Stat"
         ],
         "source_table_name": "order",
+        "table_transforms": {},
         "table_type": "data"
     },
     "bonds_dispensed": {
@@ -61,6 +64,7 @@
             "Ord Stat"
         ],
         "source_table_name": "order",
+        "table_transforms": {},
         "table_type": "data"
     },
     "cases": {
@@ -82,17 +86,19 @@
             "Ord Stat"
         ],
         "source_table_name": "order",
+        "table_transforms": {},
         "table_type": "data"
     },
     "client_addresses": {
         "destination_table_name": "addresses",
         "entity_name": "clients",
         "required_entities": "",
-        "source_conditions": "",
+        "source_conditions": {},
         "source_table_additional_columns": [
             "Case"
         ],
         "source_table_name": "pat",
+        "table_transforms": {},
         "table_type": "data"
     },
     "client_death_notifications": {
@@ -107,6 +113,7 @@
             "Case"
         ],
         "source_table_name": "pat",
+        "table_transforms": {},
         "table_type": "data"
     },
     "client_nodebtchase_warnings": {
@@ -120,28 +127,31 @@
             "Case"
         ],
         "source_table_name": "pat",
+        "table_transforms": {},
         "table_type": "data"
     },
     "client_notes": {
         "destination_table_name": "supervision_notes",
         "entity_name": "notes",
         "required_entities": "persons",
-        "source_conditions": "",
+        "source_conditions": {},
         "source_table_additional_columns": [
             "Case"
         ],
         "source_table_name": "remarks",
+        "table_transforms": {},
         "table_type": "data"
     },
     "client_persons": {
         "destination_table_name": "persons",
         "entity_name": "clients",
         "required_entities": "",
-        "source_conditions": "",
+        "source_conditions": {},
         "source_table_additional_columns": [
             "Term Type"
         ],
         "source_table_name": "pat",
+        "table_transforms": {},
         "table_type": "data"
     },
     "client_phonenumbers": {
@@ -155,6 +165,7 @@
             "Case"
         ],
         "source_table_name": "pat",
+        "table_transforms": {},
         "table_type": "data"
     },
     "client_saarcheck_warnings": {
@@ -168,6 +179,7 @@
             "Case"
         ],
         "source_table_name": "pat",
+        "table_transforms": {},
         "table_type": "data"
     },
     "client_special_warnings": {
@@ -181,6 +193,7 @@
             "Case"
         ],
         "source_table_name": "pat",
+        "table_transforms": {},
         "table_type": "data"
     },
     "client_violent_warnings": {
@@ -194,6 +207,7 @@
             "Case"
         ],
         "source_table_name": "pat",
+        "table_transforms": {},
         "table_type": "data"
     },
     "crec_persons": {
@@ -216,17 +230,19 @@
             "Case"
         ],
         "source_table_name": "crec",
+        "table_transforms": {},
         "table_type": "data"
     },
     "deputy_addresses": {
         "destination_table_name": "addresses",
         "entity_name": "deputies",
         "required_entities": "",
-        "source_conditions": "",
+        "source_conditions": {},
         "source_table_additional_columns": [
             "Dep Addr No"
         ],
         "source_table_name": "deputy_address",
+        "table_transforms": {},
         "table_type": "data"
     },
     "deputy_daytime_phonenumbers": {
@@ -240,6 +256,7 @@
             "Deputy No"
         ],
         "source_table_name": "deputy",
+        "table_transforms": {},
         "table_type": "data"
     },
     "deputy_death_notifications": {
@@ -254,6 +271,7 @@
             "Deputy No"
         ],
         "source_table_name": "deputy",
+        "table_transforms": {},
         "table_type": "data"
     },
     "deputy_evening_phonenumbers": {
@@ -267,30 +285,33 @@
             "Deputy No"
         ],
         "source_table_name": "deputy",
+        "table_transforms": {},
         "table_type": "data"
     },
     "deputy_notes": {
         "destination_table_name": "supervision_notes",
         "entity_name": "notes",
         "required_entities": "persons",
-        "source_conditions": "",
+        "source_conditions": {},
         "source_table_additional_columns": [
             "Deputy No"
         ],
         "source_table_name": "deputy_remarks",
+        "table_transforms": {},
         "table_type": "data"
     },
     "deputy_persons": {
         "destination_table_name": "persons",
         "entity_name": "deputies",
         "required_entities": "",
-        "source_conditions": "",
+        "source_conditions": {},
         "source_table_additional_columns": [
             "Deputy No",
             "Stat",
             "Disch Death"
         ],
         "source_table_name": "deputy",
+        "table_transforms": {},
         "table_type": "data"
     },
     "deputy_special_warnings": {
@@ -304,6 +325,7 @@
             "Deputy No"
         ],
         "source_table_name": "deputy",
+        "table_transforms": {},
         "table_type": "data"
     },
     "deputy_violent_warnings": {
@@ -317,6 +339,7 @@
             "Deputy No"
         ],
         "source_table_name": "deputy",
+        "table_transforms": {},
         "table_type": "data"
     },
     "finance_allocation_credits": {
@@ -336,6 +359,7 @@
             "Orig Invoice"
         ],
         "source_table_name": "feeexport",
+        "table_transforms": {},
         "table_type": "data"
     },
     "finance_exemptions": {
@@ -360,6 +384,7 @@
             "Case"
         ],
         "source_table_name": "pat",
+        "table_transforms": {},
         "table_type": "data"
     },
     "finance_invoice_ad": {
@@ -389,6 +414,7 @@
             "Create"
         ],
         "source_table_name": "feeexport",
+        "table_transforms": {},
         "table_type": "data"
     },
     "finance_invoice_non_ad": {
@@ -423,6 +449,7 @@
             "Create"
         ],
         "source_table_name": "feeexport",
+        "table_transforms": {},
         "table_type": "data"
     },
     "finance_ledger_credits": {
@@ -442,6 +469,7 @@
             "Orig Invoice"
         ],
         "source_table_name": "feeexport",
+        "table_transforms": {},
         "table_type": "data"
     },
     "finance_remissions": {
@@ -466,51 +494,56 @@
             "Case"
         ],
         "source_table_name": "pat",
+        "table_transforms": {},
         "table_type": "data"
     },
     "order_deputy": {
         "destination_table_name": "order_deputy",
         "entity_name": "deputies",
         "required_entities": "",
-        "source_conditions": "",
+        "source_conditions": {},
         "source_table_additional_columns": [
             "Deputy No",
             "Stat"
         ],
         "source_table_name": "deputy",
+        "table_transforms": {},
         "table_type": "join"
     },
     "person_caseitem": {
         "destination_table_name": "person_caseitem",
         "entity_name": "cases",
         "required_entities": "",
-        "source_conditions": "",
+        "source_conditions": {},
         "source_table_additional_columns": [
             ""
         ],
         "source_table_name": "",
+        "table_transforms": {},
         "table_type": "join"
     },
     "person_task": {
         "destination_table_name": "person_task",
         "entity_name": "tasks",
         "required_entities": "",
-        "source_conditions": "",
+        "source_conditions": {},
         "source_table_additional_columns": [
             ""
         ],
         "source_table_name": "",
+        "table_transforms": {},
         "table_type": "join"
     },
     "person_warning": {
         "destination_table_name": "person_warning",
         "entity_name": "warnings",
         "required_entities": "",
-        "source_conditions": "",
+        "source_conditions": {},
         "source_table_additional_columns": [
             ""
         ],
         "source_table_name": "",
+        "table_transforms": {},
         "table_type": "join"
     },
     "supervision_level_log": {
@@ -531,6 +564,7 @@
             "Ord Stat"
         ],
         "source_table_name": "order",
+        "table_transforms": {},
         "table_type": "data"
     },
     "tasks": {
@@ -551,17 +585,19 @@
             "Status"
         ],
         "source_table_name": "sup_activity",
+        "table_transforms": {},
         "table_type": "data"
     },
     "visits": {
         "destination_table_name": "visits",
         "entity_name": "visits",
         "required_entities": "",
-        "source_conditions": "",
+        "source_conditions": {},
         "source_table_additional_columns": [
             "Case"
         ],
         "source_table_name": "repvis",
+        "table_transforms": {},
         "table_type": "data"
     }
 }
