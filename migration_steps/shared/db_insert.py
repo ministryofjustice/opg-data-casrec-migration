@@ -10,7 +10,7 @@ current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
 
 from decorators import timer
-from db_helpers import replace_with_sql_friendly_chars
+from db_helpers import replace_with_sql_friendly_chars, replace_with_sql_friendly_chars_single
 import logging
 import helpers
 import pandas as pd
@@ -161,9 +161,11 @@ class InsertData:
 
         for i, row in enumerate(df.values.tolist()):
 
-            row = [str(x) for x in row]
-            row = replace_with_sql_friendly_chars(row_as_list=row)
-            row = ["NULL" if str(x) == "" and self.empty_string_to_null else f"'{str(x)}'" for x in row]
+            if self.empty_string_to_null:
+                row = replace_with_sql_friendly_chars(row_as_list=row)
+                row = ["NULL" if x == "" else f"'{x}'" for x in row]
+            else:
+                row = ["NULL" if x is None else f"'{replace_with_sql_friendly_chars_single(x)}'" for x in row]
 
             single_row = ", ".join(row)
 

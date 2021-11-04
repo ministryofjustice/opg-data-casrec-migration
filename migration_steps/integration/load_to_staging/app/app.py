@@ -5,8 +5,6 @@ from pathlib import Path
 
 from clear_database import empty_target_tables
 from move import generate_inserts, completed_tables
-from setup import insert_base_data
-
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
@@ -86,12 +84,6 @@ def clear_tables():
     result = "empty_target_tables complete"
 
 
-def base_data():
-    insert_base_data(db_config=db_config, db_engine=target_db_engine)
-    global result
-    result = "base_data complete"
-
-
 def inserts():
     generate_inserts(
         db_config=db_config,
@@ -137,7 +129,7 @@ def main(clear, team):
     )
     log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
-    work = [base_data, inserts]
+    work = [inserts]
 
     if clear:
         work.insert(0, clear_tables)
