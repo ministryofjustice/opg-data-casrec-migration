@@ -111,12 +111,12 @@
             "entity": ""
         },
         "transform_casrec": {
-            "casrec_table": "pat",
-            "casrec_column_name": "Award Date",
-            "alias": "Award Date",
-            "requires_transformation": "fee_reduction_start_date",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
             "lookup_table": "",
-            "default_value": "",
+            "default_value": "2021-04-01",
             "calculated": "",
             "additional_columns": ""
         },
@@ -138,7 +138,7 @@
         "transform_casrec": {
             "casrec_table": "pat",
             "casrec_column_name": "Award Date",
-            "alias": "Award Date 1",
+            "alias": "Award Date",
             "requires_transformation": "fee_reduction_end_date",
             "lookup_table": "",
             "default_value": "",
