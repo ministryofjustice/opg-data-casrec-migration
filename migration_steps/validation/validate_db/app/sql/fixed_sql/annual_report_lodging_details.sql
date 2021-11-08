@@ -24,6 +24,7 @@ INSERT INTO casrec_csv.exceptions_annual_report_lodging_details(
         ) AS bankstatementdeadlinedate,
         (CASE
             WHEN (
+                (account."Rcvd Date" != '') OR
                 (account."Rcvd Date1" != '') OR
                 (account."Rcvd Date2" != '') OR
                 (account."Rcvd Date3" != '') OR
