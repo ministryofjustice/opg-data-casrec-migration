@@ -44,34 +44,6 @@
 			"table_name": "bond_providers",
 			"entity": ""
 		},
-		"oneoffvalue": {
-			"is_pk": "",
-			"fk_parents": "",
-			"data_type": "Decimal",
-			"table_name": "bond_providers",
-			"entity": ""
-		},
-		"telephonenumber": {
-			"is_pk": "",
-			"fk_parents": "",
-			"data_type": "str",
-			"table_name": "bond_providers",
-			"entity": ""
-		},
-		"emailaddress": {
-			"is_pk": "",
-			"fk_parents": "",
-			"data_type": "str",
-			"table_name": "bond_providers",
-			"entity": ""
-		},
-		"webaddress": {
-			"is_pk": "",
-			"fk_parents": "",
-			"data_type": "str",
-			"table_name": "bond_providers",
-			"entity": ""
-		},
 		"uid": {
 			"is_pk": "",
 			"fk_parents": "",

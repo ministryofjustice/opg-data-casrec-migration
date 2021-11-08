@@ -51,14 +51,14 @@ def main():
         "invoice": [
             {"csv": "invoice", "identifier": "client", "assert_on_list": True},
         ],
-        # "tasks": [
-        #     {
-        #         "csv": "tasks",
-        #         "identifier": "client",
-        #         "assert_on_list": True,
-        #         "list_in_field": "tasks"
-        #     },
-        # ],
+        "tasks": [
+            {
+                "csv": "tasks",
+                "identifier": "client",
+                "assert_on_list": True,
+                "list_in_field": "tasks",
+            },
+        ],
     }
 
     api_tests = ApiTests()
@@ -86,9 +86,7 @@ def main():
 
     if api_tests.failed:
         print("Tests Failed")
-        # Changing this whilst we are doing first part of deduplication as expecting failures on pre
-        if environment in ["local", "development"]:
-            exit(1)
+        exit(1)
     else:
         print("Tests Passed")
 

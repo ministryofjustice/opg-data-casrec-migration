@@ -25,8 +25,7 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
                     NULLIF(account."Rcvd Date5", ''),
                     NULLIF(account."Rcvd Date6", '')
                 )
-            AS date) AS receiveddate,
-            CAST(NULLIF(account."Review Date", '') AS date) AS reviewdate
+            AS date) AS receiveddate
         FROM
             casrec_csv.account
      ) as csv_data
@@ -36,8 +35,7 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
             annual_report_logs.reportingperiodenddate AS reportingperiodenddate,
             annual_report_logs.reportingperiodstartdate AS reportingperiodstartdate,
             annual_report_logs.duedate AS duedate,
-            annual_report_logs.receiveddate AS receiveddate,
-            annual_report_logs.reviewdate AS reviewdate
+            annual_report_logs.receiveddate AS receiveddate
         FROM
             {target_schema}.annual_report_logs
      ) as sirius_data

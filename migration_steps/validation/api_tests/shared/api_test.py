@@ -494,9 +494,9 @@ class ApiTests:
             self.api_log(
                 f"""Expected: {expected}
                 Actual: {actual}""",
-                True,
+                False,
             )
-            self.failed = False
+            self.failed = True
 
     def remove_dynamic_keys(self, dict, keys):
         for key in keys:
