@@ -76,4 +76,7 @@ def pytest_sessionfinish():
     dirname = os.path.dirname(__file__)
 
     file_name = "tested_fields.json"
-    os.remove(f"{dirname}/{file_name}")
+    try:
+        os.remove(f"{dirname}/{file_name}")
+    except FileNotFoundError:
+        pass
