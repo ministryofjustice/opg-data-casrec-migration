@@ -19,9 +19,9 @@
             "percentage_complete": 14
         },
         "client_persons": {
-            "total_rows": 35,
+            "total_rows": 36,
             "total_unmapped": 1,
-            "total_mapped": 34,
+            "total_mapped": 35,
             "percentage_complete": 97
         },
         "client_phonenumbers": {
@@ -241,9 +241,9 @@
             "total_complete": 1
         },
         "fields": {
-            "total_fields": 398,
+            "total_fields": 399,
             "total_unmapped": 63,
-            "total_mapped": 335,
+            "total_mapped": 336,
             "percentage_complete": 84
         }
     }
