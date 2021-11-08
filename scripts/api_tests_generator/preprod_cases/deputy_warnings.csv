@@ -1,0 +1,5 @@
+endpoint,entity_ref,json_locator,test_purpose
+/api/v1/persons/{id}/warnings,11822229,["warningType"],special_interest
+/api/v1/persons/{id}/warnings,13424487,["warningText"],special_interest
+/api/v1/persons/{id}/warnings,11276801,["warningType"],violence
+/api/v1/persons/{id}/warnings,11701181,["warningText"],violence

@@ -22,162 +22,6 @@ db_conn_string = config.get_db_connection_string("target")
 engine = create_engine(db_conn_string)
 response_dir = "responses"
 
-clients_headers = [
-    '["clientAccommodation"]["handle"]',
-    '["salutation"]',
-    '["firstname"]',
-    '["surname"]',
-]
-
-deputies_headers = [
-    '["correspondenceByPost"]',
-    '["correspondenceByPhone"]',
-    '["correspondenceByEmail"]',
-    '["correspondenceByWelsh"]',
-    '["specialCorrespondenceRequirements"]["audioTape"]',
-    '["specialCorrespondenceRequirements"]["largePrint"]',
-    '["specialCorrespondenceRequirements"]["hearingImpaired"]',
-    '["specialCorrespondenceRequirements"]["spellingOfNameRequiresCare"]',
-    '["deputyStatus"]',
-    '["phoneNumber"]',
-    '["phoneNumbers"][0]["phoneNumber"]',
-    '["phoneNumbers"][0]["type"]',
-    '["mobileNumber"]',
-    '["email"]',
-    '["dob"]',
-    '["dateOfDeath"]',
-    '["salutation"]',
-    '["firstname"]',
-    '["surname"]',
-    '["otherNames"]',
-    '["addressLine1"]',
-    '["addressLine2"]',
-    '["addressLine3"]',
-    '["town"]',
-    '["county"]',
-    '["postcode"]',
-    '["country"]',
-    '["isAirmailRequired"]',
-]
-
-orders_headers = [
-    '["client"]["firstname"]',
-    '["client"]["surname"]',
-    '["client"]["dob"]',
-    '["client"]["addressLine1"]',
-    '["client"]["postcode"]',
-    '["orderDate"]',
-    '["orderIssueDate"]',
-    '["orderStatus"]["handle"]',
-    '["deputies"][0]["deputy"]["firstname"]',
-    '["deputies"][0]["deputy"]["surname"]',
-    '["orderSubtype"]["handle"]',
-    '["orderExpiryDate"]',
-]
-
-bonds_headers = [
-    '["securityBond"]',
-    '["bond"]["requiredBondAmount"]',
-    '["bond"]["amountTaken"]',
-    '["bond"]["referenceNumber"]',
-    '["bond"]["renewalDate"]',
-    '["bond"]["dischargeDate"]',
-    '["bond"]["companyName"]',
-    '["bond"]["status"]["handle"]',
-    '["bond"]["bondProvider"]["name"]',
-]
-
-supervision_level_headers = [
-    '["latestSupervisionLevel"]["supervisionLevel"]["handle"]',
-    '["latestSupervisionLevel"]["assetLevel"]["handle"]',
-]
-
-warnings_headers = ['["warningType"]', '["warningText"]']
-
-crec_headers = [
-    '["riskScore"]',
-]
-
-deputy_clients_headers = [
-    '["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"]'
-]
-
-deputy_orders_headers = [
-    '["statusOnCaseOverride"]["handle"]',
-    '["relationshipToClient"]["handle"]',
-]
-
-deputy_client_count = []
-
-visits_headers = [
-    '[0]["visitType"]["handle"]',
-    '[0]["visitSubType"]["handle"]',
-    '[0]["whoToVisit"]',
-    '[0]["visitDueDate"]',
-    '[0]["visitCreatedDate"]',
-    '[0]["visitCancellationReason"]',
-    '[0]["visitOutcome"]',
-    '[0]["visitCompletedDate"]',
-]
-
-reports_headers = ['[0]["status"]["handle"]', '[0]["reviewStatus"]["handle"]']
-
-deputy_death_notifications_headers = [
-    '["proofOfDeathReceived"]',
-    '["dateDeathCertificateReceived"]',
-    '["dateLetterSentOut"]',
-    '["notifiedBy"]["handle"]',
-    '["notificationMethod"]',
-    '["person"]["dateOfDeath"]',
-    '["dateNotified"]',
-]
-
-client_death_notifications_headers = [
-    '["proofOfDeathReceived"]',
-    '["dateDeathCertificateReceived"]',
-    '["dateLetterSentOut"]',
-    '["notifiedBy"]["handle"]',
-    '["notificationMethod"]',
-    '["person"]["dateOfDeath"]',
-    '["dateNotified"]',
-]
-
-invoices_headers = [
-    '["feeType"]',
-    '["reference"]',
-    '["raisedDate"]',
-    '["amount"]',
-    '["amountOutstanding"]',
-    '["status"]["handle"]',
-    '["sopStatus"]["label"]',
-]
-
-orders_updated_cases = [
-    '["client"]["firstname"]',
-    '["client"]["surname"]',
-    '["client"]["dob"]',
-    '["client"]["addressLine1"]',
-    '["client"]["postcode"]',
-    '["orderDate"],["orderIssueDate"]',
-    '["orderStatus"]["handle"]',
-    '["deputies"][0]["deputy"]["firstname"]',
-    '["deputies"][0]["deputy"]["surname"]',
-    '["orderSubtype"]["handle"]',
-    '["orderExpiryDate"]',
-]
-
-deputy_fee_payer_headers = ['["feePayer"]']
-
-tasks_headers = [
-    '["assignee"]["id"]',
-    '["type"]',
-    '["status"]',
-    '["dueDate"]',
-    '["activeDate"]',
-    '["createdTime"]',
-    '["description"]',
-]
-
 csvs = [
     "deputy_fee_payer",
     "clients",
@@ -190,22 +34,23 @@ csvs = [
     "supervision_level",
     "client_death_notifications",
     "deputy_death_notifications",
-    "warnings",
+    "deputy_warnings",
+    "client_warnings",
     "crec",
     "visits",
     "reports",
-    "invoices",
+    "invoice",
     "tasks",
 ]
 
 search_headers = [
     "endpoint",
     "entity_ref",
+    "json_locator",
     "test_purpose",
-    "full_check",
 ]
 
-entities_of_type_list = ["warnings", "invoices", "tasks"]
+entities_of_type_list = ["deputy_warnings", "client_warnings", "invoices", "tasks"]
 
 
 def get_session(base_url, user, password):
@@ -224,6 +69,7 @@ def create_a_session(base_url, password):
     env_users = {
         "local": "case.manager@opgtest.com",
         "development": "case.manager@opgtest.com",
+        "preqa": "opg+siriussmoketest@digital.justice.gov.uk",
         "preproduction": "opg+siriussmoketest@digital.justice.gov.uk",
         "qa": "opg+siriussmoketest@digital.justice.gov.uk",
         "production": "opg+siriussmoketest@digital.justice.gov.uk",
@@ -261,7 +107,7 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
     if csv_type in [
         "clients",
         "client_death_notifications",
-        "warnings",
+        "client_warnings",
         "crec",
         "visits",
         "reports",
@@ -281,6 +127,7 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
         "bonds",
         "supervision_level",
         "deputies",
+        "deputy_warnings",
         "deputy_clients",
         "deputy_orders",
         "deputy_death_notifications",
@@ -295,6 +142,7 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
                 if csv_type in [
                     "deputies",
                     "deputy_clients",
+                    "deputy_warnings",
                     "deputy_death_notifications",
                 ]:
                     deputies = get_deputy_entity_ids(entity_id, conn)
@@ -430,10 +278,8 @@ def generate_csv_headers_line(search_headers, csv):
     header_line = ""
     for search_header in search_headers:
         header_line = header_line + search_header + ","
-    for entity_header in eval(f"{csv}_headers"):
-        header_line = header_line + entity_header + ","
-    header_line = header_line[:-1]
-    header_line = header_line + "\n"
+    header_line = header_line + "api_response\n"
+
     return header_line
 
 
@@ -464,7 +310,7 @@ def get_list_of_json_blocks_from_response(csv, response_as_json):
 
 
 def get_line_structure_object_from_json_blocks(
-    json_blocks_to_loop_through, row, line_structure, csv
+    json_blocks_to_loop_through, row, line_structure, csv, json_locator
 ):
     for json_block in json_blocks_to_loop_through:
         for search_header in search_headers:
@@ -476,23 +322,23 @@ def get_line_structure_object_from_json_blocks(
             except Exception:
                 # This handles adding the first occurrence
                 line_structure[search_header] = row_value_from_input_csv + "|"
-        for json_key in eval(f"{csv}_headers"):
-            json_value = f"json_block{json_key}"
-            rationalised_json_value = rationalise_json_value(json_value, json_block)
-            try:
-                line_structure[json_key] = (
-                    line_structure[json_key] + rationalised_json_value + "|"
-                )
-            except Exception:
-                # This handles adding the first occurrence
-                line_structure[json_key] = rationalised_json_value + "|"
+
+        json_value = f"json_block{json_locator}"
+        rationalised_json_value = rationalise_json_value(json_value, json_block)
+        try:
+            line_structure["api_result"] = (
+                line_structure["api_result"] + rationalised_json_value + "|"
+            )
+        except Exception:
+            # This handles adding the first occurrence
+            line_structure["api_result"] = rationalised_json_value + "|"
 
     return line_structure
 
 
 def deduplicate_and_clean(line_structure, csv):
     all_headers = [
-        {"dedupe": False, "headers": eval(f"{csv}_headers")},
+        {"dedupe": False, "headers": ["api_result"]},
         {"dedupe": True, "headers": search_headers},
     ]
 
@@ -530,9 +376,10 @@ def main():
     sirius_app_session = create_a_session(base_url, password)
 
     for csv in csvs:
+        print(f"STARTING - {csv}")
         full_header_line = generate_csv_headers_line(search_headers, csv)
 
-        with open(f"{response_dir}/{csv}_output.csv", "w") as csv_out_file:
+        with open(f"{response_dir}/{csv}.csv", "w") as csv_out_file:
             csv_out_file.write(full_header_line)
 
         input_csv_data = pd.read_csv(f"{csv}.csv", dtype=str)
@@ -540,6 +387,7 @@ def main():
         for index, row in input_csv_data.iterrows():
             endpoint = row["endpoint"]
             entity_ref = row["entity_ref"]
+            json_locator = row["json_locator"]
 
             print(f"Case Reference: {entity_ref}")
             entity_ids = get_entity_ids(csv, entity_ref, engine, sirius_app_session)
@@ -553,13 +401,13 @@ def main():
                     csv, response_as_json
                 )
                 line_structure = get_line_structure_object_from_json_blocks(
-                    json_blocks_from_response, row, line_structure, csv
+                    json_blocks_from_response, row, line_structure, csv, json_locator
                 )
 
             line_structure = deduplicate_and_clean(line_structure, csv)
             line = convert_structure_to_line(line_structure)
 
-            with open(f"responses/{csv}_output.csv", "a") as csv_outfile:
+            with open(f"responses/{csv}.csv", "a") as csv_outfile:
                 csv_outfile.write(line)
 
 

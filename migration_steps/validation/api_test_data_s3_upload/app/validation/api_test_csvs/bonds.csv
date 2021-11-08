@@ -1,0 +1,4 @@
+endpoint,entity_ref,json_locator,test_purpose,api_response
+/api/v1/orders/{id},10000884,["securityBond"],dev_api_test,True
+/api/v1/orders/{id},10001403,["bond"]["requiredBondAmount"],dev_api_test,20000|30000|30000
+/api/v1/orders/{id},10001668,["bond"]["amountTaken"],dev_api_test,30000

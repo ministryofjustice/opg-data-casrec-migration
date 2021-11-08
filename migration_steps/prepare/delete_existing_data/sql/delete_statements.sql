@@ -333,14 +333,6 @@ DELETE FROM document_pages a
 USING deletions.deletions_deputy_document_pages b
 WHERE a.id = b.id;
 
-DELETE FROM annual_report_logs a
-USING deletions.deletions_client_annual_report_logs b
-WHERE a.id = b.id;
-
-DELETE FROM annual_report_logs a
-USING deletions.deletions_deputy_annual_report_logs b
-WHERE a.id = b.id;
-
 DELETE FROM hold_period a
 USING deletions.deletions_client_hold_period b
 WHERE a.id = b.id;
@@ -415,6 +407,14 @@ WHERE a.id = b.id;
 
 DELETE FROM supervision_notes a
 USING deletions.deletions_deputy_supervision_notes b
+WHERE a.id = b.id;
+
+DELETE FROM annual_report_logs a
+USING deletions.deletions_client_annual_report_logs b
+WHERE a.id = b.id;
+
+DELETE FROM annual_report_logs a
+USING deletions.deletions_deputy_annual_report_logs b
 WHERE a.id = b.id;
 
 DELETE FROM powerofattorney_person a

@@ -1,3 +1,0 @@
-endpoint,entity_ref,test_purpose,full_check,["proofOfDeathReceived"],["dateDeathCertificateReceived"],["dateLetterSentOut"],["notifiedBy"]["handle"],["notificationMethod"],["person"]["dateOfDeath"],["dateNotified"]
-/api/v1/persons/{id}/death-notification,10076428,dev_api_tests,FALSE,,,08/04/2019,EXECUTOR,Letter,31/12/2018,28/03/2019
-/api/v1/persons/{id}/death-notification,10264188,dev_api_tests,FALSE,,,09/05/2017,DEPUTY,Letter,16/04/2017,24/04/2017

@@ -1,9 +1,0 @@
-endpoint,entity_ref,test_purpose,full_check
-/api/v1/persons/{id}/warnings,10072168,no_debt_warnings,FALSE
-/api/v1/persons/{id}/warnings,10094855,no_debt_warnings,FALSE
-/api/v1/persons/{id}/warnings,13441605,saar_warning,FALSE
-/api/v1/persons/{id}/warnings,13441663,saar_warning,FALSE
-/api/v1/persons/{id}/warnings,13240496,special_interest_warning,FALSE
-/api/v1/persons/{id}/warnings,13241050,special_interest_warning,FALSE
-/api/v1/persons/{id}/warnings,12757221,violent_warning,FALSE
-/api/v1/persons/{id}/warnings,12776870,violent_warning,FALSE

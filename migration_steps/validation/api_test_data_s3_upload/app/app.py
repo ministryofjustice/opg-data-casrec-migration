@@ -44,13 +44,12 @@ def main():
 
     s3 = get_s3_session(session, environment, host, ci=ci, account=account)
 
-    paths = ["validation/responses", "validation/csvs"]
-    for path in paths:
-        for file in os.listdir(current_path / path):
-            file_path = f"{current_path}/{path}/{file}"
-            s3_file_path = f"{path}/{file}"
-            if file.endswith(".json") or file.endswith(".csv"):
-                upload_file(bucket_name, file_path, s3, log, s3_file_path)
+    path = "validation/api_test_csvs"
+    for file in os.listdir(current_path / path):
+        file_path = f"{current_path}/{path}/{file}"
+        s3_file_path = f"{path}/{file}"
+        if file.endswith(".json") or file.endswith(".csv"):
+            upload_file(bucket_name, file_path, s3, log, s3_file_path)
 
     # uncomment for troubleshooting
     # s3_files = get_list_of_s3_files(bucket_name, s3, paths)

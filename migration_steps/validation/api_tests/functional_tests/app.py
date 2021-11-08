@@ -30,6 +30,57 @@ def get_post_data(entity):
                 "case_references": ["10194709"],
             },
         ],
+        # "clients": [
+        #     {
+        #         "title":           "Create New Client",
+        #         "data": {
+        #             "salutation": "",
+        #             "firstname": "Bob",
+        #             "middlenames": "",
+        #             "surname": "Bobbity",
+        #             "dob": "",
+        #             "previousNames": "",
+        #             "email": "bobbobity@gmail.com",
+        #             "caseRecNumber": "00000000",
+        #             "clientAccommodation": {
+        #                 "handle": "HOSTEL",
+        #                 "label": "Hostel",
+        #                 "deprecated": False
+        #             },
+        #             "medicalCondition": "",
+        #             "memorablePhrase": "",
+        #             "maritalStatus": "Divorced",
+        #             "clientStatus": {
+        #                 "handle": "ACTIVE",
+        #                 "label": "Active"
+        #             },
+        #             "statusDate": "",
+        #             "correspondenceByPost": True,
+        #             "correspondenceByEmail": "",
+        #             "correspondenceByPhone": "",
+        #             "correspondenceByWelsh": "",
+        #             "addressLine1": "",
+        #             "addressLine2": "",
+        #             "addressLine3": "",
+        #             "town": "",
+        #             "postcode": "",
+        #             "county": "",
+        #             "country": "",
+        #             "isAirmailRequired": "",
+        #             "phoneNumber": "07412999999",
+        #             "interpreterRequired": "",
+        #             "specialCorrespondenceRequirements": {
+        #                 "audioTape": True,
+        #                 "largePrint": "",
+        #                 "hearingImpaired": "",
+        #                 "spellingOfNameRequiresCare": ""
+        #             }
+        #         },
+        #         "url":             "clients",
+        #         "expected_status": 201,
+        #         "source": None
+        #     },
+        # ],
         # "death": [
         #     {
         #         "title": "Create New Death",

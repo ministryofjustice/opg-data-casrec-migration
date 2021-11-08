@@ -1,1 +1,1 @@
-endpoint,entity_ref,test_purpose,full_check/api/v1/orders/{id},10000884,dev_api_tests,FALSE/api/v1/orders/{id},10001403,dev_api_tests,FALSE/api/v1/orders/{id},10001668,dev_api_tests,FALSE
+endpoint,entity_ref,json_locator,test_purpose/api/v1/orders/{id},10000884,["securityBond"],dev_api_test/api/v1/orders/{id},10001403,["bond"]["requiredBondAmount"],dev_api_test/api/v1/orders/{id},10001668,["bond"]["amountTaken"],dev_api_test
