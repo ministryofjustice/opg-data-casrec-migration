@@ -82,4 +82,5 @@ def insert_annual_report_logs(db_config, target_db, mapping_file):
 
         except Exception as e:
             log.error(f"Unexpected error: {e}")
+            log.exception(e)
             os._exit(1)
