@@ -16,14 +16,14 @@ from transform_data.apply_datatypes import apply_datatypes
 log = logging.getLogger('root')
 
 
-def _apply_mapping(df: pd.DataFrame, mapping: list, local_vars: dict={}) -> pd.DataFrame:
+def apply_table_transformation(df: pd.DataFrame, mapping: dict, local_vars: dict={}) -> pd.DataFrame:
     """
     Apply default columns from mapping, or check criteria in mapping and set
     output columns if criteria are met
 
     :param df: dataframe to transform in place
-    :param mapping: dict; dict object, which will either set default_cols
-        or specify criteria to test against the dataframe + output columns to set if met
+    :param mapping: dict; will either set default_cols, or specify criteria to test against the
+        dataframe + output columns to set if criteria met
     :param local_vars: dict; local variables which will be interpolated into the
         criteria in the mappings
     :return: dataframe
@@ -52,7 +52,7 @@ def _apply_mapping(df: pd.DataFrame, mapping: list, local_vars: dict={}) -> pd.D
 
         # find matching rows and set column values
         output_cols = mapping['output_cols']
-        log.verbose(f'Table transform query: {query} => {output_cols}')
+        log.debug(f'Table transform query: {query} => {output_cols}')
 
         try:
             df.loc[df.eval(query, local_dict=local_vars), output_cols.keys()] = output_cols.values()
@@ -98,7 +98,7 @@ for date_col in _all_null_date_cols + ['c_end_date']:
 # output_cols: columns to set on a row with specified values if criteria are met
 #
 # any '@' variables in these criteria must be set in the local_vars dict and
-# passed into the _apply_mappings() function
+# passed into the apply_table_transformation() function
 ANNUAL_REPORT_LOGS_STATUS_MAPPINGS = [
     {
         'default_cols': {
@@ -227,7 +227,8 @@ ANNUAL_REPORT_LOGS_STATUS_MAPPINGS = [
 
 def _get_annual_report_logs_local_vars() -> pd.DataFrame:
     """
-    Get variables which are to be interpolated into mappings when constructing queries on the dataframe.
+    Get variables which are to be interpolated into mappings when constructing queries on an
+    annual_report_logs dataframe.
 
     :return: dict of local variables to interpolate into mapping criteria queries
     """
@@ -250,19 +251,19 @@ def _get_annual_report_logs_local_vars() -> pd.DataFrame:
 
 def _get_annual_report_lodging_details_local_vars() -> pd.DataFrame:
     """
-    Use params['source_cols'] as source data to generate status values for columns in
-    params['target_cols'].
+    Get variables which are to be interpolated into mappings when constructing queries on an
+    annual_report_lodging_details dataframe.
 
-    :param df: dataframe for annual_report_lodging_details table
-    :param params: dict in format
-        {'source_cols': <str[] of source column names>, 'target_cols': <str[] of target column names>}
+    :return: dict of local variables to interpolate into mapping criteria queries
     """
     return {}
 
 
-# map from function names (as used in mapping spreadsheets) to transform function and
-# datatypes to apply
-TABLE_TRANSFORMS = {
+# definition of transforms which may be applied to tables
+#
+# this maps from transform names (as used in mapping spreadsheets) to datatypes, mappings
+# and local variables to be applied
+TRANSFORMS = {
     'set_annual_report_logs_status': {
         'datatypes': _aliased_column_datatypes,
         'mappings': ANNUAL_REPORT_LOGS_STATUS_MAPPINGS,
@@ -280,17 +281,18 @@ def process_table_transformations(df: pd.DataFrame, table_transforms: dict) -> p
     """
     Apply table-level transforms to a dataframe
 
-    :param df: dataframe to apply table transforms to
-    :param table_transforms: dict; map from function name to parameters
-        for that transform; the transform is composed of an (optional) dict
-        of datatypes to apply to the dataframe, and (mandatory) mappings list and
-        local_vars dict
+    :param df: dataframe to apply table-level transforms to
+    :param table_transforms: dict; Table-level transforms to be applied to the table. This is a
+        map from transform name to parameters for that transform. The parameters are
+        primarily informational and used to define the columns required in the initial
+        dataframe and hint at which columns will be affected by it, and are not (currently)
+        used during transformation.
     :return: dataframe after transforms have been applied
     """
-    for function_name, params in table_transforms.items():
-        transform = TABLE_TRANSFORMS.get(function_name)
+    for transform_name, _ in table_transforms.items():
+        transform = TRANSFORMS.get(transform_name)
         if transform is None:
-            raise KeyError(f'No transform function named {function_name} exists')
+            raise KeyError(f'No table transform named {transform_name} exists')
 
         # apply datatypes to df (if specified); datetimes which fail to parse
         # are coerced to NaT
@@ -298,12 +300,12 @@ def process_table_transformations(df: pd.DataFrame, table_transforms: dict) -> p
             df = apply_datatypes(transform['datatypes'], df, datetime_errors='coerce')
 
         # call mapping function
-        log.verbose(f'Applying table transform {function_name}')
+        log.debug(f'Applying table transform {transform_name}')
 
         mappings = transform['mappings']
         local_vars = transform['local_vars']
 
         for mapping in mappings:
-            df = _apply_mapping(df, mapping, local_vars)
+            df = apply_table_transformation(df, mapping, local_vars)
 
     return df
