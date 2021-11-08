@@ -78,13 +78,6 @@ def perform_transformations(
                 empty_data_frame_type="chunk with simple transformations applied"
             )
 
-    if table_transforms:
-        log.debug("Applying table transformations")
-        final_df = process_table_transformations(df=final_df, table_transforms=table_transforms)
-        if len(final_df) == 0:
-            log.debug(f"No data left after table transformations")
-            raise EmptyDataFrame(empty_data_frame_type="chunk with table transformations applied")
-
     if len(required_columns) > 0:
         log.debug("Applying default columns")
         final_df = process_default_columns.add_required_columns(
@@ -114,6 +107,19 @@ def perform_transformations(
             log.debug(f"No data left after lookup tables")
             raise EmptyDataFrame(empty_data_frame_type="chunk with lookups applied")
 
+    if sirius_details:
+        log.debug("Applying datatypes")
+        final_df = apply_datatypes(mapping_details=sirius_details, df=final_df)
+        if len(final_df) == 0:
+            raise EmptyDataFrame(empty_data_frame_type="chunk with datatypes applied")
+
+    if table_transforms:
+        log.debug("Applying table transformations")
+        final_df = process_table_transformations(df=final_df, table_transforms=table_transforms)
+        if len(final_df) == 0:
+            log.debug(f"No data left after table transformations")
+            raise EmptyDataFrame(empty_data_frame_type="chunk with table transformations applied")
+
     if "id" not in source_data_df.columns.values.tolist():
         log.debug("Applying unique id")
         final_df = process_unique_id.add_unique_id(
@@ -121,11 +127,5 @@ def perform_transformations(
         )
         if len(final_df) == 0:
             raise EmptyDataFrame(empty_data_frame_type="chunk with unique IDs applied")
-
-    if sirius_details:
-        log.debug("Applying datatypes")
-        final_df = apply_datatypes(mapping_details=sirius_details, df=final_df)
-        if len(final_df) == 0:
-            raise EmptyDataFrame(empty_data_frame_type="chunk with datatypes applied")
 
     return final_df
