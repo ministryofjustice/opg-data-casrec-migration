@@ -279,7 +279,30 @@ def case_table_transforms_annual_report_logs_pending_staff_preselected():
 def test_table_transforms_annual_report_logs(test_data, expected_data):
     test_df = pd.DataFrame(test_data)
 
-    actual_df = process_table_transformations(test_df, {'set_annual_report_logs_status': {}})
+    transforms = {
+        'set_annual_report_logs_status': {
+            'source_cols': [
+                'Rev Stat',
+                'End Date',
+                'Lodge Date',
+                'Rcvd Date',
+                'Rcvd Date1',
+                'Rcvd Date2',
+                'Rcvd Date3',
+                'Rcvd Date4',
+                'Rcvd Date5',
+                'Rcvd Date6',
+                'Review Date',
+                'Next Yr'
+            ],
+            'target_cols': [
+                'status',
+                'reviewstatus'
+            ]
+        }
+    }
+
+    actual_df = process_table_transformations(test_df, transforms)
 
     for _, row in actual_df.iterrows():
         for col, value in expected_data.items():
