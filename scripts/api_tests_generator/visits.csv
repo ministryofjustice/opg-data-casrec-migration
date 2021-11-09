@@ -1,1 +1,1 @@
-endpoint,entity_ref,json_locator,test_purpose/api/v1/clients/{id}/visits,10003409,[0]["visitType"]["handle"],dev_api_tests/api/v1/clients/{id}/visits,10005237,[0]["visitSubType"]["handle"],dev_api_tests/api/v1/clients/{id}/visits,10009307,[0]["whoToVisit"],dev_api_tests
+endpoint,entity_ref,json_locator,test_purpose/api/v1/clients/{id}/visits,10003409,["visitType"]["handle"],dev_api_tests/api/v1/clients/{id}/visits,10005237,["visitSubType"]["handle"],dev_api_tests/api/v1/clients/{id}/visits,10009307,["whoToVisit"]["label"],dev_api_tests

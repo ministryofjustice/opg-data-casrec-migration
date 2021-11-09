@@ -46,7 +46,7 @@ def main():
             {"csv": "deputy_warnings", "identifier": "deputy", "assert_on_list": True},
         ],
         "crec": [{"csv": "crec", "identifier": "client"},],
-        "visits": [{"csv": "visits", "identifier": "client"},],
+        "visits": [{"csv": "visits", "identifier": "client", "assert_on_list": True},],
         "reporting": [{"csv": "reports", "identifier": "client"},],
         "invoice": [
             {"csv": "invoice", "identifier": "client", "assert_on_list": True},
