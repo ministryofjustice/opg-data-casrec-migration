@@ -126,7 +126,9 @@ def apply_table_transformation(df: pd.DataFrame, mapping: dict, local_vars: dict
         log.debug(f'Table transform query: {query} => {output_cols}')
 
         try:
-            df.loc[df.eval(query, local_dict=local_vars), output_cols.keys()] = output_cols.values()
+            # cast to list is required as values() returns a dict view which is not treated as expected
+            # by pandas
+            df.loc[df.eval(query, local_dict=local_vars), list(output_cols)] = list(output_cols.values())
         except pd.core.computation.ops.UndefinedVariableError as e:
             log.error('ERROR creating query for table transform; likely missing local_vars key')
             raise(e)
