@@ -30,9 +30,9 @@ _all_date_cols = [
 def _make_test_data():
     data = {}
     for col in _all_date_cols:
-        data[col] = ['']
-    data['c_rev_stat'] = ['']
-    data['c_next_yr'] = ['']
+        data[col] = [None]
+    data['c_rev_stat'] = [None]
+    data['c_next_yr'] = [None]
     return data
 
 def case_table_transforms_annual_report_logs_pending_no_review():
