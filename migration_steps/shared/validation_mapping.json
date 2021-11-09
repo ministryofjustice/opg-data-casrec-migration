@@ -771,7 +771,7 @@
         "casrec": {
             "from_table": "remarks",
             "transform": {
-                "description": "NULLIF({col}, 'no description migrated')"
+                "description": "CASE WHEN {col} = '' THEN 'no description migrated' ELSE {col} END"
             },
             "joins": [
                 "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.remarks.\"Case\""
