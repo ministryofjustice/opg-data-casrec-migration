@@ -34,10 +34,10 @@ _all_unset_date_cols = _rcvd_date_cols + [
 ]
 
 # map of date column names to data type, so we can apply correct datatypes
-# to dates for the purpose of doing comparisons below
+# for the purpose of doing comparisons below
 _aliased_column_datatypes = {
-    'c_next_yr': {'data_type': 'str'},
-    'c_rev_stat': {'data_type': 'str'}
+    'c_next_yr': {'data_type': 'string'},
+    'c_rev_stat': {'data_type': 'string'}
 }
 for date_col in _all_unset_date_cols + ['c_end_date']:
     _aliased_column_datatypes[date_col] = {'data_type': 'date'}
