@@ -178,7 +178,36 @@ def case_table_transforms_annual_report_lodging_details_referred_for_review_all_
 def test_table_transforms_annual_report_lodging_details(test_data, expected_lodgedstatus):
     test_df = pd.DataFrame(test_data)
 
-    actual_df = process_table_transformations(test_df, {'set_annual_report_lodging_details_status': {}})
+    transforms = {
+        'set_annual_report_lodging_details_status': {
+            'source_cols': [
+                'Rev Stat',
+                'Lodge Date',
+                'Rcvd Date',
+                'Rcvd Date1',
+                'Rcvd Date2',
+                'Rcvd Date3',
+                'Rcvd Date4',
+                'Rcvd Date5',
+                'Rcvd Date6',
+                'Review Date',
+                'Revise Date',
+                'Further Code',
+                'Sent1',
+                'Sent2',
+                'Sent3',
+                'Sent4',
+                'Sent5',
+                'Sent6',
+                'Followup Date'
+            ],
+            'target_cols': [
+                'lodgedstatus'
+            ]
+        }
+    }
+
+    actual_df = process_table_transformations(test_df, transforms)
 
     for _, row in actual_df.iterrows():
         assert row['lodgedstatus'] == expected_lodgedstatus

@@ -1,8 +1,6 @@
 """
 Table transforms are applied to convert one or more columns in the source
-CSV into one or more columns in the target table. At the point of transformation,
-datatypes have been applied to the source CSV, so date comparisons etc. can be
-used in the transforms.
+CSV into one or more columns in the target table.
 
 Each table transform is defined in a file which exports a constant representing
 the table transform configuration, as follows:
@@ -75,14 +73,19 @@ from transform_data.table_transforms_annual_report_lodging_details import (
 log = logging.getLogger('root')
 
 
-# definition of transforms which may be applied to tables
+# definition of default set of transforms which may be applied to tables
 #
 # this maps from transform names (as used in mapping spreadsheets) to datatypes, mappings
-# and local variables to be applied, typically specified in imported files
-TRANSFORMS = {
+# and local variables to be applied, typically specified in imported modules
+DEFAULT_TRANSFORMS = {
     'set_annual_report_logs_status': TABLE_TRANSFORM_ANNUAL_REPORT_LOGS,
     'set_annual_report_lodging_details_status': TABLE_TRANSFORM_ANNUAL_REPORT_LODGING_DETAILS
 }
+
+
+# raised when table transform fails for some reason
+class TableTransformException(Exception):
+    pass
 
 
 def apply_table_transformation(df: pd.DataFrame, mapping: dict, local_vars: dict={}) -> pd.DataFrame:
@@ -136,23 +139,58 @@ def apply_table_transformation(df: pd.DataFrame, mapping: dict, local_vars: dict
     return df
 
 
-def process_table_transformations(df: pd.DataFrame, table_transforms: dict) -> pd.DataFrame:
+def process_table_transformations(
+    df: pd.DataFrame,
+    transforms_for_table: dict,
+    transform_definitions: dict=DEFAULT_TRANSFORMS
+) -> pd.DataFrame:
     """
     Apply table-level transforms to a dataframe
 
     :param df: dataframe to apply table-level transforms to
-    :param table_transforms: dict. Table-level transforms to be applied to the table. This is a
+    :param transforms_for_table: dict. Table-level transforms to be applied to this dataframe. This is a
         map from transform name to parameters for that transform, derived from the table
-        definitions JSON (which itself comes from the spreadsheets). The parameters are
-        primarily informational and used to define the columns required in the initial
-        dataframe and hint at which columns will be affected by it, and are not (currently)
-        used during transformation.
+        definitions JSON (which itself comes from the spreadsheets). The parameters are a dict in
+        format:
+            {
+                'source_cols': ['Column Name1', 'Column Name2', ...],
+                'target_cols': ['columnname3', 'columnname4', ...]
+            }
+        'source_cols' is a list of columns in the source data (casrec). This is used to validate
+        that the dataframe df has all of the columns required to perform the table transform.
+        If the columns do not match, an exception is raised. Note that the source_cols are
+        aliased internally, e.g. "Rev Stat" in source_cols equates to c_rev_stat in the dataframe
+        under transform.
+        'target_cols' is a list of columns set by the table transform, corresponding to Sirius
+        column names. The output columns of the mapping are compared to this list; if a column is
+        specified as an output of the mapping but not present in target_cols, an exception is raised.
+        (A mapping does not have to set a value for all columns in target_cols, but must only set
+        columns which are in target_cols.)
+    :param transform_definitions: dict. Definitions for valid table transforms; defaults to the
+        transforms defined in this module.
+    :raises: TableTransformException
     :return: dataframe after transforms have been applied
     """
-    for transform_name, _ in table_transforms.items():
-        transform = TRANSFORMS.get(transform_name)
+    for transform_name, params in transforms_for_table.items():
+        transform = transform_definitions.get(transform_name)
         if transform is None:
-            raise KeyError(f'No table transform named {transform_name} exists')
+            raise TableTransformException(f'No table transform named {transform_name} exists')
+
+        # make the "c_" column names from the source columns specified in the transform config
+        source_cols = set(map(
+            lambda col_name: 'c_' + col_name.replace(' ', '_').lower(), params['source_cols']
+        ))
+
+        # transform should only set columns in this Set
+        target_cols = set(params['target_cols'])
+
+        # validate that the source_cols are all present in df
+        missing_cols = source_cols - set(df.columns)
+        if len(missing_cols) > 0:
+            raise TableTransformException(
+                f'Dataframe is missing source columns required by {transform_name} '
+                f'table transform: {sorted(missing_cols)}'
+            )
 
         # apply datatypes to df (if specified); datetimes which fail to parse
         # are coerced to NaT
@@ -166,6 +204,21 @@ def process_table_transformations(df: pd.DataFrame, table_transforms: dict) -> p
         local_vars = transform['local_vars']
 
         for mapping in mappings:
+            # validate that default_cols/output_cols in the mapping are all in target_cols
+            if 'default_cols' in mapping:
+                output_cols = mapping['default_cols']
+            else:
+                output_cols = mapping['output_cols']
+
+            invalid_output_cols = set(output_cols.keys()) - target_cols
+
+            if len(invalid_output_cols) > 0:
+                raise TableTransformException(
+                    f'Mapping for table transform {transform_name} outputs to column(s) '
+                    f'{sorted(invalid_output_cols)} which are not specified '
+                    f'in target_cols list {sorted(target_cols)}'
+                )
+
             df = apply_table_transformation(df, mapping, local_vars)
 
     return df

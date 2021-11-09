@@ -115,7 +115,7 @@ def perform_transformations(
 
     if table_transforms:
         log.debug("Applying table transformations")
-        final_df = process_table_transformations(df=final_df, table_transforms=table_transforms)
+        final_df = process_table_transformations(df=final_df, transforms_for_table=table_transforms)
         if len(final_df) == 0:
             log.debug(f"No data left after table transformations")
             raise EmptyDataFrame(empty_data_frame_type="chunk with table transformations applied")
