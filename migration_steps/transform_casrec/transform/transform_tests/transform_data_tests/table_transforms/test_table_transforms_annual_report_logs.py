@@ -8,7 +8,7 @@ from transform_data.table_transforms import process_table_transformations
 
 
 NOW = np.datetime64(datetime.now().strftime('%Y-%m-%d'))
-FUTURE = np.busday_offset(NOW, 7)
+SEVEN_DAYS_FROM_NOW = np.busday_offset(NOW, 7)
 FOURTEEN_WORKING_DAYS_AGO = np.busday_offset(NOW, -14)
 THIRTY_WORKING_DAYS_AGO = np.busday_offset(NOW, -30)
 SEVENTY_ONE_WORKING_DAYS_AGO = np.busday_offset(NOW, -71)
@@ -30,14 +30,16 @@ _all_date_cols = [
 def _make_test_data():
     data = {}
     for col in _all_date_cols:
-        data[col] = [None]
+        data[col] = ['']
+    data['c_rev_stat'] = ['']
+    data['c_next_yr'] = ['']
     return data
 
 def case_table_transforms_annual_report_logs_pending_no_review():
     """ rev stat = 'N', end date in future, all other dates null """
     data = _make_test_data()
     data['c_rev_stat'] = ['N']
-    data['c_end_date'] = [FUTURE]
+    data['c_end_date'] = [SEVEN_DAYS_FROM_NOW]
 
     return (
         data,
@@ -254,6 +256,22 @@ def case_table_transforms_annual_report_logs_abandoned_no_review():
         {
             'status': 'ABANDONED',
             'reviewstatus': 'NO_REVIEW'
+        }
+    )
+
+def case_table_transforms_annual_report_logs_pending_staff_preselected():
+    """
+    rev stat not set, end date in the future, other date cols not set, `Next Yr` is "Y"
+    """
+    data = _make_test_data()
+    data['c_end_date'] = [SEVEN_DAYS_FROM_NOW]
+    data['c_next_yr'] = ['Y']
+
+    return (
+        data,
+        {
+            'status': 'PENDING',
+            'reviewstatus': 'STAFF_PRESELECTED'
         }
     )
 

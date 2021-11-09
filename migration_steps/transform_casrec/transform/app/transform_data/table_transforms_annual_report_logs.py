@@ -28,17 +28,21 @@ _rcvd_date_cols = [
 ]
 
 # date columns we check for null values
-_all_null_date_cols = _rcvd_date_cols + [
+_all_unset_date_cols = _rcvd_date_cols + [
     'c_lodge_date',
     'c_review_date'
 ]
 
 # map of date column names to data type, so we can apply correct datatypes
 # to dates for the purpose of doing comparisons below
-_aliased_column_datatypes = {}
-for date_col in _all_null_date_cols + ['c_end_date']:
+_aliased_column_datatypes = {
+    'c_next_yr': {'data_type': 'str'},
+    'c_rev_stat': {'data_type': 'str'}
+}
+for date_col in _all_unset_date_cols + ['c_end_date']:
     _aliased_column_datatypes[date_col] = {'data_type': 'date'}
 
+# see IN-763, table 1
 _mappings = [
     {
         'default_cols': {
@@ -46,11 +50,12 @@ _mappings = [
             'reviewstatus': None
         }
     },
+    # table 1, row 1
     {
         'criteria': [
             'c_rev_stat == "N"',
             'c_end_date > @now',
-            {'all_null': _all_null_date_cols}
+            {'all_unset': _all_unset_date_cols}
 
         ],
         'output_cols': {
@@ -58,108 +63,130 @@ _mappings = [
             'reviewstatus': 'NO_REVIEW'
         }
     },
+    # table 1, row 2
     {
         'criteria': [
             'c_rev_stat == "N"',
             'c_end_date <= @now',
             'c_end_date > @fifteen_working_days_ago',
-            {'all_null': _all_null_date_cols}
+            {'all_unset': _all_unset_date_cols}
         ],
         'output_cols': {
             'status': 'DUE',
             'reviewstatus': 'NO_REVIEW'
         }
     },
+    # table 1, row 3
     {
         'criteria': [
             'c_rev_stat == "N"',
             'c_end_date <= @fifteen_working_days_ago',
             'c_end_date > @seventy_one_working_days_ago',
-            {'all_null': _all_null_date_cols}
+            {'all_unset': _all_unset_date_cols}
         ],
         'output_cols': {
             'status': 'OVERDUE',
             'reviewstatus': 'NO_REVIEW'
         }
     },
+    # table 1, row 4
     {
         'criteria': [
             'c_rev_stat == "N"',
             'c_end_date <= @seventy_one_working_days_ago',
-            {'all_null': _all_null_date_cols}
+            {'all_unset': _all_unset_date_cols}
         ],
         'output_cols': {
             'status': 'NON_COMPLIANT',
             'reviewstatus': 'NO_REVIEW'
         }
     },
+    # table 1, row 5
     {
         'criteria': [
             'c_rev_stat == "N"',
-            {'any_not_null': _rcvd_date_cols},
-            {'all_null': ['c_lodge_date', 'c_review_date']}
+            {'any_set': _rcvd_date_cols},
+            {'all_unset': ['c_lodge_date', 'c_review_date']}
         ],
         'output_cols': {
             'status': 'RECEIVED',
             'reviewstatus': 'NO_REVIEW'
         }
     },
+    # table 1, row 6
     {
         'criteria': [
             'c_rev_stat == "N"',
-            {'any_not_null': _rcvd_date_cols},
-            {'any_not_null': ['c_lodge_date']},
-            {'all_null': ['c_review_date']}
+            {'any_set': _rcvd_date_cols},
+            {'any_set': ['c_lodge_date']},
+            {'all_unset': ['c_review_date']}
         ],
         'output_cols': {
             'status': 'LODGED',
             'reviewstatus': 'NO_REVIEW'
         }
     },
+    # table 1, row 7
     {
         'criteria': [
             'c_rev_stat == "I"',
-            {'any_not_null': _rcvd_date_cols},
-            {'any_not_null': ['c_lodge_date']},
-            {'all_null': ['c_review_date']}
+            {'any_set': _rcvd_date_cols},
+            {'any_set': ['c_lodge_date']},
+            {'all_unset': ['c_review_date']}
         ],
         'output_cols': {
             'status': 'INCOMPLETE',
             'reviewstatus': 'NO_REVIEW'
         }
     },
+    # table 1, row 8
     {
         'criteria': [
             'c_rev_stat == "S"',
-            {'any_not_null': _rcvd_date_cols},
-            {'any_not_null': ['c_lodge_date']},
-            {'all_null': ['c_review_date']}
+            {'any_set': _rcvd_date_cols},
+            {'any_set': ['c_lodge_date']},
+            {'all_unset': ['c_review_date']}
         ],
         'output_cols': {
             'status': 'LODGED',
             'reviewstatus': 'STAFF_REFERRED'
         }
     },
+    # table 1, row 9
     {
         'criteria': [
             'c_rev_stat.isin(["S", "R", "G", "M"])',
-            {'any_not_null': _rcvd_date_cols},
-            {'any_not_null': ['c_lodge_date']},
-            {'any_not_null': ['c_review_date']}
+            {'any_set': _rcvd_date_cols},
+            {'any_set': ['c_lodge_date']},
+            {'any_set': ['c_review_date']}
         ],
         'output_cols': {
             'status': 'LODGED',
             'reviewstatus': 'REVIEWED'
         }
     },
+    # table 1, row 11
     {
         'criteria': [
             'c_rev_stat == "X"',
-            {'all_null': _all_null_date_cols}
+            {'all_unset': _all_unset_date_cols}
         ],
         'output_cols': {
             'status': 'ABANDONED',
             'reviewstatus': 'NO_REVIEW'
+        }
+    },
+    # table 1, row 12
+    {
+        'criteria': [
+            {'all_unset': ['c_rev_stat']},
+            'c_end_date > @now',
+            {'all_unset': ['c_review_date']},
+            'c_next_yr == "Y"'
+        ],
+        'output_cols': {
+            'status': 'PENDING',
+            'reviewstatus': 'STAFF_PRESELECTED'
         }
     }
 ]
