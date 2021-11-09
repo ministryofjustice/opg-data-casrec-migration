@@ -16,8 +16,15 @@ the table transform configuration, as follows:
 # datatypes
 
 Columns in the dataframe are cast to the specified datatypes before the mappings
-are applied. This dict maps from column name to datatype; datatype is one of
-the strings recognised
+are applied. This dict maps from column name to {'data_type': <type>}; datatype is one of
+the strings recognised by apply_datatypes().
+
+Example:
+
+{
+    'c_revise_date': {'data_type': 'date'},
+    'c_rev_stat': {'data_type': 'str'}
+}
 
 # mappings
 
@@ -28,24 +35,29 @@ Each mapping dict in this list specifies either:
   get a value in rows which don't match the more-specific transforms
 
 * a dict with 'criteria' (and-ed together to construct a dataframe query)
-  and 'output_cols' keys.
+  and 'output_cols' keys:
 
-  criteria may be inline clauses for the dataframe query, or a combination
-  of operator (see below) with a list of fields:
+  criteria: may be inline clauses for the dataframe query, or an
+  operator with a list of column names, as follows:
 
-  * all_null: True if all the specified columns have null (or NaT) values
-  * any_not_null: True if one or more of the specified columns are not null/NaT
+  * all_unset: True if all the specified columns have null (or NaT or '') values
+  * any_set: True if one or more of the specified columns are not null/NaT/''
+
+  any '@' variables in the criteria must be set in the local_vars dict
 
   output_cols: columns to set on a row with specified values if criteria are met
-
-  any '@' variables in these criteria must be set in the local_vars dict and
-  passed into the apply_table_transformation() function
 
 # local_vars
 
 Variables which are to be interpolated into mappings when constructing queries on an
 annual_report_logs dataframe. These are referenced using the pandas "@" syntax
-within the mappings list.
+within criteria in the mappings list.
+
+Example:
+
+{
+    'now': <instance of numpy.datetime64>
+}
 """
 
 import logging
@@ -55,9 +67,22 @@ from datetime import datetime
 
 from transform_data.apply_datatypes import apply_datatypes
 from transform_data.table_transforms_annual_report_logs import TABLE_TRANSFORM_ANNUAL_REPORT_LOGS
+from transform_data.table_transforms_annual_report_lodging_details import (
+    TABLE_TRANSFORM_ANNUAL_REPORT_LODGING_DETAILS
+)
 
 
 log = logging.getLogger('root')
+
+
+# definition of transforms which may be applied to tables
+#
+# this maps from transform names (as used in mapping spreadsheets) to datatypes, mappings
+# and local variables to be applied, typically specified in imported files
+TRANSFORMS = {
+    'set_annual_report_logs_status': TABLE_TRANSFORM_ANNUAL_REPORT_LOGS,
+    'set_annual_report_lodging_details_status': TABLE_TRANSFORM_ANNUAL_REPORT_LODGING_DETAILS
+}
 
 
 def apply_table_transformation(df: pd.DataFrame, mapping: dict, local_vars: dict={}) -> pd.DataFrame:
@@ -83,13 +108,15 @@ def apply_table_transformation(df: pd.DataFrame, mapping: dict, local_vars: dict
                 parsed.append(condition)
 
             elif isinstance(condition, dict):
-                if 'all_null' in condition:
-                    # isnull() also returns True for NaT fields
-                    parsed += list(map(lambda field: f'{field}.isnull()', condition['all_null']))
+                if 'all_unset' in condition:
+                    # all_unset() returns True if all columns have null, NaT or "" values
+                    parsed += list(
+                        map(lambda field: f'({field}.isnull() | {field} == "")', condition['all_unset'])
+                    )
 
-                elif 'any_not_null' in condition:
-                    # OR clause which checks for at least one column which is not null
-                    clauses = map(lambda field: f'{field}.notnull()', condition['any_not_null'])
+                elif 'any_set' in condition:
+                    # OR clause which checks for at least one column which is not null and not ""
+                    clauses = map(lambda field: f'({field}.notnull() & {field} != "")', condition['any_set'])
                     parsed.append('((' + ') | ('.join(clauses) + '))')
 
         query = '(' + ') & ('.join(parsed) + ')'
@@ -107,36 +134,12 @@ def apply_table_transformation(df: pd.DataFrame, mapping: dict, local_vars: dict
     return df
 
 
-def _get_annual_report_lodging_details_local_vars() -> pd.DataFrame:
-    """
-    Get variables which are to be interpolated into mappings when constructing queries on an
-    annual_report_lodging_details dataframe.
-
-    :return: dict of local variables to interpolate into mapping criteria queries
-    """
-    return {}
-
-
-# definition of transforms which may be applied to tables
-#
-# this maps from transform names (as used in mapping spreadsheets) to datatypes, mappings
-# and local variables to be applied, typically specified in imported files
-TRANSFORMS = {
-    'set_annual_report_logs_status': TABLE_TRANSFORM_ANNUAL_REPORT_LOGS,
-    'set_annual_report_lodging_details_status': {
-        'datatypes': {},
-        'mappings': [],
-        'local_vars': _get_annual_report_lodging_details_local_vars()
-    }
-}
-
-
 def process_table_transformations(df: pd.DataFrame, table_transforms: dict) -> pd.DataFrame:
     """
     Apply table-level transforms to a dataframe
 
     :param df: dataframe to apply table-level transforms to
-    :param table_transforms: dict; Table-level transforms to be applied to the table. This is a
+    :param table_transforms: dict. Table-level transforms to be applied to the table. This is a
         map from transform name to parameters for that transform, derived from the table
         definitions JSON (which itself comes from the spreadsheets). The parameters are
         primarily informational and used to define the columns required in the initial
@@ -154,7 +157,7 @@ def process_table_transformations(df: pd.DataFrame, table_transforms: dict) -> p
         if 'datatypes' in transform:
             df = apply_datatypes(transform['datatypes'], df, datetime_errors='coerce')
 
-        # call mapping function
+        # call transformation function with mappings
         log.debug(f'Applying table transform {transform_name}')
 
         mappings = transform['mappings']
