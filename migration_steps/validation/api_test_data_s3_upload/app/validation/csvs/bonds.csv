@@ -1,4 +1,0 @@
-endpoint,entity_ref,test_purpose,full_check,["securityBond"],["bond"]["requiredBondAmount"],["bond"]["amountTaken"],["bond"]["referenceNumber"],["bond"]["renewalDate"],["bond"]["dischargeDate"],["bond"]["companyName"],["bond"]["status"]["handle"],["bond"]["bondProvider"]["name"]
-/api/v1/orders/{id},10000884,dev_api_tests,FALSE,True,10000,25000,47362,,,Marsh Brokers,,MARSH
-/api/v1/orders/{id},10001403,dev_api_tests,FALSE,True|True|True,20000|30000|30000,20000|30000|30000,BULE02322|S3753|S3753,|,|,HCC Insurance Company PMG|Marsh Brokers|Marsh Brokers,|,MARSH|MARSH|OTHER
-/api/v1/orders/{id},10001668,dev_api_tests,FALSE,True,30000,30000,W11829,,,Marsh Brokers,,MARSH

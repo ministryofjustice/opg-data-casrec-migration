@@ -18,103 +18,45 @@ log = logging.getLogger("root")
 
 def main():
     entities = {
-        "clients": [
-            {
-                "csv": "clients",
-                "identifier": "client"
-            },
-        ],
-        "cases": [
-            {
-                "csv": "orders",
-                "identifier": "order"
-            },
-        ],
-        "bonds": [
-            {
-                "csv": "bonds",
-                "identifier": "order"
-            },
-        ],
+        "clients": [{"csv": "clients", "identifier": "client"},],
+        "cases": [{"csv": "orders", "identifier": "order"},],
+        "bonds": [{"csv": "bonds", "identifier": "order"},],
         "deputies": [
-            {
-                "csv": "deputies",
-                "identifier": "deputy"
-            },
-            {
-                "csv": "deputy_clients",
-                "identifier": "deputy"
-            },
+            {"csv": "deputies", "identifier": "deputy"},
+            {"csv": "deputy_clients", "identifier": "deputy"},
             {
                 "csv": "deputy_clients_count",
                 "identifier": "deputy",
-                "assert_on_count": True
-
+                "assert_on_count": True,
             },
-            {
-                "csv": "deputy_orders",
-                "identifier": "order_deputy"
-            },
-            {
-                "csv": "deputy_fee_payer",
-                "identifier": "order_deputy"
-            },
+            {"csv": "deputy_orders", "identifier": "order_deputy"},
+            {"csv": "deputy_fee_payer", "identifier": "order_deputy"},
         ],
-        "supervision_level": [
-            {
-                "csv": "supervision_level",
-                "identifier": "order"
-            },
-        ],
+        "supervision_level": [{"csv": "supervision_level", "identifier": "order"},],
         "death": [
-            {
-                "csv": "client_death_notifications",
-                "identifier": "client"
-            },
+            {"csv": "client_death_notifications", "identifier": "client"},
             {
                 "csv": "deputy_death_notifications",
                 "identifier": "deputy",
-                "no_retries": True
+                "no_retries": True,
             },
         ],
         "warnings": [
-            {
-                "csv": "warnings",
-                "identifier": "client",
-                "assert_on_list": True
-            },
+            {"csv": "client_warnings", "identifier": "client", "assert_on_list": True},
+            {"csv": "deputy_warnings", "identifier": "deputy", "assert_on_list": True},
         ],
-        "crec": [
-            {
-                "csv": "crec",
-                "identifier": "client"
-            },
-        ],
-        "visits": [
-            {
-                "csv": "visits",
-                "identifier": "client"
-            },
-        ],
-        "reporting": [
-            {
-                "csv": "reports",
-                "identifier": "client"
-            },
-        ],
+        "crec": [{"csv": "crec", "identifier": "client"},],
+        "visits": [{"csv": "visits", "identifier": "client"},],
+        "reporting": [{"csv": "reports", "identifier": "client"},],
         "invoice": [
-            {
-                "csv": "invoice",
-                "identifier": "client",
-                "assert_on_list": True
-            },
+            {"csv": "invoice", "identifier": "client", "assert_on_list": True},
         ],
         "tasks": [
             {
                 "csv": "tasks",
                 "identifier": "client",
                 "assert_on_list": True,
-                "list_in_field": "tasks"
+                "list_in_field": "tasks",
             },
         ],
     }
@@ -131,8 +73,12 @@ def main():
             api_tests.csv = test["csv"]
             api_tests.identifier = test["identifier"]
             api_tests.no_retries = "no_retries" in test and test["no_retries"] is True
-            api_tests.assert_on_list = "assert_on_list" in test and test["assert_on_list"] is True
-            api_tests.assert_on_count = "assert_on_count" in test and test["assert_on_count"] is True
+            api_tests.assert_on_list = (
+                "assert_on_list" in test and test["assert_on_list"] is True
+            )
+            api_tests.assert_on_count = (
+                "assert_on_count" in test and test["assert_on_count"] is True
+            )
             if "list_in_field" in test:
                 api_tests.list_in_field = test["list_in_field"]
             api_tests.run_response_tests()
@@ -140,9 +86,7 @@ def main():
 
     if api_tests.failed:
         print("Tests Failed")
-        # Changing this whilst we are doing first part of deduplication as expecting failures on pre
-        if environment in ["local", "development"]:
-            exit(1)
+        exit(1)
     else:
         print("Tests Passed")
 

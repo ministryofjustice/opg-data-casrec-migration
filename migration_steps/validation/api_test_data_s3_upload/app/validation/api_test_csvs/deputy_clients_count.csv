@@ -1,0 +1,2 @@
+endpoint,entity_ref,json_locator,test_purpose,api_response
+/api/v1/deputies/{id}/clients,10000037,["persons"],dev_api_tests,1|1

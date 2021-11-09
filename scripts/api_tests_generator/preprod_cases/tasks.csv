@@ -1,6 +1,6 @@
-endpoint,entity_ref,test_purpose,full_check
-/api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=2,11425510,duedate_set_desc_set1,FALSE
-/api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=2,10305555,duedate_set_desc_set2,FALSE
-/api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=2,10018057,due_date_null,FALSE
-/api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=2,10182311,description_null,FALSE
-/api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=2,10004637,due_date_null_description_null,FALSE
+endpoint,entity_ref,json_locator,test_purpose
+/api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=2,11425510,["dueDate"],duedate_set_desc_set1
+/api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=2,10305555,["dueDate"],duedate_set_desc_set2
+/api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=2,10018057,["dueDate"],due_date_null
+/api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=2,10182311,["description"],description_null
+/api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=2,10004637,["dueDate"],due_date_null_description_null

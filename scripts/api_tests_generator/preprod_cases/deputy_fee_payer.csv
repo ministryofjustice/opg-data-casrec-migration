@@ -1,5 +1,5 @@
-endpoint,entity_ref,test_purpose,full_check
-/api/v1/orders/{id1}/deputies/{id2},10001403,fee_payer_exists,FALSE
-/api/v1/orders/{id1}/deputies/{id2},10001668,fee_payer_exists,FALSE
-/api/v1/orders/{id1}/deputies/{id2},10002199,fee_payer_not_exists,FALSE
-/api/v1/orders/{id1}/deputies/{id2},10008713,fee_payer_not_exists,FALSE
+endpoint,entity_ref,json_locator,test_purpose
+/api/v1/orders/{id1}/deputies/{id2},10001403,["feePayer"],fee_payer_exists
+/api/v1/orders/{id1}/deputies/{id2},10001668,["feePayer"],fee_payer_exists
+/api/v1/orders/{id1}/deputies/{id2},10002199,["feePayer"],fee_payer_not_exists
+/api/v1/orders/{id1}/deputies/{id2},10008713,["feePayer"],fee_payer_not_exists

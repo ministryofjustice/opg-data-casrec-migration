@@ -1,3 +1,0 @@
-endpoint,entity_ref,test_purpose,full_check,["statusOnCaseOverride"]["handle"],["relationshipToClient"]["handle"]
-/api/v1/orders/{id1}/deputies/{id2},10000037,dev_api_tests,FALSE,,PARENT|PARENT
-/api/v1/orders/{id1}/deputies/{id2},10000884,dev_api_tests,FALSE,,SIBLING

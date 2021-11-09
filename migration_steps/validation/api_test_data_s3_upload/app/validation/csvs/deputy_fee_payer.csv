@@ -1,3 +1,0 @@
-endpoint,entity_ref,test_purpose,full_check,["feePayer"]
-/api/v1/orders/{id1}/deputies/{id2},10007163,dev_api_tests,FALSE,False|True
-/api/v1/orders/{id1}/deputies/{id2},10317585,dev_api_tests,FALSE,False|False|False|False|True

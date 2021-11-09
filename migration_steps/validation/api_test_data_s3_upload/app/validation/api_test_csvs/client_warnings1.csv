@@ -1,0 +1,3 @@
+endpoint,entity_ref,json_locator,test_purpose,api_response
+/api/v1/persons/{id}/warnings,10194709,["warningType"],dev_api_tests,REM - Violence Warnings
+/api/v1/persons/{id}/warnings,13323382,["warningText"],dev_api_tests,Casrec Migration - No Debt to be chased
