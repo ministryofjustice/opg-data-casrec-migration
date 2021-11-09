@@ -12,7 +12,6 @@
             "set_annual_report_lodging_details_status": {
                 "source_cols": [
                     "Rev Stat",
-                    "End Date",
                     "Lodge Date",
                     "Rcvd Date",
                     "Rcvd Date1",
@@ -22,7 +21,6 @@
                     "Rcvd Date5",
                     "Rcvd Date6",
                     "Review Date",
-                    "Next Yr",
                     "Revise Date",
                     "Further Code",
                     "Sent1",
