@@ -14,10 +14,13 @@ INSERT INTO casrec_csv.exceptions_deputy_feepayer_id(
         FROM casrec_csv.pat
         LEFT JOIN casrec_csv.deputyship
             ON deputyship."Case" = pat."Case"
+        LEFT JOIN casrec_csv.order
+            ON "order"."Order No" = deputyship."Order No"
         LEFT JOIN casrec_csv.deputy
             ON deputy."Deputy No" = deputyship."Deputy No"
         WHERE True
             AND deputy."Stat" = '1'
+            AND "order"."Ord Stat" <> 'Open'
             AND deputyship."Fee Payer" = 'Y'
             AND pat."Case" NOT IN (
                     '11065340',
