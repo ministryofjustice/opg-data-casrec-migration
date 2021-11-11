@@ -53,7 +53,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- combine date and time values to create a timestamp
-CREATE OR REPLACE FUNCTION transf_convert_to_timestamp(date_part varchar, time_part varchar)
+CREATE OR REPLACE FUNCTION transf_convert_to_timestamp(date_part varchar, time_part varchar, default_date varchar)
     RETURNS timestamp as $$
 DECLARE
     DateVal varchar;
@@ -61,7 +61,11 @@ DECLARE
 BEGIN
     DateVal = TRIM(date_part);
     IF DateVal IN ('NaT', '') THEN
-        DateVal = '1900-01-01';
+        DateVal = default_date;
+    END IF;
+
+    IF DateVal IS NULL THEN
+        RETURN NULL;
     END IF;
 
     TimeVal = TRIM(time_part);
