@@ -29,8 +29,8 @@ class InsertData:
         self.standard_columns = {"casrec_details": "jsonb not null default '{}'::jsonb"}
         self.datatype_remap = {
             "str": "text",
-            "date": "date",
-            "datetime": "date",
+            "date": "timestamp(0)",
+            "datetime": "timestamp(0)",
             "dict": "json",
         }
 

@@ -136,8 +136,7 @@
     },
     "client_addresses": {
         "exclude": [
-            "person_id",
-            "address_lines"
+            "person_id"
         ],
         "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
@@ -771,7 +770,8 @@
         "casrec": {
             "from_table": "remarks",
             "transform": {
-                "description": "CASE WHEN {col} = '' THEN 'no description migrated' ELSE {col} END"
+                "description": "CASE WHEN {col} = '' THEN 'no description migrated' ELSE {col} END",
+                "createdtime": "transf_convert_to_timestamp(\"Logdate\", \"Logtime\", NULL)::timestamp(0)"
             },
             "joins": [
                 "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.remarks.\"Case\""

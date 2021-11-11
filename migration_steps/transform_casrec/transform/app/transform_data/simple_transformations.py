@@ -1,6 +1,5 @@
 import logging
 import os
-
 import pandas as pd
 import helpers
 
@@ -148,6 +147,13 @@ def do_simple_transformations(
         log.log(config.VERBOSE, "Applying transformation: is_at_least_one_set")
         for t in transformations["is_at_least_one_set"]:
             transformed_df = standard_transformations.is_at_least_one_set(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
+    if "convert_to_timestamp" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: convert_to_timestamp")
+        for t in transformations["convert_to_timestamp"]:
+            transformed_df = standard_transformations.convert_to_timestamp(
                 t["original_columns"], t["aggregate_col"], transformed_df
             )
 

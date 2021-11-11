@@ -3,6 +3,7 @@ import sys
 import os
 from pathlib import Path
 from typing import Dict
+from utilities.df_helpers import get_datetime_from_df_row
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
@@ -264,3 +265,15 @@ def is_at_least_one_set(original_cols: list, result_col: str, df: pd.DataFrame) 
         return row
 
     return df.apply(_transform, axis=1)
+
+
+def convert_to_timestamp(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+    df[result_col] = df[original_cols].apply(
+        lambda x: get_datetime_from_df_row(row=x, date_col=original_cols[0], time_col=original_cols[1]),
+        axis=1
+    )
+    df[result_col] = df[result_col].astype("datetime64[ns]")
+
+    df = df.drop(columns=original_cols)
+
+    return df

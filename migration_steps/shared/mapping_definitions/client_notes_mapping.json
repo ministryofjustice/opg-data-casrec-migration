@@ -112,9 +112,15 @@
         },
         "transform_casrec": {
             "casrec_table": "REMARKS",
-            "casrec_column_name": "Logdate",
-            "alias": "Logdate",
-            "requires_transformation": "",
+            "casrec_column_name": [
+                "Logdate",
+                "Logtime"
+            ],
+            "alias": [
+                "Logdate",
+                "Logtime"
+            ],
+            "requires_transformation": "convert_to_timestamp",
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
