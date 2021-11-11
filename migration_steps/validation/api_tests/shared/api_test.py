@@ -606,6 +606,7 @@ class ApiTests:
                     assert expected_status == actual_status
                 except AssertionError:
                     self.api_log(f"Expected: {expected_status} but got {actual_status}")
+                    self.failed = True
 
     def run_functional_test(self, entity, entity_setup_object):
         self.csv = entity
@@ -679,7 +680,7 @@ class ApiTests:
         else:
             self.api_log(f"Method {method} is invalid")
 
-        log.debug(f"Response text: {response.text}")
+        log.info(f"Response text: {response.text}")
         status_code = response.status_code
 
         self.api_log(f"Returns following: {status_code}")
