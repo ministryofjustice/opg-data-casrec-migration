@@ -230,7 +230,9 @@ def wrap_sirius_col(col_name: str, col_definition, sql: str):
 
 def wrap_casrec_col(col_name: str, col_definition, sql: str):
     # first wrap override, if any
-    sql = wrap_override_sql(col_name, "casrec", sql)
+    override_sql = wrap_override_sql(col_name, "casrec", sql)
+    if override_sql != sql:
+        return override_sql
 
     # convert empty strings to NULL
     if (
