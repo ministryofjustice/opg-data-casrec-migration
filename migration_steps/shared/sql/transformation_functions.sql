@@ -51,3 +51,26 @@ BEGIN
     RETURN DueDate;
 END;
 $$ LANGUAGE plpgsql;
+
+-- combine date and time values to create a timestamp
+CREATE OR REPLACE FUNCTION transf_convert_to_timestamp(date_part varchar, time_part varchar)
+    RETURNS timestamp as $$
+DECLARE
+    DateVal varchar;
+    TimeVal varchar;
+BEGIN
+    DateVal = TRIM(date_part);
+    IF DateVal IN ('NaT', '') THEN
+        DateVal = '1900-01-01';
+    END IF;
+
+    TimeVal = TRIM(time_part);
+    IF TimeVal IN ('NaT', '') THEN
+        TimeVal = '00:00:00';
+    ELSE
+        TimeVal = SPLIT_PART(TimeVal, '.', 1);
+    END IF;
+
+    RETURN CONCAT(DateVal, ' ', TimeVal)::timestamp;
+END;
+$$ LANGUAGE plpgsql;
