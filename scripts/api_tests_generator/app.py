@@ -58,6 +58,12 @@ entities_of_type_list = [
     "visits",
 ]
 
+entity_further = {
+    "tasks": {
+        "list_in_field": "tasks",
+    },
+}
+
 
 def get_session(base_url, user, password):
     response = requests.get(base_url)
@@ -276,7 +282,8 @@ def get_endpoint_final(entity_id, endpoint, csv):
     else:
         endpoint_final = str(endpoint).replace("{id}", str(entity_id))
 
-    print(f"Endpoint: {endpoint_final}")
+    if print_extra_info:
+        print(f"Endpoint: {endpoint_final}")
     return endpoint_final
 
 
@@ -306,6 +313,16 @@ def get_response_json(
 
 def get_list_of_json_blocks_from_response(csv, response_as_json):
     json_blocks_to_loop_through = []
+
+    try:
+        list_in_field = entity_further[csv]["list_in_field"]
+        response_as_json = response_as_json[list_in_field]
+    except Exception:
+        pass
+
+    if print_extra_info:
+        print(response_as_json)
+
     if csv in entities_of_type_list:
         for sub_json_block in response_as_json:
             json_blocks_to_loop_through.append(sub_json_block)
@@ -394,8 +411,9 @@ def main():
             endpoint = row["endpoint"]
             entity_ref = row["entity_ref"]
             json_locator = row["json_locator"]
+            test_purpose = row["test_purpose"]
 
-            print(f"Case Reference: {entity_ref}")
+            print(f"Case Reference: {entity_ref}, Purpose: {test_purpose}")
             entity_ids = get_entity_ids(csv, entity_ref, engine, sirius_app_session)
             # Line structure is an object that we use before converting to a a line string later
             line_structure = {}
