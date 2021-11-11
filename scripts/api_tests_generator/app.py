@@ -50,7 +50,13 @@ search_headers = [
     "test_purpose",
 ]
 
-entities_of_type_list = ["deputy_warnings", "client_warnings", "invoices", "tasks"]
+entities_of_type_list = [
+    "deputy_warnings",
+    "client_warnings",
+    "invoices",
+    "tasks",
+    "visits",
+]
 
 
 def get_session(base_url, user, password):

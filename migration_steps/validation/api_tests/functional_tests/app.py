@@ -486,7 +486,7 @@ def main():
         "death",
         "supervision",
         "crec",
-        "invoice",
+        # "invoice",  -- Fix ticket: https://opgtransform.atlassian.net/browse/IN-1021
     ]
 
     api_tests = ApiTests()
@@ -500,6 +500,12 @@ def main():
             "delete_objects": get_delete_data(entity),
         }
         api_tests.run_functional_test(entity, data)
+
+    if api_tests.failed:
+        print("Tests Failed")
+        exit(1)
+    else:
+        print("Tests Passed")
 
 
 if __name__ == "__main__":

@@ -417,6 +417,10 @@ DELETE FROM person_task a
 USING deletions.deletions_deputy_tasks b
 WHERE a.task_id = b.id;
 
+DELETE FROM visits v
+USING deletions.deletions_client_visits b
+WHERE v.id = b.id;
+
 DELETE FROM powerofattorney_person a
 USING deletions.deletions_deputy_powerofattorney_person b
 WHERE a.person_id = b.person_id;
