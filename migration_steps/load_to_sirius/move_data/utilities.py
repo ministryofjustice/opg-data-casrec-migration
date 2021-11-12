@@ -19,7 +19,7 @@ SPECIAL_CASES = [
     "persons",
     "finance_invoice",
     "finance_ledger",
-    "finance_remission_exemption"
+    "finance_remission_exemption",
 ]
 
 

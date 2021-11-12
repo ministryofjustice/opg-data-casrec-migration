@@ -648,7 +648,8 @@ class ApiTests:
         )
 
         response = self.session["sess"].get(
-            full_url, headers=self.session["headers_dict"],
+            full_url,
+            headers=self.session["headers_dict"],
         )
 
         json_object = json.loads(response.text)

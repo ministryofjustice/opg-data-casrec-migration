@@ -16,13 +16,19 @@ log = logging.getLogger("root")
 
 
 def copy_tables(db_config, source_db_engine, target_db_engine, tables):
-    target_db = InsertData(db_engine=target_db_engine, schema=db_config["target_schema"], empty_string_to_null=False)
+    target_db = InsertData(
+        db_engine=target_db_engine,
+        schema=db_config["target_schema"],
+        empty_string_to_null=False,
+    )
 
     for table, data in tables.items():
         cols = data.keys()
         log.info(f"Copying {table} ({', '.join(cols)}) from Sirius to Staging")
 
-        source_data_query = generate_select_query(db_config["sirius_schema"], table, cols)
+        source_data_query = generate_select_query(
+            db_config["sirius_schema"], table, cols
+        )
         source_data_df = pd.read_sql_query(con=source_db_engine, sql=source_data_query)
 
         target_db.insert_data(source_data_df, table, data)

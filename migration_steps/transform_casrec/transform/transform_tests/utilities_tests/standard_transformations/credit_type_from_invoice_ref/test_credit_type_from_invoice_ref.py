@@ -27,7 +27,7 @@ def test_credit_type_from_invoice_ref():
             "CREDIT MEMO",
             "CREDIT MEMO",
             "CREDIT WRITE OFF",
-            "CREDIT WRITE OFF"
+            "CREDIT WRITE OFF",
         ],
     }
 

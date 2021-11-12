@@ -12,8 +12,6 @@ def clear_tables(db_engine, db_config, tables):
             with db_engine.connect() as conn:
                 conn.execute(drop_statement)
         except Exception as e:
-            log.error(
-                f"There was an error dropping table {table} in {schema}"
-            )
+            log.error(f"There was an error dropping table {table} in {schema}")
             log.debug(e)
             break

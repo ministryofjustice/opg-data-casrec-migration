@@ -118,9 +118,9 @@ def convert_to_timestamp(df, cols):
                 row=x,
                 date_col=source_date,
                 time_col=source_time,
-                default_date="1900-01-01"
+                default_date="1900-01-01",
             ),
-            axis=1
+            axis=1,
         )
     )
 
@@ -190,7 +190,10 @@ def recent_or_open_invoices(df, cols):
     aged_debt_df = aged_debt_df[["Trx Number", debt_col]]
 
     df = df.merge(
-        aged_debt_df, how="left", left_on="Invoice No", right_on="Trx Number",
+        aged_debt_df,
+        how="left",
+        left_on="Invoice No",
+        right_on="Trx Number",
     )
 
     filtered_df = filter_recent_or_open_invoices(df=df, cols=cols, debt_col=debt_col)

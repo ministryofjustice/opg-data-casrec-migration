@@ -319,7 +319,7 @@ def get_s3_session(host, account, ci):
             "s3",
             endpoint_url=f"http://{stack_host}:4572",
             aws_access_key_id="fake",
-            aws_secret_access_key="fake",
+            aws_secret_access_key="fake",  # pragma: allowlist secret
         )
     elif ci == "true":
         s3_session = sirius_session(account)
@@ -474,7 +474,10 @@ def main(entities, delay, verbose, skip_load):
             if file.split(".")[1] == "csv":
                 df = pd.read_csv(io.BytesIO(obj["Body"].read()))
             elif file.split(".")[1] == "xlsx":
-                df = pd.read_excel(io.BytesIO(obj["Body"].read()), engine="openpyxl",)
+                df = pd.read_excel(
+                    io.BytesIO(obj["Body"].read()),
+                    engine="openpyxl",
+                )
             else:
                 log.info("Unknown file format")
                 exit(1)

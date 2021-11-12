@@ -19,12 +19,7 @@ def test_start_of_tax_year():
     test_data_df = pd.DataFrame(test_data, columns=[x for x in test_data])
 
     expected_data = {
-        new_col: [
-            "2010-04-01",
-            "2012-04-01",
-            "2011-04-01",
-            "2012-04-01"
-        ],
+        new_col: ["2010-04-01", "2012-04-01", "2011-04-01", "2012-04-01"],
     }
 
     expected_data_df = pd.DataFrame(expected_data, columns=[x for x in expected_data])

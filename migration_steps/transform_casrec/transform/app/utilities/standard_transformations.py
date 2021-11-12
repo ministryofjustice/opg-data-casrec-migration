@@ -46,7 +46,10 @@ def squash_columns(
 
 
 def convert_to_bool(
-    original_col: str, new_col: str, df: pd.DataFrame, drop_original_col: bool = True,
+    original_col: str,
+    new_col: str,
+    df: pd.DataFrame,
+    drop_original_col: bool = True,
 ) -> pd.DataFrame:
 
     df[new_col] = df[original_col] == "1.0"
@@ -138,7 +141,9 @@ def end_of_tax_year(
     return df
 
 
-def fee_reduction_end_date(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+def fee_reduction_end_date(
+    original_col: str, result_col: str, df: pd.DataFrame
+) -> pd.DataFrame:
     df[result_col] = df[original_col].astype(str)
     df[result_col] = pd.to_datetime(df[result_col], dayfirst=True)
 
@@ -152,7 +157,9 @@ def fee_reduction_end_date(original_col: str, result_col: str, df: pd.DataFrame)
         # TODO: to be confirmed by IN-1015
         tax_year_end = x.replace(day=31, month=3)
         if x > tax_year_end:
-            tax_year_end = tax_year_end.replace(year=int(tax_year_end.strftime("%Y")) + 1)
+            tax_year_end = tax_year_end.replace(
+                year=int(tax_year_end.strftime("%Y")) + 1
+            )
         return tax_year_end
 
     df[result_col] = df[result_col].apply(lambda x: end_date_from_award_date(x))
@@ -205,6 +212,7 @@ def get_max_col(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.Da
 
     return df
 
+
 # base_date: date to use as the basis for the delta date
 # operator: delta modifier, '+' or '-'
 # days: delta number of days
@@ -213,51 +221,63 @@ def get_max_col(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.Da
 #     if 'next' and calculated date is aon a weekend, move to next working day;
 #     if None, apply no adjustment
 # return: datetime, or None if the base_date is None
-def _calculate_date(base_date, operator: str, days: int, weekend_adjustment: str=None):
-    if base_date is None or base_date == '':
+def _calculate_date(
+    base_date, operator: str, days: int, weekend_adjustment: str = None
+):
+    if base_date is None or base_date == "":
         return None
 
     new_date = pd.to_datetime(base_date, dayfirst=True)
 
     delta = pd.offsets.DateOffset(days=days)
-    if operator == '+':
+    if operator == "+":
         new_date += delta
-    elif operator == '-':
+    elif operator == "-":
         new_date -= delta
 
     # Saturday, Sunday = [5, 6]
     weekday = new_date.weekday()
     if weekday in [5, 6]:
-        if weekend_adjustment == 'previous':
-            new_date = new_date - pd.offsets.DateOffset(days=weekday-4)
-        elif weekend_adjustment == 'next':
-            new_date = new_date + pd.offsets.DateOffset(days=7-weekday)
+        if weekend_adjustment == "previous":
+            new_date = new_date - pd.offsets.DateOffset(days=weekday - 4)
+        elif weekend_adjustment == "next":
+            new_date = new_date + pd.offsets.DateOffset(days=7 - weekday)
 
     return new_date
 
-def calculate_duedate(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+
+def calculate_duedate(
+    original_col: str, result_col: str, df: pd.DataFrame
+) -> pd.DataFrame:
     df[result_col] = df[original_col].apply(
-        lambda base_date: _calculate_date(base_date, '+', 21, 'next')
+        lambda base_date: _calculate_date(base_date, "+", 21, "next")
     )
     return df
 
-def calculate_startdate(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+
+def calculate_startdate(
+    original_col: str, result_col: str, df: pd.DataFrame
+) -> pd.DataFrame:
     df[result_col] = df[original_col].apply(
-        lambda base_date: _calculate_date(base_date, '-', 366)
+        lambda base_date: _calculate_date(base_date, "-", 366)
     )
     return df
 
-def is_at_least_one_set(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+
+def is_at_least_one_set(
+    original_cols: list, result_col: str, df: pd.DataFrame
+) -> pd.DataFrame:
     """
     Set result_col to true if at least one of the values in the columns
     original_cols has a non-null/non-NaT/non-NaN etc. value
     """
+
     def _transform(row):
         result = False
 
         for column in original_cols:
             value = row[column]
-            if value != None and value != '':
+            if value is not None and value != "":
                 result = True
                 break
 
@@ -267,10 +287,14 @@ def is_at_least_one_set(original_cols: list, result_col: str, df: pd.DataFrame) 
     return df.apply(_transform, axis=1)
 
 
-def convert_to_timestamp(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+def convert_to_timestamp(
+    original_cols: list, result_col: str, df: pd.DataFrame
+) -> pd.DataFrame:
     df[result_col] = df[original_cols].apply(
-        lambda x: get_datetime_from_df_row(row=x, date_col=original_cols[0], time_col=original_cols[1]),
-        axis=1
+        lambda x: get_datetime_from_df_row(
+            row=x, date_col=original_cols[0], time_col=original_cols[1]
+        ),
+        axis=1,
     )
     df[result_col] = df[result_col].astype("datetime64[ns]")
 

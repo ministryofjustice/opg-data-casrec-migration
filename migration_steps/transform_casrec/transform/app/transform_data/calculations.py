@@ -6,12 +6,11 @@ from uuid import uuid4
 from datetime import datetime
 
 
-log = logging.getLogger('root')
+log = logging.getLogger("root")
+
 
 def do_calculations(
-    calculated_fields: dict,
-    df: pd.DataFrame,
-    now: datetime=datetime.now()
+    calculated_fields: dict, df: pd.DataFrame, now: datetime = datetime.now()
 ) -> pd.DataFrame:
     """
     Apply calculated values to specified fields in a dataframe.
@@ -34,7 +33,7 @@ def do_calculations(
         is being applied
     """
     for calculation, column_names in calculated_fields.items():
-        column_names = list(map(lambda item: item['column_name'], column_names))
+        column_names = list(map(lambda item: item["column_name"], column_names))
         log.debug(f'Applying calculation "{calculation}" to columns {column_names}')
 
         if calculation == "current_date":
@@ -47,6 +46,8 @@ def do_calculations(
 
         else:
             # if calculation is unrecognised, current approach is to leave the calculated column alone
-            log.error(f'Unrecognised calculation "{calculation}" for columns {column_names}')
+            log.error(
+                f'Unrecognised calculation "{calculation}" for columns {column_names}'
+            )
 
     return df

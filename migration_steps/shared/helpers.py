@@ -257,7 +257,7 @@ def get_s3_session(session, environment, host, ci="false", account=None):
             "s3",
             endpoint_url=f"http://{stack_host}:4572",
             aws_access_key_id="fake",
-            aws_secret_access_key="fake",
+            aws_secret_access_key="fake",  # pragma: allowlist secret
         )
     elif ci == "true":
         s3_session = sirius_session(account)

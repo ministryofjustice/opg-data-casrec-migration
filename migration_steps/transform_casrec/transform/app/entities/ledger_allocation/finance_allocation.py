@@ -17,13 +17,14 @@ def insert_finance_allocation_credits(target_db, db_config, mapping_file):
     offset = -chunk_size
     chunk_no = 0
 
-    feecheck_query = f'select "Invoice Number", "GL Date" as allocateddate, \'ALLOCATED\' as status from {db_config["source_schema"]}.sop_feecheckcredits;'
+    feecheck_query = f"""select "Invoice Number", "GL Date" as allocateddate, \'ALLOCATED\' as status
+                         from {db_config["source_schema"]}.sop_feecheckcredits;"""
     feecheck_df = pd.read_sql_query(feecheck_query, db_config["db_connection_string"])
     feecheck_df = feecheck_df[["Invoice Number", "allocateddate", "status"]]
 
-    ledger_query = f'''select id as ledger_entry_id,
+    ledger_query = f"""select id as ledger_entry_id,
                         c_invoice_no as ledger_ref
-                        from {db_config["target_schema"]}.finance_ledger;'''
+                        from {db_config["target_schema"]}.finance_ledger;"""
     ledger_df = pd.read_sql_query(ledger_query, db_config["db_connection_string"])
     ledger_df = ledger_df[["ledger_entry_id", "ledger_ref"]]
 
@@ -60,7 +61,9 @@ def insert_finance_allocation_credits(target_db, db_config, mapping_file):
 
             if len(credits_allocations_df) == 0:
                 log.debug(f"No data left after inner joining invoices")
-                raise EmptyDataFrame(empty_data_frame_type="chunk with conditions applied")
+                raise EmptyDataFrame(
+                    empty_data_frame_type="chunk with conditions applied"
+                )
 
             credits_allocations_df = credits_allocations_df.merge(
                 ledger_df,
@@ -76,9 +79,13 @@ def insert_finance_allocation_credits(target_db, db_config, mapping_file):
                 right_on="Invoice Number",
             )
 
-            credits_allocations_df['status'] = credits_allocations_df['status'].fillna('PENDING')
+            credits_allocations_df["status"] = credits_allocations_df["status"].fillna(
+                "PENDING"
+            )
 
-            credits_allocations_df = credits_allocations_df.drop(columns=["ledger_ref", "invoice_ref", "Invoice Number"])
+            credits_allocations_df = credits_allocations_df.drop(
+                columns=["ledger_ref", "invoice_ref", "Invoice Number"]
+            )
 
             credits_allocations_df.allocateddate.fillna(value=np.nan, inplace=True)
 
@@ -90,8 +97,10 @@ def insert_finance_allocation_credits(target_db, db_config, mapping_file):
             )
 
         except EmptyDataFrame as empty_data_frame:
-            if empty_data_frame.empty_data_frame_type == 'chunk':
-                target_db.create_empty_table(sirius_details=sirius_details, df=empty_data_frame.df)
+            if empty_data_frame.empty_data_frame_type == "chunk":
+                target_db.create_empty_table(
+                    sirius_details=sirius_details, df=empty_data_frame.df
+                )
 
                 break
 

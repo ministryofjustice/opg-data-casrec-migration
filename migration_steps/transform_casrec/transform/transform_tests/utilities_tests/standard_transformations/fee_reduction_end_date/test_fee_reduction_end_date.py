@@ -13,20 +13,14 @@ def test_fee_reduction_start_date():
             "01/04/2012 00:00",
             "2012-04-01 00:00:00",
             "01/05/2020 00:00",
-            "04/02/2020"
+            "04/02/2020",
         ],
     }
 
     test_data_df = pd.DataFrame(test_data, columns=[x for x in test_data])
 
     expected_data = {
-        new_col: [
-            "2011-03-31",
-            "2012-03-31",
-            "2012-03-31",
-            "2021-03-31",
-            "2020-03-31"
-        ],
+        new_col: ["2011-03-31", "2012-03-31", "2012-03-31", "2021-03-31", "2020-03-31"],
     }
 
     expected_data_df = pd.DataFrame(expected_data, columns=[x for x in expected_data])

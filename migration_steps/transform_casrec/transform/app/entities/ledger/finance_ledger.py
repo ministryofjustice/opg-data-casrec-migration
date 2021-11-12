@@ -49,7 +49,9 @@ def insert_finance_ledger_credits(target_db, db_config, mapping_file):
 
             if len(credits_joined_df) == 0:
                 log.debug(f"No data left after inner joining invoices")
-                raise EmptyDataFrame(empty_data_frame_type="chunk with conditions applied")
+                raise EmptyDataFrame(
+                    empty_data_frame_type="chunk with conditions applied"
+                )
 
             target_db.insert_data(
                 table_name=table_definition["destination_table_name"],
@@ -59,8 +61,10 @@ def insert_finance_ledger_credits(target_db, db_config, mapping_file):
             )
 
         except EmptyDataFrame as empty_data_frame:
-            if empty_data_frame.empty_data_frame_type == 'chunk':
-                target_db.create_empty_table(sirius_details=sirius_details, df=empty_data_frame.df)
+            if empty_data_frame.empty_data_frame_type == "chunk":
+                target_db.create_empty_table(
+                    sirius_details=sirius_details, df=empty_data_frame.df
+                )
 
                 break
 

@@ -208,7 +208,8 @@ def restructure_text(col, dedupe):
 
 def get_deputy_entity_ids(entity_id, conn):
     response = conn["sess"].get(
-        f'{conn["base_url"]}/api/v1/orders/{entity_id}', headers=conn["headers_dict"],
+        f'{conn["base_url"]}/api/v1/orders/{entity_id}',
+        headers=conn["headers_dict"],
     )
 
     response_as_json = json.loads(response.text)
@@ -229,7 +230,8 @@ def get_deputy_entity_ids(entity_id, conn):
 
 def get_deputy_order_entity_ids(entity_id, conn):
     response = conn["sess"].get(
-        f'{conn["base_url"]}/api/v1/orders/{entity_id}', headers=conn["headers_dict"],
+        f'{conn["base_url"]}/api/v1/orders/{entity_id}',
+        headers=conn["headers_dict"],
     )
 
     response_as_json = json.loads(response.text)
@@ -297,7 +299,8 @@ def generate_csv_headers_line(search_headers, csv):
 
 
 def get_response_json(
-    sirius_app_session, endpoint_final,
+    sirius_app_session,
+    endpoint_final,
 ):
     response = sirius_app_session["sess"].get(
         f'{sirius_app_session["base_url"]}{endpoint_final}',

@@ -2,7 +2,9 @@ import logging
 
 
 from helpers import log_title, check_entity_enabled
-from entities.ledger_allocation.finance_allocation import insert_finance_allocation_credits
+from entities.ledger_allocation.finance_allocation import (
+    insert_finance_allocation_credits,
+)
 
 log = logging.getLogger("root")
 
@@ -24,7 +26,9 @@ def runner(target_db, db_config):
 
     log.debug("insert_finance_allocation_credits")
     insert_finance_allocation_credits(
-        target_db=target_db, db_config=db_config, mapping_file="finance_allocation_credits"
+        target_db=target_db,
+        db_config=db_config,
+        mapping_file="finance_allocation_credits",
     )
 
 

@@ -144,14 +144,18 @@ def copy_schema(
     with fileinput.FileInput(str(schema_dump), inplace=True) as file:
         for line in file:
             print(
-                line.replace(f'TO {from_config["user"]}', f'TO {to_config["user"]}',),
+                line.replace(
+                    f'TO {from_config["user"]}',
+                    f'TO {to_config["user"]}',
+                ),
                 end="",
             )
     with fileinput.FileInput(str(schema_dump), inplace=True) as file:
         for line in file:
             print(
                 line.replace(
-                    f'Owner: {from_config["user"]}', f'Owner: {to_config["user"]}',
+                    f'Owner: {from_config["user"]}',
+                    f'Owner: {to_config["user"]}',
                 ),
                 end="",
             )

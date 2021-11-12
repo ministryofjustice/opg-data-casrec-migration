@@ -110,9 +110,10 @@ def insert_order_deputies(db_config, target_db, mapping_file):
             sirius_details=sirius_details,
         )
 
-    except EmptyDataFrame:
-
-        target_db.create_empty_table(sirius_details=sirius_details, df=empty_data_frame.df)
+    except EmptyDataFrame as empty_data_frame:
+        target_db.create_empty_table(
+            sirius_details=sirius_details, df=empty_data_frame.df
+        )
 
     except Exception as e:
         log.debug(

@@ -27,9 +27,7 @@ def set_invoice_finance_person_ids(db_config, cursor):
 
 def set_ledger_finance_person_ids(db_config, cursor):
     if not check_enabled_by_table_name(table_name="finance_ledger"):
-        log.info(
-            f"Skip setting finance_person_id on ledger. Ledger entity disabled."
-        )
+        log.info(f"Skip setting finance_person_id on ledger. Ledger entity disabled.")
         return
 
     log.info("Setting finance_person_id on ledger...")
@@ -64,7 +62,7 @@ def set_fee_reduction_finance_person_ids(db_config, cursor):
             FROM {db_config['target_schema']}.finance_person fp
             INNER JOIN {db_config['target_schema']}.persons p ON p.id = fp.person_id
         )
-        
+
         UPDATE {db_config['target_schema']}.finance_remission_exemption fre
         SET finance_person_id = frp.id
         FROM fee_reduction_person frp

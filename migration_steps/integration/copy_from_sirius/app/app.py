@@ -81,13 +81,15 @@ def main(clear, team):
     tables_to_copy = get_table_file(file_name="tables_to_copy_from_sirius")
 
     if clear:
-        clear_tables(db_engine=target_db_engine, db_config=db_config, tables=tables_to_copy)
+        clear_tables(
+            db_engine=target_db_engine, db_config=db_config, tables=tables_to_copy
+        )
 
     copy_tables(
         db_config=db_config,
         source_db_engine=source_db_engine,
         target_db_engine=target_db_engine,
-        tables=tables_to_copy
+        tables=tables_to_copy,
     )
 
 

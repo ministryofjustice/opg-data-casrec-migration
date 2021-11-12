@@ -19,12 +19,7 @@ def test_add_one_year():
     test_data_df = pd.DataFrame(test_data, columns=[x for x in test_data])
 
     expected_data = {
-        new_col: [
-            "2012-02-28",
-            "2013-02-28",
-            "2013-02-28",
-            "2021-04-01"
-        ],
+        new_col: ["2012-02-28", "2013-02-28", "2013-02-28", "2021-04-01"],
     }
 
     expected_data_df = pd.DataFrame(expected_data, columns=[x for x in expected_data])

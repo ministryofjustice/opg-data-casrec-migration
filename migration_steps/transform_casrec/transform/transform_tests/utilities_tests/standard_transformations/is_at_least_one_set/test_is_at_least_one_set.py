@@ -26,7 +26,7 @@ def test_is_at_least_one_set():
             None,
             None,
             "",
-        ]
+        ],
     }
     test_data_df = pd.DataFrame(test_data)
 
@@ -37,9 +37,14 @@ def test_is_at_least_one_set():
     expected_data_df = pd.DataFrame(expected_data)
 
     result_df = is_at_least_one_set(
-        original_cols=["received_date1", "received_date2", "received_date3", "received_date4"],
+        original_cols=[
+            "received_date1",
+            "received_date2",
+            "received_date3",
+            "received_date4",
+        ],
         result_col=result_col,
-        df=test_data_df
+        df=test_data_df,
     )
 
     assert_frame_equal(expected_data_df, result_df)

@@ -49,7 +49,7 @@ def insert_fee_reductions(target_db, db_config, mapping_file):
             )
 
         except EmptyDataFrame as empty_data_frame:
-            if empty_data_frame.empty_data_frame_type == 'chunk':
+            if empty_data_frame.empty_data_frame_type == "chunk":
                 target_db.create_empty_table(sirius_details=sirius_details)
                 break
             continue
