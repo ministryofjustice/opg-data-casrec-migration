@@ -93,16 +93,19 @@ def clean_up_and_convert_to_dict(df: pd.DataFrame) -> Dict:
     )
     # convert 'is_complete' rows to boolean: True
     mapping_df["is_complete"] = mapping_df.apply(
-        lambda x: True if x["is_complete"] in ["yes", "YES"] else False, axis=1,
+        lambda x: True if x["is_complete"] in ["yes", "YES"] else False,
+        axis=1,
     )
 
     # change 'is_complete' to true if field is a pk
     mapping_df["is_complete"] = mapping_df.apply(
-        lambda x: True if x["is_pk"] is True else x["is_complete"], axis=1,
+        lambda x: True if x["is_pk"] is True else x["is_complete"],
+        axis=1,
     )
     # change 'is_complete' to true if field is a fk
     mapping_df["is_complete"] = mapping_df.apply(
-        lambda x: True if x["fk_parents"] != "" else x["is_complete"], axis=1,
+        lambda x: True if x["fk_parents"] != "" else x["is_complete"],
+        axis=1,
     )
 
     # drop any rows that have no value in all interesting cols

@@ -110,8 +110,10 @@ def insert_addresses_deputies(db_config, target_db, mapping_file):
             )
 
         except EmptyDataFrame as empty_data_frame:
-            if empty_data_frame.empty_data_frame_type == 'chunk':
-                target_db.create_empty_table(sirius_details=sirius_details, df=empty_data_frame.df)
+            if empty_data_frame.empty_data_frame_type == "chunk":
+                target_db.create_empty_table(
+                    sirius_details=sirius_details, df=empty_data_frame.df
+                )
                 break
             continue
 

@@ -53,7 +53,9 @@ def count_rows(connection_string, destination_schema, enabled_entities, team="")
                         casrec_query = query_details["casrec_query"]
 
                         query_schema = query.replace("{schema}", destination_schema)
-                        casrec_query = casrec_query.replace("{schema}", destination_schema)
+                        casrec_query = casrec_query.replace(
+                            "{schema}", destination_schema
+                        )
 
                         try:
                             cursor.execute(query_schema)

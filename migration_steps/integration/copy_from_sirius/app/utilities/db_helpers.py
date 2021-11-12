@@ -4,7 +4,9 @@ import logging
 log = logging.getLogger("root")
 
 
-def generate_select_query(schema, table, columns=None, where_clause=None, order_by="id"):
+def generate_select_query(
+    schema, table, columns=None, where_clause=None, order_by="id"
+):
     if columns:
         query = f"SELECT {', '.join(columns)} from {schema}.{table}"
     else:

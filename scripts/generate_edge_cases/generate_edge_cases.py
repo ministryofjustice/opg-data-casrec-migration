@@ -37,9 +37,15 @@ anon_types = {
     },
     "full_name": {"include": ["name"], "exclude": [], "faker": "name"},
     "title": {"include": ["title"], "exclude": [], "faker": "prefix_nonbinary"},
-    "initial": {"include": ["init"], "exclude": ["rev_init"],},
+    "initial": {
+        "include": ["init"],
+        "exclude": ["rev_init"],
+    },
     "dob": {"include": ["dob"], "exclude": [], "faker": "date"},
-    "birth_year": {"include": ["birth_yr"], "exclude": [],},
+    "birth_year": {
+        "include": ["birth_yr"],
+        "exclude": [],
+    },
     "date": {"include": ["date", "sent1"], "exclude": [], "faker": "datetime"},
     "email": {"include": ["email"], "exclude": ["by_email"], "faker": "email"},
     "phone": {

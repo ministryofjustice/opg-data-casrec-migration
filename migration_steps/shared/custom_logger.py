@@ -31,7 +31,9 @@ class MyHandler(colourlog.StreamHandler):
 
 class CustomColouredFormatter(colourlog.ColoredFormatter):
     def format(self, record: logging.LogRecord) -> str:
-        default_attrs = logging.LogRecord(None, None, None, None, None, None, None).__dict__.keys()
+        default_attrs = logging.LogRecord(
+            None, None, None, None, None, None, None
+        ).__dict__.keys()
         extras = set(record.__dict__.keys()) - default_attrs
 
         fmt = "%(log_color)s %(asctime)s %(filename)-18s %(levelname)-8s: %(message)s"

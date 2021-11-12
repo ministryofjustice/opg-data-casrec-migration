@@ -61,7 +61,9 @@ def perform_transformations(
         )
         if len(final_df) == 0:
             log.debug(f"No data left after simple_mapping")
-            raise EmptyDataFrame(empty_data_frame_type="chunk with simple mappings applied")
+            raise EmptyDataFrame(
+                empty_data_frame_type="chunk with simple mappings applied"
+            )
 
     if len(transformations) > 0:
         log.debug("Applying transformations")
@@ -70,7 +72,9 @@ def perform_transformations(
         )
         if len(final_df) == 0:
             log.debug(f"No data left after transformations")
-            raise EmptyDataFrame(empty_data_frame_type="chunk with simple transformations applied")
+            raise EmptyDataFrame(
+                empty_data_frame_type="chunk with simple transformations applied"
+            )
 
     if len(required_columns) > 0:
         log.debug("Applying default columns")
@@ -79,7 +83,9 @@ def perform_transformations(
         )
         if len(final_df) == 0:
             log.debug(f"No data left after default columns")
-            raise EmptyDataFrame(empty_data_frame_type="chunk with required columns applied")
+            raise EmptyDataFrame(
+                empty_data_frame_type="chunk with required columns applied"
+            )
 
     if len(calculated_fields) > 0:
         log.debug("Applying calculated fields")
@@ -87,7 +93,9 @@ def perform_transformations(
 
         if len(final_df) == 0:
             log.debug(f"No data left after calculated fields")
-            raise EmptyDataFrame(empty_data_frame_type="chunk with calculations applied")
+            raise EmptyDataFrame(
+                empty_data_frame_type="chunk with calculations applied"
+            )
 
     if len(lookup_tables) > 0:
         log.debug("Applying lookup tables")

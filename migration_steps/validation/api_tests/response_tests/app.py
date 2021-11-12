@@ -18,9 +18,15 @@ log = logging.getLogger("root")
 
 def main():
     entities = {
-        "clients": [{"csv": "clients", "identifier": "client"},],
-        "cases": [{"csv": "orders", "identifier": "order"},],
-        "bonds": [{"csv": "bonds", "identifier": "order"},],
+        "clients": [
+            {"csv": "clients", "identifier": "client"},
+        ],
+        "cases": [
+            {"csv": "orders", "identifier": "order"},
+        ],
+        "bonds": [
+            {"csv": "bonds", "identifier": "order"},
+        ],
         "deputies": [
             {"csv": "deputies", "identifier": "deputy"},
             {"csv": "deputy_clients", "identifier": "deputy"},
@@ -32,7 +38,9 @@ def main():
             {"csv": "deputy_orders", "identifier": "order_deputy"},
             {"csv": "deputy_fee_payer", "identifier": "order_deputy"},
         ],
-        "supervision_level": [{"csv": "supervision_level", "identifier": "order"},],
+        "supervision_level": [
+            {"csv": "supervision_level", "identifier": "order"},
+        ],
         "death": [
             {"csv": "client_death_notifications", "identifier": "client"},
             {
@@ -45,9 +53,15 @@ def main():
             {"csv": "client_warnings", "identifier": "client", "assert_on_list": True},
             {"csv": "deputy_warnings", "identifier": "deputy", "assert_on_list": True},
         ],
-        "crec": [{"csv": "crec", "identifier": "client"},],
-        "visits": [{"csv": "visits", "identifier": "client", "assert_on_list": True},],
-        "reporting": [{"csv": "reports", "identifier": "client"},],
+        "crec": [
+            {"csv": "crec", "identifier": "client"},
+        ],
+        "visits": [
+            {"csv": "visits", "identifier": "client", "assert_on_list": True},
+        ],
+        "reporting": [
+            {"csv": "reports", "identifier": "client"},
+        ],
         "invoice": [
             {"csv": "invoice", "identifier": "client", "assert_on_list": True},
         ],

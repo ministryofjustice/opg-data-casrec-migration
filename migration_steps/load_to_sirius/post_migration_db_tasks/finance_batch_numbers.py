@@ -34,7 +34,10 @@ def create_batch_number(cursor):
 
 
 def set_batch_numbers_in_migrated_tables(cursor):
-    batch_tables = [["finance_invoice"], ["finance_ledger", "finance_ledger_allocation"]]
+    batch_tables = [
+        ["finance_invoice"],
+        ["finance_ledger", "finance_ledger_allocation"],
+    ]
 
     for tables in batch_tables:
         batch_number = None
@@ -54,7 +57,9 @@ def set_batch_numbers_in_migrated_tables(cursor):
 
 def set_batch_numbers_in_finance_person(cursor):
     if not helpers.check_entity_enabled(entity_name="clients"):
-        log.info(f"Skip setting batch numbers in finance_person. Clients entity disabled.")
+        log.info(
+            f"Skip setting batch numbers in finance_person. Clients entity disabled."
+        )
         return
 
     batch_number = create_batch_number(cursor=cursor)

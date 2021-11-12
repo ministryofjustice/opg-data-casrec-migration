@@ -38,7 +38,9 @@ def test_convert_to_timestamp():
     expected_data_df["datetime_col"] = pd.to_datetime(expected_data["datetime_col"])
 
     result_df = convert_to_timestamp(
-        original_cols=["date_col", "time_col"], result_col="datetime_col", df=test_data_df
+        original_cols=["date_col", "time_col"],
+        result_col="datetime_col",
+        df=test_data_df,
     )
 
     assert_frame_equal(expected_data_df, result_df)

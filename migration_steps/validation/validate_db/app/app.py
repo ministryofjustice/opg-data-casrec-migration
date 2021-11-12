@@ -74,7 +74,7 @@ def get_mappings():
         "visits": ["visits"],
         "tasks": ["tasks"],
         "remarks": ["client_notes", "deputy_notes"],
-        "reporting": ["annual_report_logs", "annual_report_lodging_details"]
+        "reporting": ["annual_report_logs", "annual_report_lodging_details"],
     }
 
     for entity, mapping in all_mappings.items():
@@ -395,7 +395,8 @@ def build_validation_statements(mapping_name):
 
     # FROM, with JOINs
     sql_add(
-        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}", 2,
+        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}",
+        2,
     )
     for join in validation_dict["casrec"]["joins"]:
         sql_add(f"{join}", 2)
@@ -439,7 +440,8 @@ def build_validation_statements(mapping_name):
 
     # FROM, with JOINs
     sql_add(
-        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}", 2,
+        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}",
+        2,
     )
     for join in validation_dict["sirius"]["joins"]:
         join = join.replace("{target_schema}", str(target_schema))
@@ -501,7 +503,8 @@ def write_column_validation_sql(
     # tested column
     sql_add(f"{col_source_casrec} AS {mapped_item_name}", 4)
     sql_add(
-        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}", 3,
+        f"FROM {source_schema}.{validation_dict['casrec']['from_table']}",
+        3,
     )
     for join in validation_dict["casrec"]["joins"]:
         sql_add(f"{join}", 3)
@@ -533,7 +536,8 @@ def write_column_validation_sql(
     # tested column
     sql_add(f"{col_source_sirius} AS {mapped_item_name}", 4)
     sql_add(
-        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}", 3,
+        f"FROM {target_schema}.{validation_dict['sirius']['from_table']}",
+        3,
     )
     for join in validation_dict["sirius"]["joins"]:
         join = join.replace("{target_schema}", str(target_schema))

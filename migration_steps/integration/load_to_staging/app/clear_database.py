@@ -9,7 +9,9 @@ log = logging.getLogger("root")
 base_data_tables = ["assignees", "bond_providers"]
 
 
-def empty_target_tables(db_config, db_engine, tables, extra_tables=None, tables_copied_from_sirius=None):
+def empty_target_tables(
+    db_config, db_engine, tables, extra_tables=None, tables_copied_from_sirius=None
+):
     if extra_tables:
         extra_table_list = [v["sirius_target_table"] for k, v in extra_tables.items()]
         tables_to_clear = extra_table_list + tables

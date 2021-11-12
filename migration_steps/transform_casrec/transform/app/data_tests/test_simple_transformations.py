@@ -92,6 +92,8 @@ def test_simple_transformations(
 
             match = result_df[k].equals(result_df[i])
 
-            print(f"checking {k} == {i}.... " f"{'OK' if match is True else 'oh no'} ",)
+            print(
+                f"checking {k} == {i}.... " f"{'OK' if match is True else 'oh no'} ",
+            )
 
             assert match is True

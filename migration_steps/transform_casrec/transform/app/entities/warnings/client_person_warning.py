@@ -72,7 +72,9 @@ def insert_client_person_warning(db_config, target_db, mapping_file):
         )
     except EmptyDataFrame as empty_data_frame:
 
-        target_db.create_empty_table(sirius_details=sirius_details, df=empty_data_frame.df)
+        target_db.create_empty_table(
+            sirius_details=sirius_details, df=empty_data_frame.df
+        )
 
     except Exception as e:
         print(e)

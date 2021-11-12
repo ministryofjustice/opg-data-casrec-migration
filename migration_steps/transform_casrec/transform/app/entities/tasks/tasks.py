@@ -8,6 +8,7 @@ from helpers import get_mapping_dict, get_table_def
 
 log = logging.getLogger("root")
 
+
 def insert_tasks(db_config, target_db, mapping_file):
     chunk_size = db_config["chunk_size"]
     offset = -chunk_size
@@ -47,11 +48,15 @@ def insert_tasks(db_config, target_db, mapping_file):
                     chunk_no=chunk_no,
                 )
             else:
-                log.info(f'Chunk originally had {num_tasks} tasks, but was filtered to 0; ignoring')
+                log.info(
+                    f"Chunk originally had {num_tasks} tasks, but was filtered to 0; ignoring"
+                )
 
         except EmptyDataFrame as empty_data_frame:
             if empty_data_frame.empty_data_frame_type == "chunk":
-                target_db.create_empty_table(sirius_details=sirius_details, df=empty_data_frame.df)
+                target_db.create_empty_table(
+                    sirius_details=sirius_details, df=empty_data_frame.df
+                )
                 break
             continue
 

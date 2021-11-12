@@ -106,13 +106,13 @@ s3_client = s3_session.client(
     "s3",
     endpoint_url=f"http://{localstack_url}:4572",
     aws_access_key_id="fake",
-    aws_secret_access_key="fake",
+    aws_secret_access_key="fake",  # pragma: allowlist secret
 )
 s3_resource = s3_session.resource(
     "s3",
     endpoint_url=f"http://{localstack_url}:4572",
     aws_access_key_id="fake",
-    aws_secret_access_key="fake",
+    aws_secret_access_key="fake",  # pragma: allowlist secret
 )
 
 bucket_exists = False
