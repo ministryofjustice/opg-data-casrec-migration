@@ -25,134 +25,133 @@ workflows:
   pull_request:
     when: << pipeline.parameters.run_master >>
     jobs:
+      - persist_parameters:
+          name: persist parameters development
+          param_workspace: development
+          environment_title: Development-Branch
+          filters: {branches:{ignore:[master]}}
       - manage_workflow:
+          requires: [persist parameters development]
           name: manage workflow
-          environment: Development
           filters: {branches:{ignore:[master]}}
       - reset_sirius:
           name: reset the sirius fixtures development
           requires: [manage workflow]
           tf_workspace: development
-          environment: Development
           filters: {branches:{ignore:[master]}}
       - build:
           name: build and unit tests
-          requires: [manage workflow]
-          environment: Development
+          requires: [manage workflow, persist parameters development]
           filters: {branches:{ignore:[master]}}
       - infrastructure:
           name: build shared infra development
           requires: [build and unit tests]
           tf_workspace: development
           tf_command: apply
-          environment: Development
           folder: shared
           filters: {branches:{ignore:[master]}}
       - load_casrec_db:
           name: load casrec db
           requires: [build shared infra development]
-          environment: Development
           filters: {branches:{ignore:[master]}}
       - infrastructure:
           name: plan infra development
           requires: [build shared infra development]
           tf_workspace: development
           tf_command: plan
-          environment: Development
           filters: {branches:{ignore:[master]}}
       - infrastructure:
           name: build infra development
           requires: [plan infra development]
           tf_workspace: development
           tf_command: apply
-          environment: Development
           filters: {branches:{ignore:[master]}}
       - run_step_function:
           name: run the step function development
           requires: [build infra development, load casrec db, reset the sirius fixtures development]
           tf_workspace: development
-          environment: Development
           filters: {branches:{ignore:[master]}}
       - run_api_tests:
           name: run api tests
           requires: [run the step function development]
           tf_workspace: development
-          environment: Development
           filters: {branches:{ignore:[master]}}
       - run_api_tests:
           name: run functional api tests
           requires: [run api tests]
           tf_workspace: development
-          environment: Development
           runner_command: functional-api-tests
           filters: {branches:{ignore:[master]}}
       - job_complete:
           name: job complete notification
           requires: [run functional api tests]
           workspace: development
-          environment: Development
           filters: {branches:{ignore:[master]}}
 
   master:
     when: << pipeline.parameters.run_master >>
     jobs:
+      - persist_parameters:
+          name: persist parameters main
+          param_workspace: development
+          environment_title: Development-Merge
+          filters: {branches:{only:[master]}}
       - build:
-          name: build and unit tests master
-          environment: Development on Main
+          name: build and unit tests main
+          requires: [persist parameters main]
           push_mappings: true
           filters: {branches:{only:[master]}}
       - approve:
           name: approve preproduction kick off
           type: approval
-          requires: [build and unit tests master]
-          environment: Development on Main
+          requires: [build and unit tests main]
           filters: {branches:{only:[master]}}
       - kick_off_environment:
           name: kick off preproduction
           workspace: preproduction
           requires: [approve preproduction kick off]
-          environment: Development on Main
           filters: {branches:{only:[master]}}
 
   preprod:
     when: << pipeline.parameters.run_preprod >>
     jobs:
+      - persist_parameters:
+          name: persist parameters preproduction
+          param_workspace: preproduction
+          environment_title: Preproduction-Manual
+          filters: {branches:{only:[master]}}
       - reset_sirius_full_restore:
           name: run and monitor jenkins restore job pre
-          environment: Preproduction
+          requires: [persist parameters preproduction]
           sirius_environment: casrecdmpp
           filters: {branches:{only:[master]}}
       - get_latest_image:
           name: get latest tag preproduction
+          requires: [persist parameters preproduction]
           image_tag: master
-          environment: Preproduction
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: build shared infra preproduction
           requires: [get latest tag preproduction]
           tf_workspace: preproduction
           tf_command: apply
-          environment: Preproduction
           folder: shared
           filters: {branches:{only:[master]}}
       - load_casrec_db:
           name: load casrec db preproduction
           requires: [build shared infra preproduction]
-          environment: Preproduction
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra preproduction
           requires: [load casrec db preproduction]
           tf_workspace: preproduction
           tf_command: plan
-          environment: Preproduction
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: build infra preproduction
           requires: [plan infra preproduction]
           tf_workspace: preproduction
           tf_command: apply
-          environment: Preproduction
           filters: {branches:{only:[master]}}
       - run_step_function:
           name: run the step function preproduction
@@ -164,28 +163,23 @@ workflows:
           account: "preproduction"
           wait_for: "18000"
           tf_workspace: preproduction
-          environment: Preproduction
           filters: {branches:{only:[master]}}
       - run_api_tests:
           name: run api tests preproduction
           requires: [tag image for qa]
           tf_workspace: preproduction
-          environment: Preproduction
           filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch preprod
           requires: [run the step function preproduction]
           tf_workspace: preproduction
-          environment: Preproduction
           filters: {branches:{only:[master]}}
       - job_complete:
           name: job complete notification
           requires: [run api tests preproduction]
-          environment: Preproduction
           filters: {branches:{only:[master]}}
       - tag_image_for_environment:
           name: tag image for qa
-          environment: Preproduction
           environment_tag: qa
           requires: [run the step function preproduction]
           filters: {branches:{only:[master]}}
@@ -193,44 +187,43 @@ workflows:
           name: approve qa kick off
           type: approval
           requires: [tag image for qa]
-          environment: Preproduction
           filters: {branches:{only:[master]}}
       - kick_off_environment:
           name: kick off qa
           workspace: qa
           requires: [approve qa kick off]
-          environment: Preproduction
           filters: {branches:{only:[master]}}
       - approve:
           name: approve preqa kick off
           type: approval
           requires: [tag image for qa]
-          environment: Preproduction
           filters: {branches:{only:[master]}}
       - kick_off_environment:
           name: kick off preqa
           workspace: preqa
           requires: [approve preqa kick off]
-          environment: Preproduction
           filters: {branches:{only:[master]}}
       - job_complete:
           name: job complete notification
           requires: [run api tests preproduction]
-          environment: Preproduction
           workspace: preproduction
           filters: {branches:{only:[master]}}
   preqa:
     when: << pipeline.parameters.run_preqa >>
     jobs:
+      - persist_parameters:
+          name: persist parameters preqa
+          param_workspace: preqa
+          environment_title: PreQA-Manual
+          filters: {branches:{only:[master]}}
       - get_latest_image:
           name: get latest tag preqa
+          requires: [persist parameters preqa]
           image_tag: qa
-          environment: PreQA
           filters: {branches:{only:[master]}}
       - reset_sirius_full_restore:
           name: run and monitor jenkins restore job preqa
-          requires: [get latest tag preqa]
-          environment: PreQA
+          requires: [persist parameters preqa]
           sirius_environment: casrecdmpq
           filters: {branches:{only:[master]}}
       - infrastructure:
@@ -238,14 +231,12 @@ workflows:
           requires: [get latest tag preqa]
           tf_workspace: preqa
           tf_command: plan
-          environment: PreQA
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: build infra preqa
           requires: [plan infra preqa]
           tf_workspace: preqa
           tf_command: apply
-          environment: PreQA
           filters: {branches:{only:[master]}}
       - run_step_function:
           name: run the step function preqa
@@ -253,52 +244,51 @@ workflows:
           account: "preproduction"
           wait_for: "18000"
           tf_workspace: preqa
-          environment: PreQA
           filters: {branches:{only:[master]}}
       - run_api_tests:
           name: run api tests preqa
           requires: [run the step function preqa]
           tf_workspace: preqa
-          environment: PreQA
           filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch preqa
           requires: [run the step function preqa]
           tf_workspace: preqa
-          environment: PreQA
           filters: {branches:{only:[master]}}
       - job_complete:
           name: job complete notification
           requires: [run api tests preqa]
-          environment: PreQA
           workspace: preqa
           filters: {branches:{only:[master]}}
   qa:
     when: << pipeline.parameters.run_qa >>
     jobs:
+      - persist_parameters:
+          name: persist parameters qa
+          param_workspace: qa
+          environment_title: QA-Manual
+          filters: {branches:{only:[master]}}
       - reset_sirius_full_restore:
           name: run and monitor jenkins restore job qa
-          environment: Quality Assurance
+          requires: [persist parameters qa]
           sirius_environment: casrecdmqa
           filters: {branches:{only:[master]}}
       - get_latest_image:
           name: get latest tag qa
+          requires: [persist parameters qa]
           image_tag: qa
-          environment: Quality Assurance
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra qa
           requires: [get latest tag qa]
           tf_workspace: qa
           tf_command: plan
-          environment: Quality Assurance
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: build infra qa
           requires: [plan infra qa]
           tf_workspace: qa
           tf_command: apply
-          environment: Quality Assurance
           filters: {branches:{only:[master]}}
       - run_step_function:
           name: run the step function qa
@@ -306,11 +296,9 @@ workflows:
           account: "preproduction"
           wait_for: "18000"
           tf_workspace: qa
-          environment: Quality Assurance
           filters: {branches:{only:[master]}}
       - tag_image_for_environment:
           name: tag image for production
-          environment: Quality Assurance
           environment_tag: production
           requires: [run the step function qa]
           filters: {branches:{only:[master]}}
@@ -318,36 +306,37 @@ workflows:
           name: full reindex elasticsearch qa
           requires: [run the step function qa]
           tf_workspace: qa
-          environment: Quality Assurance
           filters: {branches:{only:[master]}}
       - job_complete:
           name: job complete notification
           requires: [run the step function qa]
-          environment: Quality Assurance
           workspace: qa
           filters: {branches:{only:[master]}}
 
   production:
     when: << pipeline.parameters.run_production >>
     jobs:
+      - persist_parameters:
+          name: persist parameters production
+          param_workspace: production
+          environment_title: Production-Manual
+          filters: {branches:{only:[master]}}
       - get_latest_image:
           name: get latest tag production
+          requires: [persist parameters production]
           image_tag: production
-          environment: Production
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra production
           requires: [get latest tag production]
           tf_workspace: production
           tf_command: plan
-          environment: production
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: build infra production
           requires: [plan infra production]
           tf_workspace: production
           tf_command: apply
-          environment: production
           filters: {branches:{only:[master]}}
 
   nightly_development_restore:
@@ -358,7 +347,6 @@ workflows:
     jobs:
       - reset_sirius_full_restore:
           name: run and monitor jenkins restore job development
-          environment: Development
           sirius_environment: casmigrate
           filters: {branches:{only:[master]}}
 
@@ -368,14 +356,19 @@ workflows:
           cron: "10 03 * * *"
           filters: {branches:{only:[master]}}
     jobs:
+      - persist_parameters:
+          name: persist parameters preproduction
+          param_workspace: preproduction
+          environment_title: Preproduction-Nightly
+          filters: {branches:{only:[master]}}
       - get_latest_image:
           name: get latest tag preproduction
+          requires: [persist parameters preproduction]
           image_tag: master
-          environment: PreproductionNightly
           filters: {branches:{only:[master]}}
       - reset_sirius_full_restore:
           name: run and monitor jenkins restore job pre
-          environment: PreproductionNightly
+          requires: [persist parameters preproduction]
           sirius_environment: casrecdmpp
           filters: {branches:{only:[master]}}
       - infrastructure:
@@ -383,20 +376,17 @@ workflows:
           requires: [get latest tag preproduction]
           tf_workspace: preproduction
           tf_command: apply
-          environment: Preproduction
           folder: shared
           filters: {branches:{only:[master]}}
       - load_casrec_db:
           name: load casrec db preproduction
           requires: [build shared infra preproduction]
-          environment: Preproduction
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: build infra preproduction
           requires: [get latest tag preproduction]
           tf_workspace: preproduction
           tf_command: apply
-          environment: PreproductionNightly
           filters: {branches:{only:[master]}}
       - run_step_function:
           name: run the step function preproduction
@@ -407,12 +397,11 @@ workflows:
           ]
           account: "preproduction"
           wait_for: "18000"
+          notify_validation_fails: true
           tf_workspace: preproduction
-          environment: PreproductionNightly
           filters: {branches:{only:[master]}}
       - tag_image_for_environment:
           name: tag image for qa
-          environment: PreproductionNightly
           environment_tag: qa
           requires: [run the step function preproduction]
           filters: {branches:{only:[master]}}
@@ -420,42 +409,35 @@ workflows:
           name: run api tests preproduction
           requires: [tag image for qa]
           tf_workspace: preproduction
-          environment: PreproductionNightly
           filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch preproduction
           requires: [run api tests preproduction]
           tf_workspace: preproduction
-          environment: PreproductionNightly
           filters: {branches:{only:[master]}}
       - approve:
           name: approve qa kick off
           type: approval
           requires: [tag image for qa]
-          environment: PreproductionNightly
           filters: {branches:{only:[master]}}
       - kick_off_environment:
           name: kick off qa
           workspace: qa
           requires: [approve qa kick off]
-          environment: PreproductionNightly
           filters: {branches:{only:[master]}}
       - approve:
           name: approve preqa kick off
           type: approval
           requires: [tag image for qa]
-          environment: PreproductionNightly
           filters: {branches:{only:[master]}}
       - kick_off_environment:
           name: kick off preqa
           workspace: preqa
           requires: [approve preqa kick off]
-          environment: PreproductionNightly
           filters: {branches:{only:[master]}}
       - job_complete:
           name: job complete notification
           requires: [run api tests preproduction]
-          environment: PreproductionNightly
           workspace: preproduction
           filters: {branches:{only:[master]}}
 
@@ -465,15 +447,20 @@ workflows:
           cron: "10 07 * * *"
           filters: {branches:{only:[master]}}
     jobs:
+      - persist_parameters:
+          name: persist parameters preqa
+          param_workspace: preqa
+          environment_title: PreQA-Nightly
+          filters: {branches:{only:[master]}}
       - get_latest_image:
           name: get latest tag preqa
+          check_preprod_run: true
+          requires: [persist parameters preqa]
           image_tag: qa
-          environment: PreQANightly
           filters: {branches:{only:[master]}}
       - reset_sirius_full_restore:
           name: run and monitor jenkins restore job preqa
           requires: [get latest tag preqa]
-          environment: PreQANightly
           sirius_environment: casrecdmpq
           filters: {branches:{only:[master]}}
       - infrastructure:
@@ -481,7 +468,6 @@ workflows:
           requires: [get latest tag preqa]
           tf_workspace: preqa
           tf_command: apply
-          environment: PreQANightly
           filters: {branches:{only:[master]}}
       - run_step_function:
           name: run the step function preqa
@@ -492,18 +478,15 @@ workflows:
           account: "preqa"
           wait_for: "18000"
           tf_workspace: preqa
-          environment: PreQANightly
           filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch preqa
           requires: [run the step function preqa]
           tf_workspace: preqa
-          environment: PreQANightly
           filters: {branches:{only:[master]}}
       - job_complete:
           name: job complete notification
           requires: [run the step function preqa]
-          environment: PreQANightly
           workspace: preqa
           filters: {branches:{only:[master]}}
 
@@ -627,6 +610,7 @@ orbs:
     commands:
       notify_env_vars:
         steps:
+          - attach_workspace: {at: ~/project}
           - run:
               name: set environment variables
               when: always
@@ -639,18 +623,15 @@ orbs:
                 if [ ${#CI_PULL_REQUEST} -eq 0 ]
                   then echo "export CI_PULL_REQUEST=\"${CIRCLE_BUILD_URL}\"" >> $BASH_ENV
                 fi
+
+                ENTITIES=$(cat ENTITIES)
+                echo "export ENTITIES=\"${ENTITIES}\"" >> $BASH_ENV
+
+                ENVIRONMENT_TITLE=$(cat ENVIRONMENT_TITLE)
+                echo "export ENVIRONMENT_TITLE=\"${ENVIRONMENT_TITLE}\"" >> $BASH_ENV
               working_directory: ~/project
       notify_if_success:
         steps:
-          - run:
-              name: set entities environment variables
-              when: always
-              command: |
-                pip3 install boto3 click
-                python3 get_environment_entities.py --environment ${TF_WORKSPACE} --role migrations-ci >> ENTITIES
-                ENTITIES=$(cat ENTITIES)
-                echo "export ENTITIES=\"${ENTITIES}\"" >> $BASH_ENV
-              working_directory: ~/project/scripts/ci_scripts
           - slack/notify:
               channel: opg-migration-builds
               event: pass
@@ -661,7 +642,7 @@ orbs:
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": ":github-tick: *Build to ${ENVIRONMENT} successful*"
+                                "text": ":github-tick: *Build to ${ENVIRONMENT_TITLE} successful*"
                             }
                         },
                         {
@@ -720,7 +701,7 @@ orbs:
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": ":x::dancebadger: *Build to ${ENVIRONMENT} failed*"
+                                "text": ":x::dancebadger: *Build to ${ENVIRONMENT_TITLE} failed*"
                             }
                         },
                         {
@@ -734,7 +715,7 @@ orbs:
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": "Kicked off by *${CIRCLE_USERNAME}*\n\n"
+                                "text": "*Kicked off by:* ${CIRCLE_USERNAME}\n\n*Entities*: ${ENTITIES}\n"
                             }
                         },
                         {
@@ -778,7 +759,7 @@ orbs:
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": ":see_no_evil: *Validation results for ${ENVIRONMENT}*\n*In the format: (entity-failed_count)*"
+                                "text": ":see_no_evil: *Validation results for ${ENVIRONMENT_TITLE}*\n*In the format: (entity-failed_count)*"
                             }
                         },
                         {
@@ -806,21 +787,45 @@ orbs:
                     ]
                 }
 jobs:
+  persist_parameters:
+    executor: migration/python
+    resource_class: small
+    parameters:
+      param_workspace:
+        description: workspace to use
+        type: string
+        default: "development"
+      environment_title:
+        description: environment title
+        type: string
+        default: "Development-Branch"
+    steps:
+      - checkout
+      - run:
+          name: pip requirements
+          when: always
+          command: pip3 install boto3 click
+      - run:
+          name: set environment variables
+          when: always
+          command: |
+            python3 scripts/ci_scripts/get_environment_entities.py --environment << parameters.param_workspace >> --role migrations-ci > ENTITIES
+            echo << parameters.environment_title >> > ENVIRONMENT_TITLE
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ENTITIES
+            - ENVIRONMENT_TITLE
   manage_workflow:
     executor: migration/python
     resource_class: small
     parameters:
-      environment:
-        description: environment for step function
-        type: string
-        default: "Development"
       tf_workspace:
         description: workspace to use
         type: string
         default: "development"
     environment:
       TF_WORKSPACE: << parameters.tf_workspace >>
-      ENVIRONMENT: << parameters.environment >>
     steps:
       - checkout
       - migration/login_codeartifact
@@ -831,17 +836,12 @@ jobs:
     executor: migration/python
     resource_class: small
     parameters:
-      environment:
-        description: environment for step function
-        type: string
-        default: "Development"
       workspace:
         description: workspace to use
         type: string
         default: "development"
     environment:
       WORKSPACE: << parameters.workspace >>
-      ENVIRONMENT: << parameters.environment >>
     steps:
       - checkout
       - run:
@@ -885,10 +885,6 @@ jobs:
     executor: migration/python
     resource_class: small
     parameters:
-      environment:
-        description: environment for step function
-        type: string
-        default: "Development"
       environment_tag:
         description: environment tag for where image can be used
         type: string
@@ -897,7 +893,6 @@ jobs:
       AWS_REGION: eu-west-1
       AWS_CONFIG_FILE: ~/project/aws_config
       AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
-      ENVIRONMENT: << parameters.environment >>
       ENVIRONMENT_TAG: << parameters.environment_tag >>
     working_directory: ~/project
     steps:
@@ -947,10 +942,6 @@ jobs:
     executor: migration/python
     resource_class: small
     parameters:
-      environment:
-        description: environment for step function
-        type: string
-        default: "Development"
       tf_workspace:
         description: terraform workspace
         type: string
@@ -963,9 +954,12 @@ jobs:
         description: how long to wait for step function to finish
         type: string
         default: "1800"
+      notify_validation_fails:
+        description: if we want to send validation failures
+        type: boolean
+        default: false
     environment:
       SIRIUS_ACCOUNT: << parameters.account >>
-      ENVIRONMENT: << parameters.environment >>
       TF_WORKSPACE: << parameters.tf_workspace >>
       WAIT_FOR: << parameters.wait_for >>
       AWS_CONFIG_FILE: ~/project/aws_config
@@ -980,9 +974,7 @@ jobs:
           command: python3 run_step_function.py --role migrations-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --workspace ${TF_WORKSPACE}
           working_directory: ~/project/scripts/ci_scripts
       - when:
-          condition:
-            and:
-              - equal: [PreproductionNightly, << parameters.environment >>]
+          condition: << parameters.notify_validation_fails >>
           steps:
             - aws-cli/install
             - run:
@@ -1006,10 +998,6 @@ jobs:
     executor: terraform/terraform
     resource_class: small
     parameters:
-      environment:
-        description: environment for step function
-        type: string
-        default: "Development"
       tf_workspace:
         description: terraform workspace
         type: string
@@ -1019,7 +1007,6 @@ jobs:
         type: string
         default: "api-tests"
     environment:
-      ENVIRONMENT: << parameters.environment >>
       TF_WORKSPACE: << parameters.tf_workspace >>
       RUNNER_CMD: << parameters.runner_command >>
     working_directory: ~/project/terraform/environment
@@ -1038,16 +1025,11 @@ jobs:
     executor: terraform/terraform
     resource_class: small
     parameters:
-      environment:
-        description: environment for step function
-        type: string
-        default: "Development"
       tf_workspace:
         description: terraform workspace
         type: string
         default: "development"
     environment:
-      ENVIRONMENT: << parameters.environment >>
       TF_WORKSPACE: << parameters.tf_workspace >>
     working_directory: ~/project/terraform/environment
     steps:
@@ -1064,16 +1046,11 @@ jobs:
     executor: terraform/terraform
     resource_class: small
     parameters:
-      environment:
-        description: environment for step function
-        type: string
-        default: "Development"
       tf_workspace:
         description: terraform workspace
         type: string
         default: "development"
     environment:
-      ENVIRONMENT: << parameters.environment >>
       TF_WORKSPACE: << parameters.tf_workspace >>
     working_directory: ~/project/terraform/environment
     steps:
@@ -1098,16 +1075,11 @@ jobs:
     executor: terraform/terraform
     resource_class: small
     parameters:
-      environment:
-        description: environment for step function
-        type: string
-        default: "Development"
       tf_workspace:
         description: terraform workspace
         type: string
         default: "development"
     environment:
-      ENVIRONMENT: << parameters.environment >>
       TF_WORKSPACE: << parameters.tf_workspace >>
     working_directory: ~/project/terraform/environment
     steps:
@@ -1143,10 +1115,6 @@ jobs:
     executor: migration/python
     resource_class: small
     parameters:
-      environment:
-        description: environment for step function
-        type: string
-        default: "Development"
       push_mappings:
         description: push mappings to S3
         type: boolean
@@ -1155,7 +1123,6 @@ jobs:
       AWS_REGION: eu-west-1
       AWS_CONFIG_FILE: ~/project/aws_config
       AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
-      ENVIRONMENT: << parameters.environment >>
     steps:
       - dockerhub_helper/dockerhub_login
       - setup_remote_docker
@@ -1226,10 +1193,6 @@ jobs:
     executor: terraform/terraform
     resource_class: small
     parameters:
-      environment:
-        description: environment for step function
-        type: string
-        default: "Development"
       tf_workspace:
         description: terraform workspace
         type: string
@@ -1243,7 +1206,6 @@ jobs:
         default: "environment"
     environment:
       WORKSPACE: << parameters.tf_workspace >>
-      ENVIRONMENT: << parameters.environment >>
     working_directory: ~/project/terraform/<< parameters.folder >>
     steps:
       - checkout:
@@ -1270,20 +1232,19 @@ jobs:
     executor: migration/python
     resource_class: small
     parameters:
-      environment:
-        description: environment for step function
-        type: string
-        default: "Development"
       image_tag:
         description: image tag to use
         type: string
         default: "master"
+      check_preprod_run:
+        description: check that preprod has run successfully
+        type: boolean
+        default: false
     environment:
       AWS_REGION: eu-west-1
       AWS_CONFIG_FILE: ~/project/aws_config
       AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
       IMAGE_TAG: << parameters.image_tag >>
-      ENVIRONMENT: << parameters.environment >>
     steps:
       - checkout
       - run:
@@ -1307,9 +1268,7 @@ jobs:
           paths:
             - VERSION
       - when:
-          condition:
-            and:
-              - equal: [PreQANightly, << parameters.environment >>]
+          condition: << parameters.check_preprod_run >>
           steps:
             - run:
                 name: Run preprod previous build success test
@@ -1322,16 +1281,11 @@ jobs:
     executor: migration/python
     resource_class: small
     parameters:
-      environment:
-        description: environment for notifications
-        type: string
-        default: "Development"
       sirius_environment:
         description: environment for notifications
         type: string
         default: "casrecdmpp"
     environment:
-      ENVIRONMENT: << parameters.environment >>
       SIRIUS_ENVIRONMENT: << parameters.sirius_environment >>
     steps:
       - checkout
@@ -1358,16 +1312,12 @@ jobs:
     executor: migration/python
     resource_class: small
     parameters:
-      environment:
-        description: environment for step function
-        type: string
-        default: "Development"
       account:
         description: environment for step function
         type: string
         default: "development"
     environment:
-      ENVIRONMENT: << parameters.environment >>
+      ACCOUNT: << parameters.account >>
     steps:
       - checkout:
           path: ~/project
@@ -1376,7 +1326,7 @@ jobs:
           command: |
             if [ `git log --raw -n 1 | grep -E "^:[0-9]{6}" | awk '{print $6}' \
             | grep -E '(migration_steps/load_casrec|terraform/environment/terraform.tfvars.json)' | wc -l` -gt 0 ] \
-            || [ "${ENVIRONMENT}" = "Development" ]
+            || [ "${ACCOUNT}" = "development" ]
             then
               echo "export RUN_RELOAD=true" >> $BASH_ENV
             else
@@ -1405,17 +1355,10 @@ jobs:
     executor: migration/python
     resource_class: small
     parameters:
-      environment:
-        description: environment for step function
-        type: string
-        default: "Development"
       workspace:
         description: workspace to get entities from
         type: string
         default: "development"
-    environment:
-      ENVIRONMENT: << parameters.environment >>
-      TF_WORKSPACE: << parameters.workspace >>
     steps:
       - checkout:
           path: ~/project

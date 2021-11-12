@@ -23,6 +23,7 @@ def get_running_jobs(
                     if (
                         "pre" not in job["workflows"]["job_name"]
                         and "qa" not in job["workflows"]["job_name"]
+                        and "main" not in job["workflows"]["job_name"]
                     ):
                         print(
                             f"Job: \"{job['workflows']['job_name']}\", Status: \"{job['status']}\""
