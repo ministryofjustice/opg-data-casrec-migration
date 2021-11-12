@@ -68,12 +68,16 @@ BEGIN
         RETURN NULL;
     END IF;
 
+    DateVal = DateVal::date::varchar;
+
     TimeVal = TRIM(time_part);
     IF TimeVal IN ('NaT', '') THEN
         TimeVal = '00:00:00';
     ELSE
         TimeVal = SPLIT_PART(TimeVal, '.', 1);
     END IF;
+
+    TimeVal = TimeVal::time::varchar;
 
     RETURN CONCAT(DateVal, ' ', TimeVal)::timestamp;
 END;
