@@ -345,7 +345,7 @@
         "source_conditions": {
             "date_since": {
                 "col": "Award Date",
-                "date": "31/03/2021"
+                "date": "02/04/2021"
             },
             "exclude_values": {
                 "col": "Exempt",
@@ -451,7 +451,7 @@
         "source_conditions": {
             "date_since": {
                 "col": "Award Date",
-                "date": "31/03/2021"
+                "date": "02/04/2021"
             },
             "exclude_values": {
                 "col": "Remis",

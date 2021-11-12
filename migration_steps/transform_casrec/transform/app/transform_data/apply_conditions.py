@@ -1,13 +1,11 @@
 import datetime
 import logging
 import os
-import datetime as dt
-
 import numpy as np
-
 import helpers
 import pandas as pd
 
+from utilities.df_helpers import get_datetime_from_df_row
 
 log = logging.getLogger("root")
 environment = os.environ.get("ENVIRONMENT")
@@ -109,28 +107,21 @@ def source_conditions(df, conditions):
 
 
 def convert_to_timestamp(df, cols):
-
-    empty_data = ["", "NaT", "nan"]
-
     source_date = format_additional_col_alias(cols["convert_to_timestamp"]["date"])
     source_time = format_additional_col_alias(cols["convert_to_timestamp"]["time"])
-
-    def timestamp(x):
-        date = (
-            x[source_date][0:10] if x[source_date] not in empty_data else "1900-01-01"
-        )
-        time = (
-            x[source_time].split(".")[0]
-            if x[source_time] not in empty_data
-            else "00:00:00"
-        )
-
-        return dt.datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M:%S")
 
     df["c_timestamp"] = (
         df[[source_date, source_time]]
         .astype(str)
-        .apply(lambda x: timestamp(x), axis=1,)
+        .apply(
+            lambda x: get_datetime_from_df_row(
+                row=x,
+                date_col=source_date,
+                time_col=source_time,
+                default_date="1900-01-01"
+            ),
+            axis=1
+        )
     )
 
     df = df.astype({"c_timestamp": "datetime64[ns]"})
@@ -154,6 +145,7 @@ def exclude_values(df, cols):
 
     return df
 
+
 def include_values(df, cols):
     col = format_additional_col_alias(cols["include_values"]["col"])
 
@@ -162,6 +154,7 @@ def include_values(df, cols):
     log.debug(f"Keeping rows where '{col}' is one of {values_to_include}")
 
     return df[df[col].isin(values_to_include)]
+
 
 def greater_than(df, cols):
     col = format_additional_col_alias(cols["greater_than"]["col"])
@@ -210,11 +203,15 @@ def date_since(df, cols):
     col = format_additional_col_alias(cols["date_since"]["col"])
     since_datetime = datetime.datetime.strptime(cols["date_since"]["date"], "%d/%m/%Y")
 
-    log.debug(
-        f"Removing rows where '{col}' is before {since_datetime}"
-    )
+    log.debug(f"Removing rows where '{col}' is before {since_datetime}")
 
-    filtered_df = df[df.apply(lambda x: pd.to_datetime(x[col], dayfirst=True).to_pydatetime() >= since_datetime, axis=1)]
+    filtered_df = df[
+        df.apply(
+            lambda x: pd.to_datetime(x[col], dayfirst=True).to_pydatetime()
+            >= since_datetime,
+            axis=1,
+        )
+    ]
 
     return filtered_df
 

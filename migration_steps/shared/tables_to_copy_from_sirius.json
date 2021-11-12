@@ -1,32 +1,78 @@
 {
-  "finance_person": {
-    "id": {
-      "is_pk": true,
-      "fk_parents": "",
-      "data_type": "int",
-      "table_name": "finance_person",
-      "entity": ""
-    },
-    "person_id": {
-      "is_pk": "",
-      "fk_parents": "",
-      "data_type": "int",
-      "table_name": "finance_person",
-      "entity": ""
-    },
-    "finance_billing_reference": {
-      "is_pk": "",
-      "fk_parents": "",
-      "data_type": "str",
-      "table_name": "finance_person",
-      "entity": ""
-    },
-    "payment_method": {
-      "is_pk": "",
-      "fk_parents": "",
-      "data_type": "str",
-      "table_name": "finance_person",
-      "entity": ""
-    }
-  }
+	"finance_person": {
+		"id": {
+			"is_pk": true,
+			"fk_parents": "",
+			"data_type": "int",
+			"table_name": "finance_person",
+			"entity": ""
+		},
+		"person_id": {
+			"is_pk": "",
+			"fk_parents": "",
+			"data_type": "int",
+			"table_name": "finance_person",
+			"entity": ""
+		},
+		"finance_billing_reference": {
+			"is_pk": "",
+			"fk_parents": "",
+			"data_type": "str",
+			"table_name": "finance_person",
+			"entity": ""
+		},
+		"payment_method": {
+			"is_pk": "",
+			"fk_parents": "",
+			"data_type": "str",
+			"table_name": "finance_person",
+			"entity": ""
+		}
+	},
+	"bond_providers": {
+		"id": {
+			"is_pk": true,
+			"fk_parents": "",
+			"data_type": "int",
+			"table_name": "bond_providers",
+			"entity": ""
+		},
+		"name": {
+			"is_pk": "",
+			"fk_parents": "",
+			"data_type": "str",
+			"table_name": "bond_providers",
+			"entity": ""
+		},
+		"uid": {
+			"is_pk": "",
+			"fk_parents": "",
+			"data_type": "str",
+			"table_name": "bond_providers",
+			"entity": ""
+		}
+	},
+	"assignees": {
+		"id": {
+			"is_pk": true,
+			"fk_parents": "",
+			"data_type": "int",
+			"table_name": "assignees",
+			"entity": ""
+		},
+		"name": {
+			"is_pk": "",
+			"fk_parents": "",
+			"data_type": "str",
+			"table_name": "assignees",
+			"entity": ""
+		},
+		"type": {
+			"is_pk": "",
+			"fk_parents": "",
+			"data_type": "str",
+			"table_name": "assignees",
+			"entity": ""
+		}
+	}
 }

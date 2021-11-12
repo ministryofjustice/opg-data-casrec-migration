@@ -74,7 +74,7 @@ def get_mappings():
         "visits": ["visits"],
         "tasks": ["tasks"],
         "remarks": ["client_notes", "deputy_notes"],
-        "reporting": ["annual_report_logs"],
+        "reporting": ["annual_report_logs", "annual_report_lodging_details"]
     }
 
     for entity, mapping in all_mappings.items():
@@ -230,7 +230,9 @@ def wrap_sirius_col(col_name: str, col_definition, sql: str):
 
 def wrap_casrec_col(col_name: str, col_definition, sql: str):
     # first wrap override, if any
-    sql = wrap_override_sql(col_name, "casrec", sql)
+    override_sql = wrap_override_sql(col_name, "casrec", sql)
+    if override_sql != sql:
+        return override_sql
 
     # convert empty strings to NULL
     if (
@@ -801,6 +803,9 @@ def main(team, staging):
     post_validation()
 
     if get_exception_count() > 0:
+        # TODO: remove conditional once all validation errors are fixed in preproduction
+        if environment in ["local", "development"]:
+            exit(1)
         log.info("Exceptions WERE found: override / continue anyway\n")
     else:
         log.info("No exceptions found: continue...\n")

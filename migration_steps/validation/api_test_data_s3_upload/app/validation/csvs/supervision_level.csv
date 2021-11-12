@@ -1,4 +1,0 @@
-endpoint,entity_ref,test_purpose,full_check,["latestSupervisionLevel"]["supervisionLevel"]["handle"],["latestSupervisionLevel"]["assetLevel"]["handle"]
-/api/v1/orders/{id},10003409,dev_api_tests,FALSE,GENERAL|GENERAL|GENERAL,HIGH|HIGH|HIGH
-/api/v1/orders/{id},10006413,dev_api_tests,FALSE,GENERAL|GENERAL,HIGH|HIGH
-/api/v1/orders/{id},10007163,dev_api_tests,FALSE,GENERAL|GENERAL,HIGH|HIGH

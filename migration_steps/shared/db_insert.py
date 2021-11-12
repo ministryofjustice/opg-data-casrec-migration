@@ -10,7 +10,7 @@ current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
 
 from decorators import timer
-from db_helpers import replace_with_sql_friendly_chars
+from db_helpers import replace_with_sql_friendly_chars, replace_with_sql_friendly_chars_single
 import logging
 import helpers
 import pandas as pd
@@ -29,8 +29,8 @@ class InsertData:
         self.standard_columns = {"casrec_details": "jsonb not null default '{}'::jsonb"}
         self.datatype_remap = {
             "str": "text",
-            "date": "date",
-            "datetime": "date",
+            "date": "timestamp(0)",
+            "datetime": "timestamp(0)",
             "dict": "json",
         }
 
@@ -161,9 +161,11 @@ class InsertData:
 
         for i, row in enumerate(df.values.tolist()):
 
-            row = [str(x) for x in row]
-            row = replace_with_sql_friendly_chars(row_as_list=row)
-            row = ["NULL" if str(x) == "" and self.empty_string_to_null else f"'{str(x)}'" for x in row]
+            if self.empty_string_to_null:
+                row = replace_with_sql_friendly_chars(row_as_list=row)
+                row = ["NULL" if x == "" else f"'{x}'" for x in row]
+            else:
+                row = ["NULL" if x is None else f"'{replace_with_sql_friendly_chars_single(x)}'" for x in row]
 
             single_row = ", ".join(row)
 
@@ -259,13 +261,13 @@ class InsertData:
             log.error("Multiple dest tables")
             return ""
 
-    def create_empty_table(self, sirius_details):
+    def create_empty_table(self, sirius_details, df=None):
         table_name = self._get_dest_table(mapping_dict=sirius_details)
         if self._check_table_exists(table_name=table_name):
             pass
         else:
             create_statement = self._create_table_statement_with_datatype(
-                mapping_details=sirius_details, table_name=table_name
+                mapping_details=sirius_details, table_name=table_name, df=df
             )
 
             try:
@@ -362,7 +364,7 @@ class InsertData:
 
         if len(df) == 0:
             log.info(f"0 records to insert into '{table_name}' table")
-            raise EmptyDataFrame
+            raise EmptyDataFrame(df=df)
 
         if not table_name:
             table_name = self._get_dest_table(mapping_dict=sirius_details)

@@ -3,8 +3,7 @@ import sys
 import os
 from pathlib import Path
 from typing import Dict
-
-from pandas.io.json import json_normalize
+from utilities.df_helpers import get_datetime_from_df_row
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
@@ -139,37 +138,22 @@ def end_of_tax_year(
     return df
 
 
-def fee_reduction_start_date(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
-    df[result_col] = df[original_col].astype(str)
-    df[result_col] = pd.to_datetime(df[result_col], dayfirst=True)
-
-    def start_date_from_award_date(x):
-        date = x.strftime("%d/%m")
-        year = int(x.strftime("%Y"))
-        if date in ["31/03", "01/04"]:
-            return datetime.datetime.strptime("01/04/" + str(year - 1), "%d/%m/%Y")
-        else:
-            # TODO: need a sensible default value here
-            return None
-
-    df[result_col] = df[result_col].apply(lambda x: start_date_from_award_date(x))
-    df = df.drop(columns=[original_col])
-
-    return df
-
-
 def fee_reduction_end_date(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
     df[result_col] = df[original_col].astype(str)
     df[result_col] = pd.to_datetime(df[result_col], dayfirst=True)
 
-    def end_date_from_award_date(x):
+    def end_date_from_award_date(x: datetime.datetime):
         date = x.strftime("%d/%m")
-        year = x.strftime("%Y")
-        if date in ["31/03", "01/04"]:
-            return datetime.datetime.strptime("31/03/" + year, "%d/%m/%Y")
-        else:
-            # TODO: need a sensible default value here
-            return None
+        if date == "31/03":
+            return x
+        if date == "01/04":
+            return x - datetime.timedelta(days=1)
+        # default to end of Award Date's tax year
+        # TODO: to be confirmed by IN-1015
+        tax_year_end = x.replace(day=31, month=3)
+        if x > tax_year_end:
+            tax_year_end = tax_year_end.replace(year=int(tax_year_end.strftime("%Y")) + 1)
+        return tax_year_end
 
     df[result_col] = df[result_col].apply(lambda x: end_date_from_award_date(x))
     df = df.drop(columns=[original_col])
@@ -213,7 +197,6 @@ def get_max_col(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.Da
     except Exception:
         pass
 
-    df["temp"] = df[original_cols].values.tolist()
     df["temp"] = df[original_cols].values.tolist()
     df[result_col] = df["temp"].apply(lambda x: max(x))
 
@@ -262,4 +245,35 @@ def calculate_startdate(original_col: str, result_col: str, df: pd.DataFrame) ->
     df[result_col] = df[original_col].apply(
         lambda base_date: _calculate_date(base_date, '-', 366)
     )
+    return df
+
+def is_at_least_one_set(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Set result_col to true if at least one of the values in the columns
+    original_cols has a non-null/non-NaT/non-NaN etc. value
+    """
+    def _transform(row):
+        result = False
+
+        for column in original_cols:
+            value = row[column]
+            if value != None and value != '':
+                result = True
+                break
+
+        row[result_col] = result
+        return row
+
+    return df.apply(_transform, axis=1)
+
+
+def convert_to_timestamp(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+    df[result_col] = df[original_cols].apply(
+        lambda x: get_datetime_from_df_row(row=x, date_col=original_cols[0], time_col=original_cols[1]),
+        axis=1
+    )
+    df[result_col] = df[result_col].astype("datetime64[ns]")
+
+    df = df.drop(columns=original_cols)
+
     return df

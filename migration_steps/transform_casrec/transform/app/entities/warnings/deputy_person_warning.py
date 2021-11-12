@@ -70,9 +70,9 @@ def insert_deputy_person_warning(db_config, target_db, mapping_file):
             df=deputy_warning_df,
             sirius_details=sirius_details,
         )
-    except EmptyDataFrame:
+    except EmptyDataFrame as empty_data_frame:
 
-        target_db.create_empty_table(sirius_details=sirius_details)
+        target_db.create_empty_table(sirius_details=sirius_details, df=empty_data_frame.df)
 
     except Exception as e:
         log.debug(

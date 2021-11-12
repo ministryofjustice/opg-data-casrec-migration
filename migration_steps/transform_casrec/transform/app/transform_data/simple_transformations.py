@@ -1,6 +1,5 @@
 import logging
 import os
-
 import pandas as pd
 import helpers
 
@@ -98,13 +97,6 @@ def do_simple_transformations(
                 t["original_columns"], t["aggregate_col"], transformed_df
             )
 
-    if "fee_reduction_start_date" in transformations:
-        log.log(config.VERBOSE, "Applying transformation: fee_reduction_start_date")
-        for t in transformations["fee_reduction_start_date"]:
-            transformed_df = standard_transformations.fee_reduction_start_date(
-                t["original_columns"], t["aggregate_col"], transformed_df
-            )
-
     if "fee_reduction_end_date" in transformations:
         log.log(config.VERBOSE, "Applying transformation: fee_reduction_end_date")
         for t in transformations["fee_reduction_end_date"]:
@@ -148,6 +140,20 @@ def do_simple_transformations(
         log.log(config.VERBOSE, "Applying transformation: calculate_startdate")
         for t in transformations["calculate_startdate"]:
             transformed_df = standard_transformations.calculate_startdate(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
+    if "is_at_least_one_set" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: is_at_least_one_set")
+        for t in transformations["is_at_least_one_set"]:
+            transformed_df = standard_transformations.is_at_least_one_set(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
+    if "convert_to_timestamp" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: convert_to_timestamp")
+        for t in transformations["convert_to_timestamp"]:
+            transformed_df = standard_transformations.convert_to_timestamp(
                 t["original_columns"], t["aggregate_col"], transformed_df
             )
 

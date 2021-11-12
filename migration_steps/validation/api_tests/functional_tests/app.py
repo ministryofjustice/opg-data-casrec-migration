@@ -30,6 +30,57 @@ def get_post_data(entity):
                 "case_references": ["10194709"],
             },
         ],
+        # "clients": [
+        #     {
+        #         "title":           "Create New Client",
+        #         "data": {
+        #             "salutation": "",
+        #             "firstname": "Bob",
+        #             "middlenames": "",
+        #             "surname": "Bobbity",
+        #             "dob": "",
+        #             "previousNames": "",
+        #             "email": "bobbobity@gmail.com",
+        #             "caseRecNumber": "00000000",
+        #             "clientAccommodation": {
+        #                 "handle": "HOSTEL",
+        #                 "label": "Hostel",
+        #                 "deprecated": False
+        #             },
+        #             "medicalCondition": "",
+        #             "memorablePhrase": "",
+        #             "maritalStatus": "Divorced",
+        #             "clientStatus": {
+        #                 "handle": "ACTIVE",
+        #                 "label": "Active"
+        #             },
+        #             "statusDate": "",
+        #             "correspondenceByPost": True,
+        #             "correspondenceByEmail": "",
+        #             "correspondenceByPhone": "",
+        #             "correspondenceByWelsh": "",
+        #             "addressLine1": "",
+        #             "addressLine2": "",
+        #             "addressLine3": "",
+        #             "town": "",
+        #             "postcode": "",
+        #             "county": "",
+        #             "country": "",
+        #             "isAirmailRequired": "",
+        #             "phoneNumber": "07412999999",
+        #             "interpreterRequired": "",
+        #             "specialCorrespondenceRequirements": {
+        #                 "audioTape": True,
+        #                 "largePrint": "",
+        #                 "hearingImpaired": "",
+        #                 "spellingOfNameRequiresCare": ""
+        #             }
+        #         },
+        #         "url":             "clients",
+        #         "expected_status": 201,
+        #         "source": None
+        #     },
+        # ],
         # "death": [
         #     {
         #         "title": "Create New Death",
@@ -435,7 +486,7 @@ def main():
         "death",
         "supervision",
         "crec",
-        "invoice",
+        # "invoice",  -- Fix ticket: https://opgtransform.atlassian.net/browse/IN-1021
     ]
 
     api_tests = ApiTests()
@@ -449,6 +500,12 @@ def main():
             "delete_objects": get_delete_data(entity),
         }
         api_tests.run_functional_test(entity, data)
+
+    if api_tests.failed:
+        print("Tests Failed")
+        exit(1)
+    else:
+        print("Tests Passed")
 
 
 if __name__ == "__main__":
