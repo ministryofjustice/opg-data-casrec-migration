@@ -140,6 +140,7 @@ workflows:
       - load_casrec_db:
           name: load casrec db preproduction
           requires: [build shared infra preproduction]
+          account: preproduction
           filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra preproduction
@@ -345,8 +346,14 @@ workflows:
           cron: "30 07 * * *"
           filters: {branches:{only:[master]}}
     jobs:
+      - persist_parameters:
+          name: persist parameters development
+          param_workspace: development
+          environment_title: Development-Nightly
+          filters: {branches:{only:[master]}}
       - reset_sirius_full_restore:
           name: run and monitor jenkins restore job development
+          requires: [persist parameters development]
           sirius_environment: casmigrate
           filters: {branches:{only:[master]}}
 

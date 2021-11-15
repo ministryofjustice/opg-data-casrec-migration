@@ -36,7 +36,7 @@ locals {
                 "Overrides": {
                     "ContainerOverrides": [{
                         "Name": "prepare",
-                        "Command.$": "$.prep"
+                        "Command": ["prepare/prepare_load_casrec_db.sh"]
                     }]
                 }
             }
@@ -65,7 +65,7 @@ locals {
                                 "Overrides": {
                                     "ContainerOverrides": [{
                                         "Name": "load-casrec-db",
-                                        "Command.$": "$.load1"
+                                        "Command": ["python3","load_casrec/app/app.py","--skip_load=false","--delay=0"]
                                     }]
                                 }
                             },
@@ -93,7 +93,7 @@ locals {
                                 "Overrides": {
                                     "ContainerOverrides": [{
                                         "Name": "load-casrec-db",
-                                        "Command.$": "$.load2"
+                                        "Command": ["python3","load_casrec/app/app.py","--skip_load=false","--delay=2"]
                                     }]
                                 }
                             },
@@ -121,7 +121,7 @@ locals {
                                 "Overrides": {
                                     "ContainerOverrides": [{
                                         "Name": "load-casrec-db",
-                                        "Command.$": "$.load3"
+                                        "Command": ["python3","load_casrec/app/app.py","--skip_load=false","--delay=3"]
                                     }]
                                 }
                             },
@@ -149,7 +149,7 @@ locals {
                                 "Overrides": {
                                     "ContainerOverrides": [{
                                         "Name": "load-casrec-db",
-                                        "Command.$": "$.load4"
+                                        "Command": ["python3","load_casrec/app/app.py","--skip_load=false","--delay=4"]
                                     }]
                                 }
                             },

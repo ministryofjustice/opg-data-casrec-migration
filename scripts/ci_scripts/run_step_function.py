@@ -2,7 +2,6 @@ import boto3
 import click
 import os
 import time
-import json
 from botocore.credentials import RefreshableCredentials
 from botocore.session import get_session
 from datetime import datetime, timedelta
@@ -33,37 +32,6 @@ class StepFunctionRunner:
         self.latest_timestamp = datetime.fromtimestamp(
             int((datetime.now() - timedelta(hours=12)).timestamp())
         )
-        self.run_migration_sf_input_json = {
-            "prep": ["prepare/prepare.sh"],
-            "load": ["python3", "load_casrec_schema/app/app.py"],
-        }
-        self.load_casrec_db_sf_input_json = {
-            "prep": ["prepare/prepare_load_casrec_db.sh"],
-            "load1": [
-                "python3",
-                "load_casrec/app/app.py",
-                "--skip_load=false",
-                "--delay=0",
-            ],
-            "load2": [
-                "python3",
-                "load_casrec/app/app.py",
-                "--skip_load=false",
-                "--delay=2",
-            ],
-            "load3": [
-                "python3",
-                "load_casrec/app/app.py",
-                "--skip_load=false",
-                "--delay=3",
-            ],
-            "load4": [
-                "python3",
-                "load_casrec/app/app.py",
-                "--skip_load=false",
-                "--delay=4",
-            ],
-        }
 
     def step_function_arn(self, step_function_name):
         state_machines = self.auto_refresh_session_step_func.list_state_machines()
@@ -138,16 +106,9 @@ class StepFunctionRunner:
             for ptr in log_records:
                 self.previous_pointers.append(ptr["ptr"])
 
-    def run_step_function(self, load_casrec_db):
-        if load_casrec_db:
-            print("Starting step function to load into casrec DB")
-            input_json = self.load_casrec_db_sf_input_json
-        else:
-            print("Starting step function to migrate casrec to sirius")
-            input_json = self.run_migration_sf_input_json
-
+    def run_step_function(self):
         response = self.auto_refresh_session_step_func.start_execution(
-            stateMachineArn=self.sf_arn, input=str(json.dumps(input_json))
+            stateMachineArn=self.sf_arn
         )
         return response
 
@@ -219,9 +180,6 @@ class StepFunctionRunner:
 @click.option("--sf_name_suffix", default="casrec-mig-state-machine")
 def main(role, account, wait_for, workspace, sf_name_suffix):
     region = "eu-west-1"
-    load_casrec_db = (
-        True if sf_name_suffix == "casrec-mig-load-state-machine" else False
-    )
     account_map = {
         "development": "288342028542",
         "preproduction": "492687888235",
@@ -241,7 +199,7 @@ def main(role, account, wait_for, workspace, sf_name_suffix):
     step_function_runner.create_session_logs()
     step_function_runner.step_function_arn(sf_name)
     step_function_runner.step_function_running_wait_for(int(wait_for))
-    response = step_function_runner.run_step_function(load_casrec_db)
+    response = step_function_runner.run_step_function()
 
     if response["ResponseMetadata"]["HTTPStatusCode"] == 200:
         print("Step function started correctly")
@@ -254,7 +212,7 @@ def main(role, account, wait_for, workspace, sf_name_suffix):
     step_function_runner.step_function_running_wait_for(int(wait_for))
 
     # Let final logs filter in and print them
-    time.sleep(30)
+    time.sleep(120)
     step_function_runner.print_from_logs()
 
     if step_function_runner.last_step_function_status_response() == "SUCCEEDED":
