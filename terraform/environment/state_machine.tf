@@ -113,7 +113,7 @@ locals {
                 "Overrides": {
                     "ContainerOverrides": [{
                         "Name": "etl0",
-                        "Command.$": "$.prep"
+                        "Command": ["prepare/prepare.sh"]
                     }]
                 }
             }
@@ -138,7 +138,7 @@ locals {
                 "Overrides": {
                     "ContainerOverrides": [{
                         "Name": "etl1",
-                        "Command.$": "$.load"
+                        "Command": ["python3", "load_casrec_schema/app/app.py"]
                     }]
                 }
             }
@@ -247,7 +247,7 @@ EOF
     "States": {
         "Prepare For Migration": {
             "Type": "Task",
-            "Next": "Parrallel Load Casrec",
+            "Next": "Copy Casrec Schema",
             "OutputPath": "$$.Execution.Input",
             "Resource": "arn:aws:states:::ecs:runTask.sync",
             "Parameters": {
@@ -265,128 +265,35 @@ EOF
                 "Overrides": {
                     "ContainerOverrides": [{
                         "Name": "etl0",
-                        "Command.$": "$.prep"
+                        "Command": ["prepare/prepare.sh"]
                     }]
                 }
             }
         },
-        "Parrallel Load Casrec": {
-            "Type": "Parallel",
+        "Copy Casrec Schema": {
+            "Type": "Task",
             "Next": "Run Transform Casrec",
-            "Branches": [
-                {
-                    "StartAt": "Run Load Casrec Task 1",
-                    "States": {
-                        "Run Load Casrec Task 1": {
-                            "Type": "Task",
-                            "Resource": "arn:aws:states:::ecs:runTask.sync",
-                            "Parameters": {
-                                "LaunchType": "FARGATE",
-                                "Cluster": "${aws_ecs_cluster.migration.arn}",
-                                "TaskDefinition": "${aws_ecs_task_definition.etl1.arn}",
-                                "NetworkConfiguration": {
-                                    "AwsvpcConfiguration": {
-                                        "Subnets": [${local.subnets_string}],
-                                        "SecurityGroups": ["${aws_security_group.etl.id}"],
-                                        "AssignPublicIp": "DISABLED"
-                                    }
-                                },
-                                "Overrides": {
-                                    "ContainerOverrides": [{
-                                        "Name": "etl1",
-                                        "Command.$": "$.load1"
-                                    }]
-                                }
-                            },
-                            "End": true
-                        }
+            "OutputPath": "$$.Execution.Input",
+            "Resource": "arn:aws:states:::ecs:runTask.sync",
+            "Parameters": {
+                "LaunchType": "FARGATE",
+                "PlatformVersion": "1.4.0",
+                "Cluster": "${aws_ecs_cluster.migration.arn}",
+                "TaskDefinition": "${aws_ecs_task_definition.etl1.arn}",
+                "NetworkConfiguration": {
+                    "AwsvpcConfiguration": {
+                        "Subnets": [${local.subnets_string}],
+                        "SecurityGroups": ["${aws_security_group.etl.id}"],
+                        "AssignPublicIp": "DISABLED"
                     }
                 },
-                {
-                    "StartAt": "Run Load Casrec Task 2",
-                    "States": {
-                        "Run Load Casrec Task 2": {
-                            "Type": "Task",
-                            "Resource": "arn:aws:states:::ecs:runTask.sync",
-                            "Parameters": {
-                                "LaunchType": "FARGATE",
-                                "Cluster": "${aws_ecs_cluster.migration.arn}",
-                                "TaskDefinition": "${aws_ecs_task_definition.etl1.arn}",
-                                "NetworkConfiguration": {
-                                    "AwsvpcConfiguration": {
-                                        "Subnets": [${local.subnets_string}],
-                                        "SecurityGroups": ["${aws_security_group.etl.id}"],
-                                        "AssignPublicIp": "DISABLED"
-                                    }
-                                },
-                                "Overrides": {
-                                    "ContainerOverrides": [{
-                                        "Name": "etl1",
-                                        "Command.$": "$.load2"
-                                    }]
-                                }
-                            },
-                            "End": true
-                        }
-                    }
-                },
-                {
-                    "StartAt": "Run Load Casrec Task 3",
-                    "States": {
-                        "Run Load Casrec Task 3": {
-                            "Type": "Task",
-                            "Resource": "arn:aws:states:::ecs:runTask.sync",
-                            "Parameters": {
-                                "LaunchType": "FARGATE",
-                                "Cluster": "${aws_ecs_cluster.migration.arn}",
-                                "TaskDefinition": "${aws_ecs_task_definition.etl1.arn}",
-                                "NetworkConfiguration": {
-                                    "AwsvpcConfiguration": {
-                                        "Subnets": [${local.subnets_string}],
-                                        "SecurityGroups": ["${aws_security_group.etl.id}"],
-                                        "AssignPublicIp": "DISABLED"
-                                    }
-                                },
-                                "Overrides": {
-                                    "ContainerOverrides": [{
-                                        "Name": "etl1",
-                                        "Command.$": "$.load3"
-                                    }]
-                                }
-                            },
-                            "End": true
-                        }
-                    }
-                },
-                {
-                    "StartAt": "Run Load Casrec Task 4",
-                    "States": {
-                        "Run Load Casrec Task 4": {
-                            "Type": "Task",
-                            "Resource": "arn:aws:states:::ecs:runTask.sync",
-                            "Parameters": {
-                                "LaunchType": "FARGATE",
-                                "Cluster": "${aws_ecs_cluster.migration.arn}",
-                                "TaskDefinition": "${aws_ecs_task_definition.etl1.arn}",
-                                "NetworkConfiguration": {
-                                    "AwsvpcConfiguration": {
-                                        "Subnets": [${local.subnets_string}],
-                                        "SecurityGroups": ["${aws_security_group.etl.id}"],
-                                        "AssignPublicIp": "DISABLED"
-                                    }
-                                },
-                                "Overrides": {
-                                    "ContainerOverrides": [{
-                                        "Name": "etl1",
-                                        "Command.$": "$.load4"
-                                    }]
-                                }
-                            },
-                            "End": true
-                        }
-                    }
+                "Overrides": {
+                    "ContainerOverrides": [{
+                        "Name": "etl1",
+                        "Command": ["python3", "load_casrec_schema/app/app.py"]
+                    }]
                 }
-            ]
+            }
         },
         "Run Transform Casrec": {
             "Type": "Task",
