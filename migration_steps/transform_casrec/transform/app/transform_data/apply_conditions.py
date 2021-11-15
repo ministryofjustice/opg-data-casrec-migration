@@ -28,6 +28,14 @@ def source_conditions(df, conditions):
         for col in convert_to_timestamp_cols:
             conditions.pop(col, None)
 
+    capitalise_first_letter_cols = {
+        k: v for k, v in conditions.items() if k == "capitalise_first_letter"
+    }
+    if capitalise_first_letter_cols:
+        df = capitalise_first_letter(df, capitalise_first_letter_cols)
+        for col in capitalise_first_letter_cols:
+            conditions.pop(col, None)
+
     greater_than_cols = {k: v for k, v in conditions.items() if k == "greater_than"}
     if greater_than_cols:
         df = greater_than(df, greater_than_cols)
@@ -298,3 +306,10 @@ def remove_empty_rows(df, not_null_cols, how="all"):
     )
 
     return final_df
+
+
+def capitalise_first_letter(df, cols):
+    for col in cols["capitalise_first_letter"]["cols"]:
+        df[col] = df[col].str.capitalize()
+
+    return df

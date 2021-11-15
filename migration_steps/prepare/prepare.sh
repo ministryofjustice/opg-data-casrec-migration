@@ -27,7 +27,6 @@ fi
 python3 "${DIR}/prepare_target/app/app.py" --preserve_schemas="${SCHEMAS}"
 python3 "${DIR}/create_stage_schema/app/app.py"
 
-
 # envcheck - skeleton data should ONLY be created on dev databases
 if [ "${ENVIRONMENT}" == "local" ] \
   || [ "${ENVIRONMENT}" == "development" ]

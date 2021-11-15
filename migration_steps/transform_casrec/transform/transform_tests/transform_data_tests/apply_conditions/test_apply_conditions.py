@@ -11,6 +11,7 @@ from transform_tests.transform_data_tests.apply_conditions import (
     cases_greater_than,
     cases_less_than,
     cases_date_since,
+    cases_capitalise_first_letter,
 )
 
 
@@ -24,6 +25,7 @@ from transform_tests.transform_data_tests.apply_conditions import (
         cases_greater_than,
         cases_less_than,
         cases_date_since,
+        cases_capitalise_first_letter,
     ],
 )
 def test_apply_conditions(test_data_df, conditions, expected_result_data_data_df):

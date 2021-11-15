@@ -246,7 +246,10 @@
         "orderby": {},
         "casrec": {
             "from_table": "pat",
-            "transform": {},
+            "transform": {
+              "firstname": "CONCAT(UPPER(LEFT({col},1)), LOWER(SUBSTRING({col},2,LENGTH({col}))))",
+              "surname": "CONCAT(UPPER(LEFT({col},1)), LOWER(SUBSTRING({col},2,LENGTH({col}))))"
+            },
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_persons exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": []
@@ -620,7 +623,10 @@
         },
         "casrec": {
             "from_table": "deputyship",
-            "transform": {},
+            "transform": {
+              "firstname": "CONCAT(UPPER(LEFT({col},1)), LOWER(SUBSTRING({col},2,LENGTH({col}))))",
+              "surname": "CONCAT(UPPER(LEFT({col},1)), LOWER(SUBSTRING({col},2,LENGTH({col}))))"
+            },
             "joins": [
                 "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\"",
                 "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\"",
