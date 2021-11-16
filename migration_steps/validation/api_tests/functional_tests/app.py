@@ -30,80 +30,80 @@ def get_post_data(entity):
                 "case_references": ["10194709"],
             },
         ],
-        # "clients": [
-        #     {
-        #         "title":           "Create New Client",
-        #         "data": {
-        #             "salutation": "",
-        #             "firstname": "Bob",
-        #             "middlenames": "",
-        #             "surname": "Bobbity",
-        #             "dob": "",
-        #             "previousNames": "",
-        #             "email": "bobbobity@gmail.com",
-        #             "caseRecNumber": "00000000",
-        #             "clientAccommodation": {
-        #                 "handle": "HOSTEL",
-        #                 "label": "Hostel",
-        #                 "deprecated": False
-        #             },
-        #             "medicalCondition": "",
-        #             "memorablePhrase": "",
-        #             "maritalStatus": "Divorced",
-        #             "clientStatus": {
-        #                 "handle": "ACTIVE",
-        #                 "label": "Active"
-        #             },
-        #             "statusDate": "",
-        #             "correspondenceByPost": True,
-        #             "correspondenceByEmail": "",
-        #             "correspondenceByPhone": "",
-        #             "correspondenceByWelsh": "",
-        #             "addressLine1": "",
-        #             "addressLine2": "",
-        #             "addressLine3": "",
-        #             "town": "",
-        #             "postcode": "",
-        #             "county": "",
-        #             "country": "",
-        #             "isAirmailRequired": "",
-        #             "phoneNumber": "07412999999",
-        #             "interpreterRequired": "",
-        #             "specialCorrespondenceRequirements": {
-        #                 "audioTape": True,
-        #                 "largePrint": "",
-        #                 "hearingImpaired": "",
-        #                 "spellingOfNameRequiresCare": ""
-        #             }
-        #         },
-        #         "url":             "clients",
-        #         "expected_status": 201,
-        #         "source": None
-        #     },
-        # ],
-        # "death": [
-        #     {
-        #         "title": "Create New Death",
-        #         "data": {
-        #             "proofOfDeathReceived": True,
-        #             "dateLetterSentOut": "",
-        #             "dateOfDeath": "09/08/2021",
-        #             "dateDeathCertificateReceived": "",
-        #             "dateNotified": "09/08/2021",
-        #             "notifiedBy": {
-        #               "handle": "DEPUTY",
-        #               "label": "Deputy"
-        #             },
-        #             "notifiedByOther": "",
-        #             "notificationMethod": "Phone",
-        #             "notes": ""
-        #         },
-        #         "url":             "persons/{id}/death-notification",
-        #         "expected_status": 201,
-        #         "source":          "clients",
-        #         "case_references": ["10138356"],
-        #     }
-        # ],
+        "clients": [
+            {
+                "title": "Create New Client",
+                "data": {
+                    "salutation": "",
+                    "firstname": "Bob",
+                    "middlenames": "",
+                    "surname": "Bobbity",
+                    "dob": "",
+                    "previousNames": "",
+                    "email": "bobbobity@gmail.com",
+                    "caseRecNumber": "00000000",
+                    "clientAccommodation": {
+                        "handle": "HOSTEL",
+                        "label": "Hostel",
+                        "deprecated": False
+                    },
+                    "medicalCondition": "",
+                    "memorablePhrase": "",
+                    "maritalStatus": "Divorced",
+                    "clientStatus": {
+                        "handle": "ACTIVE",
+                        "label": "Active"
+                    },
+                    "statusDate": "",
+                    "correspondenceByPost": True,
+                    "correspondenceByEmail": "",
+                    "correspondenceByPhone": "",
+                    "correspondenceByWelsh": "",
+                    "addressLine1": "",
+                    "addressLine2": "",
+                    "addressLine3": "",
+                    "town": "",
+                    "postcode": "",
+                    "county": "",
+                    "country": "",
+                    "isAirmailRequired": "",
+                    "phoneNumber": "07412999999",
+                    "interpreterRequired": "",
+                    "specialCorrespondenceRequirements": {
+                        "audioTape": True,
+                        "largePrint": "",
+                        "hearingImpaired": "",
+                        "spellingOfNameRequiresCare": ""
+                    }
+                },
+                "url":             "clients",
+                "expected_status": 201,
+                "source": None
+            },
+        ],
+        "death": [
+            {
+                "title": "Create New Death",
+                "data": {
+                    "proofOfDeathReceived": True,
+                    "dateLetterSentOut": "",
+                    "dateOfDeath": "09/08/2021",
+                    "dateDeathCertificateReceived": "",
+                    "dateNotified": "09/08/2021",
+                    "notifiedBy": {
+                      "handle": "DEPUTY",
+                      "label": "Deputy"
+                    },
+                    "notifiedByOther": "",
+                    "notificationMethod": "Phone",
+                    "notes": ""
+                },
+                "url":             "persons/{id}/death-notification",
+                "expected_status": 201,
+                "source":          "clients",
+                "case_references": ["10138356"],
+            }
+        ],
         "supervision": [
             {
                 "title": "Create Supervision",
@@ -198,7 +198,7 @@ def get_post_data(entity):
                 "id2_json_path": '[0]["id"]',
                 "expected_status": 201,
                 "source": "clients",
-                "case_references": ["13547686"],
+                "case_references": ["13547686", "94009939"],
             },
             {
                 "title": "Create New Write Off On Invoice",
@@ -212,7 +212,7 @@ def get_post_data(entity):
                 "id2_json_path": '[0]["id"]',
                 "expected_status": 201,
                 "source": "clients",
-                "case_references": ["10027832", "94009939"],
+                "case_references": ["10027832"],
             },
             {
                 "title": "Create New Write Off On Invoice",
@@ -486,7 +486,7 @@ def main():
         "death",
         "supervision",
         "crec",
-        # "invoice",  -- Fix ticket: https://opgtransform.atlassian.net/browse/IN-1021
+        "invoice"
     ]
 
     api_tests = ApiTests()
