@@ -582,7 +582,6 @@ class ApiTests:
             url = "/api/v1/" + entity_setup_object["url"]
             data = entity_setup_object["data"]
             source = entity_setup_object["source"]
-            case_references = entity_setup_object["case_references"]
             expected_status = entity_setup_object["expected_status"]
 
             try:
@@ -592,21 +591,26 @@ class ApiTests:
                 id2_endpoint = None
                 id2_json_path = None
 
-            for case_reference in case_references:
-                if entity_setup_object["source"] is not None:
-                    entity_ids = self.get_functional_entity_ids(case_reference, source)
-                    first_entity_id = entity_ids[0]
-                    endpoint = self.get_functional_endpoint(
-                        first_entity_id, url, id2_endpoint, id2_json_path
-                    )
-                actual_status = self.get_functional_response_object(
-                    endpoint, method, data
-                )
-                try:
-                    assert expected_status == actual_status
-                except AssertionError:
-                    self.api_log(f"Expected: {expected_status} but got {actual_status}")
-                    self.failed = True
+            if "case_references" not in entity_setup_object:
+                endpoint = self.get_functional_endpoint(None, url, id2_endpoint, id2_json_path)
+                self.assert_on_functional_response(endpoint, method, data, expected_status)
+                continue
+
+            for case_reference in entity_setup_object["case_references"]:
+                entity_ids = self.get_functional_entity_ids(case_reference, source)
+                first_entity_id = entity_ids[0]
+                endpoint = self.get_functional_endpoint(first_entity_id, url, id2_endpoint, id2_json_path)
+                self.assert_on_functional_response(endpoint, method, data, expected_status)
+
+    def assert_on_functional_response(self, endpoint, method, data, expected_status):
+        actual_status = self.get_functional_response_object(
+            endpoint, method, data
+        )
+        try:
+            assert expected_status == actual_status
+        except AssertionError:
+            self.api_log(f"Expected: {expected_status} but got {actual_status}")
+            self.failed = True
 
     def run_functional_test(self, entity, entity_setup_object):
         self.csv = entity
