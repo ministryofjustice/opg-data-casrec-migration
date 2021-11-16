@@ -79,6 +79,12 @@ def main():
                 "identifier": "deputy",
                 "assert_on_list": True,
             },
+            {
+                "csv": "client_notes",
+                "identifier": "client",
+                "assert_on_list": True,
+                "list_in_field": "notes",
+            },
         ],
     }
 

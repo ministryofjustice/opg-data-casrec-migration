@@ -42,6 +42,7 @@ csvs = [
     "invoice",
     "tasks",
     "deputy_notes",
+    "client_notes",
 ]
 
 search_headers = [
@@ -58,11 +59,15 @@ entities_of_type_list = [
     "tasks",
     "visits",
     "deputy_notes",
+    "client_notes",
 ]
 
 entity_further = {
     "tasks": {
         "list_in_field": "tasks",
+    },
+    "client_notes": {
+        "list_in_field": "notes",
     },
 }
 
@@ -127,6 +132,7 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
         "reports",
         "invoices",
         "tasks",
+        "client_notes",
     ]:
         entity_ids = engine.execute(person_id_sql)
         if entity_ids.rowcount > 1:
