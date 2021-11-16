@@ -14,7 +14,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -39,7 +41,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -64,7 +68,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "REMISSION",
             "calculated": "",
@@ -89,7 +95,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -114,7 +122,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "2021-04-01",
             "calculated": "",
@@ -139,7 +149,9 @@
             "casrec_table": "pat",
             "casrec_column_name": "Award Date",
             "alias": "Award Date",
-            "requires_transformation": "fee_reduction_end_date",
+            "requires_transformation": [
+                "fee_reduction_end_date"
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -164,7 +176,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "Migrated from Casrec",
             "calculated": "",
@@ -189,7 +203,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",

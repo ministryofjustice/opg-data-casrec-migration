@@ -14,7 +14,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -39,7 +41,9 @@
             "casrec_table": "SUP_ACTIVITY",
             "casrec_column_name": "Term By",
             "alias": "Term By",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "assignee_lookup",
             "default_value": 2657,
             "calculated": "",
@@ -64,7 +68,9 @@
             "casrec_table": "SUP_ACTIVITY",
             "casrec_column_name": "Sup Desc",
             "alias": "Sup Desc",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "task_type_lookup",
             "default_value": "CWGN",
             "calculated": "",
@@ -89,7 +95,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "Not started",
             "calculated": "",
@@ -114,7 +122,9 @@
             "casrec_table": "SUP_ACTIVITY",
             "casrec_column_name": "Next Due",
             "alias": "Next Due",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -139,7 +149,9 @@
             "casrec_table": "SUP_ACTIVITY",
             "casrec_column_name": "Start Date",
             "alias": "Start Date",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -164,7 +176,9 @@
             "casrec_table": "SUP_ACTIVITY",
             "casrec_column_name": "Comment",
             "alias": "Comment",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -189,7 +203,9 @@
             "casrec_table": "SUP_ACTIVITY",
             "casrec_column_name": "Date Create",
             "alias": "Date Create",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -214,7 +230,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",

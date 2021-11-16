@@ -73,12 +73,22 @@ def capitalise(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataF
     return df
 
 
+def capitalise_first_letter(
+    original_col: str, result_col: str, df: pd.DataFrame
+) -> pd.DataFrame:
+    df[result_col] = df[original_col].apply(lambda x: x.capitalize())
+
+    df = drop_orig_col(df, original_col, result_col)
+
+    return df
+
+
 def multiply_by_100(
     original_col: str, result_col: str, df: pd.DataFrame
 ) -> pd.DataFrame:
     df[result_col] = df[original_col].apply(lambda x: int(float(x) * 100))
     df[result_col] = df[result_col].fillna(0)
-    df = df.drop(columns=[original_col])
+    df = drop_orig_col(df, original_col, result_col)
 
     return df
 
@@ -87,7 +97,7 @@ def absolute_value(
     original_col: str, result_col: str, df: pd.DataFrame
 ) -> pd.DataFrame:
     df[result_col] = df[original_col].apply(lambda x: abs(float(x)))
-    df = df.drop(columns=[original_col])
+    df = drop_orig_col(df, original_col, result_col)
 
     return df
 
@@ -96,7 +106,7 @@ def first_two_chars(
     original_col: str, result_col: str, df: pd.DataFrame
 ) -> pd.DataFrame:
     df[result_col] = df[original_col].apply(lambda x: x[:2])
-    df = df.drop(columns=[original_col])
+    df = drop_orig_col(df, original_col, result_col)
 
     return df
 
@@ -106,7 +116,7 @@ def add_one_year(original_col: str, result_col: str, df: pd.DataFrame) -> pd.Dat
     df[result_col] = pd.to_datetime(
         df[result_col], dayfirst=True
     ) + pd.offsets.DateOffset(years=1)
-    df = df.drop(columns=[original_col])
+    df = drop_orig_col(df, original_col, result_col)
 
     return df
 
@@ -121,7 +131,7 @@ def start_of_tax_year(
         .dt.to_period("Q-MAR")
         .dt.qyear.apply(lambda x: datetime.datetime(x - 1, 4, 1))
     )
-    df = df.drop(columns=[original_col])
+    df = drop_orig_col(df, original_col, result_col)
 
     return df
 
@@ -136,7 +146,7 @@ def end_of_tax_year(
         .dt.to_period("Q-MAR")
         .dt.qyear.apply(lambda x: datetime.datetime(x, 3, 31))
     )
-    df = df.drop(columns=[original_col])
+    df = drop_orig_col(df, original_col, result_col)
 
     return df
 
@@ -163,7 +173,7 @@ def fee_reduction_end_date(
         return tax_year_end
 
     df[result_col] = df[result_col].apply(lambda x: end_date_from_award_date(x))
-    df = df.drop(columns=[original_col])
+    df = drop_orig_col(df, original_col, result_col)
 
     return df
 
@@ -192,7 +202,7 @@ def round_column(
     df = df.replace({original_col: ["", " "]}, "0")
     df[result_col] = df[original_col].apply(lambda x: round(float(x), dp))
 
-    df = df.drop(columns=[original_col])
+    df = drop_orig_col(df, original_col, result_col)
 
     return df
 
@@ -302,25 +312,29 @@ def convert_to_timestamp(
 
     return df
 
-def first_word(
-        original_col: str, result_col: str, df: pd.DataFrame
-) -> pd.DataFrame:
+
+def first_word(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
     df[result_col] = df[original_col].apply(
-        lambda x: x.split(' ', 1)[0],
+        lambda x: x.split(" ", 1)[0],
     )
 
-    df = df.drop(columns=[original_col])
+    df = drop_orig_col(df, original_col, result_col)
 
     return df
 
-def last_words(
-        original_col: str, result_col: str, df: pd.DataFrame
-) -> pd.DataFrame:
-    def f(x):
-        parts = x.split(' ', 1)
-        return parts[1] if len(parts) == 2 else ''
-    
-    df[result_col] = df[original_col].apply(f)
-    df = df.drop(columns=[original_col])
 
+def last_words(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+    def f(x):
+        parts = x.split(" ", 1)
+        return parts[1] if len(parts) == 2 else ""
+
+    df[result_col] = df[original_col].apply(f)
+    df = drop_orig_col(df, original_col, result_col)
+
+    return df
+
+
+def drop_orig_col(df, original_col, result_col):
+    if original_col != result_col:
+        df = df.drop(columns=[original_col])
     return df

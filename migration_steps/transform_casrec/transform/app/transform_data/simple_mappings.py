@@ -20,7 +20,7 @@ def do_simple_mapping(
     columns = {}
     for k, v in simple_mapping.items():
         if (
-            v["requires_transformation"] == ""
+            v["requires_transformation"] == [""]
             and v["casrec_table"].lower() == source_table_name
         ):
             if isinstance(v["alias"], list):

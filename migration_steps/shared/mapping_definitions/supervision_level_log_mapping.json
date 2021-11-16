@@ -14,7 +14,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -39,7 +41,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -64,7 +68,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "current_date",
@@ -89,7 +95,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "current_date",
@@ -114,7 +122,9 @@
             "casrec_table": "ORDER",
             "casrec_column_name": "Ord Risk Lvl",
             "alias": "Ord Risk Lvl",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "supervision_level_lookup",
             "default_value": "",
             "calculated": "",
@@ -139,7 +149,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "placeholder note",
             "calculated": "",
@@ -164,7 +176,9 @@
             "casrec_table": "ORDER",
             "casrec_column_name": "Ord Risk Lvl",
             "alias": "Ord Risk Lvl 1",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "asset_level_lookup",
             "default_value": "",
             "calculated": "",

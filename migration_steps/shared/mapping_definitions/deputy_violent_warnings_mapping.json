@@ -14,7 +14,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -39,7 +41,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 2,
             "calculated": "",
@@ -64,7 +68,9 @@
             "casrec_table": "DEPUTY",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "REM - Violence Warnings",
             "calculated": "",
@@ -89,7 +95,9 @@
             "casrec_table": "DEPUTY",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "Casrec Migration - Violent Warning",
             "calculated": "",
@@ -114,7 +122,9 @@
             "casrec_table": "DEPUTY",
             "casrec_column_name": "VWM",
             "alias": "VWM",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "current_date",
@@ -139,7 +149,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": true,
             "calculated": "",

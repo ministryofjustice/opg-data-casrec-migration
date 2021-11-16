@@ -14,7 +14,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -39,7 +41,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -64,7 +68,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -89,7 +95,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -114,7 +122,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -139,7 +149,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -164,7 +176,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "ORDER",
             "calculated": "",
@@ -189,7 +203,9 @@
             "casrec_table": "ORDER",
             "casrec_column_name": "Ord Type",
             "alias": "Ord Type",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "order_type_lookup",
             "default_value": "",
             "calculated": "",
@@ -214,7 +230,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -239,7 +257,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -264,7 +284,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -289,7 +311,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -314,7 +338,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -339,7 +365,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -364,7 +392,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -389,7 +419,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "order",
             "calculated": "",
@@ -414,7 +446,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 1,
             "calculated": "",
@@ -439,7 +473,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -464,7 +500,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -489,7 +527,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "current_date",
@@ -514,7 +554,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 1,
             "calculated": "",
@@ -539,7 +581,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -564,7 +608,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -589,7 +635,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -614,7 +662,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -639,7 +689,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -664,7 +716,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 1,
             "calculated": "",
@@ -689,7 +743,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -714,7 +770,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -739,7 +797,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -764,7 +824,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -789,7 +851,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -814,7 +878,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -839,7 +905,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -864,7 +932,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -889,7 +959,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 1,
             "calculated": "",
@@ -914,7 +986,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 1,
             "calculated": "",
@@ -939,7 +1013,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 1,
             "calculated": "",
@@ -964,7 +1040,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -989,7 +1067,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 1,
             "calculated": "",
@@ -1014,7 +1094,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 1,
             "calculated": "",
@@ -1039,7 +1121,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -1064,7 +1148,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -1089,7 +1175,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0,
             "calculated": "",
@@ -1114,7 +1202,9 @@
             "casrec_table": "ORDER",
             "casrec_column_name": "Made Date",
             "alias": "Made Date",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -1139,7 +1229,9 @@
             "casrec_table": "ORDER",
             "casrec_column_name": "Issue Date",
             "alias": "Issue Date",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -1164,7 +1256,9 @@
             "casrec_table": "ORDER",
             "casrec_column_name": "Bond Rqd",
             "alias": "Bond Rqd",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "bond_required_lookup",
             "default_value": "",
             "calculated": "",
@@ -1189,7 +1283,9 @@
             "casrec_table": "ORDER",
             "casrec_column_name": "Ord Stat",
             "alias": "Ord Stat",
-            "requires_transformation": "capitalise",
+            "requires_transformation": [
+                "capitalise"
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -1214,7 +1310,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -1239,7 +1337,9 @@
             "casrec_table": "ORDER",
             "casrec_column_name": "Case",
             "alias": "Case",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -1264,7 +1364,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -1289,7 +1391,9 @@
             "casrec_table": "ORDER",
             "casrec_column_name": "Spvn Received",
             "alias": "Spvn Received",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -1314,7 +1418,9 @@
             "casrec_table": "ORDER",
             "casrec_column_name": "Expiry Date",
             "alias": "Expiry Date",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -1339,7 +1445,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -1364,7 +1472,9 @@
             "casrec_table": "ORDER",
             "casrec_column_name": "Ord Type",
             "alias": "Ord Type 1",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "order_subtype_lookup",
             "default_value": "",
             "calculated": "",
@@ -1389,7 +1499,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "current_date",
@@ -1414,7 +1526,9 @@
             "casrec_table": "ORDER",
             "casrec_column_name": "Clause Expiry",
             "alias": "Clause Expiry",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -1439,7 +1553,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",

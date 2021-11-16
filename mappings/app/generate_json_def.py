@@ -108,6 +108,11 @@ def clean_up_and_convert_to_dict(df: pd.DataFrame) -> Dict:
         axis=1,
     )
 
+    mapping_df["requires_transformation"] = mapping_df.apply(
+        lambda x: x["requires_transformation"].split(","),
+        axis=1,
+    )
+
     # drop any rows that have no value in all interesting cols
     mapping_df = mapping_df.dropna(
         axis=0, how="all", subset=json_def_config["default_columns"]

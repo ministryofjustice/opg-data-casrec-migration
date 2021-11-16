@@ -249,9 +249,13 @@ def wrap_casrec_col(col_name: str, col_definition, sql: str):
         sql = f"CAST(NULLIF(NULLIF(TRIM({sql}), 'NaT'), '') AS timestamp)"
 
     # wrap transform, if required
-    if col_definition["transform_casrec"]["requires_transformation"]:
-        transform_func = col_definition["transform_casrec"]["requires_transformation"]
-        sql = f"transf_{transform_func}({sql})"
+    if len(col_definition["transform_casrec"]["requires_transformation"][0]) > 0:
+        transform_functions = col_definition["transform_casrec"][
+            "requires_transformation"
+        ]
+
+        for transform_function in transform_functions:
+            sql = f"transf_{transform_function}({sql})"
 
     # calculated = col_definition["transform_casrec"]["calculated"]
     # cast to datatype - why are we casting casrec side to anything at all??

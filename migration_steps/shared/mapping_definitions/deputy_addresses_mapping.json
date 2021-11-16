@@ -14,7 +14,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -39,7 +41,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -70,7 +74,9 @@
                 "Dep Adrs1",
                 "Dep Adrs2"
             ],
-            "requires_transformation": "squash_columns",
+            "requires_transformation": [
+                "squash_columns"
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -95,7 +101,9 @@
             "casrec_table": "DEPUTY_ADDRESS",
             "casrec_column_name": "Dep Adrs3",
             "alias": "Dep Adrs3",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -120,7 +128,9 @@
             "casrec_table": "DEPUTY_ADDRESS",
             "casrec_column_name": "Dep Adrs4",
             "alias": "Dep Adrs4",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -145,7 +155,9 @@
             "casrec_table": "DEPUTY_ADDRESS",
             "casrec_column_name": "Dep Postcode",
             "alias": "Dep Postcode",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -170,7 +182,9 @@
             "casrec_table": "DEPUTY_ADDRESS",
             "casrec_column_name": "Dep Adrs5",
             "alias": "Dep Adrs5",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -195,7 +209,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "Primary",
             "calculated": "",
@@ -220,7 +236,9 @@
             "casrec_table": "DEPUTY_ADDRESS",
             "casrec_column_name": "Foreign",
             "alias": "Foreign",
-            "requires_transformation": "convert_to_bool",
+            "requires_transformation": [
+                "convert_to_bool"
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",

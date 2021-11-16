@@ -98,3 +98,11 @@ BEGIN
 RETURN COALESCE(SUBSTRING(source FROM ' .*$'), '');
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION transf_capitalise_first_letter(source varchar)
+RETURNS varchar as $$
+DECLARE
+BEGIN
+RETURN COALESCE(CONCAT(UPPER(LEFT(source,1)), LOWER(SUBSTRING(source,2,LENGTH(source)))),'');
+END;
+$$ LANGUAGE plpgsql;

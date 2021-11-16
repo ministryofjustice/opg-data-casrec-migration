@@ -30,16 +30,21 @@ class MappingDefinitions:
 
         transformations = {}
         for k, v in requires_transformation.items():
-            tr = v["requires_transformation"]
-            d = {"original_columns": v["alias"], "aggregate_col": k}
-            if v["requires_transformation"] == "conditional_lookup":
-                d["lookup_table"] = v["lookup_table"]
-                d["original_columns"] = v["alias"]
-                d["additional_columns"] = v["additional_columns"]
-            if tr in transformations:
-                transformations[tr].append(d)
-            else:
-                transformations[tr] = [d]
+            for key, transform in enumerate(v["requires_transformation"]):
+                if len(transform) > 0:
+                    tr = transform
+                    if key == 0:
+                        d = {"original_columns": v["alias"], "aggregate_col": k}
+                    else:
+                        d = {"original_columns": k, "aggregate_col": k}
+                    if transform == "conditional_lookup":
+                        d["lookup_table"] = v["lookup_table"]
+                        d["original_columns"] = v["alias"]
+                        d["additional_columns"] = v["additional_columns"]
+                    if tr in transformations:
+                        transformations[tr].append(d)
+                    else:
+                        transformations[tr] = [d]
 
         return transformations
 

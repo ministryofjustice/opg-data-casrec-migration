@@ -14,7 +14,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -39,7 +41,9 @@
             "casrec_table": "PAT",
             "casrec_column_name": "DOB",
             "alias": "DOB",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -64,7 +68,9 @@
             "casrec_table": "PAT",
             "casrec_column_name": "Term Date",
             "alias": "Term Date",
-            "requires_transformation": "conditional_lookup",
+            "requires_transformation": [
+                "conditional_lookup"
+            ],
             "lookup_table": "date_of_death_lookup",
             "default_value": "",
             "calculated": "",
@@ -89,7 +95,9 @@
             "casrec_table": "PAT",
             "casrec_column_name": "Title",
             "alias": "Title",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "title_codes_lookup",
             "default_value": "",
             "calculated": "",
@@ -114,7 +122,10 @@
             "casrec_table": "PAT",
             "casrec_column_name": "Forename",
             "alias": "Forename",
-            "requires_transformation": "first_word",
+            "requires_transformation": [
+                "first_word",
+                "capitalise_first_letter"
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -139,7 +150,10 @@
             "casrec_table": "PAT",
             "casrec_column_name": "Forename",
             "alias": "Forename 1",
-            "requires_transformation": "last_words",
+            "requires_transformation": [
+                "last_words",
+                "capitalise_first_letter"
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -164,7 +178,9 @@
             "casrec_table": "PAT",
             "casrec_column_name": "Surname",
             "alias": "Surname",
-            "requires_transformation": "",
+            "requires_transformation": [
+                "capitalise_first_letter"
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -189,7 +205,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",
@@ -214,7 +232,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",
@@ -239,7 +259,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",
@@ -264,7 +286,9 @@
             "casrec_table": "PAT",
             "casrec_column_name": "Create",
             "alias": "Create",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -289,7 +313,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -314,7 +340,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "actor_client",
             "calculated": "",
@@ -339,7 +367,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": true,
             "calculated": "",
@@ -364,7 +394,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",
@@ -389,7 +421,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",
@@ -414,7 +448,9 @@
             "casrec_table": "PAT",
             "casrec_column_name": "AKA Name",
             "alias": "AKA Name",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -439,7 +475,9 @@
             "casrec_table": "PAT",
             "casrec_column_name": "Case",
             "alias": "Case",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -464,7 +502,9 @@
             "casrec_table": "PAT",
             "casrec_column_name": "Accom Type",
             "alias": "Accom Type",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "accommodation_type_lookup",
             "default_value": "",
             "calculated": "",
@@ -489,7 +529,9 @@
             "casrec_table": "PAT",
             "casrec_column_name": "Marital Status",
             "alias": "Marital Status",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "marital_status_lookup",
             "default_value": "",
             "calculated": "",
@@ -514,7 +556,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "ACTIVE",
             "calculated": "",
@@ -539,7 +583,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "current_date",
@@ -564,7 +610,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",
@@ -589,7 +637,9 @@
             "casrec_table": "PAT",
             "casrec_column_name": "Adrs5",
             "alias": "Adrs5",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -614,7 +664,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",
@@ -639,7 +691,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",
@@ -664,7 +718,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",
@@ -689,7 +745,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",
@@ -714,7 +772,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",
@@ -739,7 +799,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "none",
             "calculated": "",
@@ -764,7 +826,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",
@@ -789,7 +853,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",
@@ -814,7 +880,9 @@
             "casrec_table": "PAT",
             "casrec_column_name": "PFCWorker",
             "alias": "PFCWorker",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "caseowner_lookup",
             "default_value": 2657,
             "calculated": "",
@@ -839,7 +907,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "CASRECMIGRATION",
             "calculated": "",
@@ -864,7 +934,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "current_date",

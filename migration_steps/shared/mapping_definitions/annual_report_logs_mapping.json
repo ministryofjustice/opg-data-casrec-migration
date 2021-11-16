@@ -14,7 +14,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -39,7 +41,9 @@
             "casrec_table": "Account",
             "casrec_column_name": "End Date",
             "alias": "End Date",
-            "requires_transformation": "calculate_duedate",
+            "requires_transformation": [
+                "calculate_duedate"
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -64,7 +68,9 @@
             "casrec_table": "Account",
             "casrec_column_name": "End Date",
             "alias": "End Date 1",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -89,7 +95,9 @@
             "casrec_table": "Account",
             "casrec_column_name": "Revise Date",
             "alias": "Revise Date",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -114,7 +122,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 0.0,
             "calculated": "",
@@ -139,7 +149,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -164,7 +176,9 @@
             "casrec_table": "Account",
             "casrec_column_name": "End Date",
             "alias": "End Date 2",
-            "requires_transformation": "calculate_startdate",
+            "requires_transformation": [
+                "calculate_startdate"
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -189,7 +203,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -230,7 +246,9 @@
                 "Rcvd Date5",
                 "Rcvd Date6"
             ],
-            "requires_transformation": "get_max_col",
+            "requires_transformation": [
+                "get_max_col"
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -255,7 +273,9 @@
             "casrec_table": "Account",
             "casrec_column_name": "Rev Stat",
             "alias": "Rev Stat",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "revstatus_lookup",
             "default_value": "",
             "calculated": "",
@@ -280,7 +300,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -305,7 +327,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 2.0,
             "calculated": "",

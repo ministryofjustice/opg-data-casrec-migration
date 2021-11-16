@@ -14,7 +14,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -39,7 +41,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -64,7 +68,9 @@
             "casrec_table": "REMARKS",
             "casrec_column_name": "Log Type",
             "alias": "Log Type",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "note_type_lookup",
             "default_value": "not mapped",
             "calculated": "",
@@ -89,7 +95,9 @@
             "casrec_table": "REMARKS",
             "casrec_column_name": "Remarks",
             "alias": "Remarks",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "no description migrated",
             "calculated": "",
@@ -120,7 +128,9 @@
                 "Logdate",
                 "Logtime"
             ],
-            "requires_transformation": "convert_to_timestamp",
+            "requires_transformation": [
+                "convert_to_timestamp"
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -145,7 +155,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 2,
             "calculated": "",
@@ -170,7 +182,9 @@
             "casrec_table": "REMARKS",
             "casrec_column_name": "Log Type",
             "alias": "Log Type 1",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "note_dir_lookup",
             "default_value": "",
             "calculated": "",

@@ -14,7 +14,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -39,7 +41,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -64,7 +68,9 @@
             "casrec_table": "ACCOUNT",
             "casrec_column_name": "Followup Date",
             "alias": "Followup Date",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -89,7 +95,9 @@
             "casrec_table": "ACCOUNT",
             "casrec_column_name": "Lodge Date",
             "alias": "Lodge Date",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -114,7 +122,9 @@
             "casrec_table": "ACCOUNT",
             "casrec_column_name": "Further Code",
             "alias": "Further Code",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "furthered_lookup",
             "default_value": "",
             "calculated": "",
@@ -153,7 +163,9 @@
                 "Rcvd Date5",
                 "Rcvd Date6"
             ],
-            "requires_transformation": "is_at_least_one_set",
+            "requires_transformation": [
+                "is_at_least_one_set"
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -192,7 +204,9 @@
                 "Sent5",
                 "Sent6"
             ],
-            "requires_transformation": "get_max_col",
+            "requires_transformation": [
+                "get_max_col"
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -217,7 +231,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 2.0,
             "calculated": "",

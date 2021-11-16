@@ -33,6 +33,7 @@ def insert_persons_deputies(db_config, target_db, mapping_file):
                 sirius_details=sirius_details,
                 chunk_details={"chunk_size": chunk_size, "offset": offset},
             )
+
             target_db.insert_data(
                 table_name=table_definition["destination_table_name"],
                 df=persons_df,

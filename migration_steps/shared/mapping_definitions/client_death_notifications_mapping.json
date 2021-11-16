@@ -14,7 +14,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -39,7 +41,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -64,7 +68,9 @@
             "casrec_table": "PAT",
             "casrec_column_name": "Proof",
             "alias": "Proof",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "proof_boolean_lookup",
             "default_value": "",
             "calculated": "",
@@ -89,7 +95,9 @@
             "casrec_table": "PAT",
             "casrec_column_name": "Letter Sent",
             "alias": "Letter Sent",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -114,7 +122,9 @@
             "casrec_table": "PAT",
             "casrec_column_name": "Notified",
             "alias": "Notified",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -139,7 +149,9 @@
             "casrec_table": "PAT",
             "casrec_column_name": "Term by",
             "alias": "Term by",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "termby_lookup",
             "default_value": "",
             "calculated": "",
@@ -164,7 +176,9 @@
             "casrec_table": "PAT",
             "casrec_column_name": "Notify",
             "alias": "Notify",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "notify_type_lookup",
             "default_value": "",
             "calculated": "",
@@ -189,7 +203,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "Migrated",
             "calculated": "",

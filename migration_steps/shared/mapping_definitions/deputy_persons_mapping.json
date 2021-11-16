@@ -14,7 +14,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -39,7 +41,9 @@
             "casrec_table": "DEPUTY",
             "casrec_column_name": "Email",
             "alias": "Email",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -64,7 +68,9 @@
             "casrec_table": "DEPUTY",
             "casrec_column_name": "Disch Death",
             "alias": "Disch Death",
-            "requires_transformation": "conditional_lookup",
+            "requires_transformation": [
+                "conditional_lookup"
+            ],
             "lookup_table": "deputy_date_of_death_lookup",
             "default_value": "",
             "calculated": "",
@@ -89,7 +95,9 @@
             "casrec_table": "DEPUTY",
             "casrec_column_name": "Title",
             "alias": "Title",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "title_codes_lookup",
             "default_value": "",
             "calculated": "",
@@ -114,7 +122,10 @@
             "casrec_table": "DEPUTY",
             "casrec_column_name": "Dep Forename",
             "alias": "Dep Forename",
-            "requires_transformation": "first_word",
+            "requires_transformation": [
+                "first_word",
+                "capitalise_first_letter"
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -139,7 +150,10 @@
             "casrec_table": "DEPUTY",
             "casrec_column_name": "Dep Forename",
             "alias": "Dep Forename 1",
-            "requires_transformation": "last_words",
+            "requires_transformation": [
+                "last_words",
+                "capitalise_first_letter"
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -164,7 +178,9 @@
             "casrec_table": "DEPUTY",
             "casrec_column_name": "Dep Surname",
             "alias": "Dep Surname",
-            "requires_transformation": "",
+            "requires_transformation": [
+                "capitalise_first_letter"
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -189,7 +205,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",
@@ -214,7 +232,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",
@@ -239,7 +259,9 @@
             "casrec_table": "DEPUTY",
             "casrec_column_name": "By Email",
             "alias": "By Email",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "corres_indicator_lookup",
             "default_value": false,
             "calculated": "",
@@ -264,7 +286,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -289,7 +313,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "actor_deputy",
             "calculated": "",
@@ -314,7 +340,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": true,
             "calculated": "",
@@ -339,7 +367,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",
@@ -364,7 +394,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",
@@ -389,7 +421,9 @@
             "casrec_table": "DEPUTY",
             "casrec_column_name": "AKA Name",
             "alias": "AKA Name",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -414,7 +448,9 @@
             "casrec_table": "DEPUTY",
             "casrec_column_name": "Welsh",
             "alias": "Welsh",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "corres_indicator_lookup",
             "default_value": false,
             "calculated": "",
@@ -439,7 +475,9 @@
             "casrec_table": "DEPUTY",
             "casrec_column_name": "Mobile",
             "alias": "Mobile",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -464,7 +502,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",
@@ -489,7 +529,9 @@
             "casrec_table": "DEPUTY",
             "casrec_column_name": "Special",
             "alias": "Special",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "audio_special_req_lookup",
             "default_value": false,
             "calculated": "",
@@ -514,7 +556,9 @@
             "casrec_table": "DEPUTY",
             "casrec_column_name": "Special",
             "alias": "Special 1",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "large_print_special_req_lookup",
             "default_value": false,
             "calculated": "",
@@ -539,7 +583,9 @@
             "casrec_table": "DEPUTY",
             "casrec_column_name": "Special",
             "alias": "Special 2",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "hearing_imp_special_req_lookup",
             "default_value": false,
             "calculated": "",
@@ -564,7 +610,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",
@@ -589,7 +637,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": false,
             "calculated": "",
@@ -614,7 +664,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "LAY",
             "calculated": "",
@@ -639,7 +691,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": 10,
             "calculated": "",
@@ -664,7 +718,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "CASRECMIGRATION",
             "calculated": "",
@@ -689,7 +745,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "current_date",

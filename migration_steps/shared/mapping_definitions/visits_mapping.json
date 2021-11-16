@@ -14,7 +14,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -39,7 +41,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -64,7 +68,9 @@
             "casrec_table": "REPVIS",
             "casrec_column_name": "Report Type",
             "alias": "Report Type",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "visit_subtype_lookup",
             "default_value": "",
             "calculated": "",
@@ -89,7 +95,9 @@
             "casrec_table": "REPVIS",
             "casrec_column_name": "Create",
             "alias": "Create",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -114,7 +122,9 @@
             "casrec_table": "REPVIS",
             "casrec_column_name": "Commission Issued",
             "alias": "Commission Issued",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -139,7 +149,9 @@
             "casrec_table": "REPVIS",
             "casrec_column_name": "Outcome",
             "alias": "Outcome",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "visit_outcome_lookup",
             "default_value": "",
             "calculated": "",
@@ -164,7 +176,9 @@
             "casrec_table": "REPVIS",
             "casrec_column_name": "Date Completed",
             "alias": "Date Completed",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -189,7 +203,9 @@
             "casrec_table": "REPVIS",
             "casrec_column_name": "Report Rcvd.",
             "alias": "Report Rcvd.",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -214,7 +230,9 @@
             "casrec_table": "REPVIS",
             "casrec_column_name": "Categ",
             "alias": "Categ",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "visit_marked_lookup",
             "default_value": "",
             "calculated": "",
@@ -239,7 +257,9 @@
             "casrec_table": "REPVIS",
             "casrec_column_name": "Review Date",
             "alias": "Review Date",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -264,7 +284,9 @@
             "casrec_table": "REPVIS",
             "casrec_column_name": "Reason",
             "alias": "Reason",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "visit_outcome_reason_lookup",
             "default_value": "",
             "calculated": "",
@@ -289,7 +311,9 @@
             "casrec_table": "REPVIS",
             "casrec_column_name": "Commission Dated",
             "alias": "Commission Dated",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -314,7 +338,9 @@
             "casrec_table": "REPVIS",
             "casrec_column_name": "Extension 1",
             "alias": "Extension 1",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -339,7 +365,9 @@
             "casrec_table": "REPVIS",
             "casrec_column_name": "Extension 2",
             "alias": "Extension 2",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -364,7 +392,9 @@
             "casrec_table": "REPVIS",
             "casrec_column_name": "Req By",
             "alias": "Req By",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "visit_type_lookup",
             "default_value": "",
             "calculated": "",
@@ -389,7 +419,9 @@
             "casrec_table": "REPVIS",
             "casrec_column_name": "Rep On",
             "alias": "Rep On",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "who_visit_lookup",
             "default_value": "",
             "calculated": "",

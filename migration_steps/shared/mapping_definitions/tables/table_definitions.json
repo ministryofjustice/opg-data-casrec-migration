@@ -137,15 +137,7 @@
         "destination_table_name": "persons",
         "entity_name": "clients",
         "required_entities": "",
-        "source_conditions": {
-            "capitalise_first_letter": {
-                "cols": [
-                    "Forename",
-                    "Forename 1",
-                    "Surname"
-                ]
-            }
-        },
+        "source_conditions": "",
         "source_table_additional_columns": [
             "Term Type"
         ],
@@ -292,15 +284,7 @@
         "destination_table_name": "persons",
         "entity_name": "deputies",
         "required_entities": "",
-        "source_conditions": {
-            "capitalise_first_letter": {
-                "cols": [
-                    "Dep Forename",
-                    "Dep Forename 1",
-                    "Dep Surname"
-                ]
-            }
-        },
+        "source_conditions": "",
         "source_table_additional_columns": [
             "Deputy No",
             "Stat",

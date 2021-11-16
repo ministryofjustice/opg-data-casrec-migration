@@ -14,7 +14,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -39,7 +41,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -64,7 +68,9 @@
             "casrec_table": "ORDER",
             "casrec_column_name": "Bond No.",
             "alias": "Bond No.",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -89,7 +95,9 @@
             "casrec_table": "ORDER",
             "casrec_column_name": "Bond Amount",
             "alias": "Bond Amount",
-            "requires_transformation": "money_poundPence",
+            "requires_transformation": [
+                "money_poundPence"
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -114,7 +122,9 @@
             "casrec_table": "ORDER",
             "casrec_column_name": "Bond Amt OPG",
             "alias": "Bond Amt OPG",
-            "requires_transformation": "money_poundPence",
+            "requires_transformation": [
+                "money_poundPence"
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -139,7 +149,9 @@
             "casrec_table": "ORDER",
             "casrec_column_name": "Bond Renewal",
             "alias": "Bond Renewal",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -164,7 +176,9 @@
             "casrec_table": "ORDER",
             "casrec_column_name": "Bond Discharge",
             "alias": "Bond Discharge",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -189,7 +203,9 @@
             "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "",
             "default_value": "DISPENSED",
             "calculated": "",
@@ -214,7 +230,9 @@
             "casrec_table": "ORDER",
             "casrec_column_name": "Bond Co",
             "alias": "Bond Co",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "bond_provider_lookup",
             "default_value": "",
             "calculated": "",
@@ -239,7 +257,9 @@
             "casrec_table": "ORDER",
             "casrec_column_name": "Bond Co",
             "alias": "Bond Co 1",
-            "requires_transformation": "",
+            "requires_transformation": [
+                ""
+            ],
             "lookup_table": "bond_provider_freetext_lookup",
             "default_value": "",
             "calculated": "",

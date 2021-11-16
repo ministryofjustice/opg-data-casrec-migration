@@ -22,14 +22,11 @@ def map_lookup_tables(
         else:
             default_value_set = False
             default_value = None
-
         lookup_dict = helpers.get_lookup_dict(file_name=details["lookup_table"])
 
         source_data_df[col] = source_data_df[col].map(lookup_dict)
-
         if default_value_set:
             source_data_df[col] = source_data_df[col].fillna(default_value)
         else:
             source_data_df[col] = source_data_df[col].fillna("")
-
     return source_data_df

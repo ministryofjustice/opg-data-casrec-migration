@@ -170,7 +170,14 @@ def do_simple_transformations(
             transformed_df = standard_transformations.last_words(
                 t["original_columns"], t["aggregate_col"], transformed_df
             )
-                        
+
+    if "capitalise_first_letter" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: capitalise_first_letter")
+        for t in transformations["capitalise_first_letter"]:
+            transformed_df = standard_transformations.capitalise_first_letter(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
     log.log(
         config.VERBOSE, f"Dataframe size after transformations: {len(transformed_df)}"
     )
