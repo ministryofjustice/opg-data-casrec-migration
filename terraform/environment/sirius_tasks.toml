@@ -184,6 +184,21 @@
         },
         "TaskDefinition": "arn:aws:ecs:eu-west-1:${account}:task-definition/reset-elasticsearch-${cluster}"
       },
+      "reindex-elasticsearch-by-date": {
+        "Cluster": "${cluster}",
+        "LaunchType": "FARGATE",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "SecurityGroups": [
+              "${sec_group}"
+            ],
+            "Subnets": [
+              "${subnets}"
+            ]
+          }
+        },
+        "TaskDefinition": "arn:aws:ecs:eu-west-1:${account}:task-definition/reindex-elasticsearch-by-date-${cluster}"
+      },
       "elasticsearch-reindex": {
         "Cluster": "${cluster}",
         "LaunchType": "FARGATE",
