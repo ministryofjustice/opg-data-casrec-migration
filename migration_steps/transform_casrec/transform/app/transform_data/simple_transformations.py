@@ -157,6 +157,20 @@ def do_simple_transformations(
                 t["original_columns"], t["aggregate_col"], transformed_df
             )
 
+    if "first_word" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: first_word")
+        for t in transformations["first_word"]:
+            transformed_df = standard_transformations.first_word(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
+    if "last_words" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: last_words")
+        for t in transformations["last_words"]:
+            transformed_df = standard_transformations.last_words(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+                        
     log.log(
         config.VERBOSE, f"Dataframe size after transformations: {len(transformed_df)}"
     )
