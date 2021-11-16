@@ -64,4 +64,39 @@ data "aws_iam_policy_document" "migration_commands" {
       "s3:*"
     ]
   }
+
+  statement {
+    effect    = "Allow"
+    resources = ["*"]
+    actions = [
+      "s3:ListAllMyBuckets",
+      "s3:ListBucket",
+      "s3:getBucketVersioning"
+    ]
+  }
+
+  statement {
+    effect    = "Allow"
+    resources = ["*"]
+    actions = [
+      "states:ListActivities",
+      "states:ListStateMachines",
+      "states:ListTagsForResource",
+      "states:DescribeActivity",
+      "states:DescribeExecution",
+      "states:DescribeStateMachine",
+      "states:DescribeStateMachineForExecution",
+      "states:GetActivityTask",
+      "states:GetExecutionHistory"
+    ]
+  }
+
+  statement {
+    effect    = "Allow"
+    resources = ["arn:aws:states:eu-west-1:${local.account.account_id}:stateMachine:casrec-mig-state-machine-${local.account.name}"]
+    actions = [
+      "states:StartExecution",
+      "states:ListExecutions"
+    ]
+  }
 }
