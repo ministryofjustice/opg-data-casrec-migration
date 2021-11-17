@@ -112,9 +112,15 @@
         },
         "transform_casrec": {
             "casrec_table": "DEPUTY_REMARKS",
-            "casrec_column_name": "Log Date",
-            "alias": "Log Date",
-            "requires_transformation": "",
+            "casrec_column_name": [
+                "Log Date",
+                "Log Time"
+            ],
+            "alias": [
+                "Log Date",
+                "Log Time"
+            ],
+            "requires_transformation": "convert_to_timestamp",
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
