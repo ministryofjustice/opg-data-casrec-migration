@@ -22,6 +22,10 @@ def conditional_lookup(
     df: pd.DataFrame,
 ) -> pd.DataFrame:
 
+    print("IDHEWQDUWEOHFOUEHFUEOHEWFOUHEWQFOUHEWFOUEHWQFUOWHQOFUHWUOEFHEWQOUFWEQOUF")
+
+    print(df.columns.values)
+
     log.log(
         config.VERBOSE,
         f"Doing conditional lookup using final_col: {final_col}, lookup_col: {lookup_col}, data_col: {data_col}, "
@@ -29,19 +33,29 @@ def conditional_lookup(
     )
 
     temp_col = "mapping_col"
+    print(lookup_col)
     lookup_col = format_additional_col_alias(lookup_col)
+
+    print(lookup_col)
 
     pattern = re.compile(f"^{data_col}$|^{data_col}\s[0-9]+$|^{data_col}\s$")
     data_col = list(filter(pattern.match, df.columns.tolist()))[0]
 
     lookup_dict = helpers.get_lookup_dict(lookup_file_name)
+    print(lookup_dict)
+
+    print(df[lookup_col])
 
     df[temp_col] = df[lookup_col].map(lookup_dict)
     df[temp_col] = df[temp_col].fillna("")
 
-    df[final_col] = df.apply(
-        lambda x: x[data_col] if x[temp_col] == data_col else None, axis=1
-    )
+    def blah(x):
+        print(
+            f"data_col_value: {x[data_col]}, temp_col: {x[temp_col]}, data_col: {data_col}, lookup: {x[lookup_col]}"
+        )
+        return x[data_col] if x[temp_col] == data_col else None
+
+    df[final_col] = df.apply(lambda x: blah(x), axis=1)
 
     df = df.drop(columns=[temp_col, data_col])
 

@@ -38,7 +38,6 @@ def perform_transformations(
     mappings = mapping_defs.generate_mapping_def()
 
     final_df = source_data_df
-
     conditions = table_definition.get("source_conditions")
 
     simple_mapping = mappings["simple_mapping"]
