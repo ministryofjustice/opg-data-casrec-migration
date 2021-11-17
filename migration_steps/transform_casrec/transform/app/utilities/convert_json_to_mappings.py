@@ -24,8 +24,8 @@ class MappingDefinitions:
         requires_transformation = {
             k: v
             for k, v in self.mapping_definitions.items()
-            if v["requires_transformation"] != ""
-            and v["requires_transformation"] != "date_format_standard"
+            if v["requires_transformation"] != [""]
+            and v["requires_transformation"] != ["date_format_standard"]
         }
 
         transformations = {}
@@ -77,7 +77,7 @@ class MappingDefinitions:
             k: v
             for k, v in self.mapping_definitions.items()
             if len(v["lookup_table"]) > 0
-            and v["requires_transformation"] != "conditional_lookup"
+            and v["requires_transformation"] != ["conditional_lookup"]
         }
 
     def generate_mapping_def(self):

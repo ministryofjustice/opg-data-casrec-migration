@@ -11,7 +11,7 @@ def case_do_simple_mapping():
             "casrec_table": "ORDER",
             "default_value": "",
             "calculated": "",
-            "requires_transformation": "",
+            "requires_transformation": [""],
             "lookup_table": "",
         }
     }
@@ -31,7 +31,7 @@ def case_do_simple_transformations():
             "casrec_table": "",
             "default_value": "",
             "calculated": "",
-            "requires_transformation": "unique_number",
+            "requires_transformation": ["unique_number"],
             "lookup_table": "",
         },
     }
@@ -51,7 +51,7 @@ def case_add_required_columns():
             "casrec_table": "",
             "default_value": "ORDER",
             "calculated": "",
-            "requires_transformation": "",
+            "requires_transformation": [""],
             "lookup_table": "",
         },
     }
@@ -71,7 +71,7 @@ def case_map_lookup_tables():
             "casrec_table": "",
             "default_value": "ORDER",
             "calculated": "",
-            "requires_transformation": "",
+            "requires_transformation": [""],
             "lookup_table": "accommodation_type_lookup",
         },
     }
