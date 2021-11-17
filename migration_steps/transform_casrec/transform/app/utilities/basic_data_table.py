@@ -55,9 +55,6 @@ def get_basic_data_table(
         sql=source_data_query, con=db_config["db_connection_string"]
     )
 
-    # print(source_data_query)
-    # print(source_data_df.columns.values)
-
     if len(source_data_df) == 0:
         log.debug(f"No data returned from database")
         raise EmptyDataFrame(df=source_data_df)

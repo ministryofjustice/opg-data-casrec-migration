@@ -73,6 +73,14 @@ def main():
                 "list_in_field": "tasks",
             },
         ],
+        "remarks": [
+            {
+                "csv": "client_notes",
+                "identifier": "client",
+                "assert_on_list": True,
+                "list_in_field": "notes",
+            },
+        ],
     }
 
     api_tests = ApiTests()

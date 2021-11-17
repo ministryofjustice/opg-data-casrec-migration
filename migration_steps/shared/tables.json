@@ -174,7 +174,11 @@
 				"parent_column": "id"
 			}],
 		"table_type": "join",
-		"sequences": [],
+		"sequences": [{
+			"name": "order_deputy_id_seq",
+			"column": "id",
+			"type": "pk"
+		}],
 		"order_by": ["id"]
 	},
 	"supervision_notes": {
@@ -267,7 +271,11 @@
 			"parent_column": "id"
 		}],
 		"table_type": "data",
-		"sequences": [],
+		"sequences": [{
+			"name": "visits_id_seq",
+			"column": "id",
+			"type": "pk"
+		}],
 		"order_by": ["id"]
 	},
 	"annual_report_logs": {
@@ -283,7 +291,11 @@
 			"parent_column": "id"
 		}],
 		"table_type": "data",
-		"sequences": [],
+		"sequences": [{
+			"name": "annual_report_logs_id_seq",
+			"column": "id",
+			"type": "pk"
+		}],
 		"order_by": ["id"]
 	},
 	"annual_report_lodging_details": {
@@ -295,7 +307,11 @@
 		"pk": "id",
 		"fks": [],
 		"table_type": "data",
-		"sequences": [],
+		"sequences": [{
+			"name": "annual_report_lodging_details_id_seq",
+			"column": "id",
+			"type": "pk"
+		}],
 		"order_by": ["id"]
 	},
 	"finance_remission_exemption": {
@@ -313,7 +329,11 @@
 		"pk": "id",
 		"fks": [],
 		"table_type": "data",
-		"sequences": [],
+		"sequences": [{
+			"name": "finance_remission_exemption_id_seq",
+			"column": "id",
+			"type": "pk"
+		}],
 		"order_by": ["id"]
 	},
 	"finance_invoice": {
@@ -337,7 +357,11 @@
 			}
 		],
 		"table_type": "data",
-		"sequences": [],
+		"sequences": [{
+			"name": "finance_invoice_id_seq",
+			"column": "id",
+			"type": "pk"
+		}],
 		"order_by": ["id"]
 	},
 	"finance_ledger": {
@@ -355,7 +379,11 @@
 		"pk": "id",
 		"fks": [],
 		"table_type": "data",
-		"sequences": [],
+		"sequences": [{
+			"name": "finance_ledger_id_seq",
+			"column": "id",
+			"type": "pk"
+		}],
 		"order_by": ["id"]
 	},
 	"finance_ledger_allocation": {
@@ -385,7 +413,11 @@
 			}
 		],
 		"table_type": "data",
-		"sequences": [],
+		"sequences": [{
+			"name": "finance_ledger_allocation_id_seq",
+			"column": "id",
+			"type": "pk"
+		}],
 		"order_by": ["id"]
 	},
 	"tasks": {

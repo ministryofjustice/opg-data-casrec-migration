@@ -66,8 +66,8 @@
         },
         "transform_casrec": {
             "casrec_table": "REPVIS",
-            "casrec_column_name": "Report Type",
-            "alias": "Report Type",
+            "casrec_column_name": "Req By",
+            "alias": "Req By",
             "requires_transformation": [
                 ""
             ],
@@ -391,7 +391,7 @@
         "transform_casrec": {
             "casrec_table": "REPVIS",
             "casrec_column_name": "Req By",
-            "alias": "Req By",
+            "alias": "Req By 1",
             "requires_transformation": [
                 ""
             ],

@@ -1103,6 +1103,13 @@ def insert_finance_person_data_into_sirius(db_config, sirius_db_engine):
     """
     sirius_db_engine.execute(insert_statement)
 
+    # finance_person_id sequence will not get reset when loading to Sirius
+    # because finance_person is not a migrated table. Reset the sequence here.
+    reset_sequence_statement = f"""
+        SELECT setval('finance_person_id_seq', (SELECT MAX(id) FROM finance_person));
+    """
+    sirius_db_engine.execute(reset_sequence_statement)
+
 
 def create_batch_number_counter_in_sirius(db_config, sirius_db_engine):
     # Create the counter if it doesn't exist
