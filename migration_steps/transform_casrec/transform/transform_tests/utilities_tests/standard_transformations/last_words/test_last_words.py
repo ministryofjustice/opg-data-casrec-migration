@@ -6,8 +6,14 @@ from pandas.util.testing import assert_frame_equal
 def test_last_words():
     df = pd.DataFrame(
         {
-            "source": ["one-word", "two words", "three wor ds"],
-            "ignored-col": ["a", "b", "c"],
+            "source": [
+                "one-word",
+                "two words",
+                "two words'apos",
+                "two words-hyphen",
+                "three wor ds",
+            ],
+            "ignored-col": ["a", "b", "c", "d", "e"],
         }
     )
 
@@ -17,8 +23,8 @@ def test_last_words():
         result_df,
         pd.DataFrame(
             {
-                "ignored-col": ["a", "b", "c"],
-                "destination": ["", "Words", "Wor Ds"],
+                "ignored-col": ["a", "b", "c", "d", "e"],
+                "destination": ["", "Words", "Words'Apos", "Words-Hyphen", "Wor Ds"],
             }
         ),
     )

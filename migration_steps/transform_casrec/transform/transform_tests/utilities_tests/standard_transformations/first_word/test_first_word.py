@@ -6,8 +6,8 @@ from pandas.util.testing import assert_frame_equal
 def test_first_word():
     df = pd.DataFrame(
         {
-            "source": ["one-word", "two words", "three wor ds"],
-            "ignored-col": ["a", "b", "c"],
+            "source": ["one-word", "one'word", "two words", "three wor ds"],
+            "ignored-col": ["a", "b", "c", "d"],
         }
     )
 
@@ -17,8 +17,8 @@ def test_first_word():
         result_df,
         pd.DataFrame(
             {
-                "ignored-col": ["a", "b", "c"],
-                "destination": ["One-word", "Two", "Three"],
+                "ignored-col": ["a", "b", "c", "d"],
+                "destination": ["One-Word", "One'Word", "Two", "Three"],
             }
         ),
     )

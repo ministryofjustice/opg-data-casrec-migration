@@ -4,7 +4,6 @@ import os
 from pathlib import Path
 from typing import Dict
 from utilities.df_helpers import get_datetime_from_df_row
-from string import capwords
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
@@ -306,7 +305,7 @@ def convert_to_timestamp(
 
 def first_word(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
     df[result_col] = df[original_col].apply(
-        lambda x: capwords(x.split(" ", 1)[0]),
+        lambda x: x.split(" ", 1)[0].title(),
     )
 
     df = df.drop(columns=[original_col])
@@ -317,7 +316,7 @@ def first_word(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataF
 def last_words(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
     def f(x):
         parts = x.split(" ", 1)
-        return capwords(parts[1]) if len(parts) == 2 else ""
+        return parts[1].title() if len(parts) == 2 else ""
 
     df[result_col] = df[original_col].apply(f)
     df = df.drop(columns=[original_col])
@@ -328,7 +327,7 @@ def last_words(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataF
 def capitalise_first_letter(
     original_col: str, result_col: str, df: pd.DataFrame
 ) -> pd.DataFrame:
-    df[result_col] = df[original_col].apply(lambda x: x.capitalize())
+    df[result_col] = df[original_col].apply(lambda x: x.title())
 
     df = df.drop(columns=[original_col])
 

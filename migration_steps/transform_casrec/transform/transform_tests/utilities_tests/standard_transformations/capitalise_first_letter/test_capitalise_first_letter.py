@@ -6,8 +6,8 @@ from pandas.util.testing import assert_frame_equal
 def test_capitalise_first_letter():
     df = pd.DataFrame(
         {
-            "source": ["first", "first-Second", "first Second", ""],
-            "ignored-col": ["a", "b", "c", "d"],
+            "source": ["first", "first-Second", "first SECOND", "FIRST'SECOND", ""],
+            "ignored-col": ["a", "b", "c", "d", "e"],
         }
     )
 
@@ -17,8 +17,14 @@ def test_capitalise_first_letter():
         result_df,
         pd.DataFrame(
             {
-                "ignored-col": ["a", "b", "c", "d"],
-                "destination": ["First", "First-second", "First second", ""],
+                "ignored-col": ["a", "b", "c", "d", "e"],
+                "destination": [
+                    "First",
+                    "First-Second",
+                    "First Second",
+                    "First'Second",
+                    "",
+                ],
             }
         ),
     )
