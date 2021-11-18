@@ -41,6 +41,7 @@ csvs = [
     "reports",
     "invoice",
     "tasks",
+    "deputy_notes",
     "client_notes",
 ]
 
@@ -57,6 +58,7 @@ entities_of_type_list = [
     "invoices",
     "tasks",
     "visits",
+    "deputy_notes",
     "client_notes",
 ]
 
@@ -150,6 +152,7 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
         "deputy_orders",
         "deputy_death_notifications",
         "deputy_fee_payer",
+        "deputy_notes",
     ]:
         entity_ids = engine.execute(order_id_sql)
         if entity_ids.rowcount < 1:
@@ -162,6 +165,7 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
                     "deputy_clients",
                     "deputy_warnings",
                     "deputy_death_notifications",
+                    "deputy_notes",
                 ]:
                     deputies = get_deputy_entity_ids(entity_id, conn)
                     for deputy in deputies:

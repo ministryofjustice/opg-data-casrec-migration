@@ -75,6 +75,11 @@ def main():
         ],
         "remarks": [
             {
+                "csv": "deputy_notes",
+                "identifier": "deputy",
+                "assert_on_list": True,
+            },
+            {
                 "csv": "client_notes",
                 "identifier": "client",
                 "assert_on_list": True,
@@ -101,8 +106,9 @@ def main():
             api_tests.assert_on_count = (
                 "assert_on_count" in test and test["assert_on_count"] is True
             )
-            if "list_in_field" in test:
-                api_tests.list_in_field = test["list_in_field"]
+            api_tests.list_in_field = (
+                test["list_in_field"] if "list_in_field" in test else None
+            )
             api_tests.run_response_tests()
     api_tests.upload_log_file()
 
