@@ -1,23 +1,14 @@
 {
     "4": {
-        "sirius_mapping": "Letter"
-    },
-    "6": {
-        "sirius_mapping": "Letter"
+        "sirius_mapping": "Fax"
     },
     "3": {
         "sirius_mapping": "Letter"
     },
     "2": {
-        "sirius_mapping": "Letter"
-    },
-    "5": {
-        "sirius_mapping": "Letter"
-    },
-    "0": {
-        "sirius_mapping": "Letter"
+        "sirius_mapping": "Email"
     },
     "1": {
-        "sirius_mapping": "Letter"
+        "sirius_mapping": "Phone"
     }
 }

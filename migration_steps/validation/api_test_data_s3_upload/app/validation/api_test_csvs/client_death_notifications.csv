@@ -1,3 +1,5 @@
 endpoint,entity_ref,json_locator,test_purpose,api_response
 /api/v1/persons/{id}/death-notification,10076428,["person"]["dateOfDeath"],dev_api_tests,31/12/2018
 /api/v1/persons/{id}/death-notification,10264188,["notificationMethod"],dev_api_tests,Letter
+/api/v1/persons/{id}/death-notification,13263316,["notificationMethod"],dev_api_tests,Email
+/api/v1/persons/{id}/death-notification,13272728,["notificationMethod"],dev_api_tests,Phone
