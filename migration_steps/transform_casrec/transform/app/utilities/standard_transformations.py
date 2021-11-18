@@ -302,25 +302,33 @@ def convert_to_timestamp(
 
     return df
 
-def first_word(
-        original_col: str, result_col: str, df: pd.DataFrame
-) -> pd.DataFrame:
+
+def first_word(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
     df[result_col] = df[original_col].apply(
-        lambda x: x.split(' ', 1)[0],
+        lambda x: x.split(" ", 1)[0].title(),
     )
 
     df = df.drop(columns=[original_col])
 
     return df
 
-def last_words(
-        original_col: str, result_col: str, df: pd.DataFrame
-) -> pd.DataFrame:
+
+def last_words(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
     def f(x):
-        parts = x.split(' ', 1)
-        return parts[1] if len(parts) == 2 else ''
-    
+        parts = x.split(" ", 1)
+        return parts[1].title() if len(parts) == 2 else ""
+
     df[result_col] = df[original_col].apply(f)
+    df = df.drop(columns=[original_col])
+
+    return df
+
+
+def capitalise_first_letter(
+    original_col: str, result_col: str, df: pd.DataFrame
+) -> pd.DataFrame:
+    df[result_col] = df[original_col].apply(lambda x: x.title())
+
     df = df.drop(columns=[original_col])
 
     return df

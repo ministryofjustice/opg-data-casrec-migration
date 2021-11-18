@@ -87,7 +87,7 @@ CREATE OR REPLACE FUNCTION transf_first_word(source varchar)
 RETURNS varchar as $$
 DECLARE
 BEGIN
-RETURN split_part(source, ' ', 1);
+RETURN INITCAP(split_part(source, ' ', 1));
 END;
 $$ LANGUAGE plpgsql;
 
@@ -95,6 +95,14 @@ CREATE OR REPLACE FUNCTION transf_last_words(source varchar)
 RETURNS varchar as $$
 DECLARE
 BEGIN
-RETURN COALESCE(SUBSTRING(source FROM ' .*$'), '');
+RETURN INITCAP(COALESCE(SUBSTRING(source FROM ' .*$'), ''));
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION transf_capitalise_first_letter(source varchar)
+RETURNS varchar as $$
+DECLARE
+BEGIN
+RETURN INITCAP(source);
 END;
 $$ LANGUAGE plpgsql;

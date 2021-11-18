@@ -164,7 +164,7 @@
             "casrec_table": "PAT",
             "casrec_column_name": "Surname",
             "alias": "Surname",
-            "requires_transformation": "",
+            "requires_transformation": "capitalise_first_letter",
             "lookup_table": "",
             "default_value": "",
             "calculated": "",

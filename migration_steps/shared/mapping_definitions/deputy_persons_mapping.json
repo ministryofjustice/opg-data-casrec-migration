@@ -164,7 +164,7 @@
             "casrec_table": "DEPUTY",
             "casrec_column_name": "Dep Surname",
             "alias": "Dep Surname",
-            "requires_transformation": "",
+            "requires_transformation": "capitalise_first_letter",
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
