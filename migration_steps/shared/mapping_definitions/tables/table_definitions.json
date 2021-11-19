@@ -1,5 +1,6 @@
 {
     "annual_report_lodging_details": {
+        "Notes": "",
         "destination_table_name": "annual_report_lodging_details",
         "entity_name": "reporting",
         "required_entities": "",
@@ -39,6 +40,7 @@
         "table_type": "data"
     },
     "annual_report_logs": {
+        "Notes": "",
         "destination_table_name": "annual_report_logs",
         "entity_name": "reporting",
         "required_entities": "",
@@ -69,6 +71,19 @@
                 ]
             }
         },
+        "table_type": "data"
+    },
+    "annual_report_type_assignments": {
+        "Notes": "As this table has to be derived from a Sirius table joined to a casrec table, any transforms etc. applied in its tab are ignored",
+        "destination_table_name": "annual_report_type_assignments",
+        "entity_name": "reporting",
+        "required_entities": "",
+        "source_conditions": {},
+        "source_table_additional_columns": [
+            ""
+        ],
+        "source_table_name": "account",
+        "table_transforms": {},
         "table_type": "data"
     },
     "bonds_active": {
