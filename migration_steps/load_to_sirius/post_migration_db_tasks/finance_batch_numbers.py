@@ -65,6 +65,8 @@ def set_batch_numbers_in_finance_person(cursor):
     batch_number = create_batch_number(cursor=cursor)
 
     log.info(f"Setting batch number {batch_number} in finance_person...")
+    query = "SET random_page_cost = 1;"
+    cursor.execute(query)
     query = f"""
         UPDATE finance_person
         SET batchnumber = {batch_number}
@@ -74,6 +76,8 @@ def set_batch_numbers_in_finance_person(cursor):
         AND persons.clientsource = 'CASRECMIGRATION'
         AND finance_person.batchnumber IS NULL;
     """
+    cursor.execute(query)
+    query = "SET random_page_cost = default;"
     cursor.execute(query)
 
 
