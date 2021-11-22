@@ -1,6 +1,8 @@
 endpoint,entity_ref,json_locator,test_purpose
+/api/v1/clients/{id}/visits,10001403,["visitType"]["label"],visit_type_ass
+/api/v1/clients/{id}/visits,10135295,["visitType"]["label"],visit_type_inv
 /api/v1/clients/{id}/visits,10000037,["visitType"]["label"],visit_type_sup
-/api/v1/clients/{id}/visits,12635676,["visitType"]["label"],visit_type_null
+/api/v1/clients/{id}/visits,11263970,["visitType"]["label"],visit_type_null
 /api/v1/clients/{id}/visits,10000037,["visitOutcome"]["label"],visit_outcome_aborted
 /api/v1/clients/{id}/visits,10012643,["visitOutcome"]["label"],visit_outcome_cancelled
 /api/v1/clients/{id}/visits,10001403,["visitOutcome"]["label"],visit_outcome_successful
@@ -17,10 +19,10 @@ endpoint,entity_ref,json_locator,test_purpose
 /api/v1/clients/{id}/visits,10001668,["visitSubType"]["label"],visit_sub_type_med
 /api/v1/clients/{id}/visits,10035792,["visitSubType"]["label"],visit_sub_type_pa
 /api/v1/clients/{id}/visits,10000037,["visitSubType"]["label"],visit_sub_type_pro
-/api/v1/clients/{id}/visits,10087622,["visitSubType"]["label"],visit_sub_type_null
+/api/v1/clients/{id}/visits,11263970,["visitSubType"]["label"],visit_sub_type_null
 /api/v1/clients/{id}/visits,10000037,["whoToVisit"]["label"],who_to_visit_client
 /api/v1/clients/{id}/visits,10004038,["whoToVisit"]["label"],who_to_visit_deputy
-/api/v1/clients/{id}/visits,12587836,["whoToVisit"]["label"],who_to_visit_null
+/api/v1/clients/{id}/visits,13217597,["whoToVisit"]["label"],who_to_visit_null
 /api/v1/clients/{id}/visits,10001403,["visitCancellationReason"]["label"],visit_cancellation_reason_area
 /api/v1/clients/{id}/visits,10004188,["visitCancellationReason"]["label"],visit_cancellation_reason_canc
 /api/v1/clients/{id}/visits,10008039,["visitCancellationReason"]["label"],visit_cancellation_reason_conf
