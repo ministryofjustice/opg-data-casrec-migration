@@ -957,7 +957,7 @@ jobs:
       - terraform/setup_ecs_runner
       - run:
           name: Run API tests
-          command: ecs-runner -task ${RUNNER_CMD} -timeout 600
+          command: ecs-runner -task ${RUNNER_CMD} -timeout 1800
           no_output_timeout: 30m
       - notififications/notify_env_vars
       - notififications/notify_if_fail
