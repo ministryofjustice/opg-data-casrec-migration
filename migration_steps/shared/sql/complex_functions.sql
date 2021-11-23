@@ -1,14 +1,14 @@
 DROP TABLE IF EXISTS casrec_csv.working_day_calendar;
 
 SELECT dd INTO casrec_csv.working_day_calendar
-from
+FROM
 (SELECT dd, extract(DOW FROM dd) dw
 FROM generate_series((now() - INTERVAL '1 YEAR')::date, now()::date, '1 day'::interval) dd) d
 WHERE dw not in (6,0);
 
 CREATE OR REPLACE FUNCTION casrec_csv.report_status_aggregate(rev_stat varchar, weekdays_since int, rcvd_date varchar, lodge_date varchar, review_date varchar, next_year varchar)
 RETURNS
-	varchar as $$
+	varchar AS $$
 DECLARE
 	report_status_code varchar;
 	end_date_flag varchar;
@@ -46,7 +46,7 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION casrec_csv.report_lodged_status_aggregate(revise_date varchar, further_code varchar, rcvd_date varchar, sent varchar, followup_date varchar)
 RETURNS
-	varchar as $$
+	varchar AS $$
 DECLARE
     report_lodged_status_code varchar;
 	revise_date_flag varchar;
@@ -86,25 +86,25 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION casrec_csv.report_status(report_aggr_code varchar)
 RETURNS
-	varchar as $$
+	varchar AS $$
 DECLARE
 	report_status varchar;
 BEGIN
 	report_status = CASE
-		WHEN report_aggr_code = 'N_P0_N_N_N_N' THEN 'PENDING||NO_REVIEW'
-		WHEN report_aggr_code = 'N_F0_N_N_N_N' THEN 'DUE||NO_REVIEW'
-		WHEN report_aggr_code = 'N_F1_N_N_N_N' THEN 'OVERDUE||NO_REVIEW'
-		WHEN report_aggr_code = 'N_F2_N_N_N_N' THEN 'NON_COMPLIANT||NO_REVIEW'
-		WHEN report_aggr_code like 'N_%_Y_N_N_N' THEN 'RECEIVED||NO_REVIEW'
-		WHEN report_aggr_code like 'N_%_Y_Y_N_N' THEN 'LODGED|ACKNOWLEDGED|NO_REVIEW'
-		WHEN report_aggr_code like 'I_%_Y_Y_N_N' THEN 'INCOMPLETE|INCOMPLETE|NO_REVIEW'
-		WHEN report_aggr_code like 'S_%_Y_Y_N_N' THEN 'LODGED|REFERRED_FOR_REVIEW|REVIEWED'
-		WHEN report_aggr_code like 'S_%_Y_Y_Y_N' THEN 'LODGED|REFERRED_FOR_REVIEW|REVIEWED'
-		WHEN report_aggr_code like 'R_%_Y_Y_Y_N' THEN 'LODGED|REFERRED_FOR_REVIEW|REVIEWED'
-		WHEN report_aggr_code like 'G_%_Y_Y_Y_N' THEN 'LODGED|REFERRED_FOR_REVIEW|REVIEWED'
-		WHEN report_aggr_code like 'M_%_Y_Y_Y_N' THEN 'LODGED|REFERRED_FOR_REVIEW|REVIEWED'
-		WHEN report_aggr_code like 'X_%_N_N_N_N' THEN 'ABANDONED||NO_REVIEW'
-		WHEN report_aggr_code like '_P0_%_%_N_Y' THEN 'PENDING||STAFF_PRESELECTED'
+		WHEN report_aggr_code like 'N_P0_N_N_N_%' THEN 'PENDING||NO_REVIEW'
+		WHEN report_aggr_code like 'N_F0_N_N_N_%' THEN 'DUE||NO_REVIEW'
+		WHEN report_aggr_code like 'N_F1_N_N_N_%' THEN 'OVERDUE||NO_REVIEW'
+		WHEN report_aggr_code like 'N_F2_N_N_N_%' THEN 'NON_COMPLIANT||NO_REVIEW'
+		WHEN report_aggr_code like 'N_%_Y_N_N_%' THEN 'RECEIVED||NO_REVIEW'
+		WHEN report_aggr_code like 'N_%_Y_Y_N_%' THEN 'LODGED|ACKNOWLEDGED|NO_REVIEW'
+		WHEN report_aggr_code like 'I_%_Y_Y_N_%' THEN 'INCOMPLETE|INCOMPLETE|NO_REVIEW'
+		WHEN report_aggr_code like 'S_%_Y_Y_N_%' THEN 'LODGED|REFERRED_FOR_REVIEW|STAFF_REFERRED'
+		WHEN report_aggr_code like 'S_%_Y_Y_Y_%' THEN 'LODGED|REFERRED_FOR_REVIEW|REVIEWED'
+		WHEN report_aggr_code like 'R_%_Y_Y_Y_%' THEN 'LODGED|REFERRED_FOR_REVIEW|REVIEWED'
+		WHEN report_aggr_code like 'G_%_Y_Y_Y_%' THEN 'LODGED|REFERRED_FOR_REVIEW|REVIEWED'
+		WHEN report_aggr_code like 'M_%_Y_Y_Y_%' THEN 'LODGED|REFERRED_FOR_REVIEW|REVIEWED'
+		WHEN report_aggr_code like 'X_%_N_N_N_%' THEN 'ABANDONED||NO_REVIEW'
+		WHEN report_aggr_code like '%_P0_%_%_N_Y' THEN 'PENDING||STAFF_PRESELECTED'
 		ELSE null
 	END;
 RETURN report_status;
@@ -113,7 +113,7 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION casrec_csv.report_lodged_status(report_lodged_aggr_code varchar)
 RETURNS
-	varchar as $$
+	varchar AS $$
 DECLARE
 	report_lodged_status varchar;
 BEGIN
@@ -131,7 +131,7 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION casrec_csv.report_element(full_string varchar, element_no int)
 RETURNS
-	varchar as $$
+	varchar AS $$
 DECLARE
 	code_part varchar;
 BEGIN
@@ -142,13 +142,13 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION casrec_csv.weekday_count(string_date varchar)
 RETURNS
-	int as $$
+	int AS $$
 DECLARE
 	weekday_count int;
 BEGIN
 weekday_count = count(*)
 FROM casrec_csv.working_day_calendar
-WHERE cast(string_date as date) >= dd;
-return weekday_count;
+WHERE cast(string_date AS date) <= dd;
+RETURN weekday_count;
 end;
 $$ LANGUAGE plpgsql;
