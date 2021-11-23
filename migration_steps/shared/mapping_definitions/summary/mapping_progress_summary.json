@@ -98,15 +98,15 @@
         },
         "finance_invoice_ad": {
             "total_rows": 14,
-            "total_unmapped": 2,
-            "total_mapped": 12,
-            "percentage_complete": 86
+            "total_unmapped": 1,
+            "total_mapped": 13,
+            "percentage_complete": 93
         },
         "finance_invoice_non_ad": {
             "total_rows": 14,
-            "total_unmapped": 2,
-            "total_mapped": 12,
-            "percentage_complete": 86
+            "total_unmapped": 1,
+            "total_mapped": 13,
+            "percentage_complete": 93
         },
         "finance_ledger_credits": {
             "total_rows": 17,
@@ -242,9 +242,9 @@
         },
         "fields": {
             "total_fields": 397,
-            "total_unmapped": 63,
-            "total_mapped": 334,
-            "percentage_complete": 84
+            "total_unmapped": 61,
+            "total_mapped": 336,
+            "percentage_complete": 85
         }
     }
 }
