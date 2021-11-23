@@ -1043,7 +1043,7 @@
                 "LEFT JOIN casrec_csv.sop_aged_debt ON casrec_csv.sop_aged_debt.\"Trx Number\" = casrec_csv.feeexport.\"Invoice No\"",
                 "LEFT JOIN casrec_csv.sop_feecheck ON casrec_csv.sop_feecheck.\"Invoice Number\" = casrec_csv.feeexport.\"Invoice No\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_invoice_ad exc_table ON exc_table.caserecnumber = feeexport.\"Case\"",
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_invoice_non_ad exc_table ON exc_table.caserecnumber = feeexport.\"Case\"",
             "where_clauses": [
                 "LEFT(feeexport.\"Invoice No\", 2) <> 'AD'",
                 "CAST(feeexport.\"Amount\" AS DOUBLE PRECISION) > 0",
@@ -1056,7 +1056,7 @@
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = finance_invoice.person_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_invoice_ad exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_invoice_non_ad exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "finance_invoice.source = 'CASRECMIGRATION'",
                 "finance_invoice.feetype <> 'AD'"
