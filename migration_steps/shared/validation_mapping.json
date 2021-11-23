@@ -1066,5 +1066,71 @@
           "column": "",
           "identifiers": []
         }
+    },
+    "finance_remissions": {
+        "exclude": [
+            "finance_person_id"
+        ],
+        "casenumber_source": "client_persons.caserecnumber",
+        "orderby": {},
+        "casrec": {
+            "from_table": "pat",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_remissions exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "where_clauses": [
+                "pat.\"Remis\" <> '0'",
+                "pat.\"Award Date\"::timestamp >= '2021-04-02'::timestamp"
+            ]
+        },
+        "sirius": {
+            "from_table": "finance_remission_exemption",
+            "transform": {},
+            "joins": [
+                "LEFT JOIN {target_schema}.finance_person ON finance_person.id = finance_remission_exemption.finance_person_id",
+                "LEFT JOIN {target_schema}.persons ON persons.id = finance_person.person_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_remissions exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "finance_remission_exemption.discounttype = 'REMISSION'"
+            ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
+    },
+    "finance_exemptions": {
+        "exclude": [
+            "finance_person_id"
+        ],
+        "casenumber_source": "client_persons.caserecnumber",
+        "orderby": {},
+        "casrec": {
+            "from_table": "pat",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_exemptions exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "where_clauses": [
+                "pat.\"Exempt\" <> '0'",
+                "pat.\"Award Date\"::timestamp >= '2021-04-02'::timestamp"
+            ]
+        },
+        "sirius": {
+            "from_table": "finance_remission_exemption",
+            "transform": {},
+            "joins": [
+                "LEFT JOIN {target_schema}.finance_person ON finance_person.id = finance_remission_exemption.finance_person_id",
+                "LEFT JOIN {target_schema}.persons ON persons.id = finance_person.person_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_exemptions exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "finance_remission_exemption.discounttype = 'EXEMPTION'"
+            ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
     }
 }
