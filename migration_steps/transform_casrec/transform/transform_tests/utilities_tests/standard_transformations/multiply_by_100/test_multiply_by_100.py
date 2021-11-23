@@ -8,13 +8,13 @@ def test_multiply_by_100():
     new_col = "integer col"
 
     test_data = {
-        "column_1": [0.5, 0.66, 2, 1.9],
+        "column_1": ["0.5", "0.66", "2", "1.9", "0.57"],
     }
 
     test_data_df = pd.DataFrame(test_data, columns=[x for x in test_data])
 
     expected_data = {
-        new_col: [50, 66, 200, 190],
+        new_col: [50, 66, 200, 190, 57],
     }
 
     expected_data_df = pd.DataFrame(expected_data, columns=[x for x in expected_data])

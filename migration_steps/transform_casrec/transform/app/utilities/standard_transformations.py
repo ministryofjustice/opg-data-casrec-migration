@@ -76,7 +76,7 @@ def capitalise(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataF
 def multiply_by_100(
     original_col: str, result_col: str, df: pd.DataFrame
 ) -> pd.DataFrame:
-    df[result_col] = df[original_col].apply(lambda x: int(float(x) * 100))
+    df[result_col] = df[original_col].apply(lambda x: int(round(float(x) * 100)))
     df[result_col] = df[result_col].fillna(0)
     df = df.drop(columns=[original_col])
 
