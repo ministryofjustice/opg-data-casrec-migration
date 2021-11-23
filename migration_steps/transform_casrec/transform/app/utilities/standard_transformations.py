@@ -3,6 +3,9 @@ import sys
 import os
 from pathlib import Path
 from typing import Dict
+
+from moneyed import Money, GBP
+
 from utilities.df_helpers import get_datetime_from_df_row
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -76,7 +79,7 @@ def capitalise(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataF
 def multiply_by_100(
     original_col: str, result_col: str, df: pd.DataFrame
 ) -> pd.DataFrame:
-    df[result_col] = df[original_col].apply(lambda x: int(round(float(x) * 100)))
+    df[result_col] = df[original_col].apply(lambda x: Money(x, GBP).get_amount_in_sub_unit())
     df[result_col] = df[result_col].fillna(0)
     df = df.drop(columns=[original_col])
 
@@ -86,7 +89,7 @@ def multiply_by_100(
 def absolute_value(
     original_col: str, result_col: str, df: pd.DataFrame
 ) -> pd.DataFrame:
-    df[result_col] = df[original_col].apply(lambda x: abs(float(x)))
+    df[result_col] = df[original_col].apply(lambda x: abs(Money(x, GBP).amount))
     df = df.drop(columns=[original_col])
 
     return df
@@ -185,12 +188,12 @@ def get_credit_type(invoice_ref: str) -> str:
         return "CREDIT WRITE OFF"
 
 
-def round_column(
-    original_col: str, result_col: str, df: pd.DataFrame, dp=2
+def money_to_decimal(
+    original_col: str, result_col: str, df: pd.DataFrame
 ) -> pd.DataFrame:
 
     df = df.replace({original_col: ["", " "]}, "0")
-    df[result_col] = df[original_col].apply(lambda x: round(float(x), dp))
+    df[result_col] = df[original_col].apply(lambda x: Money(x, GBP).amount)
 
     df = df.drop(columns=[original_col])
 

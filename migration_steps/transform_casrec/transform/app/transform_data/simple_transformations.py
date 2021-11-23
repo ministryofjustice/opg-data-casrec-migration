@@ -125,7 +125,7 @@ def do_simple_transformations(
     if "money_poundPence" in transformations:
         log.log(config.VERBOSE, "Applying transformation: money_poundPence")
         for t in transformations["money_poundPence"]:
-            transformed_df = standard_transformations.round_column(
+            transformed_df = standard_transformations.money_to_decimal(
                 t["original_columns"], t["aggregate_col"], transformed_df
             )
 

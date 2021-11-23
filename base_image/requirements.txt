@@ -29,3 +29,4 @@ pytest_cases==2.7.2
 pytest-cov==2.10.1
 psutil==5.8.0
 faker
+py-moneyed
