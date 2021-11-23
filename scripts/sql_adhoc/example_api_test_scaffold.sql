@@ -50,6 +50,12 @@ LEFT JOIN public.persons ON persons.id = visits.client_id
 WHERE persons.type = 'actor_client'
 AND persons.clientsource = 'CASRECMIGRATION') as subquery
 where rown = 1
+select visits.*
+FROM public.visits
+LEFT JOIN public.persons ON persons.id = visits.client_id
+WHERE persons.type = 'actor_client'
+AND persons.clientsource = 'CASRECMIGRATION'
+AND persons.caserecnumber = '13217597';
 union all
 select caserecnumber, 'visit_cancellation_reason', lookup
 from (
