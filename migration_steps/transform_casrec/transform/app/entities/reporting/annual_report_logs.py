@@ -16,22 +16,13 @@ def insert_annual_report_logs(db_config, target_db, mapping_file):
     offset = -chunk_size
     chunk_no = 0
 
-    # We have accounts with case numbers which do not have corresponding orders in casrec,
-    # but all accounts have a client with matching case number. That's why we
-    # use persons (= casrec pat table) as the base table (filtered to include only clients)
-    # and left join to cases (= casrec orders table), so we'll always get the matching
-    # person for the case number, even if there is no matching order.
-    persons_and_cases_query = (
-        f"select c.id as order_id, p.id as client_id, p.caserecnumber as caserecnumber "
+    persons_query = (
+        f"select p.id as client_id, p.caserecnumber as caserecnumber "
         f'from {db_config["target_schema"]}.persons as p '
-        f'left join {db_config["target_schema"]}.cases as c '
-        f"on p.caserecnumber = c.caserecnumber "
         f"where p.\"type\" = 'actor_client';"
     )
 
-    persons_and_cases_df = pd.read_sql_query(
-        persons_and_cases_query, db_config["db_connection_string"]
-    )
+    persons_df = pd.read_sql_query(persons_query, db_config["db_connection_string"])
 
     mapping_file_name = f"{mapping_file}_mapping"
     table_definition = get_table_def(mapping_name=mapping_file)
@@ -54,15 +45,19 @@ def insert_annual_report_logs(db_config, target_db, mapping_file):
                 chunk_details={"chunk_size": chunk_size, "offset": offset},
             )
 
-            # set order_id (if available) and client_id (always)
+            # set client_id
             annual_report_log_df = annual_report_log_df.merge(
-                persons_and_cases_df,
+                persons_df,
                 how="left",
                 left_on="c_case",
                 right_on="caserecnumber",
             )
 
-            # as we've done a join, id will be duplicated within the dataframe,
+            # order_id is NULL for now (empty string gets converted to NULL
+            # during insert_data())
+            annual_report_log_df["order_id"] = ""
+
+            # as we've done a join, id may be duplicated within the dataframe,
             # so adjust it
             annual_report_log_df = annual_report_log_df.drop(columns=["id"])
 
@@ -74,7 +69,7 @@ def insert_annual_report_logs(db_config, target_db, mapping_file):
             )
 
             annual_report_log_df = reapply_datatypes_to_fk_cols(
-                columns=["client_id", "order_id"], df=annual_report_log_df
+                columns=["client_id"], df=annual_report_log_df
             )
 
             if len(annual_report_log_df) > 0:
