@@ -75,6 +75,8 @@ def get_mappings():
         "tasks": ["tasks"],
         "remarks": ["client_notes", "deputy_notes"],
         "reporting": ["annual_report_logs", "annual_report_lodging_details"],
+        "invoice": ["finance_invoice_ad", "finance_invoice_non_ad"],
+        "fee_reductions": ["finance_remissions", "finance_exemptions"],
     }
 
     for entity, mapping in all_mappings.items():
@@ -88,6 +90,7 @@ mappings_to_run = get_mappings()
 results_sqlfile = "get_validation_results.sql"
 validation_sqlfile = "validation.sql"
 transformations_sqlfile = "transformation_functions.sql"
+complex_functions_sqlfile = "complex_functions.sql"
 total_exceptions_sqlfile = "get_exceptions_total.sql"
 host = os.environ.get("DB_HOST")
 ci = os.getenv("CI")
@@ -670,6 +673,13 @@ def pre_validation():
     log.info(f"INSTALL TRANSFORMATION ROUTINES")
     execute_sql_file(
         sql_path, transformations_sqlfile, conn_target, config.schemas["public"]
+    )
+    log.info(f"INSTALL COMPLEX ROUTINES")
+    execute_sql_file(
+        sql_path,
+        complex_functions_sqlfile,
+        conn_target,
+        config.schemas["pre_transform"],
     )
 
     log.info(f"GENERATE SQL")

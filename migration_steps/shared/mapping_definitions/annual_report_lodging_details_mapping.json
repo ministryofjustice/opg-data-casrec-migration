@@ -99,31 +99,6 @@
             "sync": ""
         }
     },
-    "lodgedstatus": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str",
-            "table_name": "annual_report_lodging_details",
-            "entity": "reporting"
-        },
-        "transform_casrec": {
-            "casrec_table": "ACCOUNT",
-            "casrec_column_name": "Further Code",
-            "alias": "Further Code",
-            "requires_transformation": "",
-            "lookup_table": "furthered_lookup",
-            "default_value": "",
-            "calculated": "",
-            "additional_columns": ""
-        },
-        "prepare": {
-            "sync": ""
-        }
-    },
     "bankstatementsreceived": {
         "mapping_status": {
             "is_complete": true
@@ -138,6 +113,7 @@
         "transform_casrec": {
             "casrec_table": "ACCOUNT",
             "casrec_column_name": [
+                "Rcvd Date",
                 "Rcvd Date1",
                 "Rcvd Date2",
                 "Rcvd Date3",
@@ -146,6 +122,7 @@
                 "Rcvd Date6"
             ],
             "alias": [
+                "Rcvd Date",
                 "Rcvd Date1",
                 "Rcvd Date2",
                 "Rcvd Date3",

@@ -3,6 +3,9 @@ import sys
 import os
 from pathlib import Path
 from typing import Dict
+
+from moneyed import Money, GBP
+
 from utilities.df_helpers import get_datetime_from_df_row
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -76,7 +79,7 @@ def capitalise(original_col: str, result_col: str, df: pd.DataFrame) -> pd.DataF
 def multiply_by_100(
     original_col: str, result_col: str, df: pd.DataFrame
 ) -> pd.DataFrame:
-    df[result_col] = df[original_col].apply(lambda x: int(float(x) * 100))
+    df[result_col] = df[original_col].apply(lambda x: Money(x, GBP).get_amount_in_sub_unit())
     df[result_col] = df[result_col].fillna(0)
     df = df.drop(columns=[original_col])
 
@@ -86,7 +89,7 @@ def multiply_by_100(
 def absolute_value(
     original_col: str, result_col: str, df: pd.DataFrame
 ) -> pd.DataFrame:
-    df[result_col] = df[original_col].apply(lambda x: abs(float(x)))
+    df[result_col] = df[original_col].apply(lambda x: abs(Money(x, GBP).amount))
     df = df.drop(columns=[original_col])
 
     return df
@@ -154,7 +157,6 @@ def fee_reduction_end_date(
         if date == "01/04":
             return x - datetime.timedelta(days=1)
         # default to end of Award Date's tax year
-        # TODO: to be confirmed by IN-1015
         tax_year_end = x.replace(day=31, month=3)
         if x > tax_year_end:
             tax_year_end = tax_year_end.replace(
@@ -185,12 +187,12 @@ def get_credit_type(invoice_ref: str) -> str:
         return "CREDIT WRITE OFF"
 
 
-def round_column(
-    original_col: str, result_col: str, df: pd.DataFrame, dp=2
+def money_to_decimal(
+    original_col: str, result_col: str, df: pd.DataFrame
 ) -> pd.DataFrame:
 
     df = df.replace({original_col: ["", " "]}, "0")
-    df[result_col] = df[original_col].apply(lambda x: round(float(x), dp))
+    df[result_col] = df[original_col].apply(lambda x: Money(x, GBP).amount)
 
     df = df.drop(columns=[original_col])
 
@@ -213,16 +215,16 @@ def get_max_col(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.Da
     return df
 
 
-# base_date: date to use as the basis for the delta date
+# base_date: date to use as the basis for the delta date in DD/MM/YYYY format
 # operator: delta modifier, '+' or '-'
 # days: delta number of days
 # weekend_adjustment: 'previous' or 'next' or None;
 #     if 'previous' and calculated date is on a weekend, move to previous working day;
-#     if 'next' and calculated date is aon a weekend, move to next working day;
+#     if 'next' and calculated date is on a weekend, move to next working day;
 #     if None, apply no adjustment
-# return: datetime, or None if the base_date is None
+# return: datetime, or None if the base_date is None or ""
 def _calculate_date(
-    base_date, operator: str, days: int, weekend_adjustment: str = None
+    base_date, operator: str, days: int, weekend_adjustment: str=None
 ):
     if base_date is None or base_date == "":
         return None

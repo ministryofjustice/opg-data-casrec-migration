@@ -106,3 +106,81 @@ BEGIN
 RETURN INITCAP(source);
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION transf_add_one_year(source date)
+RETURNS date as $$
+DECLARE
+BEGIN
+    IF source IS NULL THEN
+        RETURN NULL;
+    END IF;
+    RETURN source + interval '1 year';
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION transf_multiply_by_100(source varchar)
+RETURNS integer as $$
+DECLARE
+BEGIN
+    RETURN (CAST(source AS DOUBLE PRECISION) * 100)::integer;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION transf_first_two_chars(source varchar)
+RETURNS varchar as $$
+DECLARE
+BEGIN
+    RETURN LEFT(source, 2);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION transf_start_of_tax_year(source date)
+RETURNS timestamp as $$
+DECLARE
+    DateYear int;
+    ThisTaxYear timestamp;
+BEGIN
+    DateYear = EXTRACT(YEAR FROM source)::int;
+    ThisTaxYear = CONCAT(DateYear, '-04-01')::timestamp;
+
+    IF source >= ThisTaxYear THEN
+        RETURN ThisTaxYear;
+    END IF;
+
+    RETURN CONCAT(DateYear - 1, '-04-01')::timestamp;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION transf_end_of_tax_year(source date)
+RETURNS timestamp as $$
+DECLARE
+    DateYear int;
+    ThisTaxYear timestamp;
+BEGIN
+    DateYear = EXTRACT(YEAR FROM source)::int;
+    ThisTaxYear = CONCAT(DateYear, '-04-01')::timestamp;
+
+    IF source >= ThisTaxYear THEN
+        RETURN CONCAT(DateYear + 1, '-03-31')::timestamp;
+    END IF;
+
+    RETURN CONCAT(DateYear, '-03-31')::timestamp;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION transf_fee_reduction_end_date(source date)
+RETURNS date as $$
+DECLARE
+    DayMonth varchar;
+BEGIN
+    DayMonth = to_char(source, 'DD-MM');
+
+    IF DayMonth = '31-03' THEN
+        RETURN source;
+    ELSIF DayMonth = '01-04' THEN
+        RETURN source - INTERVAL '1 DAY';
+    END IF;
+
+    RETURN transf_end_of_tax_year(source)::date;
+END;
+$$ LANGUAGE plpgsql;

@@ -21,7 +21,8 @@ def create_table_def_json(df, name, destination):
         column_names=["source_table_additional_columns"], definition_dict=table_def_dict
     )
     convert_col_to_dict(
-        column_names=["source_conditions"], definition_dict=table_def_dict
+        column_names=["source_conditions", "table_transforms"],
+        definition_dict=table_def_dict,
     )
 
     path = f"./{destination}/tables"
@@ -70,7 +71,11 @@ def convert_col_to_dict(column_names, definition_dict):
 
                     condition_details[key] = val
                 details[field] = condition_details
+            except KeyError as key:
+                print(f'No key {key} in definition for table - ignoring')
+                details[field] = {}
             except Exception as e:
                 print(e)
+                details[field] = {}
                 pass
     return definition_dict

@@ -982,5 +982,155 @@
           "column": "",
           "identifiers": []
         }
+    },
+    "finance_invoice_ad": {
+        "exclude": [
+            "person_id",
+            "finance_person_id"
+        ],
+        "casenumber_source": "client_persons.caserecnumber",
+        "orderby": {},
+        "casrec": {
+            "from_table": "feeexport",
+            "transform": {
+                "finance_remission_exemption_id": "NULL::integer",
+                "confirmeddate": "NULLIF(sop_feecheck.\"GL Date\", 'NaT')::date"
+            },
+            "joins": [
+                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.feeexport.\"Case\"",
+                "LEFT JOIN casrec_csv.sop_aged_debt ON casrec_csv.sop_aged_debt.\"Trx Number\" = casrec_csv.feeexport.\"Invoice No\"",
+                "LEFT JOIN casrec_csv.sop_feecheck ON casrec_csv.sop_feecheck.\"Invoice Number\" = casrec_csv.feeexport.\"Invoice No\""
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_invoice_ad exc_table ON exc_table.caserecnumber = feeexport.\"Case\"",
+            "where_clauses": [
+                "LEFT(feeexport.\"Invoice No\", 2) = 'AD'",
+                "CAST(feeexport.\"Amount\" AS DOUBLE PRECISION) > 0",
+                "(NULLIF(feeexport.\"Create\", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0) OR CAST(sop_aged_debt.\"Outstanding Amount\" AS DOUBLE PRECISION) > 0)"
+            ]
+        },
+        "sirius": {
+            "from_table": "finance_invoice",
+            "transform": {},
+            "joins": [
+                "LEFT JOIN {target_schema}.persons ON persons.id = finance_invoice.person_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_invoice_ad exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "finance_invoice.source = 'CASRECMIGRATION'",
+                "finance_invoice.feetype = 'AD'"
+            ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
+    },
+    "finance_invoice_non_ad": {
+        "exclude": [
+            "person_id",
+            "finance_person_id"
+        ],
+        "casenumber_source": "client_persons.caserecnumber",
+        "orderby": {},
+        "casrec": {
+            "from_table": "feeexport",
+            "transform": {
+                "finance_remission_exemption_id": "NULL::integer",
+                "confirmeddate": "NULLIF(sop_feecheck.\"GL Date\", 'NaT')::date"
+            },
+            "joins": [
+                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.feeexport.\"Case\"",
+                "LEFT JOIN casrec_csv.sop_aged_debt ON casrec_csv.sop_aged_debt.\"Trx Number\" = casrec_csv.feeexport.\"Invoice No\"",
+                "LEFT JOIN casrec_csv.sop_feecheck ON casrec_csv.sop_feecheck.\"Invoice Number\" = casrec_csv.feeexport.\"Invoice No\""
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_invoice_non_ad exc_table ON exc_table.caserecnumber = feeexport.\"Case\"",
+            "where_clauses": [
+                "LEFT(feeexport.\"Invoice No\", 2) <> 'AD'",
+                "CAST(feeexport.\"Amount\" AS DOUBLE PRECISION) > 0",
+                "(NULLIF(feeexport.\"Create\", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0) OR CAST(sop_aged_debt.\"Outstanding Amount\" AS DOUBLE PRECISION) > 0)"
+            ]
+        },
+        "sirius": {
+            "from_table": "finance_invoice",
+            "transform": {},
+            "joins": [
+                "LEFT JOIN {target_schema}.persons ON persons.id = finance_invoice.person_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_invoice_non_ad exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "finance_invoice.source = 'CASRECMIGRATION'",
+                "finance_invoice.feetype <> 'AD'"
+            ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
+    },
+    "finance_remissions": {
+        "exclude": [
+            "finance_person_id"
+        ],
+        "casenumber_source": "client_persons.caserecnumber",
+        "orderby": {},
+        "casrec": {
+            "from_table": "pat",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_remissions exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "where_clauses": [
+                "pat.\"Remis\" <> '0'",
+                "pat.\"Award Date\"::timestamp >= '2021-04-02'::timestamp"
+            ]
+        },
+        "sirius": {
+            "from_table": "finance_remission_exemption",
+            "transform": {},
+            "joins": [
+                "LEFT JOIN {target_schema}.finance_person ON finance_person.id = finance_remission_exemption.finance_person_id",
+                "LEFT JOIN {target_schema}.persons ON persons.id = finance_person.person_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_remissions exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "finance_remission_exemption.discounttype = 'REMISSION'"
+            ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
+    },
+    "finance_exemptions": {
+        "exclude": [
+            "finance_person_id"
+        ],
+        "casenumber_source": "client_persons.caserecnumber",
+        "orderby": {},
+        "casrec": {
+            "from_table": "pat",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_exemptions exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "where_clauses": [
+                "pat.\"Exempt\" <> '0'",
+                "pat.\"Award Date\"::timestamp >= '2021-04-02'::timestamp"
+            ]
+        },
+        "sirius": {
+            "from_table": "finance_remission_exemption",
+            "transform": {},
+            "joins": [
+                "LEFT JOIN {target_schema}.finance_person ON finance_person.id = finance_remission_exemption.finance_person_id",
+                "LEFT JOIN {target_schema}.persons ON persons.id = finance_person.person_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_exemptions exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "finance_remission_exemption.discounttype = 'EXEMPTION'"
+            ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
     }
 }

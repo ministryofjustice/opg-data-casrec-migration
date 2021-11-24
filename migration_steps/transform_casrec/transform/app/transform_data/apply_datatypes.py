@@ -20,20 +20,25 @@ datatype_remap = {
 }
 
 
-def apply_datatypes(mapping_details: Dict, df: pd.DataFrame) -> pd.DataFrame:
-
-    cols_with_datatype = {
-        k: v["data_type"]
-        if v["data_type"] not in datatype_remap
-        else datatype_remap[v["data_type"]]
-        for k, v in mapping_details.items()
-        if k in df.columns
-    }
+def apply_datatypes(mapping_details: Dict, df: pd.DataFrame, datetime_errors: str='ignore') -> pd.DataFrame:
+    """
+    :param mapping_details: dict; the following parts of it are used
+        {"<column name>": {"data_type": "str", ...}, ...}
+    :param datetime_errors: what to do with datetime parse errors; 'ignore' (default),
+        'raise' (raise an exception), 'coerce' (convert to NaT)
+    """
+    cols_with_datatype = {}
+    for k, v in mapping_details.items():
+        if k in df.columns:
+            data_type = v["data_type"]
+            if data_type in datatype_remap:
+                data_type = datatype_remap[data_type]
+            cols_with_datatype[k] = data_type
 
     for col, datatype in cols_with_datatype.items():
         try:
             if datatype == "datetime64[ns]":
-                df[col] = pd.to_datetime(df[col], errors="ignore")
+                df[col] = pd.to_datetime(df[col], errors=datetime_errors, dayfirst=True)
             elif datatype == "int":
                 df[col] = df[col].apply(lambda x: np.nan if x == "" else x)
                 df[col] = df[col].astype("float")

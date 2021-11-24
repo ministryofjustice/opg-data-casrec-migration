@@ -17,6 +17,7 @@ from transform_data import lookup_tables as process_lookup_tables
 from transform_data import simple_mappings as process_simple_mappings
 from transform_data import simple_transformations as process_simple_transformations
 from transform_data import unique_id as process_unique_id
+from transform_data.table_transforms import process_table_transformations
 
 
 log = logging.getLogger("root")
@@ -40,6 +41,7 @@ def perform_transformations(
     final_df = source_data_df
 
     conditions = table_definition.get("source_conditions")
+    table_transforms = table_definition.get("table_transforms")
 
     simple_mapping = mappings["simple_mapping"]
     transformations = mappings["transformations"]
@@ -104,6 +106,13 @@ def perform_transformations(
         if len(final_df) == 0:
             log.debug(f"No data left after lookup tables")
             raise EmptyDataFrame(empty_data_frame_type="chunk with lookups applied")
+
+    if table_transforms:
+        log.debug("Applying table transformations")
+        final_df = process_table_transformations(df=final_df, transforms_for_table=table_transforms)
+        if len(final_df) == 0:
+            log.debug(f"No data left after table transformations")
+            raise EmptyDataFrame(empty_data_frame_type="chunk with table transformations applied")
 
     if "id" not in source_data_df.columns.values.tolist():
         log.debug("Applying unique id")
