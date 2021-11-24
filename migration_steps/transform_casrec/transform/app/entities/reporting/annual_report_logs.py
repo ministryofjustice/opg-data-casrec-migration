@@ -53,9 +53,8 @@ def insert_annual_report_logs(db_config, target_db, mapping_file):
                 right_on="caserecnumber",
             )
 
-            # order_id is NULL for now (empty string gets converted to NULL
-            # during insert_data())
-            annual_report_log_df["order_id"] = ""
+            # order_id is NULL for now
+            annual_report_log_df["order_id"] = None
 
             # as we've done a join, id may be duplicated within the dataframe,
             # so adjust it
@@ -69,7 +68,7 @@ def insert_annual_report_logs(db_config, target_db, mapping_file):
             )
 
             annual_report_log_df = reapply_datatypes_to_fk_cols(
-                columns=["client_id"], df=annual_report_log_df
+                columns=["client_id", "order_id"], df=annual_report_log_df
             )
 
             if len(annual_report_log_df) > 0:
