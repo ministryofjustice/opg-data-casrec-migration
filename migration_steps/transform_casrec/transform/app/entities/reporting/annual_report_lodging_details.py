@@ -34,6 +34,8 @@ def insert_annual_report_lodging_details(db_config, target_db, mapping_file):
                 chunk_details={"chunk_size": chunk_size, "offset": offset},
             )
 
+            print(lodging_details_df.columns.values)
+
             target_db.insert_data(
                 table_name=table_definition["destination_table_name"],
                 df=lodging_details_df,
