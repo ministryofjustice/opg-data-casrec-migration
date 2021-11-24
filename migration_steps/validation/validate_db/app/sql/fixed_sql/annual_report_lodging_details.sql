@@ -1,4 +1,5 @@
 -- annual_report_lodging_details
+
 DROP TABLE IF EXISTS casrec_csv.exceptions_annual_report_lodging_details;
 
 CREATE TABLE casrec_csv.exceptions_annual_report_lodging_details(
@@ -34,10 +35,8 @@ INSERT INTO casrec_csv.exceptions_annual_report_lodging_details(
             ELSE FALSE
         END) AS bankstatementsreceived
     FROM casrec_csv.account
-
     EXCEPT
-
-    SELECT
+    select
         CAST(annual_report_lodging_details.deadlinedate AS date) AS deadlinedate,
         CAST(annual_report_lodging_details.datereportlodged AS date) AS datereportlodged,
         CAST(annual_report_lodging_details.bankstatementdeadlinedate AS date) AS bankstatementdeadlinedate,
