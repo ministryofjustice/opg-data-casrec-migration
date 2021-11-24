@@ -157,7 +157,6 @@ def fee_reduction_end_date(
         if date == "01/04":
             return x - datetime.timedelta(days=1)
         # default to end of Award Date's tax year
-        # TODO: to be confirmed by IN-1015
         tax_year_end = x.replace(day=31, month=3)
         if x > tax_year_end:
             tax_year_end = tax_year_end.replace(

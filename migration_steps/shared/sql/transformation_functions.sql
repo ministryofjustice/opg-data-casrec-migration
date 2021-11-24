@@ -167,3 +167,20 @@ BEGIN
     RETURN CONCAT(DateYear, '-03-31')::timestamp;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION transf_fee_reduction_end_date(source date)
+RETURNS date as $$
+DECLARE
+    DayMonth varchar;
+BEGIN
+    DayMonth = to_char(source, 'DD-MM');
+
+    IF DayMonth = '31-03' THEN
+        RETURN source;
+    ELSIF DayMonth = '01-04' THEN
+        RETURN source - INTERVAL '1 DAY';
+    END IF;
+
+    RETURN transf_end_of_tax_year(source)::date;
+END;
+$$ LANGUAGE plpgsql;

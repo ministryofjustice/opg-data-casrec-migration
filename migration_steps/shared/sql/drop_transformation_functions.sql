@@ -10,3 +10,4 @@ DROP FUNCTION transf_multiply_by_100(source varchar);
 DROP FUNCTION transf_first_two_chars(source varchar);
 DROP FUNCTION transf_start_of_tax_year(source date);
 DROP FUNCTION transf_end_of_tax_year(source date);
+DROP FUNCTION transf_fee_reduction_end_date(source date);
