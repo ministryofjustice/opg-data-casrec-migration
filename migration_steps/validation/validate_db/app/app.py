@@ -75,6 +75,7 @@ def get_mappings():
         "tasks": ["tasks"],
         "remarks": ["client_notes", "deputy_notes"],
         "reporting": ["annual_report_logs", "annual_report_lodging_details"],
+        "invoice": ["finance_invoice_ad", "finance_invoice_non_ad"]
     }
 
     for entity, mapping in all_mappings.items():

@@ -23,7 +23,7 @@ def test_start_of_tax_year():
     }
 
     expected_data_df = pd.DataFrame(expected_data, columns=[x for x in expected_data])
-    expected_data_df[new_col] = pd.to_datetime(expected_data[new_col])
+    expected_data_df[new_col] = pd.to_datetime(expected_data[new_col], dayfirst=True)
 
     result_df = start_of_tax_year(
         original_col="column_1", result_col=new_col, df=test_data_df
