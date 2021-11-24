@@ -38,7 +38,7 @@ def apply_datatypes(mapping_details: Dict, df: pd.DataFrame, datetime_errors: st
     for col, datatype in cols_with_datatype.items():
         try:
             if datatype == "datetime64[ns]":
-                df[col] = pd.to_datetime(df[col], errors=datetime_errors)
+                df[col] = pd.to_datetime(df[col], errors=datetime_errors, dayfirst=True)
             elif datatype == "int":
                 df[col] = df[col].apply(lambda x: np.nan if x == "" else x)
                 df[col] = df[col].astype("float")
