@@ -44,6 +44,7 @@ def handle_special_cases(table_name, df):
         log.debug("Reformat 'finance_person_id' to nullable int")
         df["finance_person_id"] = df["finance_person_id"].astype("Int64")
     if table_name == "annual_report_logs":
+        df["client_id"] = df["client_id"].astype("Int64")
         df["order_id"] = df["order_id"].astype("Int64")
     if table_name == "annual_report_type_assignments":
         df["annualreport_id"] = df["annualreport_id"].astype("Int64")
