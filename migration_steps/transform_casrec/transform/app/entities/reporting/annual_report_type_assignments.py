@@ -60,6 +60,11 @@ def calculate_report_types(report_logs_df: pd.DataFrame) -> pd.DataFrame:
         latest_row["reporttype"] = _calculate_reporttype(latest_row)
         report_type_assignments_df = report_type_assignments_df.append(latest_row)
 
+    # Cast annualreport_id to correct datatype
+    report_type_assignments_df["annualreport_id"] = report_type_assignments_df[
+        "annualreport_id"
+    ].astype("int64")
+
     # Drop columns not required by Sirius
     report_type_assignments_df = report_type_assignments_df.drop(
         columns=[
@@ -151,11 +156,6 @@ def insert_annual_report_type_assignments(db_config, target_db, mapping_file):
                     db_schema=db_config["target_schema"],
                     table_definition=table_definition,
                     source_data_df=report_type_assignments_df,
-                )
-
-                # Make annualreport_id an Int64 again
-                report_type_assignments_df = reapply_datatypes_to_fk_cols(
-                    columns=["annualreport_id"], df=report_type_assignments_df
                 )
 
                 target_db.insert_data(
