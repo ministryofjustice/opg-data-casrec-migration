@@ -302,10 +302,14 @@
 		"sirius_tables": ["annual_report_lodging_details"],
 		"entities": {
 			"base_entities": ["reporting"],
-			"relies_on": []
+			"relies_on": ["clients"]
 		},
 		"pk": "id",
-		"fks": [],
+		"fks": [{
+			"column": "annual_report_log_id",
+			"parent_table": "annual_report_logs",
+			"parent_column": "id"
+		}],
 		"table_type": "data",
 		"sequences": [{
 			"name": "annual_report_lodging_details_id_seq",

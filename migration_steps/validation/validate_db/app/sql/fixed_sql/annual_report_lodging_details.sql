@@ -13,7 +13,7 @@ CREATE TABLE casrec_csv.exceptions_annual_report_lodging_details(
 
 INSERT INTO casrec_csv.exceptions_annual_report_lodging_details(
     SELECT
-        caserecnumber,
+        caserecnumber as caserecnumber,
         CAST(NULLIF(follow_up_date, '') AS date) AS deadlinedate,
         CAST(NULLIF(datereportlodged, '') AS date) AS datereportlodged,
         sent_date AS bankstatementdeadlinedate,

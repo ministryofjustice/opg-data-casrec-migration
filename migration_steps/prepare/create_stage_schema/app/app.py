@@ -46,9 +46,10 @@ def main():
     copy_schema(
         log=log,
         sql_path=shared_sql_path,
-        from_config=config.db_config["target"],
+        config=config,
+        from_db="target",
         from_schema=config.schemas["public"],
-        to_config=config.db_config["migration"],
+        to_db="migration",
         to_schema=config.schemas["pre_migration"],
         structure_only=True,
     )

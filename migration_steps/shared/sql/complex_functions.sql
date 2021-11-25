@@ -73,7 +73,7 @@ BEGIN
 		ELSE 'Y'
 	END;
 	sent_flag = CASE
-		WHEN sent is null THEN 'N'
+		WHEN sent IS NULL THEN 'N'
 		ELSE 'Y'
 	END;
     followup_date_flag = CASE
@@ -106,7 +106,7 @@ BEGIN
 		WHEN report_aggr_code like 'M_%_Y_Y_Y_%' THEN 'LODGED|REFERRED_FOR_REVIEW|REVIEWED'
 		WHEN report_aggr_code like 'X_%_N_N_N_%' THEN 'ABANDONED||NO_REVIEW'
 		WHEN report_aggr_code like '%_P0_%_%_N_Y' THEN 'PENDING||STAFF_PRESELECTED'
-		ELSE null
+		ELSE NULL
 	END;
 RETURN report_status;
 END;

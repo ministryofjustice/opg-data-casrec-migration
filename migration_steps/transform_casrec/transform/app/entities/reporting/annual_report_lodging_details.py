@@ -43,16 +43,12 @@ def insert_annual_report_lodging_details(db_config, target_db, mapping_file):
                 chunk_details={"chunk_size": chunk_size, "offset": offset},
             )
 
-            print(lodging_details_df.columns.values)
-
             annual_report_lodging_details_joined_df = lodging_details_df.merge(
                 annual_report_logs,
                 how="inner",
                 left_on=["c_case", "c_end_date"],
                 right_on=["c_case", "End Date"],
             )
-
-            print(annual_report_lodging_details_joined_df.columns.values)
 
             annual_report_lodging_details_joined_df[
                 "annual_report_log_id"
