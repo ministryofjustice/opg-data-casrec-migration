@@ -660,9 +660,10 @@ def pre_validation():
         copy_schema(
             log=log,
             sql_path=sql_path,
-            from_config=config.db_config["migration"],
+            config=config,
+            from_db="migration",
             from_schema=config.schemas["pre_transform"],
-            to_config=config.db_config["target"],
+            to_db="target",
             to_schema=config.schemas["pre_transform"],
         )
     else:

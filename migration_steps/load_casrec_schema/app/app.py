@@ -29,9 +29,10 @@ def copy_casrec_schema():
     copy_schema(
         log=log,
         sql_path=sql_path,
-        from_config=config.db_config["casrec"],
+        config=config,
+        from_db="casrec",
         from_schema=config.schemas["pre_transform"],
-        to_config=config.db_config["migration"],
+        to_db="migration",
         to_schema=config.schemas["pre_transform"],
     )
 
