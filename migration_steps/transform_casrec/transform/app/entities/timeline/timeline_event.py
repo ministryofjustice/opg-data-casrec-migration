@@ -3,16 +3,25 @@ from utilities.basic_data_table import get_basic_data_table
 import json
 import logging
 import os
+import pandas as pd
+import re
+from datetime import datetime
 
 from helpers import get_mapping_dict, get_table_def
+from transform_data.lookup_tables import map_lookup_tables
+from utilities.standard_transformations import capitalise_first_letter, first_word
 
 log = logging.getLogger("root")
 
 
-def _generate_timeline_event_data(row):
+def _generate_timeline_event_data(
+    row: pd.Series, current_datetime: datetime = datetime.now()
+) -> str:
     """
-    Generate the JSON blob required for timeline_event entries.
+    Generate the JSON blob required for timeline_event.event column.
     Uses the Title, Forename, Lastname and Case fields from casrec.pat table.
+
+    Format for the event column is:
 
     {
         "class":"Opg\\Core\\Model\\Event\\Common\\NoteCreated",
@@ -33,11 +42,46 @@ def _generate_timeline_event_data(row):
         }
     }
 
-    Title comes from title_codes_lookup
-    Forename will need transform first_word on pat.Forename
-    Surname will need transform capitalise_first_letter on pat.Surname
+    See IN-759 for details.
+
+    Title is converted to a salutation via title_codes_lookup
+    Forename is transformed with standard_transformations.first_word on pat.Forename
+    Surname is transformed with standard_transformations.capitalise_first_letter on pat.Surname
     """
-    return json.dumps({"set_by_fn": True})
+    case = row["c_case"]
+    if case is None:
+        case = ""
+
+    # current datetime in format 2021-11-23T00:00:00+00:00
+    event_date = current_datetime.strftime("%Y-%m-%dT00:00:00+00:00")
+
+    # name in format "Mr Pete Crawwfford" from Title, Forename, Surname
+    name_parts = [row["c_title"], row["c_forename_first"], row["c_surname_caps"]]
+    name = " ".join(name_parts).strip()
+    name = re.sub(" {2,}", " ", name)
+
+    # personId and personUid will be populated after migration
+    return json.dumps(
+        {
+            "class": "Opg\\Core\\Model\\Event\\Common\\NoteCreated",
+            "payload": {
+                "isPersonAndCaseEvent": False,
+                "isPersonEvent": True,
+                "isCaseEvent": False,
+                "courtReference": f"{case}",
+                "type": "Case note",
+                "eventDate": f"{event_date}",
+                "subject": "Migration Notice",
+                "notes": "<p>This case was migrated from casrec, all case notes before this date "
+                + "(migrated remarks) are in the case notes tab only</p>",
+                "personType": "Client",
+                "personId": "",
+                "personUid": "",
+                "personName": f"{name}",
+                "personCourtRef": f"{case}",
+            },
+        }
+    )
 
 
 def insert_timeline_events(db_config, target_db, mapping_file):
@@ -66,6 +110,20 @@ def insert_timeline_events(db_config, target_db, mapping_file):
                 chunk_details={"chunk_size": chunk_size, "offset": offset},
             )
 
+            # Fix name parts
+            timeline_events_df = map_lookup_tables(
+                {"c_title": {"lookup_table": "title_codes_lookup"}}, timeline_events_df
+            )
+
+            timeline_events_df = capitalise_first_letter(
+                "c_surname", "c_surname_caps", timeline_events_df
+            )
+
+            timeline_events_df = first_word(
+                "c_forename", "c_forename_first", timeline_events_df
+            )
+
+            # Make the JSON in event column
             timeline_events_df["event"] = timeline_events_df.apply(
                 _generate_timeline_event_data, axis=1
             )
