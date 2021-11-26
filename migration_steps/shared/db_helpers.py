@@ -76,9 +76,36 @@ def create_schema(log, engine, schema):
 
 
 def copy_schema(
-    log, sql_path, from_config, from_schema, to_config, to_schema, structure_only=False
+    log, sql_path, config, from_db, from_schema, to_db, to_schema, structure_only=False
 ):
+    from_config = config.db_config[from_db]
+    to_config = config.db_config[to_db]
+
     log.info(f'{from_config["name"]}.{from_schema} -> {to_config["name"]}.{to_schema}')
+
+    from_conn = psycopg2.connect(config.get_db_connection_string(from_db))
+    from_cursor = from_conn.cursor()
+
+    if from_schema != to_schema:
+        log.debug("Rename schema beforehand to avoid search&replace in the dump file")
+        sql = f"""
+                DO $$
+                BEGIN
+                    IF EXISTS(
+                        SELECT schema_name
+                        FROM information_schema.schemata
+                        WHERE schema_name = '{to_schema}'
+                      )
+                    THEN
+                        EXECUTE 'ALTER SCHEMA {to_schema} RENAME TO temp_renamed_{to_schema}';
+                    END IF;
+
+                    EXECUTE 'ALTER SCHEMA {from_schema} RENAME TO {to_schema}';
+                END
+                $$;
+            """
+        from_cursor.execute(sql)
+        from_conn.commit()
 
     log.debug("Dump")
     os.environ["PGPASSWORD"] = from_config["password"]
@@ -93,7 +120,7 @@ def copy_schema(
                 "-U",
                 from_config["user"],
                 "-n",
-                from_schema,
+                to_schema,  # schema has already been renamed in the source DB
                 "-h",
                 from_config["host"],
                 "-p",
@@ -112,7 +139,7 @@ def copy_schema(
                 "-U",
                 from_config["user"],
                 "-n",
-                from_schema,
+                to_schema,  # schema has already been renamed in the source DB
                 "-h",
                 from_config["host"],
                 "-p",
@@ -125,41 +152,50 @@ def copy_schema(
         )
 
     log.debug("Modify")
-    with fileinput.FileInput(str(schema_dump), inplace=True) as file:
-        for line in file:
-            print(line.replace(from_schema, to_schema), end="")
+
+    role_name_regex = re.compile(r"^(ALTER.*OWNER TO )%s(;)$" % from_config["user"])
+    owner_regex = re.compile(r"^(-- Name:.*; Owner: )%s$" % from_config["user"])
 
     with fileinput.FileInput(schema_dump, inplace=True) as file:
         for line in file:
-            print(
-                line.replace(
-                    "CREATE SCHEMA " + to_schema,
-                    f"DROP SCHEMA IF EXISTS {to_schema} CASCADE; CREATE SCHEMA {to_schema}; "
-                    f'set search_path to {to_schema},public; CREATE EXTENSION IF NOT EXISTS "uuid-ossp"',
-                ),
-                end="",
+            line = line.replace(
+                f"CREATE SCHEMA {to_schema};",
+                f"""
+                DROP SCHEMA IF EXISTS {to_schema} CASCADE;
+                CREATE SCHEMA {to_schema};
+                SET search_path TO {to_schema},public;
+                CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+                """
             )
+            line = role_name_regex.sub(r"\1%s\2" % to_config["user"], line)
+            line = owner_regex.sub(r"\1%s" % to_config["user"], line)
+            print(line, end="")
 
-    # change role name
-    with fileinput.FileInput(str(schema_dump), inplace=True) as file:
-        for line in file:
-            print(
-                line.replace(
-                    f'TO {from_config["user"]}',
-                    f'TO {to_config["user"]}',
-                ),
-                end="",
-            )
-    with fileinput.FileInput(str(schema_dump), inplace=True) as file:
-        for line in file:
-            print(
-                line.replace(
-                    f'Owner: {from_config["user"]}',
-                    f'Owner: {to_config["user"]}',
-                ),
-                end="",
-            )
     log.debug(f"Saved to file: {schema_dump}")
+
+    if from_schema != to_schema:
+        # restore schema names in the source DB back to what they were
+        log.debug("Source DB cleanup")
+        sql = f"""
+            DO $$
+            BEGIN
+                EXECUTE 'ALTER SCHEMA {to_schema} RENAME TO {from_schema}';
+                
+                IF EXISTS(
+                    SELECT schema_name
+                    FROM information_schema.schemata
+                    WHERE schema_name = 'temp_renamed_{to_schema}'
+                  )
+                THEN
+                    EXECUTE 'ALTER SCHEMA temp_renamed_{to_schema} RENAME TO {to_schema}';
+                END IF;
+            END
+            $$;
+        """
+        from_cursor.execute(sql)
+        from_conn.commit()
+
+    from_cursor.close()
 
     log.debug("Import")
     os.environ["PGPASSWORD"] = to_config["password"]
