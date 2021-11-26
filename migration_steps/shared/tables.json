@@ -493,5 +493,37 @@
 		"table_type": "join",
 		"sequences": [],
 		"order_by": ["person_id", "task_id"]
+	},
+	"timeline_event": {
+		"sirius_tables": ["timeline_event"],
+		"entities": {
+			"base_entities": ["timeline"],
+			"relies_on": ["clients", "deputies", "cases"]
+		},
+		"pk": "id",
+		"fks": [],
+		"table_type": "data",
+		"sequences": [{
+			"name": "timeline_event_id_seq",
+			"column": "id",
+			"type": "pk"
+		}],
+		"order_by": ["id"]
+	},
+	"person_timeline": {
+		"sirius_tables": ["person_timeline"],
+		"entities": {
+			"base_entities": ["timeline"],
+			"relies_on": ["clients", "deputies", "cases"]
+		},
+		"pk": "id",
+		"fks": [],
+		"table_type": "data",
+		"sequences": [{
+			"name": "person_timeline_id_seq",
+			"column": "id",
+			"type": "pk"
+		}],
+		"order_by": ["person_id", "timelineevent_id"]
 	}
 }

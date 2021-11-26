@@ -40,6 +40,7 @@ from entities import (
     ledger,
     ledger_allocation,
     fee_reductions,
+    timeline,
 )
 from utilities.clear_database import clear_tables
 from db_insert import InsertData
@@ -136,6 +137,7 @@ def main(clear, team, chunk_size):
     ledger.runner(target_db=target_db, db_config=db_config)
     ledger_allocation.runner(target_db=target_db, db_config=db_config)
     fee_reductions.runner(target_db=target_db, db_config=db_config)
+    timeline.runner(target_db=target_db, db_config=db_config)
 
     check_row_counts.count_rows(
         connection_string=db_config["db_connection_string"],
