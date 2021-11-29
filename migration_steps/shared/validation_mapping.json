@@ -808,7 +808,7 @@
             "from_table": "deputy_remarks",
             "transform": {
                 "createdtime": "transf_convert_to_timestamp(\"Log Date\", \"Log Time\", NULL)::timestamp(0)",
-                "description": "NULLIF({col}, '-')"
+                "description": "CASE WHEN {col} = '' THEN '-' ELSE {col} END"
             },
             "joins": [
                 "LEFT JOIN casrec_csv.deputyship ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy_remarks.\"Deputy No\"",
@@ -821,9 +821,7 @@
         },
         "sirius": {
             "from_table": "supervision_notes as notes",
-            "transform": {
-                "description": "NULLIF({col}, '-')"
-            },
+            "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = notes.person_id",
                 "LEFT JOIN {target_schema}.order_deputy ON order_deputy.deputy_id = notes.person_id",
