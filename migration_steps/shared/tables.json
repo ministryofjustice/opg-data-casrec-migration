@@ -517,7 +517,18 @@
 			"relies_on": ["clients", "deputies", "cases"]
 		},
 		"pk": "id",
-		"fks": [],
+		"fks": [
+			{
+				"column":"person_id",
+				"parent_table" : "persons",
+				"parent_column": "id"
+			},
+			{
+				"column":"timelineevent_id",
+				"parent_table" : "timeline_event",
+				"parent_column": "id"
+			}
+		],
 		"table_type": "data",
 		"sequences": [{
 			"name": "person_timeline_id_seq",
