@@ -1166,6 +1166,7 @@
           "identifiers": []
         }
     },
+<<<<<<< HEAD
     "finance_ledger_credits": {
         "exclude": [
             "finance_person_id"
@@ -1238,6 +1239,29 @@
             "where_clauses": [
                 "finance_ledger_allocation.source = 'CASRECMIGRATION'"
             ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
+    },
+    "timeline_event": {
+        "exclude": [],
+        "casenumber_source": "",
+        "orderby": {},
+        "casrec": {
+            "from_table": "Pat",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "",
+            "where_clauses": []
+        },
+        "sirius": {
+            "from_table": "timeline_event",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "",
+            "where_clauses": []
         },
         "manual_checks": {
           "column": "",

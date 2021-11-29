@@ -80,6 +80,7 @@ def get_mappings():
         "fee_reductions": ["finance_remissions", "finance_exemptions"],
         "ledger": ["finance_ledger_credits"],
         "ledger_allocation": ["finance_allocation_credits"],
+        "timeline": ["timeline_event"],
     }
 
     for entity, mapping in all_mappings.items():
