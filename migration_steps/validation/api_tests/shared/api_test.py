@@ -237,6 +237,14 @@ class ApiTests:
 
         return headers_to_check
 
+    def replace_nan(self, x):
+        full_replacements = [("nan", "")]
+        x = str(x)
+        for old_value, new_value in full_replacements:
+            x = re.sub(rf"^{old_value}[ ]?$", new_value, x)
+
+        return x
+
     def get_processed_entity_ids(self, entity_ref):
         log.debug(f"get_processed_entity_ids for entity ref {entity_ref}")
         entity_ids = self.get_entity_ids(entity_ref)
@@ -481,7 +489,7 @@ class ApiTests:
         formatted_api_response[json_locator] = col_restruct_text
         # Check through each value in spreadsheet for that row against each value in our response struct
 
-        expected = str(row["api_response"]).replace("nan", "").lower()
+        expected = self.replace_nan(str(row["api_response"]).lower())
         actual = str(formatted_api_response[json_locator]).lower()
         try:
             assert expected == actual
@@ -592,20 +600,26 @@ class ApiTests:
                 id2_json_path = None
 
             if "case_references" not in entity_setup_object:
-                endpoint = self.get_functional_endpoint(None, url, id2_endpoint, id2_json_path)
-                self.assert_on_functional_response(endpoint, method, data, expected_status)
+                endpoint = self.get_functional_endpoint(
+                    None, url, id2_endpoint, id2_json_path
+                )
+                self.assert_on_functional_response(
+                    endpoint, method, data, expected_status
+                )
                 continue
 
             for case_reference in entity_setup_object["case_references"]:
                 entity_ids = self.get_functional_entity_ids(case_reference, source)
                 first_entity_id = entity_ids[0]
-                endpoint = self.get_functional_endpoint(first_entity_id, url, id2_endpoint, id2_json_path)
-                self.assert_on_functional_response(endpoint, method, data, expected_status)
+                endpoint = self.get_functional_endpoint(
+                    first_entity_id, url, id2_endpoint, id2_json_path
+                )
+                self.assert_on_functional_response(
+                    endpoint, method, data, expected_status
+                )
 
     def assert_on_functional_response(self, endpoint, method, data, expected_status):
-        actual_status = self.get_functional_response_object(
-            endpoint, method, data
-        )
+        actual_status = self.get_functional_response_object(endpoint, method, data)
         try:
             assert expected_status == actual_status
         except AssertionError:

@@ -4,7 +4,7 @@ endpoint,entity_ref,json_locator,test_purpose
 /api/v1/deputies/{id}/clients,97716692,["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"],relationship_spouse
 /api/v1/deputies/{id}/clients,10031042,["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"],relationship_spouse
 /api/v1/deputies/{id}/clients,10033019,["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"],relationship_child
-/api/v1/deputies/{id}/clients,9502125T,["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"],relationship_parent
+/api/v1/deputies/{id}/clients,1268922T,["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"],relationship_parent
 /api/v1/deputies/{id}/clients,1181777T,["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"],relationship_civil_partner
 /api/v1/deputies/{id}/clients,13443600,["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"],relationship_civil_partner
 /api/v1/deputies/{id}/clients,1163782T,["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"],relationship_civil_partner
@@ -17,9 +17,6 @@ endpoint,entity_ref,json_locator,test_purpose
 /api/v1/deputies/{id}/clients,13661874,["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"],relationship_accountant
 /api/v1/deputies/{id}/clients,9782144T,["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"],relationship_accountant
 /api/v1/deputies/{id}/clients,1268922T,["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"],relationship_accountant
-/api/v1/deputies/{id}/clients,1147191T,["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"],relationship_no_receiver
-/api/v1/deputies/{id}/clients,11478286,["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"],relationship_no_receiver
-/api/v1/deputies/{id}/clients,99059809,["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"],relationship_no_receiver
 /api/v1/deputies/{id}/clients,10446311,["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"],relationship_other_professional
 /api/v1/deputies/{id}/clients,99052350,["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"],relationship_other_professional
 /api/v1/deputies/{id}/clients,98954064,["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"],relationship_other_professional

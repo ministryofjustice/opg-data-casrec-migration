@@ -1,0 +1,3 @@
+/api/v1/orders/{id1}/deputies/{id2},1011496T,["statusOnCaseOverride"]["handle"],deputy_status_deceased
+/api/v1/orders/{id1}/deputies/{id2},99268084,["statusOnCaseOverride"]["handle"],deputy_status_deceased
+/api/v1/orders/{id1}/deputies/{id2},99171450,["statusOnCaseOverride"]["handle"],deputy_status_deceased
