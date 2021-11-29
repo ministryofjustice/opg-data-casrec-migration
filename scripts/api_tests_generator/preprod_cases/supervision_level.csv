@@ -3,5 +3,5 @@ endpoint,entity_ref,json_locator,test_purpose
 /api/v1/orders/{id},10015094,["latestSupervisionLevel"]["supervisionLevel"]["handle"],supervision_level_high
 /api/v1/orders/{id},10016667,["latestSupervisionLevel"]["assetLevel"]["handle"],asset_level_low
 /api/v1/orders/{id},10018593,["latestSupervisionLevel"]["assetLevel"]["handle"],asset_level_high
-/api/v1/orders/{id},12587836,["latestSupervisionLevel"]["assetLevel"]["handle"],asset_level_unknown
+/api/v1/orders/{id},13234122,["latestSupervisionLevel"]["assetLevel"]["handle"],asset_level_unknown
 /api/v1/orders/{id},13066444,["latestSupervisionLevel"]["assetLevel"]["handle"],asset_level_null
