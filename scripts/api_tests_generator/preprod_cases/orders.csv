@@ -1,4 +1,4 @@
-endpoint,entity_ref,json_locator,test_purpose
+endpoint,entity_ref,json_locator,test_purpose,api_response
 /api/v1/orders/{id},10004741,["orderDate"],old_order_made
 /api/v1/orders/{id},99368551,["orderStatus"]["handle"],old_order_made_active
 /api/v1/orders/{id},99351724,["orderStatus"]["handle"],old_order_made_active
@@ -10,7 +10,6 @@ endpoint,entity_ref,json_locator,test_purpose
 /api/v1/orders/{id},99370768,["orderStatus"]["handle"],order_status_mapping_closed
 /api/v1/orders/{id},1254463T,["orderStatus"]["handle"],order_status_mapping_open
 /api/v1/orders/{id},1201357T,["orderIssueDate"],with_issue_date
-/api/v1/orders/{id},12109482,["orderIssueDate"],without_issue_date ==FIND NEW
 /api/v1/orders/{id},96825507,["orderExpiryDate"],with_expiry_date
 /api/v1/orders/{id},97528955,["clauseExpiryDate"],with_clause_expiry_date
 /api/v1/orders/{id},99329333,["clauseExpiryDate"],with_clause_expiry_date
@@ -26,8 +25,6 @@ endpoint,entity_ref,json_locator,test_purpose
 /api/v1/orders/{id},98646339,["caseSubtype"],health_welfare_subt_closed
 /api/v1/orders/{id},11519774,["orderSubtype"]["handle"],supplement_order_subt_active
 /api/v1/orders/{id},11749830,["orderSubtype"]["handle"],supplement_order_subt_active
-/api/v1/orders/{id},10146500,["orderSubtype"]["handle"],supplement_order_subt_closed
-/api/v1/orders/{id},94071935,["orderSubtype"]["handle"],supplement_order_subt_closed
 /api/v1/orders/{id},99382896,["orderSubtype"]["handle"],supplement_order_subt_open
 /api/v1/orders/{id},10025768,["orderSubtype"]["handle"],supplement_order_subt_open
 /api/v1/orders/{id},10000037,["orderSubtype"]["handle"],replacement_order_subt_active
@@ -40,9 +37,9 @@ endpoint,entity_ref,json_locator,test_purpose
 /api/v1/orders/{id},13699411,["orderSubtype"]["handle"],interim_order_subt_active
 /api/v1/orders/{id},95056681,["orderSubtype"]["handle"],interim_order_subt_closed
 /api/v1/orders/{id},13679669,["orderSubtype"]["handle"],interim_order_subt_closed
-/api/v1/orders/{id},1309591T,["orderSubtype"]["handle"],interim_order_subt_open
-/api/v1/orders/{id},99163692,["orderSubtype"]["handle"],interim_order_subt_open
-/api/v1/orders/{id},1223788T,["orderSubtype"]["handle"],call_in_bond_subt_closed
-/api/v1/orders/{id},1198037T,["orderSubtype"]["handle"],call_in_bond_subt_closed
+/api/v1/orders/{id},1309591T,["orderSubtype"]["handle"],new_deputy_order_subt_open
+/api/v1/orders/{id},99163692,["orderSubtype"]["handle"],new_deput_order_subt_open
+/api/v1/orders/{id},1223788T,["orderSubtype"]["handle"],direction_subt_closed
+/api/v1/orders/{id},1198037T,["orderSubtype"]["handle"],direction_subt_closed
 /api/v1/orders/{id},13075067,["orderSubtype"]["handle"],tenancy_order_subt_closed
 /api/v1/orders/{id},12949581,["orderSubtype"]["handle"],tenancy_order_subt_closed
