@@ -570,6 +570,7 @@
             "Case"
         ],
         "source_table_name": "remarks",
+        "table_transforms": {},
         "table_type": "data"
     },
     "p1_deputy_remarks_warnings": {
@@ -584,6 +585,7 @@
             "Deputy No"
         ],
         "source_table_name": "deputy_remarks",
+        "table_transforms": {},
         "table_type": "data"
     },
     "person_caseitem": {
