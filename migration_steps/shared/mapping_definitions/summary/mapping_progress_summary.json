@@ -110,15 +110,15 @@
         },
         "finance_ledger_credits": {
             "total_rows": 17,
-            "total_unmapped": 7,
-            "total_mapped": 10,
-            "percentage_complete": 59
+            "total_unmapped": 5,
+            "total_mapped": 12,
+            "percentage_complete": 71
         },
         "finance_allocation_credits": {
             "total_rows": 11,
-            "total_unmapped": 3,
-            "total_mapped": 8,
-            "percentage_complete": 73
+            "total_unmapped": 1,
+            "total_mapped": 10,
+            "percentage_complete": 91
         },
         "cases": {
             "total_rows": 58,
@@ -248,9 +248,9 @@
         },
         "fields": {
             "total_fields": 403,
-            "total_unmapped": 61,
-            "total_mapped": 342,
-            "percentage_complete": 85
+            "total_unmapped": 57,
+            "total_mapped": 346,
+            "percentage_complete": 86
         }
     }
 }

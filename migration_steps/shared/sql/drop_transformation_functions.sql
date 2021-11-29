@@ -11,3 +11,5 @@ DROP FUNCTION transf_first_two_chars(source varchar);
 DROP FUNCTION transf_start_of_tax_year(source date);
 DROP FUNCTION transf_end_of_tax_year(source date);
 DROP FUNCTION transf_fee_reduction_end_date(source date);
+DROP FUNCTION transf_absolute_value(source text);
+DROP FUNCTION transf_credit_type_from_invoice_ref(source varchar);

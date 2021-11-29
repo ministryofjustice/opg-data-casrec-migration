@@ -78,6 +78,8 @@ def get_mappings():
         "reporting": ["annual_report_logs", "annual_report_lodging_details"],
         "invoice": ["finance_invoice_ad", "finance_invoice_non_ad"],
         "fee_reductions": ["finance_remissions", "finance_exemptions"],
+        "ledger": ["finance_ledger_credits"],
+        "ledger_allocation": ["finance_allocation_credits"],
     }
 
     for entity, mapping in all_mappings.items():
