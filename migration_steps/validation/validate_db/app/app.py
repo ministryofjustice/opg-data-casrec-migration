@@ -69,6 +69,7 @@ def get_mappings():
             "client_violent_warnings",
             "deputy_special_warnings",
             "deputy_violent_warnings",
+            "p1_client_remarks_warnings",
         ],
         "death": ["client_death_notifications", "deputy_death_notifications"],
         "visits": ["visits"],

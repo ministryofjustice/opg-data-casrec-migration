@@ -198,6 +198,12 @@
             "total_mapped": 2,
             "percentage_complete": 33
         },
+        "p1_client_remarks_warnings": {
+            "total_rows": 6,
+            "total_unmapped": 0,
+            "total_mapped": 6,
+            "percentage_complete": 100
+        },
         "deputy_violent_warnings": {
             "total_rows": 6,
             "total_unmapped": 4,
@@ -237,13 +243,13 @@
     },
     "total": {
         "worksheets": {
-            "total_sheets": 39,
+            "total_sheets": 40,
             "total_complete": 1
         },
         "fields": {
-            "total_fields": 397,
+            "total_fields": 403,
             "total_unmapped": 61,
-            "total_mapped": 336,
+            "total_mapped": 342,
             "percentage_complete": 85
         }
     }

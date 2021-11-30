@@ -10,3 +10,6 @@ endpoint,entity_ref,json_locator,test_purpose
 /api/v1/persons/{id}/warnings,10013617,["warningText"],saar_check
 /api/v1/persons/{id}/warnings,10229455,["warningText"],special_interest
 /api/v1/persons/{id}/warnings,10033647,["warningText"],violent
+/api/v1/persons/{id}/warnings,12048321,["warningType"],p1_remark_warning
+/api/v1/persons/{id}/warnings,12314291,["warningText"],p1_remark_warning
+/api/v1/persons/{id}/warnings,1236347T,["logDate"],p1_remark_warning
