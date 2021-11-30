@@ -44,7 +44,7 @@ RETURN report_status_code;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION casrec_csv.report_lodged_status_aggregate(revise_date varchar, further_code varchar, rcvd_date varchar, sent varchar, followup_date varchar)
+CREATE OR REPLACE FUNCTION casrec_csv.report_lodged_status_aggregate(revise_date varchar, further_code varchar, rcvd_date varchar, sent date, followup_date varchar)
 RETURNS
 	varchar AS $$
 DECLARE
@@ -65,14 +65,15 @@ BEGIN
 		WHEN further_code = '4' THEN 'A'
 		WHEN further_code = '1' THEN 'B'
 		WHEN further_code = '8' THEN 'B'
-		ELSE 'N'
+		when further_code = '' then 'N'
+		ELSE 'X'
 	END;
 	rcvd_date_flag = CASE
 		WHEN COALESCE(rcvd_date, '') = '' THEN 'N'
 		ELSE 'Y'
 	END;
 	sent_flag = CASE
-		WHEN COALESCE(sent, '') = '' THEN 'N'
+		WHEN sent IS NULL THEN 'N'
 		ELSE 'Y'
 	END;
     followup_date_flag = CASE
@@ -105,7 +106,7 @@ BEGIN
 		WHEN report_aggr_code like 'M_%_Y_Y_Y_%' THEN 'LODGED|REFERRED_FOR_REVIEW|REVIEWED'
 		WHEN report_aggr_code like 'X_%_N_N_N_%' THEN 'ABANDONED||NO_REVIEW'
 		WHEN report_aggr_code like '%_P0_%_%_N_Y' THEN 'PENDING||STAFF_PRESELECTED'
-		ELSE null
+		ELSE NULL
 	END;
 RETURN report_status;
 END;

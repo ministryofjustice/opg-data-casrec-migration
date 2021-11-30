@@ -5,7 +5,8 @@
         "required_entities": "",
         "source_conditions": {},
         "source_table_additional_columns": [
-            ""
+            "End Date",
+            "Case"
         ],
         "source_table_name": "account",
         "table_transforms": {
