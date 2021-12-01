@@ -77,3 +77,21 @@ def test_calculate_report_types_no_orders():
     transformed_df = calculate_report_types(test_df)
 
     assert_frame_equal(expected_df, transformed_df)
+
+
+def test_calculate_report_types_unrecognised_ord_risk_lvl():
+    test_df = pd.DataFrame(
+        {
+            "annualreport_id": [999],
+            "end_date": ["2020-08-08"],
+            "sirius_report_log_casrec_case_no": ["C1"],
+            "ord_stat": ["Active"],
+            "ord_risk_lvl": ["4"],
+        }
+    )
+
+    expected_df = pd.DataFrame({"annualreport_id": [999], "reporttype": [None]})
+
+    transformed_df = calculate_report_types(test_df)
+
+    assert_frame_equal(expected_df, transformed_df)

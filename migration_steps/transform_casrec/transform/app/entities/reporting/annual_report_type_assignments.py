@@ -18,15 +18,18 @@ DEFAULT_REPORT_TYPE = "-"
 # :param row: single row with ord_stat and ord_risk_lvl columns;
 #      this will be the row from the orders for this annual report log
 #      with the latest date
-# :returns: reporttype value
+# :returns: reporttype value, or None if no mapping exists
 def _calculate_reporttype(row):
-    if not row["ord_stat"] == "Active":
-        return None
+    if row["ord_stat"] == "Active":
+        ord_risk_lvl = row["ord_risk_lvl"]
 
-    if row["ord_risk_lvl"] == "3":
-        return "OPG103"
+        if ord_risk_lvl == "3":
+            return "OPG103"
 
-    return "OPG102"
+        if ord_risk_lvl in ["1", "2", "2A"]:
+            return "OPG102"
+
+    return None
 
 
 def calculate_report_types(report_logs_df: pd.DataFrame) -> pd.DataFrame:
