@@ -80,7 +80,7 @@ def get_mappings():
         "fee_reductions": ["finance_remissions", "finance_exemptions"],
         "ledger": ["finance_ledger_credits"],
         "ledger_allocation": ["finance_allocation_credits"],
-        "timeline": ["timeline_event"],
+        "timeline": ["timeline_event", "person_timeline"],
     }
 
     for entity, mapping in all_mappings.items():
@@ -754,8 +754,10 @@ def post_validation():
     headers = ["Casrec Mapping", "Rows", "Unmapped", "Mapped", "Complete (%)", "Failed"]
     report_table = tabulate(report_df, headers, tablefmt="psql")
     print(report_table)
-    print("NOTE: Validations that don't have a corresponding mapping file will show N/A in the stats columns. "
-          "This is normal.\n")
+    print(
+        "NOTE: Validations that don't have a corresponding mapping file will show N/A in the stats columns. "
+        "This is normal.\n"
+    )
 
     file_name = "report_table.txt"
     file_path = f"{shared_path}/temp/{file_name}"
