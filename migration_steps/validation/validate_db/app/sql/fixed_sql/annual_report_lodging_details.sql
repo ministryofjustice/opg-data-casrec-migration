@@ -8,7 +8,8 @@ CREATE TABLE casrec_csv.exceptions_annual_report_lodging_details(
     datereportlodged text default NULL,
     bankstatementdeadlinedate text default NULL,
     bankstatementsreceived text default NULL,
-    lodgedstatus text default NULL
+    lodgedstatus text default NULL,
+    lodgedby_id text default NULL
 );
 
 INSERT INTO casrec_csv.exceptions_annual_report_lodging_details(
@@ -34,7 +35,8 @@ INSERT INTO casrec_csv.exceptions_annual_report_lodging_details(
 	                )
 	            ), 2
 	        )
-        ), '') AS lodgedstatus
+        ), '') AS lodgedstatus,
+        2657 as lodgedby_id
     FROM (
         SELECT
             "Case" AS caserecnumber,
@@ -77,7 +79,8 @@ INSERT INTO casrec_csv.exceptions_annual_report_lodging_details(
         CAST(annual_report_lodging_details.datereportlodged AS date) AS datereportlodged,
         CAST(annual_report_lodging_details.bankstatementdeadlinedate AS date) AS bankstatementdeadlinedate,
         annual_report_lodging_details.bankstatementsreceived AS bankstatementsreceived,
-        annual_report_lodging_details.lodgedstatus AS lodgedstatus
+        annual_report_lodging_details.lodgedstatus AS lodgedstatus,
+        annual_report_lodging_details.lodgedby_id AS lodgedby_id
     FROM {target_schema}.annual_report_lodging_details
     INNER JOIN {target_schema}.annual_report_logs on annual_report_logs.id = annual_report_lodging_details.annual_report_log_id
     INNER JOIN {target_schema}.persons on persons.id = annual_report_logs.client_id

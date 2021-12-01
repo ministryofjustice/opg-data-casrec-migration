@@ -586,21 +586,6 @@
         "table_transforms": {},
         "table_type": "data"
     },
-    "p1_deputy_remarks_warnings": {
-        "destination_table_name": "warnings",
-        "entity_name": "warnings",
-        "required_entities": "",
-        "source_conditions": {
-            "Pri": 1
-        },
-        "source_table_additional_columns": [
-            "Pri",
-            "Deputy No"
-        ],
-        "source_table_name": "deputy_remarks",
-        "table_transforms": {},
-        "table_type": "data"
-    },
     "person_caseitem": {
         "destination_table_name": "person_caseitem",
         "entity_name": "cases",

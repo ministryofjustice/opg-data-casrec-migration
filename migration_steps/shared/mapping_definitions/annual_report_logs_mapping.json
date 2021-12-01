@@ -199,6 +199,31 @@
             "sync": ""
         }
     },
+    "status": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str",
+            "table_name": "annual_report_logs",
+            "entity": "reporting"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
     "receiveddate": {
         "mapping_status": {
             "is_complete": true
@@ -231,6 +256,31 @@
                 "Rcvd Date6"
             ],
             "requires_transformation": "get_max_col",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
+    "reviewstatus": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str",
+            "table_name": "annual_report_logs",
+            "entity": "reporting"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
@@ -282,7 +332,7 @@
             "alias": "",
             "requires_transformation": "",
             "lookup_table": "",
-            "default_value": 2.0,
+            "default_value": 2657.0,
             "calculated": "",
             "additional_columns": ""
         },
