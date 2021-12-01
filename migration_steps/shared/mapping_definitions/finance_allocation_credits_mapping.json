@@ -126,7 +126,7 @@
     },
     "status": {
         "mapping_status": {
-            "is_complete": false
+            "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
@@ -201,7 +201,7 @@
     },
     "allocateddate": {
         "mapping_status": {
-            "is_complete": false
+            "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
