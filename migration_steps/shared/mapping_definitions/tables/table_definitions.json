@@ -72,6 +72,18 @@
         },
         "table_type": "data"
     },
+    "annual_report_type_assignments": {
+        "destination_table_name": "annual_report_type_assignments",
+        "entity_name": "reporting",
+        "required_entities": "",
+        "source_conditions": {},
+        "source_table_additional_columns": [
+            ""
+        ],
+        "source_table_name": "",
+        "table_transforms": {},
+        "table_type": "data"
+    },
     "bonds_active": {
         "destination_table_name": "bonds",
         "entity_name": "bonds",
