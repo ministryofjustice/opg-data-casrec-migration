@@ -184,3 +184,27 @@ BEGIN
     RETURN transf_end_of_tax_year(source)::date;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION transf_absolute_value(source text)
+RETURNS double precision as $$
+DECLARE
+BEGIN
+    RETURN ABS(CAST(source AS DOUBLE PRECISION));
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION transf_credit_type_from_invoice_ref(source varchar)
+RETURNS varchar as $$
+DECLARE
+BEGIN
+    IF LEFT(source, 1) = 'Z' OR RIGHT(source, 1) = 'Z' THEN
+        RETURN 'CREDIT REMISSION';
+    ELSIF LEFT(source, 2) = 'CR' OR RIGHT(source, 2) = 'CR' THEN
+        RETURN 'CREDIT MEMO';
+    ELSIF LEFT(source, 2) = 'WO' OR RIGHT(source, 2) = 'WO' THEN
+        RETURN 'CREDIT WRITE OFF';
+    END IF;
+
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;

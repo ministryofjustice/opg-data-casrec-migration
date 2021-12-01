@@ -842,7 +842,7 @@
             "from_table": "deputy_remarks",
             "transform": {
                 "createdtime": "transf_convert_to_timestamp(\"Log Date\", \"Log Time\", NULL)::timestamp(0)",
-                "description": "CASE WHEN {col} = '' THEN '-' ELSE {col} END"
+                "description": "NULLIF(TRIM(CASE WHEN {col} = '' THEN '-' ELSE {col} END), '')"
             },
             "joins": [
                 "LEFT JOIN casrec_csv.deputyship ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy_remarks.\"Deputy No\"",
@@ -1159,6 +1159,84 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_exemptions exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "finance_remission_exemption.discounttype = 'EXEMPTION'"
+            ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
+    },
+    "finance_ledger_credits": {
+        "exclude": [
+            "finance_person_id"
+        ],
+        "casenumber_source": "client_persons.caserecnumber",
+        "orderby": {},
+        "casrec": {
+            "from_table": "feeexport",
+            "transform": {
+                "finance_remission_exemption_id": "NULL::integer",
+                "confirmeddate": "NULL::date"
+            },
+            "joins": [
+                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.feeexport.\"Case\""
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_ledger_credits exc_table ON exc_table.caserecnumber = feeexport.\"Case\"",
+            "where_clauses": [
+                "CAST(feeexport.\"Amount\" AS DOUBLE PRECISION) < 0",
+                "EXISTS (SELECT 1 FROM casrec_csv.feeexport fe LEFT JOIN casrec_csv.sop_aged_debt sad ON sad.\"Trx Number\" = fe.\"Invoice No\" WHERE fe.\"Invoice No\" = casrec_csv.feeexport.\"Orig Invoice\" AND CAST(fe.\"Amount\" AS DOUBLE PRECISION) > 0 AND (NULLIF(fe.\"Create\", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0) OR CAST(sad.\"Outstanding Amount\" AS DOUBLE PRECISION) > 0))"
+            ]
+        },
+        "sirius": {
+            "from_table": "finance_ledger",
+            "transform": {},
+            "joins": [
+                "LEFT JOIN {target_schema}.finance_person ON finance_person.id = finance_ledger.finance_person_id",
+                "LEFT JOIN {target_schema}.persons ON persons.id = finance_person.person_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_ledger_credits exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "finance_ledger.source = 'CASRECMIGRATION'"
+            ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
+    },
+    "finance_allocation_credits": {
+        "exclude": [
+            "ledger_entry_id",
+            "invoice_id"
+        ],
+        "casenumber_source": "client_persons.caserecnumber",
+        "orderby": {},
+        "casrec": {
+            "from_table": "feeexport",
+            "transform": {
+                "status": "CASE WHEN NULLIF(sop_feecheckcredits.\"GL Date\", 'NaT') IS NULL THEN 'PENDING' ELSE 'ALLOCATED' END",
+                "allocateddate": "NULLIF(sop_feecheckcredits.\"GL Date\", 'NaT')::date"
+            },
+            "joins": [
+                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.feeexport.\"Case\"",
+                "LEFT JOIN casrec_csv.sop_feecheckcredits ON casrec_csv.sop_feecheckcredits.\"Invoice Number\" = casrec_csv.feeexport.\"Invoice No\""
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_allocation_credits exc_table ON exc_table.caserecnumber = feeexport.\"Case\"",
+            "where_clauses": [
+                "CAST(feeexport.\"Amount\" AS DOUBLE PRECISION) < 0",
+                "EXISTS (SELECT 1 FROM casrec_csv.feeexport fe LEFT JOIN casrec_csv.sop_aged_debt sad ON sad.\"Trx Number\" = fe.\"Invoice No\" WHERE fe.\"Invoice No\" = casrec_csv.feeexport.\"Orig Invoice\" AND CAST(fe.\"Amount\" AS DOUBLE PRECISION) > 0 AND (NULLIF(fe.\"Create\", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0) OR CAST(sad.\"Outstanding Amount\" AS DOUBLE PRECISION) > 0))"
+            ]
+        },
+        "sirius": {
+            "from_table": "finance_ledger_allocation",
+            "transform": {},
+            "joins": [
+                "LEFT JOIN {target_schema}.finance_invoice ON finance_invoice.id = finance_ledger_allocation.invoice_id",
+                "LEFT JOIN {target_schema}.persons ON persons.id = finance_invoice.person_id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_allocation_credits exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "finance_ledger_allocation.source = 'CASRECMIGRATION'"
             ]
         },
         "manual_checks": {

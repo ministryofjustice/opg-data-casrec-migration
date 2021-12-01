@@ -78,6 +78,8 @@ def get_mappings():
         "reporting": ["annual_report_logs", "annual_report_lodging_details"],
         "invoice": ["finance_invoice_ad", "finance_invoice_non_ad"],
         "fee_reductions": ["finance_remissions", "finance_exemptions"],
+        "ledger": ["finance_ledger_credits"],
+        "ledger_allocation": ["finance_allocation_credits"],
     }
 
     for entity, mapping in all_mappings.items():
@@ -747,9 +749,12 @@ def post_validation():
     write_results_sql()
     exceptions_df = df_from_sql_file(sql_path_temp, results_sqlfile, conn_target)
     report_df = mapping_df.merge(exceptions_df, on="mapping", how="outer")
+    report_df = report_df.fillna("N/A")
     headers = ["Casrec Mapping", "Rows", "Unmapped", "Mapped", "Complete (%)", "Failed"]
     report_table = tabulate(report_df, headers, tablefmt="psql")
     print(report_table)
+    print("NOTE: Validations that don't have a corresponding mapping file will show N/A in the stats columns. "
+          "This is normal.\n")
 
     file_name = "report_table.txt"
     file_path = f"{shared_path}/temp/{file_name}"

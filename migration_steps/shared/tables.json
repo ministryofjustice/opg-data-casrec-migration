@@ -282,14 +282,21 @@
 		"sirius_tables": ["annual_report_logs"],
 		"entities": {
 			"base_entities": ["reporting"],
-			"relies_on": ["clients"]
+			"relies_on": ["clients", "cases"]
 		},
 		"pk": "id",
-		"fks": [{
-			"column": "client_id",
-			"parent_table": "persons",
-			"parent_column": "id"
-		}],
+		"fks": [
+			{
+				"column": "client_id",
+				"parent_table": "persons",
+				"parent_column": "id"
+			},
+			{
+				"column": "order_id",
+				"parent_table": "cases",
+				"parent_column": "id"
+			}
+		],
 		"table_type": "data",
 		"sequences": [{
 			"name": "annual_report_logs_id_seq",
@@ -302,16 +309,38 @@
 		"sirius_tables": ["annual_report_lodging_details"],
 		"entities": {
 			"base_entities": ["reporting"],
-			"relies_on": []
+			"relies_on": ["clients"]
 		},
 		"pk": "id",
-		"fks": [],
+		"fks": [{
+			"column": "annual_report_log_id",
+			"parent_table": "annual_report_logs",
+			"parent_column": "id"
+		}],
 		"table_type": "data",
 		"sequences": [{
 			"name": "annual_report_lodging_details_id_seq",
 			"column": "id",
 			"type": "pk"
 		}],
+		"order_by": ["id"]
+	},
+	"annual_report_type_assignments": {
+		"sirius_tables": ["annual_report_type_assignments"],
+		"entities": {
+			"base_entities": ["reporting"],
+			"relies_on": ["clients", "cases"]
+		},
+		"pk": "id",
+		"fks": [
+			{
+				"column": "annualreport_id",
+				"parent_table": "annual_report_logs",
+				"parent_column": "id"
+			}
+		],
+		"table_type": "data",
+		"sequences": [],
 		"order_by": ["id"]
 	},
 	"finance_remission_exemption": {
