@@ -251,6 +251,9 @@ class InsertData:
                 expected_datatype = mapping_details[column_name]["data_type"]
 
                 if df_datatype not in pandas_to_db_map[expected_datatype]:
+                    log.debug(
+                        f"Column {column_name}: expected datatype = {expected_datatype}, actual = {df_datatype}"
+                    )
                     non_matching_count += 1
             except Exception:
                 pass
