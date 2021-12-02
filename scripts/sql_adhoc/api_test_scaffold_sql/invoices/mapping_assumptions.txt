@@ -1,0 +1,126 @@
+-- Table: finance_ledger_allocation
+
+select
+ledger_entry_id,
+invoice_id,
+datetime, - ["ledgerEntryAllocations"][*]["dateTime"]
+amount, - ["ledgerEntryAllocations"][*]["amount"]
+status, - ["ledgerEntryAllocations"][*]["status"]["handle"]
+reference, - ["ledgerEntryAllocations"][*]["reference"]
+notes, - ["ledgerEntryAllocations"][*]["notes"]
+allocateddate, - ["ledgerEntryAllocations"][*]["allocatedDate"]
+batchnumber,
+source - No_API
+from finance_ledger_allocation limit 2;
+
+select
+fla.datetime,
+fla.amount,
+fla.reference,
+fla.notes
+from persons p
+inner join finance_person fp on fp.person_id = p.id
+inner join finance_ledger fl on fl.finance_person_id = fp.id
+inner join finance_ledger_allocation fla on fla.ledger_entry_id = fl.id
+where p.clientsource = 'CASRECMIGRATION';
+
+-- Table: finance_remission_exemption
+
+select finance_person_id,
+discounttype, - ["discountType"]
+evidencetype,
+startdate, - ["startDate"]
+enddate, - ["endDate"]
+notes, - ["notes"]
+deleted - No_API
+from finance_remission_exemption limit 2;
+
+EXTRAS:
+
+status - based on enddate
+
+select
+fre.discounttype,
+fre.startdate,
+fre.enddate,
+fre.notes
+from persons p
+inner join finance_person fp on fp.person_id = p.id
+inner join finance_remission_exemption fre on fre.finance_person_id = fp.id
+where p.clientsource = 'CASRECMIGRATION';
+
+-- Table: finance_ledger
+
+select
+reference,
+datetime, - ["dateTime"]
+method, - ["method"]
+amount, - ["amount"]
+notes, - ["notes"]
+type, - ["type"]["handle"]
+status, - ["status"]["handle"]
+finance_person_id,
+parent_id,
+finance_remission_exemption_id,
+confirmeddate, - ["confirmedDate"]
+bankdate, - ["bankDate"]
+batchnumber,
+isfeewaiver,
+bankaccount,
+source, - NO_API
+line
+from finance_ledger limit 2;
+
+select
+fl.datetime,
+fl.method,
+fl.amount,
+fl.notes,
+fl.type,
+bankdate
+from persons p
+inner join finance_person fp on fp.person_id = p.id
+inner join finance_ledger fl on fl.finance_person_id = fp.id
+where p.clientsource = 'CASRECMIGRATION';
+
+-- Table: finance_invoice
+
+select id,
+person_id,
+finance_person_id,
+feetype, - ["feeType"]
+reference, - ["reference"]
+startdate, - ["startDate"]
+enddate, - ["endDate"]
+amount, - ["amount"]
+supervisionlevel, - ["supervisionLevel"]["handle"]
+finance_remission_exemption_id,
+confirmeddate, - ["confirmedDate"]
+batchnumber, -T
+raiseddate - ["raisedDate"]
+source -
+from finance_invoice limit 2;
+
+EXTRAS:
+	"status": {
+		"handle": "OPEN",
+		"label": "Open" --- all are open
+	},
+	"sopStatus": {
+		"handle": "CONFIRMED",
+		"label": "Confirmed" ---- based on confirmation date
+	},
+
+select
+fi.feetype,
+fi.reference,
+fi.startdate,
+fi.enddate,
+fi.amount,
+fi.supervisionlevel,
+fi.confirmeddate,
+fi.raiseddate
+from persons p
+inner join finance_person fp on fp.person_id = p.id
+inner join finance_invoice fi on fi.finance_person_id = fp.id
+where p.clientsource = 'CASRECMIGRATION';

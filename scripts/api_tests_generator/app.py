@@ -22,13 +22,14 @@ db_conn_string = config.get_db_connection_string("target")
 engine = create_engine(db_conn_string)
 response_dir = "responses"
 
+result_list = []
+
 csvs = [
     "deputy_fee_payer",
     "clients",
     "orders",
     "bonds",
     "deputies",
-    "deputy_fee_payer",
     "deputy_orders",
     "deputy_clients",
     "supervision_level",
@@ -39,7 +40,7 @@ csvs = [
     "crec",
     "visits",
     "reports",
-    "invoice",
+    "invoices",
     "tasks",
     "deputy_notes",
     "client_notes",
@@ -199,6 +200,25 @@ def rationalise_json_value(v, json_block):
     return response_var
 
 
+def rationalise_list_response(v, json_block):
+    try:
+        response_var = eval(v)
+        if response_var is None:
+            response_var = []
+        else:
+            pass
+    except IndexError:
+        response_var = []
+        pass
+    except KeyError:
+        response_var = []
+        pass
+    except TypeError:
+        response_var = []
+        pass
+    return response_var
+
+
 def restructure_text(col, dedupe):
     col_vals = set(col.split("|")) if dedupe else col.split("|")
     col_restructured = sorted(col_vals)
@@ -348,6 +368,7 @@ def get_list_of_json_blocks_from_response(csv, response_as_json):
 def get_line_structure_object_from_json_blocks(
     json_blocks_to_loop_through, row, line_structure, csv, json_locator
 ):
+    global result_list
     for json_block in json_blocks_to_loop_through:
         for search_header in search_headers:
             row_value_from_input_csv = eval(f'row["{search_header}"]')
@@ -359,17 +380,38 @@ def get_line_structure_object_from_json_blocks(
                 # This handles adding the first occurrence
                 line_structure[search_header] = row_value_from_input_csv + "|"
 
-        json_value = f"json_block{json_locator}"
-        rationalised_json_value = rationalise_json_value(json_value, json_block)
-        try:
-            line_structure["api_result"] = (
-                line_structure["api_result"] + rationalised_json_value + "|"
-            )
-        except Exception:
-            # This handles adding the first occurrence
-            line_structure["api_result"] = rationalised_json_value + "|"
+        result_list = []
+        get_json_block_results(json_block, json_locator)
+
+        for result in result_list:
+            try:
+                line_structure["api_result"] = (
+                    line_structure["api_result"] + result + "|"
+                )
+            except Exception:
+                # This handles adding the first occurrence
+                line_structure["api_result"] = result + "|"
 
     return line_structure
+
+
+def get_json_block_results(json_block, json_locator):
+    global result_list
+    json_locator_parts = json_locator.split("[*]", 1)
+    front_part = json_locator_parts[0]
+    if len(json_locator_parts) > 1:
+        back_part = json_locator_parts[1]
+    else:
+        back_part = None
+
+    json_value = f"json_block{front_part}"
+    if back_part:
+        response = rationalise_list_response(json_value, json_block)
+        for r in response:
+            get_json_block_results(r, back_part)
+    else:
+        response = rationalise_json_value(json_value, json_block)
+        result_list.append(response)
 
 
 def deduplicate_and_clean(line_structure, csv):

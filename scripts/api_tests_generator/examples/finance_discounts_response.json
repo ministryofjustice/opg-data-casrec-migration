@@ -1,0 +1,32 @@
+[{
+	"id": 907,
+	"discountType": {
+		"handle": "EXEMPTION",
+		"label": "Exemption"
+	},
+	"startDate": "01\/04\/2021",
+	"endDate": "31\/03\/2023",
+	"notes": "<p>Exemeption Approved 3 Years<\/p>",
+	"status": {
+		"handle": "ACTIVE",
+		"label": "Active"
+	},
+	"allowedActions": [{
+		"handle": "REJECT",
+		"label": "Cancel"
+	}]
+}, {
+	"id": 908,
+	"discountType": {
+		"handle": "EXEMPTION",
+		"label": "Exemption"
+	},
+	"startDate": "01\/04\/2020",
+	"endDate": "31\/03\/2021",
+	"notes": "<p>Exemption Award 3 Years<\/p>",
+	"status": {
+		"handle": "EXPIRED",
+		"label": "Expired"
+	},
+	"allowedActions": []
+}]

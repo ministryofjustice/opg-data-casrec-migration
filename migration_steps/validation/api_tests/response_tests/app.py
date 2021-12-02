@@ -63,7 +63,7 @@ def main():
             {"csv": "reports", "identifier": "client"},
         ],
         "invoice": [
-            {"csv": "invoice", "identifier": "client", "assert_on_list": True},
+            {"csv": "invoices", "identifier": "client", "assert_on_list": True},
         ],
         "tasks": [
             {

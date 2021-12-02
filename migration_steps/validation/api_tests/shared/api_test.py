@@ -34,11 +34,15 @@ class ApiTests:
         self.list_in_field = None
         self.no_retries = None
         self.assert_on_count = None
+        self.result_list = []
         self.host = os.environ.get("DB_HOST")
         self.ci = os.getenv("CI")
         self.base_url = os.environ.get("SIRIUS_FRONT_URL")
         self.account = os.environ["SIRIUS_ACCOUNT"]
         self.environment = os.environ.get("ENVIRONMENT")
+        self.log_assert_to_screen = (
+            True if os.environ.get("ENVIRONMENT") in ["local", "development"] else False
+        )
         env_users = {
             "local": "case.manager@opgtest.com",
             "development": "case.manager@opgtest.com",
@@ -152,11 +156,9 @@ class ApiTests:
         ids = []
         entity_ids = self.engine.execute(sql)
         if entity_ids.rowcount > 1:
-            self.api_log(f"Too many matching rows for {caserecnumber}")
-            self.failed = True
+            self.api_log(f"Too many matching rows for {caserecnumber}", error=True)
         elif entity_ids.rowcount < 1:
-            self.api_log(f"No matching rows for {caserecnumber}")
-            self.failed = True
+            self.api_log(f"No matching rows for {caserecnumber}", error=True)
         else:
             entity_id = entity_ids.one()._mapping["id"]
             ids.append(entity_id)
@@ -181,8 +183,7 @@ class ApiTests:
         ids = []
         entity_ids = self.engine.execute(sql)
         if entity_ids.rowcount < 1:
-            self.api_log(f"No matching rows for {caserecnumber}")
-            self.failed = True
+            self.api_log(f"No matching rows for {caserecnumber}", error=True)
         else:
             for entity_id_row in entity_ids:
                 entity_id = entity_id_row._mapping["id"]
@@ -203,8 +204,7 @@ class ApiTests:
         ids = []
         entity_ids = self.engine.execute(sql)
         if entity_ids.rowcount < 1:
-            self.api_log(f"No matching rows for {caserecnumber}")
-            self.failed = True
+            self.api_log(f"No matching rows for {caserecnumber}", error=True)
         else:
             for entity_id_row in entity_ids:
                 entity_id = entity_id_row._mapping["id"]
@@ -250,8 +250,7 @@ class ApiTests:
         entity_ids = self.get_entity_ids(entity_ref)
 
         if len(entity_ids) == 0:
-            self.api_log(f"No ids found for '{self.csv}', nothing to test")
-            self.failed = True
+            self.api_log(f"No ids found for '{self.csv}', nothing to test", error=True)
         log.debug(f"returning: {entity_ids}")
         return entity_ids
 
@@ -270,8 +269,10 @@ class ApiTests:
                 self.api_log(
                     f"Failed request to {endpoint_final} with status {status_code}."
                 )
+                return None
             elif status_code == 404:
                 self.api_log(f"No entity to pull back on this route. This is expected!")
+                return None
         else:
             while (status_code > 201 or response_text is None) and retry_count < 5:
                 response = self.session["sess"].get(
@@ -310,27 +311,47 @@ class ApiTests:
             self.api_log(f"Checking responses from: {endpoint_final}")
 
             response_text = self.get_response_object(endpoint_final)
-            json_obj = json.loads(response_text)
+            if response_text:
+                json_obj = json.loads(response_text)
 
-            if self.list_in_field:
-                json_obj = json_obj[self.list_in_field]
+                if self.list_in_field:
+                    json_obj = json_obj[self.list_in_field]
 
-            json_items_to_loop_through = self.get_json_items_to_loop_through(json_obj)
-
-            for json_item_to_inspect in json_items_to_loop_through:
-                var_to_eval = f"json_item_to_inspect{json_locator}"
-                rationalised_var = self.rationalise_var(
-                    var_to_eval, json_item_to_inspect
+                json_items_to_loop_through = self.get_json_items_to_loop_through(
+                    json_obj
                 )
-                try:
-                    response_struct[json_locator] = (
-                        response_struct[json_locator] + rationalised_var + "|"
-                    )
-                except Exception:
-                    response_struct[json_locator] = rationalised_var + "|"
+
+                for json_item_to_inspect in json_items_to_loop_through:
+                    self.result_list = []
+                    self.get_json_block_results(json_item_to_inspect, json_locator)
+
+                    for result in self.result_list:
+                        try:
+                            response_struct[json_locator] = (
+                                response_struct[json_locator] + result + "|"
+                            )
+                        except Exception:
+                            response_struct[json_locator] = result + "|"
 
         log.debug(f"returning: {response_struct}")
         return response_struct
+
+    def get_json_block_results(self, json_item_to_inspect, json_locator):
+        json_locator_parts = json_locator.split("[*]", 1)
+        front_part = json_locator_parts[0]
+        if len(json_locator_parts) > 1:
+            back_part = json_locator_parts[1]
+        else:
+            back_part = None
+
+        json_value = f"json_item_to_inspect{front_part}"
+        if back_part:
+            response = self.rationalise_list_response(json_value, json_item_to_inspect)
+            for r in response:
+                self.get_json_block_results(r, back_part)
+        else:
+            response = self.rationalise_var(json_value, json_item_to_inspect)
+            self.result_list.append(response)
 
     def get_count_api_response(self, entity_ids, endpoint, json_locator):
         log.debug(
@@ -391,6 +412,24 @@ class ApiTests:
             pass
         except TypeError:
             response_var = ""
+            pass
+        return response_var
+
+    def rationalise_list_response(self, v, json_item_to_inspect):
+        try:
+            response_var = eval(v)
+            if response_var is None:
+                response_var = []
+            else:
+                pass
+        except IndexError:
+            response_var = []
+            pass
+        except KeyError:
+            response_var = []
+            pass
+        except TypeError:
+            response_var = []
             pass
         return response_var
 
@@ -496,15 +535,19 @@ class ApiTests:
         except AssertionError:
             self.api_log(
                 f"""
+                The following assertion has failed...
                 Case: {entity_ref}
-                Field: {json_locator}"""
+                Field: {json_locator}""",
+                error=True,
             )
             self.api_log(
-                f"""Expected: {expected}
-                Actual: {actual}""",
-                False,
+                f"""
+                Expected: {expected}
+                Actual: {actual}
+                """,
+                error=True,
+                log_to_screen=self.log_assert_to_screen,
             )
-            self.failed = True
 
     def remove_dynamic_keys(self, dict, keys):
         for key in keys:
@@ -526,9 +569,13 @@ class ApiTests:
 
         return final_dict
 
-    def api_log(self, message, log_to_screen=True):
+    def api_log(self, message, error=False, log_to_screen=True):
         if log_to_screen:
-            log.info(message)
+            if error:
+                log.error(message)
+                self.failed = True
+            else:
+                log.info(message)
         self.api_result_lines.append(message + "\n")
 
     def upload_log_file(self):
@@ -623,7 +670,9 @@ class ApiTests:
         try:
             assert expected_status == actual_status
         except AssertionError:
-            self.api_log(f"Expected: {expected_status} but got {actual_status}")
+            self.api_log(
+                f"Expected: {expected_status} but got {actual_status}", error=True
+            )
             self.failed = True
 
     def run_functional_test(self, entity, entity_setup_object):
