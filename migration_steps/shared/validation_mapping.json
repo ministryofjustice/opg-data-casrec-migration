@@ -428,7 +428,7 @@
                 "persons.type = 'actor_client'",
                 "persons.clientsource = 'CASRECMIGRATION'",
                 "warnings.warningtype = 'Other'",
-                "warnings.warningtext NOT IN ('Casrec Migration - SAAR Check Warning', 'Casrec Migration - No Debt to be chased')"
+                "(warnings.warningtext NOT IN ('Casrec Migration - SAAR Check Warning', 'Casrec Migration - No Debt to be chased') OR warnings.warningtext IS NULL)"
             ]
         },
         "manual_checks": {
