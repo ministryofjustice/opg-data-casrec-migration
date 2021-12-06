@@ -26,9 +26,7 @@ def operator_session(environment):
 
 
 def run_ecs_task(client, caserecnumber):
-    with open(
-        "/terraform/environment/terraform.output_casrec_migration.json"
-    ) as json_file:
+    with open("/terraform/environment/terraform.output.json") as json_file:
         data = json.load(json_file)
 
     response = client.run_task(

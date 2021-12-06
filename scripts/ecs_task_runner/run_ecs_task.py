@@ -112,9 +112,7 @@ class TaskRunner:
         )
 
     def run_ecs_task(self, task_identifier, task_name, command):
-        with open(
-            "/terraform/environment/terraform.output_casrec_migration.json"
-        ) as json_file:
+        with open("/terraform/environment/terraform.output.json") as json_file:
             data = json.load(json_file)
 
         response = self.auto_refresh_session_task_runner.run_task(
