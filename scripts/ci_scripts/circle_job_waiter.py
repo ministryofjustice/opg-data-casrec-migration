@@ -13,22 +13,29 @@ def get_running_jobs(
 ):
     running_jobs_url = f"https://circleci.com/api/v1.1/project/github/{circle_project_username}/{circle_project_reponame}?circle-token={circle_builds_token}"
     response = requests.get(running_jobs_url)
+    current_job_committer_date = "2099-01-01T00:00:00.000Z"
     running_jobs = []
     if response.status_code == 200:
         running_jobs_json = json.loads(response.text)
 
         for job in running_jobs_json:
             if job["status"] == "queued" or job["status"] == "running":
+                if job["workflows"]["workflow_id"] == current_workflow_id:
+                    current_job_committer_date = job["committer_date"]
+
+        for job in running_jobs_json:
+            if job["status"] == "queued" or job["status"] == "running":
                 if job["workflows"]["workflow_id"] != current_workflow_id:
-                    if (
-                        "pre" not in job["workflows"]["job_name"]
-                        and "qa" not in job["workflows"]["job_name"]
-                        and "main" not in job["workflows"]["job_name"]
-                    ):
-                        print(
-                            f"Job: \"{job['workflows']['job_name']}\", Status: \"{job['status']}\""
-                        )
-                        running_jobs.append(job["workflows"]["job_name"])
+                    if current_job_committer_date > job["committer_date"]:
+                        if (
+                            "pre" not in job["workflows"]["job_name"]
+                            and "qa" not in job["workflows"]["job_name"]
+                            and "main" not in job["workflows"]["job_name"]
+                        ):
+                            print(
+                                f"Job: \"{job['workflows']['job_name']}\", Status: \"{job['status']}\""
+                            )
+                            running_jobs.append(job["workflows"]["job_name"])
         return running_jobs
     else:
         print(f"API call to circle failed with status code: {response.status_code}")

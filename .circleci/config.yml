@@ -149,7 +149,7 @@ workflows:
             build infra preproduction,
             run and monitor jenkins restore job preproduction
           ]
-          runner_command: migration-prepare preproduction
+          runner_command: migration-prepare
           tf_workspace: preproduction
           filters: {branches:{only:[master]}}
       - run_task:
@@ -259,7 +259,7 @@ workflows:
             build infra preqa,
             run and monitor jenkins restore job preqa
           ]
-          runner_command: migration-prepare preqa
+          runner_command: migration-prepare
           tf_workspace: preqa
           filters: {branches:{only:[master]}}
       - run_task:
@@ -338,7 +338,7 @@ workflows:
             build infra qa,
             run and monitor jenkins restore job qa
           ]
-          runner_command: migration-prepare qa
+          runner_command: migration-prepare
           tf_workspace: qa
           filters: {branches:{only:[master]}}
       - run_task:
@@ -470,7 +470,7 @@ workflows:
             build infra preproduction,
             run and monitor jenkins restore job preproduction
           ]
-          runner_command: migration-prepare preproduction
+          runner_command: migration-prepare
           tf_workspace: preproduction
           filters: {branches:{only:[master]}}
       - run_task:
