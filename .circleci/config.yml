@@ -167,7 +167,7 @@ workflows:
             load casrec db preproduction
           ]
           account: "preproduction"
-          wait_for: "18000"
+          wait_for: "36000"
           tf_workspace: preproduction
           filters: {branches:{only:[master]}}
       - run_api_tests:
@@ -248,7 +248,7 @@ workflows:
           name: run the step function preqa
           requires: [build infra preqa, run and monitor jenkins restore job preqa]
           account: "preproduction"
-          wait_for: "18000"
+          wait_for: "36000"
           tf_workspace: preqa
           filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
@@ -295,7 +295,7 @@ workflows:
           name: run the step function qa
           requires: [build infra qa, run and monitor jenkins restore job qa]
           account: "preproduction"
-          wait_for: "18000"
+          wait_for: "36000"
           tf_workspace: qa
           filters: {branches:{only:[master]}}
       - tag_image_for_environment:
@@ -398,7 +398,7 @@ workflows:
             build infra preproduction
           ]
           account: "preproduction"
-          wait_for: "18000"
+          wait_for: "36000"
           notify_validation_fails: true
           tf_workspace: preproduction
           filters: {branches:{only:[master]}}
