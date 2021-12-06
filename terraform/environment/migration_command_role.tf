@@ -14,7 +14,7 @@ data "aws_iam_policy_document" "migration_commands_role_assume_policy" {
         "arn:aws:iam::631181914621:user/james.warren",
         "arn:aws:iam::631181914621:user/farzan.fatemifar",
         "arn:aws:iam::631181914621:user/jack.goodby",
-        "arn:aws:iam::631181914621:user/jennifer.mackown",
+        "arn:aws:iam::631181914621:user/elliot.smith",
         "arn:aws:iam::631181914621:user/dimitar.kokov",
         "arn:aws:sts::${local.account.account_id}:assumed-role/operator/james.warren"
       ]
