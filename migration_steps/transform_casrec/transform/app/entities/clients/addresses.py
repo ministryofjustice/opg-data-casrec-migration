@@ -63,6 +63,3 @@ def insert_addresses_clients(db_config, target_db, mapping_file):
                 )
                 break
             continue
-
-        except Exception:
-            break

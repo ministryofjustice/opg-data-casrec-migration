@@ -70,13 +70,3 @@ def insert_deputy_death_notifications(db_config, target_db, mapping_file):
                 )
                 break
             continue
-
-        except Exception as e:
-            log.debug(
-                f"End of insert_deputy_death_notifications",
-                extra={
-                    "file_name": "",
-                    "error": format_error_message(e=e),
-                },
-            )
-            break

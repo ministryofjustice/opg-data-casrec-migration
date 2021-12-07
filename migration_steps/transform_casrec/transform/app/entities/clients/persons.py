@@ -47,7 +47,3 @@ def insert_persons_clients(db_config, target_db, mapping_file):
                 )
                 break
             continue
-
-        except Exception as e:
-            log.error(f"Unexpected error: {e}")
-            os._exit(1)

@@ -108,73 +108,68 @@ def insert_annual_report_type_assignments(db_config, target_db, mapping_file):
     has_more_records = True
 
     while has_more_records:
-        try:
-            # Each annual report log has a single report type assignment, so start from
-            # the annual_report_logs table.
-            report_logs_query = f"""
-                SELECT arl.id AS annualreport_id,
-                arl.reportingperiodenddate as end_date,
-                arl.c_case AS sirius_report_log_casrec_case_no
-                FROM {db_config["target_schema"]}.annual_report_logs arl
-                OFFSET {offset} LIMIT {chunk_size}
-            """
+        # Each annual report log has a single report type assignment, so start from
+        # the annual_report_logs table.
+        report_logs_query = f"""
+            SELECT arl.id AS annualreport_id,
+            arl.reportingperiodenddate as end_date,
+            arl.c_case AS sirius_report_log_casrec_case_no
+            FROM {db_config["target_schema"]}.annual_report_logs arl
+            OFFSET {offset} LIMIT {chunk_size}
+        """
 
-            report_logs_df = pd.read_sql_query(
-                report_logs_query, db_config["db_connection_string"]
+        report_logs_df = pd.read_sql_query(
+            report_logs_query, db_config["db_connection_string"]
+        )
+
+        # Dataframe is unfiltered, so if it has no records,
+        # we have reached the end of the annual_report_logs table
+        if len(report_logs_df) == 0:
+            has_more_records = False
+
+            # If we haven't inserted any records yet, table wouldn't have been created,
+            # so attempt to create it here. NB we are likely to never reach this code,
+            # as we will have at least one record in annual_report_logs which triggers
+            # insert_data().
+            if not table_created:
+                target_db.create_empty_table(
+                    sirius_details=sirius_details, df=report_logs_df
+                )
+        else:
+            # Join to orders; this is so we can query across Ord Stat and Ord Risk Lvl
+            # on orders associated with each annual report log. This is a left join
+            # as there may potentially be no orders for a report log.
+            report_logs_df = report_logs_df.merge(
+                orders_df,
+                how="left",
+                left_on="sirius_report_log_casrec_case_no",
+                right_on="casrec_order_case_no",
             )
 
-            # Dataframe is unfiltered, so if it has no records,
-            # we have reached the end of the annual_report_logs table
-            if len(report_logs_df) == 0:
-                has_more_records = False
+            report_type_assignments_df = calculate_report_types(report_logs_df)
 
-                # If we haven't inserted any records yet, table wouldn't have been created,
-                # so attempt to create it here. NB we are likely to never reach this code,
-                # as we will have at least one record in annual_report_logs which triggers
-                # insert_data().
-                if not table_created:
-                    target_db.create_empty_table(
-                        sirius_details=sirius_details, df=report_logs_df
-                    )
-            else:
-                # Join to orders; this is so we can query across Ord Stat and Ord Risk Lvl
-                # on orders associated with each annual report log. This is a left join
-                # as there may potentially be no orders for a report log.
-                report_logs_df = report_logs_df.merge(
-                    orders_df,
-                    how="left",
-                    left_on="sirius_report_log_casrec_case_no",
-                    right_on="casrec_order_case_no",
-                )
+            # Add a default type column until we work out what this should contain
+            report_type_assignments_df["type"] = DEFAULT_REPORT_TYPE
 
-                report_type_assignments_df = calculate_report_types(report_logs_df)
+            # Add an id column (because we haven't used the get_basic_data_table() function,
+            # we have to do it manually)
+            report_type_assignments_df = add_unique_id(
+                db_conn_string=db_config["db_connection_string"],
+                db_schema=db_config["target_schema"],
+                table_definition=table_definition,
+                source_data_df=report_type_assignments_df,
+            )
 
-                # Add a default type column until we work out what this should contain
-                report_type_assignments_df["type"] = DEFAULT_REPORT_TYPE
+            target_db.insert_data(
+                table_name=table_definition["destination_table_name"],
+                df=report_type_assignments_df,
+                sirius_details=sirius_details,
+                chunk_no=chunk_no,
+            )
 
-                # Add an id column (because we haven't used the get_basic_data_table() function,
-                # we have to do it manually)
-                report_type_assignments_df = add_unique_id(
-                    db_conn_string=db_config["db_connection_string"],
-                    db_schema=db_config["target_schema"],
-                    table_definition=table_definition,
-                    source_data_df=report_type_assignments_df,
-                )
+        # Table will either have been created with create_empty_table()
+        # because the dataframe was empty, or implicitly created by insert_data()
+        table_created = True
 
-                target_db.insert_data(
-                    table_name=table_definition["destination_table_name"],
-                    df=report_type_assignments_df,
-                    sirius_details=sirius_details,
-                    chunk_no=chunk_no,
-                )
-
-            # Table will either have been created with create_empty_table()
-            # because the dataframe was empty, or implicitly created by insert_data()
-            table_created = True
-
-            offset += chunk_size
-            chunk_no += 1
-        except Exception as e:
-            log.error(f"Unexpected error: {e}")
-            log.exception(e)
-            os._exit(1)
+        offset += chunk_size
+        chunk_no += 1

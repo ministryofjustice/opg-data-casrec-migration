@@ -152,6 +152,18 @@ def main(clear, correfs, chunk_size):
 if __name__ == "__main__":
     t = time.process_time()
 
-    main()
+    try:
+        main()
+    except Exception as e:
+        if environment in ['local', 'dev']:
+            log.exception(e)
+        else:
+            err_str = f"Unexpected error: {type(e).__name__}. Stack trace:"
+            tb = e.__traceback__
+            while tb is not None:
+                err_str += "\n\t" + f"File: {tb.tb_frame.f_code.co_filename}; Line: {tb.tb_lineno}"
+                tb = tb.tb_next
+            log.error(err_str)
+        os._exit(1)
 
     print(f"Total time: {round(time.process_time() - t, 2)}")
