@@ -1,1 +1,0 @@
-endpoint,entity_ref,json_locator,test_purpose/api/v1/orders/{id},10003409,["client"]["firstname"],dev_api_tests/api/v1/orders/{id},10006413,["client"]["dob"],dev_api_tests/api/v1/orders/{id},10007163,["orderStatus"]["handle"],dev_api_tests/api/v1/orders/{id},10007261,["orderSubtype"]["handle"],dev_api_tests

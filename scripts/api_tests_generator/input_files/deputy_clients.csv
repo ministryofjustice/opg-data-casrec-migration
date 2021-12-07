@@ -1,0 +1,3 @@
+endpoint,entity_ref,json_locator,test_purpose
+/api/v1/deputies/{id}/clients,10000037,persons[*].orders[*].deputies[*].relationshipToClient.label,dev_api_tests
+/api/v1/deputies/{id}/clients,10000884,persons[*].orders[*].deputies[*].relationshipToClient.label,dev_api_tests

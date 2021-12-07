@@ -1,6 +1,6 @@
 endpoint,entity_ref,json_locator,test_purpose
-/api/v1/clients/{id},11488678,["riskScore"],score_3
-/api/v1/clients/{id},12185940,["riskScore"],score_2
-/api/v1/clients/{id},13136815,["riskScore"],score_2
-/api/v1/clients/{id},11808610,["riskScore"],score_1
-/api/v1/clients/{id},11239526,["riskScore"],score_none
+/api/v1/clients/{id},11488678,riskScore,score_3
+/api/v1/clients/{id},12185940,riskScore,score_2
+/api/v1/clients/{id},13136815,riskScore,score_2
+/api/v1/clients/{id},11808610,riskScore,score_1
+/api/v1/clients/{id},11239526,riskScore,score_none

@@ -1,0 +1,1 @@
+endpoint,entity_ref,json_locator,test_purpose/api/v1/clients/{id}/annual-reports,10006413,[0]reviewStatus.handle,dev_api_tests/api/v1/clients/{id}/annual-reports,10000884,[0]reviewStatus.handle,dev_api_tests

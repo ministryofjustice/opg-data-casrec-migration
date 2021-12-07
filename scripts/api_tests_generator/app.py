@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
+from jsonpath_ng import parse
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../migration_steps/shared")
@@ -181,42 +182,42 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
     return ids
 
 
-def rationalise_json_value(v, json_block):
-    try:
-        response_var = eval(v)
-        if response_var is None:
-            response_var = ""
-        else:
-            response_var = str(response_var).replace(",", "")
-    except IndexError:
-        response_var = ""
-        pass
-    except KeyError:
-        response_var = ""
-        pass
-    except TypeError:
-        response_var = ""
-        pass
-    return response_var
-
-
-def rationalise_list_response(v, json_block):
-    try:
-        response_var = eval(v)
-        if response_var is None:
-            response_var = []
-        else:
-            pass
-    except IndexError:
-        response_var = []
-        pass
-    except KeyError:
-        response_var = []
-        pass
-    except TypeError:
-        response_var = []
-        pass
-    return response_var
+# def rationalise_json_value(v, json_block):
+#     try:
+#         response_var = eval(v)
+#         if response_var is None:
+#             response_var = ""
+#         else:
+#             response_var = str(response_var).replace(",", "")
+#     except IndexError:
+#         response_var = ""
+#         pass
+#     except KeyError:
+#         response_var = ""
+#         pass
+#     except TypeError:
+#         response_var = ""
+#         pass
+#     return response_var
+#
+#
+# def rationalise_list_response(v, json_block):
+#     try:
+#         response_var = eval(v)
+#         if response_var is None:
+#             response_var = []
+#         else:
+#             pass
+#     except IndexError:
+#         response_var = []
+#         pass
+#     except KeyError:
+#         response_var = []
+#         pass
+#     except TypeError:
+#         response_var = []
+#         pass
+#     return response_var
 
 
 def restructure_text(col, dedupe):
@@ -344,74 +345,50 @@ def get_response_json(
     return json.loads(response.text)
 
 
-def get_list_of_json_blocks_from_response(csv, response_as_json):
-    json_blocks_to_loop_through = []
-
-    try:
-        list_in_field = entity_further[csv]["list_in_field"]
-        response_as_json = response_as_json[list_in_field]
-    except Exception:
-        pass
-
-    if print_extra_info:
-        print(response_as_json)
-
-    if csv in entities_of_type_list:
-        for sub_json_block in response_as_json:
-            json_blocks_to_loop_through.append(sub_json_block)
-    else:
-        json_blocks_to_loop_through.append(response_as_json)
-
-    return json_blocks_to_loop_through
-
-
 def get_line_structure_object_from_json_blocks(
-    json_blocks_to_loop_through, row, line_structure, csv, json_locator
+    response_as_json, row, line_structure, csv, json_locator
 ):
-    global result_list
-    for json_block in json_blocks_to_loop_through:
-        for search_header in search_headers:
-            row_value_from_input_csv = eval(f'row["{search_header}"]')
-            try:
-                line_structure[search_header] = (
-                    line_structure[search_header] + row_value_from_input_csv + "|"
-                )
-            except Exception:
-                # This handles adding the first occurrence
-                line_structure[search_header] = row_value_from_input_csv + "|"
+    for search_header in search_headers:
+        row_value_from_input_csv = eval(f'row["{search_header}"]')
+        try:
+            line_structure[search_header] = (
+                line_structure[search_header] + row_value_from_input_csv + "|"
+            )
+        except Exception:
+            # This handles adding the first occurrence
+            line_structure[search_header] = row_value_from_input_csv + "|"
 
-        result_list = []
-        get_json_block_results(json_block, json_locator)
+    json_path_expression = parse(json_locator)
 
-        for result in result_list:
-            try:
-                line_structure["api_result"] = (
-                    line_structure["api_result"] + result + "|"
-                )
-            except Exception:
-                # This handles adding the first occurrence
-                line_structure["api_result"] = result + "|"
+    for match in json_path_expression.find(response_as_json):
+        try:
+            line_structure["api_result"] = (
+                line_structure["api_result"] + match.value + "|"
+            )
+        except Exception:
+            # This handles adding the first occurrence
+            line_structure["api_result"] = match.value + "|"
 
     return line_structure
 
 
-def get_json_block_results(json_block, json_locator):
-    global result_list
-    json_locator_parts = json_locator.split("[*]", 1)
-    front_part = json_locator_parts[0]
-    if len(json_locator_parts) > 1:
-        back_part = json_locator_parts[1]
-    else:
-        back_part = None
-
-    json_value = f"json_block{front_part}"
-    if back_part:
-        response = rationalise_list_response(json_value, json_block)
-        for r in response:
-            get_json_block_results(r, back_part)
-    else:
-        response = rationalise_json_value(json_value, json_block)
-        result_list.append(response)
+# def get_json_block_results(json_block, json_locator):
+#     global result_list
+#     json_locator_parts = json_locator.split("[*]", 1)
+#     front_part = json_locator_parts[0]
+#     if len(json_locator_parts) > 1:
+#         back_part = json_locator_parts[1]
+#     else:
+#         back_part = None
+#
+#     json_value = f"json_block{front_part}"
+#     if back_part:
+#         response = rationalise_list_response(json_value, json_block)
+#         for r in response:
+#             get_json_block_results(r, back_part)
+#     else:
+#         response = rationalise_json_value(json_value, json_block)
+#         result_list.append(response)
 
 
 def deduplicate_and_clean(line_structure, csv):
@@ -460,7 +437,7 @@ def main():
         with open(f"{response_dir}/{csv}.csv", "w") as csv_out_file:
             csv_out_file.write(full_header_line)
 
-        input_csv_data = pd.read_csv(f"{csv}.csv", dtype=str)
+        input_csv_data = pd.read_csv(f"input_files/{csv}.csv", dtype=str)
 
         for index, row in input_csv_data.iterrows():
             endpoint = row["endpoint"]
@@ -476,11 +453,8 @@ def main():
             for entity_id in entity_ids:
                 endpoint_final = get_endpoint_final(entity_id, endpoint, csv)
                 response_as_json = get_response_json(sirius_app_session, endpoint_final)
-                json_blocks_from_response = get_list_of_json_blocks_from_response(
-                    csv, response_as_json
-                )
                 line_structure = get_line_structure_object_from_json_blocks(
-                    json_blocks_from_response, row, line_structure, csv, json_locator
+                    response_as_json, row, line_structure, csv, json_locator
                 )
 
             line_structure = deduplicate_and_clean(line_structure, csv)

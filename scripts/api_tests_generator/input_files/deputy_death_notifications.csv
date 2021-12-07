@@ -1,0 +1,3 @@
+endpoint,entity_ref,json_locator,test_purpose
+/api/v1/persons/{id}/death-notification,10002199,proofOfDeathReceived,dev_api_tests
+/api/v1/persons/{id}/death-notification,10001403,dateDeathCertificateReceived,dev_api_tests

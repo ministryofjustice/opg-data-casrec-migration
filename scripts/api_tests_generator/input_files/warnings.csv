@@ -1,0 +1,1 @@
+endpoint,entity_ref,json_locator,test_purpose/api/v1/persons/{id}/warnings,10194709,warningType,dev_api_tests/api/v1/persons/{id}/warnings,13323382,warningText,dev_api_tests
