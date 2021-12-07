@@ -243,6 +243,7 @@ def create_insert_statement(table_name, schema, columns, df):
             insert_statement += ",\n"
         else:
             insert_statement += ";\n\n\n"
+
     return insert_statement
 
 
@@ -472,11 +473,12 @@ def main(entities, delay, verbose, skip_load):
             log.info(f'Retrieving "{file_key}" from bucket')
             obj = s3.get_object(Bucket=bucket_name, Key=file_key)
             if file.split(".")[1] == "csv":
-                df = pd.read_csv(io.BytesIO(obj["Body"].read()))
+                df = pd.read_csv(io.BytesIO(obj["Body"].read()), keep_default_na=False)
             elif file.split(".")[1] == "xlsx":
                 df = pd.read_excel(
                     io.BytesIO(obj["Body"].read()),
                     engine="openpyxl",
+                    keep_default_na=False,
                 )
             else:
                 log.info("Unknown file format")
