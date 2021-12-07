@@ -1000,7 +1000,7 @@ jobs:
       timeout:
         description: runner timeout
         type: string
-        default: "7200"
+        default: "10800"
       notify_validation_fails:
         description: if we want to send validation failures
         type: boolean
