@@ -169,6 +169,27 @@
         },
         "TaskDefinition":"${casrec-task-definition-load-casrec}"
       },
+      "migration-filter-data":{
+        "Cluster":"${casrec-cluster}",
+        "LaunchType":"FARGATE",
+        "NetworkConfiguration":{
+            "AwsvpcConfiguration":{
+                "SecurityGroups":[
+                    "${casrec-sec-group}"
+                ],
+                "Subnets":[
+                    ${casrec-subnets}
+                ]
+            }
+        },
+        "Overrides": {
+            "ContainerOverrides": [{
+                "Name": "filter_data",
+                "Command": ["python3", "prepare/filter_data/app/app.py"]
+            }]
+        },
+        "TaskDefinition":"${casrec-task-definition-filter-data}"
+      },
       "migration-transform":{
         "Cluster":"${casrec-cluster}",
         "LaunchType":"FARGATE",

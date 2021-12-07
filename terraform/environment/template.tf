@@ -18,6 +18,7 @@ resource "local_file" "output" {
       casrec-subnets                     = local.subnets_string,
       casrec-task-definition-prepare     = aws_ecs_task_definition.etl0.arn,
       casrec-task-definition-load-casrec = aws_ecs_task_definition.etl1.arn,
+      casrec-task-definition-filter-data = aws_ecs_task_definition.filter_data.arn,
       casrec-task-definition-transform   = aws_ecs_task_definition.etl2.arn,
       casrec-task-definition-integration = aws_ecs_task_definition.etl3.arn,
       casrec-task-definition-load-sirius = aws_ecs_task_definition.etl4.arn,
