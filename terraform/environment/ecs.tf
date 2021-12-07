@@ -94,7 +94,7 @@ data "aws_iam_policy_document" "etl_task" {
       aws_ssm_parameter.additional_data.arn,
       aws_ssm_parameter.allowed_entities.arn,
       aws_ssm_parameter.generate_progress.arn,
-      aws_ssm_parameter.lay_team.arn,
+      aws_ssm_parameter.correfs.arn,
       aws_ssm_parameter.match_existing_data.arn,
       aws_ssm_parameter.row_counts.arn
     ]

@@ -793,15 +793,15 @@ def get_exception_count():
 
 
 @click.command()
-@click.option("--team", default="")
+@click.option("--correfs", default="")
 @click.option("--staging", is_flag=True, default=False)
-def main(team, staging):
+def main(correfs, staging):
     allowed_entities = config.allowed_entities(env=environment)
-    filtered_lay_team = config.get_filtered_lay_team(environment, team)
+    filtered_correfs = config.get_filtered_correfs(environment, correfs)
 
     log.info(log_title(message="Migration Step: Automated DB Validation"))
     log.debug(f"Environment: {environment}")
-    log.info(f"Lay Team: {filtered_lay_team}")
+    log.info(f"Correfs: {', '.join(filtered_correfs) if filtered_correfs else 'all'}")
     log.info(f"Enabled entities: {', '.join(allowed_entities)}")
     log.info(
         f"Enabled features: {', '.join(config.enabled_feature_flags(environment))}"

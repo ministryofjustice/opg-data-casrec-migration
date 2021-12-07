@@ -3,7 +3,7 @@ import logging
 import pandas as pd
 
 from custom_errors import EmptyDataFrame
-from helpers import get_mapping_dict, get_table_def
+from helpers import format_error_message, get_mapping_dict, get_table_def
 from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 from utilities.basic_data_table import get_basic_data_table
 
@@ -71,7 +71,12 @@ def insert_deputy_death_notifications(db_config, target_db, mapping_file):
                 break
             continue
 
-        except Exception:
-
-            log.debug(f"End of insert_deputy_death_notifications")
+        except Exception as e:
+            log.debug(
+                f"End of insert_deputy_death_notifications",
+                extra={
+                    "file_name": "",
+                    "error": format_error_message(e=e),
+                },
+            )
             break

@@ -2,6 +2,5 @@ FROM opg_casrec_migration_base_image:latest
 COPY transform_casrec/transform.sh /transform_casrec/transform.sh
 COPY transform_casrec/transform /transform_casrec/transform
 COPY transform_casrec/additional_data /transform_casrec/additional_data
-COPY transform_casrec/filter_data /transform_casrec/filter_data
 COPY shared /shared
 CMD ["echo", "NO_OP"]

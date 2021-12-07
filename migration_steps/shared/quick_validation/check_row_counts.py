@@ -25,14 +25,14 @@ def get_current_directory():
     return dirname
 
 
-def count_rows(connection_string, destination_schema, enabled_entities, team=""):
+def count_rows(connection_string, destination_schema, enabled_entities, correfs):
     # feature_flag row-counts
     if "row-counts" not in config.enabled_feature_flags(env=environment):
         return False
 
     log.info(
         helpers.log_title(
-            message=f"Checking row counts for schema '{destination_schema}',  team: '{team if team != '' else 'all'}'"
+            message=f"Checking row counts for schema '{destination_schema}', Correfs: '{', '.join(correfs) if correfs else 'all'}'"
         )
     )
 

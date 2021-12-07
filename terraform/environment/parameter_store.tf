@@ -34,8 +34,8 @@ resource "aws_ssm_parameter" "generate_progress" {
   }
 }
 
-resource "aws_ssm_parameter" "lay_team" {
-  name  = "${local.account.name}-lay-team"
+resource "aws_ssm_parameter" "correfs" {
+  name  = "${local.account.name}-correfs"
   type  = "String"
   value = "0"
 
