@@ -66,30 +66,19 @@ workflows:
           tf_workspace: development
           tf_command: apply
           filters: {branches:{ignore:[master]}}
-      - run_step_function:
-          name: run the step function development
+      - run_tasks:
+          name: migration - run all tasks development
           requires: [build infra development, load casrec db, reset the sirius fixtures development]
           tf_workspace: development
           filters: {branches:{ignore:[master]}}
-      - run_api_tests:
-          name: run api tests
-          requires: [run the step function development]
-          tf_workspace: development
-          filters: {branches:{ignore:[master]}}
-      - run_api_tests:
-          name: run functional api tests
-          requires: [run api tests]
-          tf_workspace: development
-          runner_command: functional-api-tests
-          filters: {branches:{ignore:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch development
-          requires: [run functional api tests]
+          requires: [migration - run all tasks development]
           tf_workspace: development
           filters: {branches:{ignore:[master]}}
       - job_complete:
           name: job complete notification
-          requires: [run functional api tests]
+          requires: [migration - run all tasks development]
           workspace: development
           filters: {branches:{ignore:[master]}}
 
@@ -126,7 +115,7 @@ workflows:
           environment_title: Preproduction-Manual
           filters: {branches:{only:[master]}}
       - reset_sirius_full_restore:
-          name: run and monitor jenkins restore job pre
+          name: run and monitor jenkins restore job preproduction
           requires: [persist parameters preproduction]
           sirius_environment: casrecdmpp
           filters: {branches:{only:[master]}}
@@ -142,14 +131,9 @@ workflows:
           tf_command: apply
           folder: shared
           filters: {branches:{only:[master]}}
-      - load_casrec_db:
-          name: load casrec db preproduction
-          requires: [build shared infra preproduction]
-          account: preproduction
-          filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra preproduction
-          requires: [load casrec db preproduction]
+          requires: [build shared infra preproduction]
           tf_workspace: preproduction
           tf_command: plan
           filters: {branches:{only:[master]}}
@@ -159,35 +143,60 @@ workflows:
           tf_workspace: preproduction
           tf_command: apply
           filters: {branches:{only:[master]}}
-      - run_step_function:
-          name: run the step function preproduction
+      - run_task:
+          name: migration - prepare preproduction
           requires: [
             build infra preproduction,
-            run and monitor jenkins restore job pre,
-            load casrec db preproduction
+            run and monitor jenkins restore job preproduction
           ]
-          account: "preproduction"
-          wait_for: "36000"
+          runner_command: migration-prepare
           tf_workspace: preproduction
           filters: {branches:{only:[master]}}
-      - run_api_tests:
-          name: run api tests preproduction
-          requires: [tag image for qa]
+      - run_task:
+          name: migration - load casrec preproduction
+          requires: [migration - prepare preproduction]
           tf_workspace: preproduction
+          runner_command: migration-load-casrec
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - transform preproduction
+          requires: [migration - load casrec preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-transform
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - integration preproduction
+          requires: [migration - transform preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-integration
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - load sirius preproduction
+          requires: [migration - integration preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-load-sirius
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - validation preproduction
+          requires: [migration - load sirius preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-validation
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - response api tests preproduction
+          requires: [migration - validation preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-response-api-tests
           filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch preprod
-          requires: [run the step function preproduction]
+          requires: [migration - response api tests preproduction]
           tf_workspace: preproduction
-          filters: {branches:{only:[master]}}
-      - job_complete:
-          name: job complete notification
-          requires: [run api tests preproduction]
           filters: {branches:{only:[master]}}
       - tag_image_for_environment:
           name: tag image for qa
           environment_tag: qa
-          requires: [run the step function preproduction]
+          requires: [migration - response api tests preproduction]
           filters: {branches:{only:[master]}}
       - approve:
           name: approve qa kick off
@@ -211,7 +220,7 @@ workflows:
           filters: {branches:{only:[master]}}
       - job_complete:
           name: job complete notification
-          requires: [run api tests preproduction]
+          requires: [migration - response api tests preproduction]
           workspace: preproduction
           filters: {branches:{only:[master]}}
   preqa:
@@ -244,21 +253,53 @@ workflows:
           tf_workspace: preqa
           tf_command: apply
           filters: {branches:{only:[master]}}
-      - run_step_function:
-          name: run the step function preqa
-          requires: [build infra preqa, run and monitor jenkins restore job preqa]
-          account: "preproduction"
-          wait_for: "36000"
+      - run_task:
+          name: migration - prepare preqa
+          requires: [
+            build infra preqa,
+            run and monitor jenkins restore job preqa
+          ]
+          runner_command: migration-prepare
           tf_workspace: preqa
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - load casrec preqa
+          requires: [migration - prepare preqa]
+          tf_workspace: preqa
+          runner_command: migration-load-casrec
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - transform preqa
+          requires: [migration - load casrec preqa]
+          tf_workspace: preqa
+          runner_command: migration-transform
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - integration preqa
+          requires: [migration - transform preqa]
+          tf_workspace: preqa
+          runner_command: migration-integration
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - load sirius preqa
+          requires: [migration - integration preqa]
+          tf_workspace: preqa
+          runner_command: migration-load-sirius
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - validation preqa
+          requires: [migration - load sirius preqa]
+          tf_workspace: preqa
+          runner_command: migration-validation
           filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch preqa
-          requires: [run the step function preqa]
+          requires: [migration - validation preqa]
           tf_workspace: preqa
           filters: {branches:{only:[master]}}
       - job_complete:
           name: job complete notification
-          requires: [run the step function preqa]
+          requires: [migration - validation preqa]
           workspace: preqa
           filters: {branches:{only:[master]}}
   qa:
@@ -291,26 +332,58 @@ workflows:
           tf_workspace: qa
           tf_command: apply
           filters: {branches:{only:[master]}}
-      - run_step_function:
-          name: run the step function qa
-          requires: [build infra qa, run and monitor jenkins restore job qa]
-          account: "preproduction"
-          wait_for: "36000"
+      - run_task:
+          name: migration - prepare qa
+          requires: [
+            build infra qa,
+            run and monitor jenkins restore job qa
+          ]
+          runner_command: migration-prepare
           tf_workspace: qa
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - load casrec qa
+          requires: [migration - prepare qa]
+          tf_workspace: qa
+          runner_command: migration-load-casrec
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - transform qa
+          requires: [migration - load casrec qa]
+          tf_workspace: qa
+          runner_command: migration-transform
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - integration qa
+          requires: [migration - transform qa]
+          tf_workspace: qa
+          runner_command: migration-integration
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - load sirius qa
+          requires: [migration - integration qa]
+          tf_workspace: qa
+          runner_command: migration-load-sirius
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - validation qa
+          requires: [migration - load sirius qa]
+          tf_workspace: qa
+          runner_command: migration-validation
           filters: {branches:{only:[master]}}
       - tag_image_for_environment:
           name: tag image for production
           environment_tag: production
-          requires: [run the step function qa]
+          requires: [migration - validation qa]
           filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch qa
-          requires: [run the step function qa]
+          requires: [migration - validation qa]
           tf_workspace: qa
           filters: {branches:{only:[master]}}
       - job_complete:
           name: job complete notification
-          requires: [run the step function qa]
+          requires: [migration - validation qa]
           workspace: qa
           filters: {branches:{only:[master]}}
 
@@ -374,7 +447,7 @@ workflows:
           image_tag: master
           filters: {branches:{only:[master]}}
       - reset_sirius_full_restore:
-          name: run and monitor jenkins restore job pre
+          name: run and monitor jenkins restore job preproduction
           requires: [persist parameters preproduction]
           sirius_environment: casrecdmpp
           filters: {branches:{only:[master]}}
@@ -391,23 +464,58 @@ workflows:
           tf_workspace: preproduction
           tf_command: apply
           filters: {branches:{only:[master]}}
-      - run_step_function:
-          name: run the step function preproduction
+      - run_task:
+          name: migration - prepare preproduction
           requires: [
-            run and monitor jenkins restore job pre,
-            build infra preproduction
+            build infra preproduction,
+            run and monitor jenkins restore job preproduction
           ]
-          account: "preproduction"
-          wait_for: "36000"
-          notify_validation_fails: true
+          runner_command: migration-prepare
           tf_workspace: preproduction
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - load casrec preproduction
+          requires: [migration - prepare preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-load-casrec
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - transform preproduction
+          requires: [migration - load casrec preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-transform
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - integration preproduction
+          requires: [migration - transform preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-integration
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - load sirius preproduction
+          requires: [migration - integration preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-load-sirius
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - validation preproduction
+          requires: [migration - load sirius preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-validation
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - response api tests preproduction
+          requires: [migration - validation preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-response-api-tests
+          notify_validation_fails: true
           filters: {branches:{only:[master]}}
       - tag_image_for_environment:
           name: tag image for qa
           environment_tag: qa
-          requires: [run the step function preproduction]
+          requires: [migration - response api tests preproduction]
           filters: {branches:{only:[master]}}
-      - run_api_tests:
+      - run_task:
           name: run api tests preproduction
           requires: [tag image for qa]
           tf_workspace: preproduction
@@ -877,41 +985,39 @@ jobs:
       - notififications/notify_env_vars
       - notififications/notify_if_fail
 
-  run_step_function:
-    executor: migration/python
+  run_task:
+    executor: terraform/terraform
     resource_class: small
     parameters:
       tf_workspace:
         description: terraform workspace
         type: string
         default: "development"
-      account:
-        description: account to run step function in
+      runner_command:
+        description: ecs command to run
         type: string
-        default: "development"
-      wait_for:
-        description: how long to wait for step function to finish
+        default: "api-tests"
+      timeout:
+        description: runner timeout
         type: string
-        default: "1800"
+        default: "10800"
       notify_validation_fails:
         description: if we want to send validation failures
         type: boolean
         default: false
     environment:
-      SIRIUS_ACCOUNT: << parameters.account >>
       TF_WORKSPACE: << parameters.tf_workspace >>
-      WAIT_FOR: << parameters.wait_for >>
-      AWS_CONFIG_FILE: ~/project/aws_config
+    working_directory: ~/project/terraform/environment
     steps:
-      - checkout
+      - checkout:
+          path: ~/project
+      - attach_workspace: {at: ~/project}
+      - terraform/install
+      - terraform/setup_ecs_runner
       - run:
-          name: install requirements
-          command: pip3 install -r requirements-rsf.txt
-          working_directory: ~/project/scripts/ci_scripts
-      - run:
-          name: run the function
-          command: python3 run_step_function.py --role migrations-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --workspace ${TF_WORKSPACE}
-          working_directory: ~/project/scripts/ci_scripts
+          name: Run task
+          command: ecs-runner -task << parameters.runner_command >> -timeout << parameters.timeout >>
+          no_output_timeout: 60m
       - when:
           condition: << parameters.notify_validation_fails >>
           steps:
@@ -933,7 +1039,7 @@ jobs:
       - notififications/notify_env_vars
       - notififications/notify_if_fail
 
-  run_api_tests:
+  run_tasks:
     executor: terraform/terraform
     resource_class: small
     parameters:
@@ -941,13 +1047,12 @@ jobs:
         description: terraform workspace
         type: string
         default: "development"
-      runner_command:
-        description: ecs command to run
+      timeout:
+        description: runner timeout
         type: string
-        default: "api-tests"
+        default: "1800"
     environment:
       TF_WORKSPACE: << parameters.tf_workspace >>
-      RUNNER_CMD: << parameters.runner_command >>
     working_directory: ~/project/terraform/environment
     steps:
       - checkout:
@@ -956,32 +1061,32 @@ jobs:
       - terraform/install
       - terraform/setup_ecs_runner
       - run:
-          name: Run API tests
-          command: ecs-runner -task ${RUNNER_CMD} -timeout 1800
-          no_output_timeout: 30m
-      - notififications/notify_env_vars
-      - notififications/notify_if_fail
-  run_behat_tests:
-    executor: terraform/terraform
-    resource_class: small
-    parameters:
-      tf_workspace:
-        description: terraform workspace
-        type: string
-        default: "development"
-    environment:
-      TF_WORKSPACE: << parameters.tf_workspace >>
-    working_directory: ~/project/terraform/environment
-    steps:
-      - checkout:
-          path: ~/project
-      - terraform/install
-      - terraform/setup_ecs_runner
+          name: Run prepare task
+          command: ecs-runner -task migration-prepare -timeout << parameters.timeout >>
       - run:
-          name: Run behat tests
-          command: ecs-runner -task behat-migration -timeout 600
+          name: Run load casrec task
+          command: ecs-runner -task migration-load-casrec -timeout << parameters.timeout >>
+      - run:
+          name: Run transform task
+          command: ecs-runner -task migration-transform -timeout << parameters.timeout >>
+      - run:
+          name: Run integration task
+          command: ecs-runner -task migration-integration -timeout << parameters.timeout >>
+      - run:
+          name: Run load sirius task
+          command: ecs-runner -task migration-load-sirius -timeout << parameters.timeout >>
+      - run:
+          name: Run validation task
+          command: ecs-runner -task migration-validation -timeout << parameters.timeout >>
+      - run:
+          name: Run response api tests task
+          command: ecs-runner -task migration-response-api-tests -timeout << parameters.timeout >>
+      - run:
+          name: Run functional api tests task
+          command: ecs-runner -task migration-functional-api-tests -timeout << parameters.timeout >>
       - notififications/notify_env_vars
       - notififications/notify_if_fail
+
   run_elasticsearch_reset:
     executor: terraform/terraform
     resource_class: small
@@ -1065,7 +1170,8 @@ jobs:
       AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
     steps:
       - dockerhub_helper/dockerhub_login
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - aws-cli/install
       - checkout
       - run:

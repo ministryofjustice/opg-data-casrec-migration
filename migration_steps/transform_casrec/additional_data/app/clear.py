@@ -1,12 +1,8 @@
 import logging
 
-import datetime
-import json
 import os
 import sys
 from pathlib import Path
-
-import pandas as pd
 from sqlalchemy import create_engine
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))

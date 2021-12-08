@@ -16,7 +16,6 @@ import logging
 import custom_logger
 import click
 import pandas as pd
-
 from tabulate import tabulate
 import json
 from datetime import datetime
@@ -80,6 +79,7 @@ def get_mappings():
         "fee_reductions": ["finance_remissions", "finance_exemptions"],
         "ledger": ["finance_ledger_credits"],
         "ledger_allocation": ["finance_allocation_credits"],
+        "timeline": ["timeline_event", "person_timeline"],
     }
 
     for entity, mapping in all_mappings.items():
@@ -651,6 +651,17 @@ def clear_local_temp_sql():
         os.mkdir(sql_path_temp)
 
 
+def analyse():
+    conn_target = psycopg2.connect(config.get_db_connection_string("target"))
+    cursor = conn_target.cursor()
+    sql = "ANALYSE VERBOSE;"
+    cursor.execute(sql)
+    for notice in conn_target.notices:
+        log.debug(notice)
+    cursor.close()
+    conn_target.close()
+
+
 def pre_validation():
 
     log.info(f"Merging integrated Sirius IDs with casrec csv source data")
@@ -753,8 +764,10 @@ def post_validation():
     headers = ["Casrec Mapping", "Rows", "Unmapped", "Mapped", "Complete (%)", "Failed"]
     report_table = tabulate(report_df, headers, tablefmt="psql")
     print(report_table)
-    print("NOTE: Validations that don't have a corresponding mapping file will show N/A in the stats columns. "
-          "This is normal.\n")
+    print(
+        "NOTE: Validations that don't have a corresponding mapping file will show N/A in the stats columns. "
+        "This is normal.\n"
+    )
 
     file_name = "report_table.txt"
     file_path = f"{shared_path}/temp/{file_name}"
@@ -803,6 +816,11 @@ def main(team, staging):
     is_staging = staging
     set_validation_target()
 
+    if not is_staging:
+        log.info("RUN ANALYSE ON SIRIUS")
+        analyse()
+
+    log.info("RUN PRE VALIDATION")
     pre_validation()
 
     log.info("Adding sql files to bucket...\n")  #

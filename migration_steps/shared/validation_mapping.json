@@ -1243,5 +1243,51 @@
           "column": "",
           "identifiers": []
         }
+    },
+    "timeline_event": {
+        "exclude": [],
+        "casenumber_source": "",
+        "orderby": {},
+        "casrec": {
+            "from_table": "Pat",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "",
+            "where_clauses": []
+        },
+        "sirius": {
+            "from_table": "timeline_event",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "",
+            "where_clauses": []
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
+    },
+    "person_timeline": {
+        "exclude": [],
+        "casenumber_source": "",
+        "orderby": {},
+        "casrec": {
+            "from_table": "Pat",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "",
+            "where_clauses": []
+        },
+        "sirius": {
+            "from_table": "person_timeline",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "",
+            "where_clauses": []
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
     }
 }
