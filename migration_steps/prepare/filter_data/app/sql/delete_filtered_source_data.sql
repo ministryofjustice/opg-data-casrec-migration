@@ -19,16 +19,18 @@ DELETE FROM casrec_csv.deputyship WHERE "Case" IN (
 -- "deputy_death_notifications",
 -- "deputy_special_warnings",
 -- "deputy_violent_warnings",
+-- "deputy_daytime_phonenumbers",
+-- "deputy_evening_phonenumbers",
 DELETE FROM casrec_csv.deputy WHERE NOT EXISTS (
     SELECT 1 FROM casrec_csv.deputyship WHERE deputyship."Deputy No" = deputy."Deputy No"
 );
 
--- Filters deputy addresses
+-- Filters deputy_addresses
 DELETE FROM casrec_csv.deputy_address WHERE NOT EXISTS (
     SELECT 1 FROM casrec_csv.deputyship WHERE deputyship."Dep Addr No" = deputy_address."Dep Addr No"
 );
 
--- Filters deputy remarks
+-- Filters deputy_notes
 DELETE FROM casrec_csv.deputy_remarks WHERE NOT EXISTS (
     SELECT 1 FROM casrec_csv.deputyship WHERE deputyship."Deputy No" = deputy_remarks."Deputy No"
 );
@@ -82,6 +84,8 @@ DELETE FROM casrec_csv.sup_activity WHERE "Case" IN (
 -- "client_saarcheck_warnings",
 -- "client_special_warnings",
 -- "client_violent_warnings",
+-- "finance_remissions",
+-- "finance_exemptions",
 DELETE FROM casrec_csv.pat WHERE "Case" IN (
     SELECT caserecnumber FROM casrec_csv.cases_to_filter_out
 );
