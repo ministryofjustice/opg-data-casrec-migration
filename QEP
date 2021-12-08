@@ -1,0 +1,637 @@
+QUERY PLAN | - Plan:
+           |     Node Type: "ModifyTable"
+           |     Operation: "Insert"
+           |     Parallel Aware: false
+           |     Relation Name: "exceptions_deputy_persons"
+           |     Alias: "exceptions_deputy_persons"
+           |     Startup Cost: 763044.56
+           |     Total Cost: 780856.51
+           |     Plan Rows: 139701
+           |     Plan Width: 864
+           |     Plans:
+           |       - Node Type: "Subquery Scan"
+           |         Parent Relationship: "Member"
+           |         Parallel Aware: false
+           |         Alias: "*SELECT*"
+           |         Startup Cost: 763044.56
+           |         Total Cost: 780856.51
+           |         Plan Rows: 139701
+           |         Plan Width: 864
+           |         Plans:
+           |           - Node Type: "SetOp"
+           |             Strategy: "Sorted"
+           |             Parent Relationship: "Subquery"
+           |             Parallel Aware: false
+           |             Command: "Except"
+           |             Startup Cost: 763044.56
+           |             Total Cost: 772823.70
+           |             Plan Rows: 139701
+           |             Plan Width: 385
+           |             Plans:
+           |               - Node Type: "Sort"
+           |                 Parent Relationship: "Outer"
+           |                 Parallel Aware: false
+           |                 Startup Cost: 763044.56
+           |                 Total Cost: 763393.82
+           |                 Plan Rows: 139702
+           |                 Plan Width: 385
+           |                 Sort Key:
+           |                   - "\"*SELECT* 1\".caserecnumber"
+           |                   - "\"*SELECT* 1\".casesubtype"
+           |                   - "\"*SELECT* 1\".orderdate"
+           |                   - "\"*SELECT* 1\".email"
+           |                   - "\"*SELECT* 1\".salutation"
+           |                   - "\"*SELECT* 1\".firstname"
+           |                   - "\"*SELECT* 1\".surname"
+           |                   - "\"*SELECT* 1\".correspondencebypost"
+           |                   - "\"*SELECT* 1\".correspondencebyphone"
+           |                   - "\"*SELECT* 1\".correspondencebyemail"
+           |                   - "\"*SELECT* 1\".type"
+           |                   - "\"*SELECT* 1\".systemstatus"
+           |                   - "\"*SELECT* 1\".isreplacementattorney"
+           |                   - "\"*SELECT* 1\".istrustcorporation"
+           |                   - "\"*SELECT* 1\".previousnames"
+           |                   - "\"*SELECT* 1\".correspondencebywelsh"
+           |                   - "\"*SELECT* 1\".mobilenumber"
+           |                   - "\"*SELECT* 1\".newsletter"
+           |                   - "\"*SELECT* 1\".specialcorrespondencerequirements_audiotape"
+           |                   - "\"*SELECT* 1\".specialcorrespondencerequirements_largeprint"
+           |                   - "\"*SELECT* 1\".specialcorrespondencerequirements_hearingimpaired"
+           |                   - "\"*SELECT* 1\".specialcorrespondencerequirements_spellingofnamerequirescare"
+           |                   - "\"*SELECT* 1\".isorganisation"
+           |                   - "\"*SELECT* 1\".deputytype"
+           |                   - "\"*SELECT* 1\".supervisioncaseowner_id"
+           |                   - "\"*SELECT* 1\".clientsource"
+           |                   - "\"*SELECT* 1\".updateddate"
+           |                 Plans:
+           |                   - Node Type: "Append"
+           |                     Parent Relationship: "Outer"
+           |                     Parallel Aware: false
+           |                     Startup Cost: 196714.36
+           |                     Total Cost: 726273.14
+           |                     Plan Rows: 139702
+           |                     Plan Width: 385
+           |                     Plans:
+           |                       - Node Type: "Subquery Scan"
+           |                         Parent Relationship: "Member"
+           |                         Parallel Aware: false
+           |                         Alias: "*SELECT* 1"
+           |                         Startup Cost: 196714.36
+           |                         Total Cost: 204747.17
+           |                         Plan Rows: 139701
+           |                         Plan Width: 362
+           |                         Plans:
+           |                           - Node Type: "Unique"
+           |                             Parent Relationship: "Subquery"
+           |                             Parallel Aware: false
+           |                             Startup Cost: 196714.36
+           |                             Total Cost: 201953.15
+           |                             Plan Rows: 139701
+           |                             Plan Width: 358
+           |                             Plans:
+           |                               - Node Type: "Sort"
+           |                                 Parent Relationship: "Outer"
+           |                                 Parallel Aware: false
+           |                                 Startup Cost: 196714.36
+           |                                 Total Cost: 197063.61
+           |                                 Plan Rows: 139701
+           |                                 Plan Width: 358
+           |                                 Sort Key:
+           |                                   - "\"order\".\"Case\""
+           |                                   - "(NULLIF(btrim(CASE WHEN ((\"order\".\"Ord Type\")::text = '1'::text) THEN 'pfa'::text WHEN ((\"order\".\"Ord Type\")::text = '2'::text) THEN 'hw'::text WHEN ((\"order\".\"Ord Type\")::text = '26'::text) THEN 'pfa'::text WHEN ((\"order\".\"Ord Type\")::text = '40'::text) THEN 'pfa'::text WHEN ((\"order\".\"Ord Type\")::text = '41'::text) THEN 'pfa'::text WHEN ((\"order\".\"Ord Type\")::text = '43'::text) THEN 'pfa'::text WHEN ((\"order\".\"Ord Type\")::text = '45'::text) THEN 'pfa'::text ELSE NULL::text END), ''::text))"
+           |                                   - "((NULLIF(NULLIF(btrim(\"order\".\"Made Date\"), 'NaT'::text), ''::text))::date)"
+           |                                   - "(NULLIF(btrim(deputy.\"Email\"), ''::text))"
+           |                                   - "(NULLIF(btrim(CASE WHEN ((deputy.\"Title\")::text = '1'::text) THEN 'Mr'::text WHEN ((deputy.\"Title\")::text = '2'::text) THEN 'Mrs'::text WHEN ((deputy.\"Title\")::text = '3'::text) THEN 'Miss'::text WHEN ((deputy.\"Title\")::text = '4'::text) THEN 'Ms'::text WHEN ((deputy.\"Title\")::text = '5'::text) THEN 'Master'::text WHEN ((deputy.\"Title\")::text = '6'::text) THEN 'Doctor'::text WHEN ((deputy.\"Title\")::text = '7'::text) THEN 'Sir'::text WHEN ((deputy.\"Title\")::text = '8'::text) THEN 'Lady'::text WHEN ((deputy.\"Title\")::text = '9'::text) THEN 'Professor'::text WHEN ((deputy.\"Title\")::text = '10'::text) THEN 'Lord'::text WHEN ((deputy.\"Title\")::text = '11'::text) THEN 'Right Honourable'::text WHEN ((deputy.\"Title\")::text = '12'::text) THEN 'Reverend'::text WHEN ((deputy.\"Title\")::text = '13'::text) THEN 'Father'::text WHEN ((deputy.\"Title\")::text = '14'::text) THEN 'Rabbi'::text WHEN ((deputy.\"Title\")::text = '15'::text) THEN 'Baron'::text WHEN ((deputy.\"Title\")::text = '16'::text) THEN 'Baroness'::text WHEN ((deputy.\"Title\")::text = '17'::text) THEN 'Right Honourable Mr'::text WHEN ((deputy.\"Title\")::text = '18'::text) THEN 'Right Honourable Mrs'::text WHEN ((deputy.\"Title\")::text = '19'::text) THEN 'The Honourable'::text WHEN ((deputy.\"Title\")::text = '20'::text) THEN 'Canon'::text WHEN ((deputy.\"Title\")::text = '21'::text) THEN 'Sister'::text WHEN ((deputy.\"Title\")::text = '22'::text) THEN 'Messrs'::text WHEN ((deputy.\"Title\")::text = '23'::text) THEN 'The Holder of The Office of'::text WHEN ((deputy.\"Title\")::text = '24'::text) THEN 'Trust Corporation'::text WHEN ((deputy.\"Title\")::text = '25'::text) THEN 'Reverend Mrs'::text WHEN ((deputy.\"Title\")::text = '26'::text) THEN 'Captain'::text WHEN ((deputy.\"Title\")::text = '27'::text) THEN 'Dame'::text WHEN ((deputy.\"Title\")::text = '28'::text) THEN 'Major'::text WHEN ((deputy.\"Title\")::text = '29'::text) THEN 'Colonel'::text WHEN ((deputy.\"Title\")::text = '30'::text) THEN 'The Authorised Officer for'::text WHEN ((deputy.\"Title\")::text = '90'::text) THEN 'Monsignor'::text WHEN ((deputy.\"Title\")::text = '31'::text) THEN 'His Honour'::text WHEN ((deputy.\"Title\")::text = '32'::text) THEN 'Eur Ing'::text WHEN ((deputy.\"Title\")::text = '33'::text) THEN 'Sergeant'::text WHEN ((deputy.\"Title\")::text = '34'::text) THEN 'Brigadier'::text ELSE NULL::text END), ''::text))"
+           |                                   - "(transf_first_word((NULLIF(btrim(deputy.\"Dep Forename\"), ''::text))::character varying))"
+           |                                   - "(transf_capitalise_first_letter((NULLIF(btrim(deputy.\"Dep Surname\"), ''::text))::character varying))"
+           |                                   - "(CASE WHEN (CASE WHEN ((deputy.\"By Email\")::text = 'Y'::text) THEN true WHEN ((deputy.\"By Email\")::text = 'N'::text) THEN false WHEN ((deputy.\"By Email\")::text = ''::text) THEN false ELSE NULL::boolean END IS NULL) THEN false ELSE CASE WHEN ((deputy.\"By Email\")::text = 'Y'::text) THEN true WHEN ((deputy.\"By Email\")::text = 'N'::text) THEN false WHEN ((deputy.\"By Email\")::text = ''::text) THEN false ELSE NULL::boolean END END)"
+           |                                   - "(NULLIF(btrim(deputy.\"AKA Name\"), ''::text))"
+           |                                   - "(CASE WHEN (CASE WHEN ((deputy.\"Welsh\")::text = 'Y'::text) THEN true WHEN ((deputy.\"Welsh\")::text = 'N'::text) THEN false WHEN ((deputy.\"Welsh\")::text = ''::text) THEN false ELSE NULL::boolean END IS NULL) THEN false ELSE CASE WHEN ((deputy.\"Welsh\")::text = 'Y'::text) THEN true WHEN ((deputy.\"Welsh\")::text = 'N'::text) THEN false WHEN ((deputy.\"Welsh\")::text = ''::text) THEN false ELSE NULL::boolean END END)"
+           |                                   - "(NULLIF(btrim(deputy.\"Mobile\"), ''::text))"
+           |                                   - "(CASE WHEN (CASE WHEN ((deputy.\"Special\")::text = '1'::text) THEN true WHEN ((deputy.\"Special\")::text = '2'::text) THEN false WHEN ((deputy.\"Special\")::text = '3'::text) THEN false WHEN ((deputy.\"Special\")::text = '4'::text) THEN false WHEN ((deputy.\"Special\")::text = '5'::text) THEN false WHEN ((deputy.\"Special\")::text = '6'::text) THEN false WHEN ((deputy.\"Special\")::text = '0'::text) THEN false ELSE NULL::boolean END IS NULL) THEN false ELSE CASE WHEN ((deputy.\"Special\")::text = '1'::text) THEN true WHEN ((deputy.\"Special\")::text = '2'::text) THEN false WHEN ((deputy.\"Special\")::text = '3'::text) THEN false WHEN ((deputy.\"Special\")::text = '4'::text) THEN false WHEN ((deputy.\"Special\")::text = '5'::text) THEN false WHEN ((deputy.\"Special\")::text = '6'::text) THEN false WHEN ((deputy.\"Special\")::text = '0'::text) THEN false ELSE NULL::boolean END END)"
+           |                                   - "(CASE WHEN (CASE WHEN ((deputy.\"Special\")::text = '1'::text) THEN false WHEN ((deputy.\"Special\")::text = '2'::text) THEN true WHEN ((deputy.\"Special\")::text = '3'::text) THEN false WHEN ((deputy.\"Special\")::text = '4'::text) THEN false WHEN ((deputy.\"Special\")::text = '5'::text) THEN false WHEN ((deputy.\"Special\")::text = '6'::text) THEN false WHEN ((deputy.\"Special\")::text = '0'::text) THEN false ELSE NULL::boolean END IS NULL) THEN false ELSE CASE WHEN ((deputy.\"Special\")::text = '1'::text) THEN false WHEN ((deputy.\"Special\")::text = '2'::text) THEN true WHEN ((deputy.\"Special\")::text = '3'::text) THEN false WHEN ((deputy.\"Special\")::text = '4'::text) THEN false WHEN ((deputy.\"Special\")::text = '5'::text) THEN false WHEN ((deputy.\"Special\")::text = '6'::text) THEN false WHEN ((deputy.\"Special\")::text = '0'::text) THEN false ELSE NULL::boolean END END)"
+           |                                   - "(CASE WHEN (CASE WHEN ((deputy.\"Special\")::text = '1'::text) THEN false WHEN ((deputy.\"Special\")::text = '2'::text) THEN false WHEN ((deputy.\"Special\")::text = '3'::text) THEN false WHEN ((deputy.\"Special\")::text = '4'::text) THEN false WHEN ((deputy.\"Special\")::text = '5'::text) THEN false WHEN ((deputy.\"Special\")::text = '6'::text) THEN true WHEN ((deputy.\"Special\")::text = '0'::text) THEN false ELSE NULL::boolean END IS NULL) THEN false ELSE CASE WHEN ((deputy.\"Special\")::text = '1'::text) THEN false WHEN ((deputy.\"Special\")::text = '2'::text) THEN false WHEN ((deputy.\"Special\")::text = '3'::text) THEN false WHEN ((deputy.\"Special\")::text = '4'::text) THEN false WHEN ((deputy.\"Special\")::text = '5'::text) THEN false WHEN ((deputy.\"Special\")::text = '6'::text) THEN true WHEN ((deputy.\"Special\")::text = '0'::text) THEN false ELSE NULL::boolean END END)"
+           |                                 Plans:
+           |                                   - Node Type: "Hash Join"
+           |                                     Parent Relationship: "Outer"
+           |                                     Parallel Aware: false
+           |                                     Join Type: "Left"
+           |                                     Startup Cost: 35697.99
+           |                                     Total Cost: 161854.03
+           |                                     Plan Rows: 139701
+           |                                     Plan Width: 358
+           |                                     Inner Unique: false
+           |                                     Hash Cond: "(deputyship.\"Deputy No\" = deputy.\"Deputy No\")"
+           |                                     Plans:
+           |                                       - Node Type: "Hash Join"
+           |                                         Parent Relationship: "Outer"
+           |                                         Parallel Aware: false
+           |                                         Join Type: "Inner"
+           |                                         Startup Cost: 27351.80
+           |                                         Total Cost: 35616.64
+           |                                         Plan Rows: 139701
+           |                                         Plan Width: 36
+           |                                         Inner Unique: false
+           |                                         Hash Cond: "(deputyship.\"Order No\" = \"order\".\"Order No\")"
+           |                                         Plans:
+           |                                           - Node Type: "Seq Scan"
+           |                                             Parent Relationship: "Outer"
+           |                                             Parallel Aware: false
+           |                                             Relation Name: "deputyship"
+           |                                             Alias: "deputyship"
+           |                                             Startup Cost: 0.00
+           |                                             Total Cost: 3937.15
+           |                                             Plan Rows: 143915
+           |                                             Plan Width: 11
+           |                                           - Node Type: "Hash"
+           |                                             Parent Relationship: "Inner"
+           |                                             Parallel Aware: false
+           |                                             Startup Cost: 24791.97
+           |                                             Total Cost: 24791.97
+           |                                             Plan Rows: 125987
+           |                                             Plan Width: 37
+           |                                             Plans:
+           |                                               - Node Type: "Hash Join"
+           |                                                 Parent Relationship: "Outer"
+           |                                                 Parallel Aware: false
+           |                                                 Join Type: "Left"
+           |                                                 Startup Cost: 12077.74
+           |                                                 Total Cost: 24791.97
+           |                                                 Plan Rows: 125987
+           |                                                 Plan Width: 37
+           |                                                 Inner Unique: false
+           |                                                 Hash Cond: "(\"order\".\"Case\" = pat.\"Case\")"
+           |                                                 Plans:
+           |                                                   - Node Type: "Seq Scan"
+           |                                                     Parent Relationship: "Outer"
+           |                                                     Parallel Aware: false
+           |                                                     Relation Name: "order"
+           |                                                     Alias: "order"
+           |                                                     Startup Cost: 0.00
+           |                                                     Total Cost: 8258.91
+           |                                                     Plan Rows: 125987
+           |                                                     Plan Width: 37
+           |                                                     Filter: "((\"Ord Stat\" <> 'Open'::text) AND (\"Case\" <> ALL ('{12885347,11854030,11509969,11065340,99379589,12138872,11741056,12742084,13097967,1208622T,12913439}'::text[])))"
+           |                                                   - Node Type: "Hash"
+           |                                                     Parent Relationship: "Inner"
+           |                                                     Parallel Aware: false
+           |                                                     Startup Cost: 9397.66
+           |                                                     Total Cost: 9397.66
+           |                                                     Plan Rows: 154166
+           |                                                     Plan Width: 9
+           |                                                     Plans:
+           |                                                       - Node Type: "Seq Scan"
+           |                                                         Parent Relationship: "Outer"
+           |                                                         Parallel Aware: false
+           |                                                         Relation Name: "pat"
+           |                                                         Alias: "pat"
+           |                                                         Startup Cost: 0.00
+           |                                                         Total Cost: 9397.66
+           |                                                         Plan Rows: 154166
+           |                                                         Plan Width: 9
+           |                                       - Node Type: "Hash"
+           |                                         Parent Relationship: "Inner"
+           |                                         Parallel Aware: false
+           |                                         Startup Cost: 5320.75
+           |                                         Total Cost: 5320.75
+           |                                         Plan Rows: 135875
+           |                                         Plan Width: 55
+           |                                         Plans:
+           |                                           - Node Type: "Seq Scan"
+           |                                             Parent Relationship: "Outer"
+           |                                             Parallel Aware: false
+           |                                             Relation Name: "deputy"
+           |                                             Alias: "deputy"
+           |                                             Startup Cost: 0.00
+           |                                             Total Cost: 5320.75
+           |                                             Plan Rows: 135875
+           |                                             Plan Width: 55
+           |                       - Node Type: "Subquery Scan"
+           |                         Parent Relationship: "Member"
+           |                         Parallel Aware: false
+           |                         Alias: "*SELECT* 2"
+           |                         Startup Cost: 521525.88
+           |                         Total Cost: 521525.97
+           |                         Plan Rows: 1
+           |                         Plan Width: 385
+           |                         Plans:
+           |                           - Node Type: "Unique"
+           |                             Parent Relationship: "Subquery"
+           |                             Parallel Aware: false
+           |                             Startup Cost: 521525.88
+           |                             Total Cost: 521525.95
+           |                             Plan Rows: 1
+           |                             Plan Width: 357
+           |                             Plans:
+           |                               - Node Type: "Sort"
+           |                                 Parent Relationship: "Outer"
+           |                                 Parallel Aware: false
+           |                                 Startup Cost: 521525.88
+           |                                 Total Cost: 521525.88
+           |                                 Plan Rows: 1
+           |                                 Plan Width: 357
+           |                                 Sort Key:
+           |                                   - "cases.caserecnumber"
+           |                                   - "(NULLIF(btrim((cases.casesubtype)::text), ''::text))"
+           |                                   - "cases.orderdate"
+           |                                   - "(NULLIF(btrim((persons.email)::text), ''::text))"
+           |                                   - "(NULLIF(btrim((persons.salutation)::text), ''::text))"
+           |                                   - "(NULLIF(btrim((persons.firstname)::text), ''::text))"
+           |                                   - "(NULLIF(btrim((persons.surname)::text), ''::text))"
+           |                                   - "persons.correspondencebypost"
+           |                                   - "persons.correspondencebyphone"
+           |                                   - "persons.correspondencebyemail"
+           |                                   - "(NULLIF(btrim((persons.type)::text), ''::text))"
+           |                                   - "persons.systemstatus"
+           |                                   - "persons.isreplacementattorney"
+           |                                   - "persons.istrustcorporation"
+           |                                   - "(NULLIF(btrim((persons.previousnames)::text), ''::text))"
+           |                                   - "persons.correspondencebywelsh"
+           |                                   - "(NULLIF(btrim((persons.mobilenumber)::text), ''::text))"
+           |                                   - "persons.newsletter"
+           |                                   - "persons.specialcorrespondencerequirements_audiotape"
+           |                                   - "persons.specialcorrespondencerequirements_largeprint"
+           |                                   - "persons.specialcorrespondencerequirements_hearingimpaired"
+           |                                   - "persons.specialcorrespondencerequirements_spellingofnamerequirescare"
+           |                                   - "persons.isorganisation"
+           |                                   - "(NULLIF(btrim((persons.deputytype)::text), ''::text))"
+           |                                   - "persons.supervisioncaseowner_id"
+           |                                   - "(NULLIF(btrim((persons.clientsource)::text), ''::text))"
+           |                                   - "persons.updateddate"
+           |                                 Plans:
+           |                                   - Node Type: "Nested Loop"
+           |                                     Parent Relationship: "Outer"
+           |                                     Parallel Aware: false
+           |                                     Join Type: "Inner"
+           |                                     Startup Cost: 0.56
+           |                                     Total Cost: 521525.87
+           |                                     Plan Rows: 1
+           |                                     Plan Width: 357
+           |                                     Inner Unique: true
+           |                                     Plans:
+           |                                       - Node Type: "Nested Loop"
+           |                                         Parent Relationship: "Outer"
+           |                                         Parallel Aware: false
+           |                                         Join Type: "Inner"
+           |                                         Startup Cost: 0.00
+           |                                         Total Cost: 521513.00
+           |                                         Plan Rows: 1
+           |                                         Plan Width: 19
+           |                                         Inner Unique: false
+           |                                         Join Filter: "(order_deputy.order_id = cases.id)"
+           |                                         Plans:
+           |                                           - Node Type: "Seq Scan"
+           |                                             Parent Relationship: "Outer"
+           |                                             Parallel Aware: false
+           |                                             Relation Name: "cases"
+           |                                             Alias: "cases"
+           |                                             Startup Cost: 0.00
+           |                                             Total Cost: 516919.84
+           |                                             Plan Rows: 1
+           |                                             Plan Width: 23
+           |                                             Filter: "((caserecnumber)::text <> ALL ('{12885347,11854030,11509969,11065340,99379589,12138872,11741056,12742084,13097967,1208622T,12913439}'::text[]))"
+           |                                           - Node Type: "Seq Scan"
+           |                                             Parent Relationship: "Inner"
+           |                                             Parallel Aware: false
+           |                                             Relation Name: "order_deputy"
+           |                                             Alias: "order_deputy"
+           |                                             Startup Cost: 0.00
+           |                                             Total Cost: 2741.96
+           |                                             Plan Rows: 148096
+           |                                             Plan Width: 8
+           |                                       - Node Type: "Index Scan"
+           |                                         Parent Relationship: "Inner"
+           |                                         Parallel Aware: false
+           |                                         Scan Direction: "Forward"
+           |                                         Index Name: "persons_pkey"
+           |                                         Relation Name: "persons"
+           |                                         Alias: "persons"
+           |                                         Startup Cost: 0.56
+           |                                         Total Cost: 6.69
+           |                                         Plan Rows: 1
+           |                                         Plan Width: 89
+           |                                         Index Cond: "(id = order_deputy.deputy_id)"
+           |                                         Filter: "(((type)::text = 'actor_deputy'::text) AND ((clientsource)::text = 'CASRECMIGRATION'::text))"
+
+
+
+
+QUERY PLAN | - Plan:
+           |     Node Type: "ModifyTable"
+           |     Operation: "Insert"
+           |     Parallel Aware: false
+           |     Relation Name: "exceptions_deputy_persons"
+           |     Alias: "exceptions_deputy_persons"
+           |     Startup Cost: 454277.78
+           |     Total Cost: 472128.23
+           |     Plan Rows: 140003
+           |     Plan Width: 864
+           |     Plans:
+           |       - Node Type: "Subquery Scan"
+           |         Parent Relationship: "Member"
+           |         Parallel Aware: false
+           |         Alias: "*SELECT*"
+           |         Startup Cost: 454277.78
+           |         Total Cost: 472128.23
+           |         Plan Rows: 140003
+           |         Plan Width: 864
+           |         Plans:
+           |           - Node Type: "SetOp"
+           |             Strategy: "Sorted"
+           |             Parent Relationship: "Subquery"
+           |             Parallel Aware: false
+           |             Command: "Except"
+           |             Startup Cost: 454277.78
+           |             Total Cost: 464078.06
+           |             Plan Rows: 140003
+           |             Plan Width: 385
+           |             Plans:
+           |               - Node Type: "Sort"
+           |                 Parent Relationship: "Outer"
+           |                 Parallel Aware: false
+           |                 Startup Cost: 454277.78
+           |                 Total Cost: 454627.79
+           |                 Plan Rows: 140004
+           |                 Plan Width: 385
+           |                 Sort Key:
+           |                   - "\"*SELECT* 1\".caserecnumber"
+           |                   - "\"*SELECT* 1\".casesubtype"
+           |                   - "\"*SELECT* 1\".orderdate"
+           |                   - "\"*SELECT* 1\".email"
+           |                   - "\"*SELECT* 1\".salutation"
+           |                   - "\"*SELECT* 1\".firstname"
+           |                   - "\"*SELECT* 1\".surname"
+           |                   - "\"*SELECT* 1\".correspondencebypost"
+           |                   - "\"*SELECT* 1\".correspondencebyphone"
+           |                   - "\"*SELECT* 1\".correspondencebyemail"
+           |                   - "\"*SELECT* 1\".type"
+           |                   - "\"*SELECT* 1\".systemstatus"
+           |                   - "\"*SELECT* 1\".isreplacementattorney"
+           |                   - "\"*SELECT* 1\".istrustcorporation"
+           |                   - "\"*SELECT* 1\".previousnames"
+           |                   - "\"*SELECT* 1\".correspondencebywelsh"
+           |                   - "\"*SELECT* 1\".mobilenumber"
+           |                   - "\"*SELECT* 1\".newsletter"
+           |                   - "\"*SELECT* 1\".specialcorrespondencerequirements_audiotape"
+           |                   - "\"*SELECT* 1\".specialcorrespondencerequirements_largeprint"
+           |                   - "\"*SELECT* 1\".specialcorrespondencerequirements_hearingimpaired"
+           |                   - "\"*SELECT* 1\".specialcorrespondencerequirements_spellingofnamerequirescare"
+           |                   - "\"*SELECT* 1\".isorganisation"
+           |                   - "\"*SELECT* 1\".deputytype"
+           |                   - "\"*SELECT* 1\".supervisioncaseowner_id"
+           |                   - "\"*SELECT* 1\".clientsource"
+           |                   - "\"*SELECT* 1\".updateddate"
+           |                 Plans:
+           |                   - Node Type: "Append"
+           |                     Parent Relationship: "Outer"
+           |                     Parallel Aware: false
+           |                     Startup Cost: 187216.27
+           |                     Total Cost: 428090.86
+           |                     Plan Rows: 140004
+           |                     Plan Width: 385
+           |                     Plans:
+           |                       - Node Type: "Subquery Scan"
+           |                         Parent Relationship: "Member"
+           |                         Parallel Aware: false
+           |                         Alias: "*SELECT* 1"
+           |                         Startup Cost: 187216.27
+           |                         Total Cost: 195266.45
+           |                         Plan Rows: 140003
+           |                         Plan Width: 362
+           |                         Plans:
+           |                           - Node Type: "Unique"
+           |                             Parent Relationship: "Subquery"
+           |                             Parallel Aware: false
+           |                             Startup Cost: 187216.27
+           |                             Total Cost: 192466.39
+           |                             Plan Rows: 140003
+           |                             Plan Width: 358
+           |                             Plans:
+           |                               - Node Type: "Sort"
+           |                                 Parent Relationship: "Outer"
+           |                                 Parallel Aware: false
+           |                                 Startup Cost: 187216.27
+           |                                 Total Cost: 187566.28
+           |                                 Plan Rows: 140003
+           |                                 Plan Width: 358
+           |                                 Sort Key:
+           |                                   - "\"order\".\"Case\""
+           |                                   - "(NULLIF(btrim(CASE WHEN ((\"order\".\"Ord Type\")::text = '1'::text) THEN 'pfa'::text WHEN ((\"order\".\"Ord Type\")::text = '2'::text) THEN 'hw'::text WHEN ((\"order\".\"Ord Type\")::text = '26'::text) THEN 'pfa'::text WHEN ((\"order\".\"Ord Type\")::text = '40'::text) THEN 'pfa'::text WHEN ((\"order\".\"Ord Type\")::text = '41'::text) THEN 'pfa'::text WHEN ((\"order\".\"Ord Type\")::text = '43'::text) THEN 'pfa'::text WHEN ((\"order\".\"Ord Type\")::text = '45'::text) THEN 'pfa'::text ELSE NULL::text END), ''::text))"
+           |                                   - "((NULLIF(NULLIF(btrim(\"order\".\"Made Date\"), 'NaT'::text), ''::text))::date)"
+           |                                   - "(NULLIF(btrim(deputy.\"Email\"), ''::text))"
+           |                                   - "(NULLIF(btrim(CASE WHEN ((deputy.\"Title\")::text = '1'::text) THEN 'Mr'::text WHEN ((deputy.\"Title\")::text = '2'::text) THEN 'Mrs'::text WHEN ((deputy.\"Title\")::text = '3'::text) THEN 'Miss'::text WHEN ((deputy.\"Title\")::text = '4'::text) THEN 'Ms'::text WHEN ((deputy.\"Title\")::text = '5'::text) THEN 'Master'::text WHEN ((deputy.\"Title\")::text = '6'::text) THEN 'Doctor'::text WHEN ((deputy.\"Title\")::text = '7'::text) THEN 'Sir'::text WHEN ((deputy.\"Title\")::text = '8'::text) THEN 'Lady'::text WHEN ((deputy.\"Title\")::text = '9'::text) THEN 'Professor'::text WHEN ((deputy.\"Title\")::text = '10'::text) THEN 'Lord'::text WHEN ((deputy.\"Title\")::text = '11'::text) THEN 'Right Honourable'::text WHEN ((deputy.\"Title\")::text = '12'::text) THEN 'Reverend'::text WHEN ((deputy.\"Title\")::text = '13'::text) THEN 'Father'::text WHEN ((deputy.\"Title\")::text = '14'::text) THEN 'Rabbi'::text WHEN ((deputy.\"Title\")::text = '15'::text) THEN 'Baron'::text WHEN ((deputy.\"Title\")::text = '16'::text) THEN 'Baroness'::text WHEN ((deputy.\"Title\")::text = '17'::text) THEN 'Right Honourable Mr'::text WHEN ((deputy.\"Title\")::text = '18'::text) THEN 'Right Honourable Mrs'::text WHEN ((deputy.\"Title\")::text = '19'::text) THEN 'The Honourable'::text WHEN ((deputy.\"Title\")::text = '20'::text) THEN 'Canon'::text WHEN ((deputy.\"Title\")::text = '21'::text) THEN 'Sister'::text WHEN ((deputy.\"Title\")::text = '22'::text) THEN 'Messrs'::text WHEN ((deputy.\"Title\")::text = '23'::text) THEN 'The Holder of The Office of'::text WHEN ((deputy.\"Title\")::text = '24'::text) THEN 'Trust Corporation'::text WHEN ((deputy.\"Title\")::text = '25'::text) THEN 'Reverend Mrs'::text WHEN ((deputy.\"Title\")::text = '26'::text) THEN 'Captain'::text WHEN ((deputy.\"Title\")::text = '27'::text) THEN 'Dame'::text WHEN ((deputy.\"Title\")::text = '28'::text) THEN 'Major'::text WHEN ((deputy.\"Title\")::text = '29'::text) THEN 'Colonel'::text WHEN ((deputy.\"Title\")::text = '30'::text) THEN 'The Authorised Officer for'::text WHEN ((deputy.\"Title\")::text = '90'::text) THEN 'Monsignor'::text WHEN ((deputy.\"Title\")::text = '31'::text) THEN 'His Honour'::text WHEN ((deputy.\"Title\")::text = '32'::text) THEN 'Eur Ing'::text WHEN ((deputy.\"Title\")::text = '33'::text) THEN 'Sergeant'::text WHEN ((deputy.\"Title\")::text = '34'::text) THEN 'Brigadier'::text ELSE NULL::text END), ''::text))"
+           |                                   - "(transf_first_word((NULLIF(btrim(deputy.\"Dep Forename\"), ''::text))::character varying))"
+           |                                   - "(transf_capitalise_first_letter((NULLIF(btrim(deputy.\"Dep Surname\"), ''::text))::character varying))"
+           |                                   - "(CASE WHEN (CASE WHEN ((deputy.\"By Email\")::text = 'Y'::text) THEN true WHEN ((deputy.\"By Email\")::text = 'N'::text) THEN false WHEN ((deputy.\"By Email\")::text = ''::text) THEN false ELSE NULL::boolean END IS NULL) THEN false ELSE CASE WHEN ((deputy.\"By Email\")::text = 'Y'::text) THEN true WHEN ((deputy.\"By Email\")::text = 'N'::text) THEN false WHEN ((deputy.\"By Email\")::text = ''::text) THEN false ELSE NULL::boolean END END)"
+           |                                   - "(NULLIF(btrim(deputy.\"AKA Name\"), ''::text))"
+           |                                   - "(CASE WHEN (CASE WHEN ((deputy.\"Welsh\")::text = 'Y'::text) THEN true WHEN ((deputy.\"Welsh\")::text = 'N'::text) THEN false WHEN ((deputy.\"Welsh\")::text = ''::text) THEN false ELSE NULL::boolean END IS NULL) THEN false ELSE CASE WHEN ((deputy.\"Welsh\")::text = 'Y'::text) THEN true WHEN ((deputy.\"Welsh\")::text = 'N'::text) THEN false WHEN ((deputy.\"Welsh\")::text = ''::text) THEN false ELSE NULL::boolean END END)"
+           |                                   - "(NULLIF(btrim(deputy.\"Mobile\"), ''::text))"
+           |                                   - "(CASE WHEN (CASE WHEN ((deputy.\"Special\")::text = '1'::text) THEN true WHEN ((deputy.\"Special\")::text = '2'::text) THEN false WHEN ((deputy.\"Special\")::text = '3'::text) THEN false WHEN ((deputy.\"Special\")::text = '4'::text) THEN false WHEN ((deputy.\"Special\")::text = '5'::text) THEN false WHEN ((deputy.\"Special\")::text = '6'::text) THEN false WHEN ((deputy.\"Special\")::text = '0'::text) THEN false ELSE NULL::boolean END IS NULL) THEN false ELSE CASE WHEN ((deputy.\"Special\")::text = '1'::text) THEN true WHEN ((deputy.\"Special\")::text = '2'::text) THEN false WHEN ((deputy.\"Special\")::text = '3'::text) THEN false WHEN ((deputy.\"Special\")::text = '4'::text) THEN false WHEN ((deputy.\"Special\")::text = '5'::text) THEN false WHEN ((deputy.\"Special\")::text = '6'::text) THEN false WHEN ((deputy.\"Special\")::text = '0'::text) THEN false ELSE NULL::boolean END END)"
+           |                                   - "(CASE WHEN (CASE WHEN ((deputy.\"Special\")::text = '1'::text) THEN false WHEN ((deputy.\"Special\")::text = '2'::text) THEN true WHEN ((deputy.\"Special\")::text = '3'::text) THEN false WHEN ((deputy.\"Special\")::text = '4'::text) THEN false WHEN ((deputy.\"Special\")::text = '5'::text) THEN false WHEN ((deputy.\"Special\")::text = '6'::text) THEN false WHEN ((deputy.\"Special\")::text = '0'::text) THEN false ELSE NULL::boolean END IS NULL) THEN false ELSE CASE WHEN ((deputy.\"Special\")::text = '1'::text) THEN false WHEN ((deputy.\"Special\")::text = '2'::text) THEN true WHEN ((deputy.\"Special\")::text = '3'::text) THEN false WHEN ((deputy.\"Special\")::text = '4'::text) THEN false WHEN ((deputy.\"Special\")::text = '5'::text) THEN false WHEN ((deputy.\"Special\")::text = '6'::text) THEN false WHEN ((deputy.\"Special\")::text = '0'::text) THEN false ELSE NULL::boolean END END)"
+           |                                   - "(CASE WHEN (CASE WHEN ((deputy.\"Special\")::text = '1'::text) THEN false WHEN ((deputy.\"Special\")::text = '2'::text) THEN false WHEN ((deputy.\"Special\")::text = '3'::text) THEN false WHEN ((deputy.\"Special\")::text = '4'::text) THEN false WHEN ((deputy.\"Special\")::text = '5'::text) THEN false WHEN ((deputy.\"Special\")::text = '6'::text) THEN true WHEN ((deputy.\"Special\")::text = '0'::text) THEN false ELSE NULL::boolean END IS NULL) THEN false ELSE CASE WHEN ((deputy.\"Special\")::text = '1'::text) THEN false WHEN ((deputy.\"Special\")::text = '2'::text) THEN false WHEN ((deputy.\"Special\")::text = '3'::text) THEN false WHEN ((deputy.\"Special\")::text = '4'::text) THEN false WHEN ((deputy.\"Special\")::text = '5'::text) THEN false WHEN ((deputy.\"Special\")::text = '6'::text) THEN true WHEN ((deputy.\"Special\")::text = '0'::text) THEN false ELSE NULL::boolean END END)"
+           |                                 Plans:
+           |                                   - Node Type: "Hash Join"
+           |                                     Parent Relationship: "Outer"
+           |                                     Parallel Aware: false
+           |                                     Join Type: "Left"
+           |                                     Startup Cost: 35711.13
+           |                                     Total Cost: 162123.45
+           |                                     Plan Rows: 140003
+           |                                     Plan Width: 358
+           |                                     Inner Unique: false
+           |                                     Hash Cond: "(deputyship.\"Deputy No\" = deputy.\"Deputy No\")"
+           |                                     Plans:
+           |                                       - Node Type: "Hash Join"
+           |                                         Parent Relationship: "Outer"
+           |                                         Parallel Aware: false
+           |                                         Join Type: "Inner"
+           |                                         Startup Cost: 27364.94
+           |                                         Total Cost: 35634.80
+           |                                         Plan Rows: 140003
+           |                                         Plan Width: 36
+           |                                         Inner Unique: false
+           |                                         Hash Cond: "(deputyship.\"Order No\" = \"order\".\"Order No\")"
+           |                                         Plans:
+           |                                           - Node Type: "Seq Scan"
+           |                                             Parent Relationship: "Outer"
+           |                                             Parallel Aware: false
+           |                                             Relation Name: "deputyship"
+           |                                             Alias: "deputyship"
+           |                                             Startup Cost: 0.00
+           |                                             Total Cost: 3937.15
+           |                                             Plan Rows: 143915
+           |                                             Plan Width: 11
+           |                                           - Node Type: "Hash"
+           |                                             Parent Relationship: "Inner"
+           |                                             Parallel Aware: false
+           |                                             Startup Cost: 24799.71
+           |                                             Total Cost: 24799.71
+           |                                             Plan Rows: 126259
+           |                                             Plan Width: 37
+           |                                             Plans:
+           |                                               - Node Type: "Hash Join"
+           |                                                 Parent Relationship: "Outer"
+           |                                                 Parallel Aware: false
+           |                                                 Join Type: "Left"
+           |                                                 Startup Cost: 12077.74
+           |                                                 Total Cost: 24799.71
+           |                                                 Plan Rows: 126259
+           |                                                 Plan Width: 37
+           |                                                 Inner Unique: false
+           |                                                 Hash Cond: "(\"order\".\"Case\" = pat.\"Case\")"
+           |                                                 Plans:
+           |                                                   - Node Type: "Seq Scan"
+           |                                                     Parent Relationship: "Outer"
+           |                                                     Parallel Aware: false
+           |                                                     Relation Name: "order"
+           |                                                     Alias: "order"
+           |                                                     Startup Cost: 0.00
+           |                                                     Total Cost: 8258.91
+           |                                                     Plan Rows: 126259
+           |                                                     Plan Width: 37
+           |                                                     Filter: "((\"Ord Stat\" <> 'Open'::text) AND (\"Case\" <> ALL ('{12885347,11854030,11509969,11065340,99379589,12138872,11741056,12742084,13097967,1208622T,12913439}'::text[])))"
+           |                                                   - Node Type: "Hash"
+           |                                                     Parent Relationship: "Inner"
+           |                                                     Parallel Aware: false
+           |                                                     Startup Cost: 9397.66
+           |                                                     Total Cost: 9397.66
+           |                                                     Plan Rows: 154166
+           |                                                     Plan Width: 9
+           |                                                     Plans:
+           |                                                       - Node Type: "Seq Scan"
+           |                                                         Parent Relationship: "Outer"
+           |                                                         Parallel Aware: false
+           |                                                         Relation Name: "pat"
+           |                                                         Alias: "pat"
+           |                                                         Startup Cost: 0.00
+           |                                                         Total Cost: 9397.66
+           |                                                         Plan Rows: 154166
+           |                                                         Plan Width: 9
+           |                                       - Node Type: "Hash"
+           |                                         Parent Relationship: "Inner"
+           |                                         Parallel Aware: false
+           |                                         Startup Cost: 5320.75
+           |                                         Total Cost: 5320.75
+           |                                         Plan Rows: 135875
+           |                                         Plan Width: 55
+           |                                         Plans:
+           |                                           - Node Type: "Seq Scan"
+           |                                             Parent Relationship: "Outer"
+           |                                             Parallel Aware: false
+           |                                             Relation Name: "deputy"
+           |                                             Alias: "deputy"
+           |                                             Startup Cost: 0.00
+           |                                             Total Cost: 5320.75
+           |                                             Plan Rows: 135875
+           |                                             Plan Width: 55
+           |                       - Node Type: "Subquery Scan"
+           |                         Parent Relationship: "Member"
+           |                         Parallel Aware: false
+           |                         Alias: "*SELECT* 2"
+           |                         Startup Cost: 232824.32
+           |                         Total Cost: 232824.42
+           |                         Plan Rows: 1
+           |                         Plan Width: 385
+           |                         Plans:
+           |                           - Node Type: "Unique"
+           |                             Parent Relationship: "Subquery"
+           |                             Parallel Aware: false
+           |                             Startup Cost: 232824.32
+           |                             Total Cost: 232824.40
+           |                             Plan Rows: 1
+           |                             Plan Width: 357
+           |                             Plans:
+           |                               - Node Type: "Sort"
+           |                                 Parent Relationship: "Outer"
+           |                                 Parallel Aware: false
+           |                                 Startup Cost: 232824.32
+           |                                 Total Cost: 232824.33
+           |                                 Plan Rows: 1
+           |                                 Plan Width: 357
+           |                                 Sort Key:
+           |                                   - "cases.caserecnumber"
+           |                                   - "(NULLIF(btrim((cases.casesubtype)::text), ''::text))"
+           |                                   - "cases.orderdate"
+           |                                   - "(NULLIF(btrim((persons.email)::text), ''::text))"
+           |                                   - "(NULLIF(btrim((persons.salutation)::text), ''::text))"
+           |                                   - "(NULLIF(btrim((persons.firstname)::text), ''::text))"
+           |                                   - "(NULLIF(btrim((persons.surname)::text), ''::text))"
+           |                                   - "persons.correspondencebypost"
+           |                                   - "persons.correspondencebyphone"
+           |                                   - "persons.correspondencebyemail"
+           |                                   - "(NULLIF(btrim((persons.type)::text), ''::text))"
+           |                                   - "persons.systemstatus"
+           |                                   - "persons.isreplacementattorney"
+           |                                   - "persons.istrustcorporation"
+           |                                   - "(NULLIF(btrim((persons.previousnames)::text), ''::text))"
+           |                                   - "persons.correspondencebywelsh"
+           |                                   - "(NULLIF(btrim((persons.mobilenumber)::text), ''::text))"
+           |                                   - "persons.newsletter"
+           |                                   - "persons.specialcorrespondencerequirements_audiotape"
+           |                                   - "persons.specialcorrespondencerequirements_largeprint"
+           |                                   - "persons.specialcorrespondencerequirements_hearingimpaired"
+           |                                   - "persons.specialcorrespondencerequirements_spellingofnamerequirescare"
+           |                                   - "persons.isorganisation"
+           |                                   - "(NULLIF(btrim((persons.deputytype)::text), ''::text))"
+           |                                   - "persons.supervisioncaseowner_id"
+           |                                   - "(NULLIF(btrim((persons.clientsource)::text), ''::text))"
+           |                                   - "persons.updateddate"
+           |                                 Plans:
+           |                                   - Node Type: "Nested Loop"
+           |                                     Parent Relationship: "Outer"
+           |                                     Parallel Aware: false
+           |                                     Join Type: "Inner"
+           |                                     Startup Cost: 1.00
+           |                                     Total Cost: 232824.31
+           |                                     Plan Rows: 1
+           |                                     Plan Width: 357
+           |                                     Inner Unique: true
+           |                                     Plans:
+           |                                       - Node Type: "Nested Loop"
+           |                                         Parent Relationship: "Outer"
+           |                                         Parallel Aware: false
+           |                                         Join Type: "Inner"
+           |                                         Startup Cost: 0.43
+           |                                         Total Cost: 232820.60
+           |                                         Plan Rows: 1
+           |                                         Plan Width: 19
+           |                                         Inner Unique: true
+           |                                         Plans:
+           |                                           - Node Type: "Seq Scan"
+           |                                             Parent Relationship: "Outer"
+           |                                             Parallel Aware: false
+           |                                             Relation Name: "order_deputy"
+           |                                             Alias: "order_deputy"
+           |                                             Startup Cost: 0.00
+           |                                             Total Cost: 2741.96
+           |                                             Plan Rows: 148096
+           |                                             Plan Width: 8
+           |                                           - Node Type: "Index Scan"
+           |                                             Parent Relationship: "Inner"
+           |                                             Parallel Aware: false
+           |                                             Scan Direction: "Forward"
+           |                                             Index Name: "cases_pkey"
+           |                                             Relation Name: "cases"
+           |                                             Alias: "cases"
+           |                                             Startup Cost: 0.43
+           |                                             Total Cost: 1.55
+           |                                             Plan Rows: 1
+           |                                             Plan Width: 23
+           |                                             Index Cond: "(id = order_deputy.order_id)"
+           |                                             Filter: "((caserecnumber)::text <> ALL ('{12885347,11854030,11509969,11065340,99379589,12138872,11741056,12742084,13097967,1208622T,12913439}'::text[]))"
+           |                                       - Node Type: "Index Scan"
+           |                                         Parent Relationship: "Inner"
+           |                                         Parallel Aware: false
+           |                                         Scan Direction: "Forward"
+           |                                         Index Name: "persons_pkey"
+           |                                         Relation Name: "persons"
+           |                                         Alias: "persons"
+           |                                         Startup Cost: 0.56
+           |                                         Total Cost: 2.11
+           |                                         Plan Rows: 1
+           |                                         Plan Width: 89
+           |                                         Index Cond: "(id = order_deputy.deputy_id)"
+           |                                         Filter: "(((type)::text = 'actor_deputy'::text) AND ((clientsource)::text = 'CASRECMIGRATION'::text))"
+
+
+

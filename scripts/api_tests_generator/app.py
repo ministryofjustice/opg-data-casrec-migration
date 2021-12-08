@@ -36,7 +36,7 @@ csvs = [
     "supervision_level",
     "client_death_notifications",
     "deputy_death_notifications",
-    "deputy_warnings",
+    # "deputy_warnings",
     "client_warnings",
     "crec",
     "visits",
@@ -109,13 +109,13 @@ def create_a_session(base_url, password):
 
 def get_entity_ids(csv_type, caserecnumber, engine, conn):
     person_id_sql = f"""
-        SELECT id
+        SELECT id as id
         FROM persons
         WHERE caserecnumber = '{caserecnumber}'
         AND clientsource = 'CASRECMIGRATION'"""
 
     order_id_sql = f"""
-        SELECT c.id
+        SELECT c.id as id
         FROM persons p
         INNER join cases c
         on c.client_id = p.id
@@ -142,8 +142,8 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
         elif entity_ids.rowcount < 1:
             print(f"No matching rows for {caserecnumber}")
         else:
-            entity_id = entity_ids.one().values()[0]
-            ids.append(entity_id)
+            for entity_id in entity_ids.mappings():
+                ids.append(entity_id["id"])
     elif csv_type in [
         "orders",
         "bonds",
@@ -160,8 +160,9 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
         if entity_ids.rowcount < 1:
             print(f"No matching rows for {caserecnumber}")
         else:
-            for entity_id_row in entity_ids:
-                entity_id = entity_id_row.values()[0]
+            for entity_id_row in entity_ids.mappings():
+                entity_id = entity_id_row["id"]
+
                 if csv_type in [
                     "deputies",
                     "deputy_clients",
@@ -218,6 +219,14 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
 #         response_var = []
 #         pass
 #     return response_var
+
+
+def rationalise(v):
+    response_var = str(v)
+    if response_var is None:
+        response_var = ""
+
+    return response_var
 
 
 def restructure_text(col, dedupe):
@@ -339,7 +348,7 @@ def get_response_json(
     )
 
     if print_extra_info:
-        print(response.text)
+        # print(response.text)
         print(response.status_code)
 
     return json.loads(response.text)
@@ -361,13 +370,14 @@ def get_line_structure_object_from_json_blocks(
     json_path_expression = parse(json_locator)
 
     for match in json_path_expression.find(response_as_json):
+        rationalised_match = rationalise(match.value)
         try:
             line_structure["api_result"] = (
-                line_structure["api_result"] + match.value + "|"
+                line_structure["api_result"] + rationalised_match + "|"
             )
         except Exception:
             # This handles adding the first occurrence
-            line_structure["api_result"] = match.value + "|"
+            line_structure["api_result"] = rationalised_match + "|"
 
     return line_structure
 
