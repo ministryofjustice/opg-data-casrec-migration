@@ -96,6 +96,7 @@ class BaseConfig:
         "remarks",
         "reporting",
         "tasks",
+        "timeline",
         "visits",
         "warnings",
         "death",

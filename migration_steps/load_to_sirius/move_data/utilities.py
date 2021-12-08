@@ -22,6 +22,7 @@ SPECIAL_CASES = [
     "finance_remission_exemption",
     "annual_report_logs",
     "annual_report_type_assignments",
+    "timeline_event",
 ]
 
 
@@ -48,6 +49,9 @@ def handle_special_cases(table_name, df):
         df["order_id"] = df["order_id"].astype("Int64")
     if table_name == "annual_report_type_assignments":
         df["annualreport_id"] = df["annualreport_id"].astype("Int64")
+    if table_name == "timeline_event":
+        log.debug("Reformatting timeline_event.event to json")
+        df["event"] = df["event"].apply(json.dumps)
     return df
 
 
