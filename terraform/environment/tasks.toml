@@ -188,7 +188,7 @@
                 "Command": ["python3", "prepare/filter_data/app/app.py"]
             }]
         },
-        "TaskDefinition":"${casrec-task-definition-filter-data}"
+        "TaskDefinition":"${casrec-task-definition-prepare}"
       },
       "migration-transform":{
         "Cluster":"${casrec-cluster}",
