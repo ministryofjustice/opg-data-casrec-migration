@@ -92,12 +92,15 @@ def main(verbose, correfs, clear):
     else:
         log.info("No Corref filtering requested")
 
-    log.info(f"Deleting data associated with cases in cases_to_filter_out table")
-    execute_sql_file(
-        sql_path,
-        "delete_filtered_source_data.sql",
-        conn_source,
-    )
+    if pilot_cases or filtered_correfs:
+        log.info(f"Deleting data associated with cases in cases_to_filter_out table")
+        execute_sql_file(
+            sql_path,
+            "delete_filtered_source_data.sql",
+            conn_source,
+        )
+    else:
+        log.info("Nothing to delete from source data")
 
 
 if __name__ == "__main__":
