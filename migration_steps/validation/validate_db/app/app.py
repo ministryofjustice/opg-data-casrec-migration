@@ -651,13 +651,23 @@ def clear_local_temp_sql():
         os.mkdir(sql_path_temp)
 
 
-def analyse():
+def vacuum_and_analyse():
     conn_target = psycopg2.connect(config.get_db_connection_string("target"))
     cursor = conn_target.cursor()
-    sql = "ANALYSE VERBOSE;"
-    cursor.execute(sql)
-    for notice in conn_target.notices:
-        log.debug(notice)
+    tables_to_vacuum = get_list_of_tables()
+    old_isolation_level = conn_target.isolation_level
+    conn_target.set_isolation_level(0)
+    for table in tables_to_vacuum:
+        sql = f"VACUUM (ANALYZE) {table};"
+        try:
+            cursor.execute(sql)
+            for notice in conn_target.notices:
+                log.debug(notice)
+            log.debug(f"Ran vacuum and analyse on table: public.{table}")
+        except psycopg2.errors.UndefinedTable:
+            log.debug(f"Non existant table: {table}. Skipping...")
+            pass
+    conn_target.set_isolation_level(old_isolation_level)
     cursor.close()
     conn_target.close()
 
@@ -817,8 +827,8 @@ def main(team, staging):
     set_validation_target()
 
     if not is_staging:
-        log.info("RUN ANALYSE ON SIRIUS")
-        analyse()
+        log.info("RUN SELECTIVE VACCUUM AND ANALYSE ON SIRIUS")
+        vacuum_and_analyse()
 
     log.info("RUN PRE VALIDATION")
     pre_validation()
