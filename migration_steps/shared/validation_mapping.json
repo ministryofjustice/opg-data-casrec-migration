@@ -428,7 +428,7 @@
                 "persons.type = 'actor_client'",
                 "persons.clientsource = 'CASRECMIGRATION'",
                 "warnings.warningtype = 'Other'",
-                "warnings.warningtext NOT IN ('Casrec Migration - SAAR Check Warning', 'Casrec Migration - No Debt to be chased')"
+                "(warnings.warningtext NOT IN ('Casrec Migration - SAAR Check Warning', 'Casrec Migration - No Debt to be chased') OR warnings.warningtext IS NULL)"
             ]
         },
         "manual_checks": {
@@ -1238,6 +1238,52 @@
             "where_clauses": [
                 "finance_ledger_allocation.source = 'CASRECMIGRATION'"
             ]
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
+    },
+    "timeline_event": {
+        "exclude": [],
+        "casenumber_source": "",
+        "orderby": {},
+        "casrec": {
+            "from_table": "Pat",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "",
+            "where_clauses": []
+        },
+        "sirius": {
+            "from_table": "timeline_event",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "",
+            "where_clauses": []
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
+    },
+    "person_timeline": {
+        "exclude": [],
+        "casenumber_source": "",
+        "orderby": {},
+        "casrec": {
+            "from_table": "Pat",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "",
+            "where_clauses": []
+        },
+        "sirius": {
+            "from_table": "person_timeline",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "",
+            "where_clauses": []
         },
         "manual_checks": {
           "column": "",

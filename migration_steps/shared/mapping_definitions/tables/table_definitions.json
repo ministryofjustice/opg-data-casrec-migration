@@ -610,6 +610,18 @@
         "table_transforms": {},
         "table_type": "join"
     },
+    "person_timeline": {
+        "destination_table_name": "person_timeline",
+        "entity_name": "timeline",
+        "required_entities": "",
+        "source_conditions": {},
+        "source_table_additional_columns": [
+            ""
+        ],
+        "source_table_name": "",
+        "table_transforms": {},
+        "table_type": "data"
+    },
     "person_warning": {
         "destination_table_name": "person_warning",
         "entity_name": "warnings",
@@ -661,6 +673,21 @@
             "Status"
         ],
         "source_table_name": "sup_activity",
+        "table_transforms": {},
+        "table_type": "data"
+    },
+    "timeline_event": {
+        "destination_table_name": "timeline_event",
+        "entity_name": "timeline",
+        "required_entities": "",
+        "source_conditions": {},
+        "source_table_additional_columns": [
+            "Case",
+            "Title",
+            "Forename",
+            "Surname"
+        ],
+        "source_table_name": "pat",
         "table_transforms": {},
         "table_type": "data"
     },
