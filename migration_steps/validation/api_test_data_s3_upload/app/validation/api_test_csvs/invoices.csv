@@ -1,5 +1,0 @@
-endpoint,entity_ref,json_locator,test_purpose,api_response
-/api/v1/finance/{id}/invoices,10041221,["feeType"],dev_api_tests,B3
-/api/v1/finance/{id}/invoices,10162667,["reference"],dev_api_tests,AD51849/19|B200201/19
-/api/v1/finance/{id}/invoices,10015105,["ledgerEntryAllocations"][*]["ledgerEntry"]["dateTime"],dev_api_tests,2020-08-24T00:00:00+00:00|2020-08-24T00:00:00+00:00
-/api/v1/finance/{id}/invoices,10050512,["amount"],dev_api_tests,320

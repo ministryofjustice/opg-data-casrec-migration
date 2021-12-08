@@ -23,8 +23,6 @@ db_conn_string = config.get_db_connection_string("target")
 engine = create_engine(db_conn_string)
 response_dir = "responses"
 
-result_list = []
-
 csvs = [
     "deputy_fee_payer",
     "clients",
@@ -36,7 +34,7 @@ csvs = [
     "supervision_level",
     "client_death_notifications",
     "deputy_death_notifications",
-    # "deputy_warnings",
+    "deputy_warnings",
     "client_warnings",
     "crec",
     "visits",
@@ -53,25 +51,6 @@ search_headers = [
     "json_locator",
     "test_purpose",
 ]
-
-entities_of_type_list = [
-    "deputy_warnings",
-    "client_warnings",
-    "invoices",
-    "tasks",
-    "visits",
-    "deputy_notes",
-    "client_notes",
-]
-
-entity_further = {
-    "tasks": {
-        "list_in_field": "tasks",
-    },
-    "client_notes": {
-        "list_in_field": "notes",
-    },
-}
 
 
 def get_session(base_url, user, password):
@@ -183,47 +162,9 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
     return ids
 
 
-# def rationalise_json_value(v, json_block):
-#     try:
-#         response_var = eval(v)
-#         if response_var is None:
-#             response_var = ""
-#         else:
-#             response_var = str(response_var).replace(",", "")
-#     except IndexError:
-#         response_var = ""
-#         pass
-#     except KeyError:
-#         response_var = ""
-#         pass
-#     except TypeError:
-#         response_var = ""
-#         pass
-#     return response_var
-#
-#
-# def rationalise_list_response(v, json_block):
-#     try:
-#         response_var = eval(v)
-#         if response_var is None:
-#             response_var = []
-#         else:
-#             pass
-#     except IndexError:
-#         response_var = []
-#         pass
-#     except KeyError:
-#         response_var = []
-#         pass
-#     except TypeError:
-#         response_var = []
-#         pass
-#     return response_var
-
-
 def rationalise(v):
     response_var = str(v)
-    if response_var is None:
+    if v is None:
         response_var = ""
 
     return response_var
@@ -348,15 +289,13 @@ def get_response_json(
     )
 
     if print_extra_info:
-        # print(response.text)
+        print(response.text)
         print(response.status_code)
 
     return json.loads(response.text)
 
 
-def get_line_structure_object_from_json_blocks(
-    response_as_json, row, line_structure, csv, json_locator
-):
+def get_line_structure(response_as_json, row, line_structure, csv, json_locator):
     for search_header in search_headers:
         row_value_from_input_csv = eval(f'row["{search_header}"]')
         try:
@@ -380,25 +319,6 @@ def get_line_structure_object_from_json_blocks(
             line_structure["api_result"] = rationalised_match + "|"
 
     return line_structure
-
-
-# def get_json_block_results(json_block, json_locator):
-#     global result_list
-#     json_locator_parts = json_locator.split("[*]", 1)
-#     front_part = json_locator_parts[0]
-#     if len(json_locator_parts) > 1:
-#         back_part = json_locator_parts[1]
-#     else:
-#         back_part = None
-#
-#     json_value = f"json_block{front_part}"
-#     if back_part:
-#         response = rationalise_list_response(json_value, json_block)
-#         for r in response:
-#             get_json_block_results(r, back_part)
-#     else:
-#         response = rationalise_json_value(json_value, json_block)
-#         result_list.append(response)
 
 
 def deduplicate_and_clean(line_structure, csv):
@@ -463,7 +383,7 @@ def main():
             for entity_id in entity_ids:
                 endpoint_final = get_endpoint_final(entity_id, endpoint, csv)
                 response_as_json = get_response_json(sirius_app_session, endpoint_final)
-                line_structure = get_line_structure_object_from_json_blocks(
+                line_structure = get_line_structure(
                     response_as_json, row, line_structure, csv, json_locator
                 )
 

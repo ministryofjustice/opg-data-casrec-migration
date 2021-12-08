@@ -1,3 +1,0 @@
-endpoint,entity_ref,json_locator,test_purpose,api_response
-/api/v1/persons/{id}/death-notification,10002199,["proofOfDeathReceived"],dev_api_tests,True
-/api/v1/persons/{id}/death-notification,10001403,["dateDeathCertificateReceived"],dev_api_tests,26/08/2017|26/08/2017

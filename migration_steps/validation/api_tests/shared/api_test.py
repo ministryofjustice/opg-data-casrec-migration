@@ -7,6 +7,7 @@ import os
 import boto3
 import io
 import logging
+from jsonpath_ng import parse
 from datetime import datetime
 import pandas as pd
 from flatten_json import flatten
@@ -30,11 +31,8 @@ class ApiTests:
     def __init__(self):
         self.csv = None
         self.identifier = None
-        self.assert_on_list = None
-        self.list_in_field = None
         self.no_retries = None
         self.assert_on_count = None
-        self.result_list = []
         self.host = os.environ.get("DB_HOST")
         self.ci = os.getenv("CI")
         self.base_url = os.environ.get("SIRIUS_FRONT_URL")
@@ -290,14 +288,29 @@ class ApiTests:
 
         return response_text
 
-    def get_json_items_to_loop_through(self, json_object):
-        items_to_loop_through = []
-        if self.assert_on_list:
-            for list_item in json_object:
-                items_to_loop_through.append(list_item)
-        else:
-            items_to_loop_through.append(json_object)
-        return items_to_loop_through
+    def rationalise(self, v):
+        response_var = str(v)
+        if v is None:
+            response_var = ""
+
+        return response_var
+
+    def get_line_structure(self, line_structure, response_text, json_locator):
+        if response_text:
+            response_as_json = json.loads(response_text)
+            json_path_expression = parse(json_locator)
+
+            for match in json_path_expression.find(response_as_json):
+                rationalised_match = self.rationalise(match.value)
+                try:
+                    line_structure["api_result"] = (
+                        line_structure["api_result"] + rationalised_match + "|"
+                    )
+                except Exception:
+                    # This handles adding the first occurrence
+                    line_structure["api_result"] = rationalised_match + "|"
+
+        return line_structure
 
     def get_formatted_api_response(
         self, entity_ids, endpoint, json_locator, row, entity_ref
@@ -305,53 +318,18 @@ class ApiTests:
         log.debug(
             f"get_formatted_api_response: entity_ids: {entity_ids} entity_ref: {entity_ref} endpoint {endpoint}"
         )
-        response_struct = {}
+        response_structure = {}
         for entity_id in entity_ids:
             endpoint_final = self.get_endpoint_final(entity_id, endpoint)
             self.api_log(f"Checking responses from: {endpoint_final}")
 
             response_text = self.get_response_object(endpoint_final)
-            if response_text:
-                json_obj = json.loads(response_text)
+            response_structure = self.get_line_structure(
+                response_structure, response_text, json_locator
+            )
 
-                if self.list_in_field:
-                    json_obj = json_obj[self.list_in_field]
-
-                json_items_to_loop_through = self.get_json_items_to_loop_through(
-                    json_obj
-                )
-
-                for json_item_to_inspect in json_items_to_loop_through:
-                    self.result_list = []
-                    self.get_json_block_results(json_item_to_inspect, json_locator)
-
-                    for result in self.result_list:
-                        try:
-                            response_struct[json_locator] = (
-                                response_struct[json_locator] + result + "|"
-                            )
-                        except Exception:
-                            response_struct[json_locator] = result + "|"
-
-        log.debug(f"returning: {response_struct}")
-        return response_struct
-
-    def get_json_block_results(self, json_item_to_inspect, json_locator):
-        json_locator_parts = json_locator.split("[*]", 1)
-        front_part = json_locator_parts[0]
-        if len(json_locator_parts) > 1:
-            back_part = json_locator_parts[1]
-        else:
-            back_part = None
-
-        json_value = f"json_item_to_inspect{front_part}"
-        if back_part:
-            response = self.rationalise_list_response(json_value, json_item_to_inspect)
-            for r in response:
-                self.get_json_block_results(r, back_part)
-        else:
-            response = self.rationalise_var(json_value, json_item_to_inspect)
-            self.result_list.append(response)
+        log.debug(f"returning: {response_structure}")
+        return response_structure
 
     def get_count_api_response(self, entity_ids, endpoint, json_locator):
         log.debug(
@@ -365,16 +343,18 @@ class ApiTests:
                 f'{self.session["base_url"]}{endpoint_final}',
                 headers=self.session["headers_dict"],
             )
-            json_obj = json.loads(response.text)
 
-            var_to_eval = f"json_obj{json_locator}"
-            count_of_objects = self.get_count_of_object(var_to_eval, json_obj)
+            response_as_json = json.loads(response.text)
+            json_path_expression = parse(json_locator)
+
+            matches = json_path_expression.find(response_as_json)
+
             try:
-                response_struct[json_locator] = (
-                    response_struct[json_locator] + str(count_of_objects) + "|"
+                response_struct["api_result"] = (
+                    response_struct["api_result"] + str(len(matches)) + "|"
                 )
             except Exception:
-                response_struct[json_locator] = str(count_of_objects) + "|"
+                response_struct["api_result"] = str(len(matches)) + "|"
         log.debug(f"returning: {response_struct}")
         return response_struct
 
@@ -396,60 +376,6 @@ class ApiTests:
         actual_response = self.flat_dict(json_obj, ignore_list)
         expected_response = self.flat_dict(content_decoded, ignore_list)
         assert str(actual_response).lower() == str(expected_response).lower()
-
-    def rationalise_var(self, v, json_item_to_inspect):
-        try:
-            response_var = eval(v)
-            if response_var is None:
-                response_var = ""
-            else:
-                response_var = str(response_var).replace(",", "")
-        except IndexError:
-            response_var = ""
-            pass
-        except KeyError:
-            response_var = ""
-            pass
-        except TypeError:
-            response_var = ""
-            pass
-        return response_var
-
-    def rationalise_list_response(self, v, json_item_to_inspect):
-        try:
-            response_var = eval(v)
-            if response_var is None:
-                response_var = []
-            else:
-                pass
-        except IndexError:
-            response_var = []
-            pass
-        except KeyError:
-            response_var = []
-            pass
-        except TypeError:
-            response_var = []
-            pass
-        return response_var
-
-    def get_count_of_object(self, v, json_obj):
-        try:
-            response_var = eval(v)
-            if response_var is None:
-                count = 0
-            else:
-                count = len(response_var)
-        except IndexError:
-            count = 0
-            pass
-        except KeyError:
-            count = 0
-            pass
-        except TypeError:
-            count = 0
-            pass
-        return count
 
     def restructure_text(self, col):
         col_restructured = sorted(col.split("|"))
@@ -522,14 +448,14 @@ class ApiTests:
         log.debug(f"returning: {endpoint_final}")
         return endpoint_final
 
-    def assert_on_fields(self, json_locator, formatted_api_response, row, entity_ref):
+    def assert_on_fields(self, formatted_api_response, row, entity_ref, json_locator):
         # Where we have multiple entity_ids we need rationalise the grouped responses
-        col_restruct_text = self.restructure_text(formatted_api_response[json_locator])
-        formatted_api_response[json_locator] = col_restruct_text
+        col_restruct_text = self.restructure_text(formatted_api_response["api_result"])
+        formatted_api_response["api_result"] = col_restruct_text
         # Check through each value in spreadsheet for that row against each value in our response struct
 
         expected = self.replace_nan(str(row["api_response"]).lower())
-        actual = str(formatted_api_response[json_locator]).lower()
+        actual = str(formatted_api_response["api_result"]).lower()
         try:
             assert expected == actual
         except AssertionError:
@@ -590,7 +516,7 @@ class ApiTests:
     def run_response_tests(self):
         self.api_log(f"Starting tests against '{self.csv}'")
 
-        s3_csv_path = f"validation/api_test_csvs/{self.csv}.csv"
+        s3_csv_path = f"validation/api_tests/{self.csv}.csv"
         try:
             obj = self.session["s3_sess"].get_object(
                 Bucket=self.bucket_name, Key=s3_csv_path
@@ -624,7 +550,7 @@ class ApiTests:
             if formatted_api_response:
                 # Loop through and check expected results against actual for each field
                 self.assert_on_fields(
-                    json_locator, formatted_api_response, row, entity_ref
+                    formatted_api_response, row, entity_ref, json_locator
                 )
             else:
                 self.api_log("empty dictionary returned!")

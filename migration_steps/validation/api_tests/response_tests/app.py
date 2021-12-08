@@ -66,25 +66,11 @@ def main():
             {"csv": "invoices", "identifier": "client", "assert_on_list": True},
         ],
         "tasks": [
-            {
-                "csv": "tasks",
-                "identifier": "client",
-                "assert_on_list": True,
-                "list_in_field": "tasks",
-            },
+            {"csv": "tasks", "identifier": "client"},
         ],
         "remarks": [
-            {
-                "csv": "deputy_notes",
-                "identifier": "deputy",
-                "assert_on_list": True,
-            },
-            {
-                "csv": "client_notes",
-                "identifier": "client",
-                "assert_on_list": True,
-                "list_in_field": "notes",
-            },
+            {"csv": "deputy_notes", "identifier": "deputy"},
+            {"csv": "client_notes", "identifier": "client"},
         ],
     }
 
@@ -100,14 +86,8 @@ def main():
             api_tests.csv = test["csv"]
             api_tests.identifier = test["identifier"]
             api_tests.no_retries = "no_retries" in test and test["no_retries"] is True
-            api_tests.assert_on_list = (
-                "assert_on_list" in test and test["assert_on_list"] is True
-            )
             api_tests.assert_on_count = (
                 "assert_on_count" in test and test["assert_on_count"] is True
-            )
-            api_tests.list_in_field = (
-                test["list_in_field"] if "list_in_field" in test else None
             )
             api_tests.run_response_tests()
     api_tests.upload_log_file()

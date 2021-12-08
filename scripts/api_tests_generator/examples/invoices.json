@@ -30,7 +30,7 @@
 },
 {
 	"id": 3,
-	"feeType": "AD",
+	"feeType": null,
 	"reference": "AD51780\/19",
 	"raisedDate": "18\/03\/2020",
 	"startDate": "18\/03\/2020",
