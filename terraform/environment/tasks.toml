@@ -184,7 +184,7 @@
         },
         "Overrides": {
             "ContainerOverrides": [{
-                "Name": "filter_data",
+                "Name": "etl0",
                 "Command": ["python3", "prepare/filter_data/app/app.py"]
             }]
         },
