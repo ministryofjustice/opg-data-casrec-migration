@@ -136,24 +136,25 @@ class BaseConfig:
             log.error("No entities allowed")
             os._exit(1)
 
-    def get_filtered_lay_team(self, env, console_team):
-        filter_team = ""
+    def get_filtered_correfs(self, env, console_correfs):
+        filter_correfs = ""
 
         if env in ["development", "preproduction", "preqa", "qa", "production"]:
-            param_team = get_paramstore_value(f"{env}-lay-team")
-            if param_team in ["0", "all", "All", "ALL"]:
-                log.info(f"No filtering requested, proceed with migrating ALL.")
+            param_correfs = get_paramstore_value(f"{env}-correfs")
+            if param_correfs == "0":
+                log.info(f"No filtering requested, proceed with migrating all Correfs.")
             else:
-                filter_team = param_team
-                log.info(
-                    f"Lay Team filtering specified in param store: Team {param_team}"
-                )
+                filter_correfs = param_correfs
+                log.info(f"Corref filtering specified in param store: {filter_correfs}")
 
-        if console_team:
-            log.info(f"Lay Team filtering requested at runtime: Team {console_team}")
-            filter_team = console_team
+        if console_correfs:
+            filter_correfs = console_correfs
+            log.info(f"Corref filtering requested at runtime: {console_correfs}")
 
-        return filter_team
+        if not filter_correfs:
+            return []
+
+        return [corref.strip() for corref in filter_correfs.split(",")]
 
 
 class LocalConfig(BaseConfig):

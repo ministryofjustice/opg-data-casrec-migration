@@ -114,12 +114,3 @@ def insert_order_deputies(db_config, target_db, mapping_file):
         target_db.create_empty_table(
             sirius_details=sirius_details, df=empty_data_frame.df
         )
-
-    except Exception as e:
-        log.debug(
-            "No data to insert",
-            extra={
-                "file_name": "",
-                "error": format_error_message(e=e),
-            },
-        )

@@ -47,7 +47,7 @@ from your endpoint. Just have a look at `get_entity_ids` function and you should
 - This should create an input files that can be used in the main API tests
 - The main completed file now needs to be copied to `migration_steps/api_test_data_s3_upload/app/validation/csvs`
 - Modify the `entities` variable in `migration_steps/validation/response_tests/app.py`. You may have to use
-others as examples here and follow thorugh the code a bit to get an idea of what it does.
+others as examples here and follow through the code a bit to get an idea of what it does.
 - Now when the tests are run it will upload the file to s3 and use it as part of the tests.
 
 You can also generate Preprod API tests though there is zero benefit in doing so unless you pick the right cases out

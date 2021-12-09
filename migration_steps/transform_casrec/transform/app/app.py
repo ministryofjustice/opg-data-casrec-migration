@@ -84,7 +84,7 @@ target_db = InsertData(db_engine=target_db_engine, schema=db_config["target_sche
     default=False,
     help="Clear existing database tables: True or False",
 )
-@click.option("--team", default="")
+@click.option("--correfs", default="")
 @click.option(
     "--chunk_size",
     prompt=False,
@@ -94,13 +94,13 @@ target_db = InsertData(db_engine=target_db_engine, schema=db_config["target_sche
 )
 @mem_tracker
 @timer
-def main(clear, team, chunk_size):
+def main(clear, correfs, chunk_size):
     allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
-    filtered_lay_team = config.get_filtered_lay_team(environment, team)
+    filtered_correfs = config.get_filtered_correfs(environment, correfs)
 
     log.info(log_title(message="Migration Step: Transform Casrec Data"))
     log.debug(f"Environment: {environment}")
-    log.info(f"Lay Team: {filtered_lay_team}")
+    log.info(f"Correfs: {', '.join(filtered_correfs) if filtered_correfs else 'all'}")
     log.info(f"Enabled entities: {', '.join(allowed_entities)}")
     log.info(
         f"Enabled features: {', '.join(config.enabled_feature_flags(environment))}"
@@ -143,7 +143,7 @@ def main(clear, team, chunk_size):
         connection_string=db_config["db_connection_string"],
         destination_schema=db_config["target_schema"],
         enabled_entities=allowed_entities,
-        team=filtered_lay_team,
+        correfs=filtered_correfs,
     )
 
     update_progress(module_name="transform", completed_items=files_used)
@@ -152,6 +152,18 @@ def main(clear, team, chunk_size):
 if __name__ == "__main__":
     t = time.process_time()
 
-    main()
+    try:
+        main()
+    except Exception as e:
+        if environment in ['local', 'dev']:
+            log.exception(e)
+        else:
+            err_str = f"Unexpected error: {type(e).__name__}. Stack trace:"
+            tb = e.__traceback__
+            while tb is not None:
+                err_str += "\n\t" + f"File: {tb.tb_frame.f_code.co_filename}; Line: {tb.tb_lineno}"
+                tb = tb.tb_next
+            log.error(err_str)
+        os._exit(1)
 
     print(f"Total time: {round(time.process_time() - t, 2)}")

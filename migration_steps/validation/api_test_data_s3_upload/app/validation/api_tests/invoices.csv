@@ -1,0 +1,5 @@
+endpoint,entity_ref,json_locator,test_purpose,api_response
+/api/v1/finance/{id}/invoices,13547686,[*].feeType,dev_api_tests,AD
+/api/v1/finance/{id}/invoices,13567819,[*].reference,dev_api_tests,AD53590/20
+/api/v1/finance/{id}/invoices,94029163,[*].ledgerEntryAllocations.[*].ledgerEntry.dateTime,dev_api_tests,2020-03-23T00:00:00+00:00
+/api/v1/finance/{id}/invoices,13082997,[*].amount,dev_api_tests,100|320

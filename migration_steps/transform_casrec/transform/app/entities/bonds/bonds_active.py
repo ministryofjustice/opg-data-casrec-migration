@@ -68,6 +68,3 @@ def insert_bonds_active(target_db, db_config, mapping_file):
                 )
                 break
             continue
-
-        except Exception:
-            break

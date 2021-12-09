@@ -65,6 +65,3 @@ def insert_cases(db_config, target_db, mapping_file):
                 )
                 break
             continue
-
-        except Exception:
-            break

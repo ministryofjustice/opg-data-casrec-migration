@@ -1,0 +1,1 @@
+endpoint,entity_ref,json_locator,test_purpose/api/v1/orders/{id},10003409,latestSupervisionLevel.supervisionLevel.handle,dev_api_tests/api/v1/orders/{id},10006413,latestSupervisionLevel.assetLevel.handle,dev_api_tests

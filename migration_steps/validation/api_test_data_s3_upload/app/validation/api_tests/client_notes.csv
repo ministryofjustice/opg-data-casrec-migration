@@ -1,0 +1,3 @@
+endpoint,entity_ref,json_locator,test_purpose,api_response
+/api/v1/clients/{id}/notes?s&page=1&limit=1,10181803,notes.[*].noteType,dev_api_tests,EVENT_CREATED
+/api/v1/clients/{id}/notes?s&page=1&limit=1,10181803,notes.[*].direction,dev_api_tests,INTERNAL

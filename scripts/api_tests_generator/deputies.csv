@@ -1,1 +1,0 @@
-endpoint,entity_ref,json_locator,test_purpose/api/v1/deputies/{id},10000037,["correspondenceByPhone"],dev_api_tests/api/v1/deputies/{id},10000884,["surname"],dev_api_tests

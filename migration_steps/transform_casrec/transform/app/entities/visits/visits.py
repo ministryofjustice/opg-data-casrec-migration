@@ -70,7 +70,3 @@ def insert_visits(db_config, target_db, mapping_file):
                 )
                 break
             continue
-
-        except Exception as e:
-            log.error(f"Unexpected error: {e}")
-            os._exit(1)

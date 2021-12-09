@@ -1,0 +1,1 @@
+endpoint,entity_ref,json_locator,test_purpose/api/v1/clients/{id},10000884,riskScore,dev_api_tests/api/v1/clients/{id},10001668,riskScore,dev_api_tests/api/v1/clients/{id},10004879,riskScore,dev_api_tests

@@ -69,6 +69,3 @@ def insert_deputy_notes(db_config, target_db, mapping_file):
                 )
                 break
             continue
-
-        except Exception:
-            break

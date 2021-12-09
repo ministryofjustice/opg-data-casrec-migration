@@ -1,0 +1,4 @@
+endpoint,entity_ref,json_locator,test_purpose,api_response
+/api/v1/deputy/{id}/notes,10050512,[*].noteType,dev_api_tests,EVENT_CREATED|EVENT_CREATED
+/api/v1/deputy/{id}/notes,10051890,[*].direction,dev_api_tests,INTERNAL|INTERNAL
+/api/v1/deputy/{id}/notes,10053723,[*].createdTime,dev_api_tests,11/10/2016 10:23:41|11/10/2016 10:23:41
