@@ -508,6 +508,7 @@ workflows:
           requires: [migration - validation preproduction]
           tf_workspace: preproduction
           runner_command: migration-response-api-tests
+          notify_validation_fails: true
           filters: {branches:{only:[master]}}
       - tag_image_for_environment:
           name: tag image for qa
@@ -984,41 +985,39 @@ jobs:
       - notififications/notify_env_vars
       - notififications/notify_if_fail
 
-  run_step_function:
-    executor: migration/python
+  run_task:
+    executor: terraform/terraform
     resource_class: small
     parameters:
       tf_workspace:
         description: terraform workspace
         type: string
         default: "development"
-      account:
-        description: account to run step function in
+      runner_command:
+        description: ecs command to run
         type: string
-        default: "development"
-      wait_for:
-        description: how long to wait for step function to finish
+        default: "api-tests"
+      timeout:
+        description: runner timeout
         type: string
-        default: "1800"
+        default: "10800"
       notify_validation_fails:
         description: if we want to send validation failures
         type: boolean
         default: false
     environment:
-      SIRIUS_ACCOUNT: << parameters.account >>
       TF_WORKSPACE: << parameters.tf_workspace >>
-      WAIT_FOR: << parameters.wait_for >>
-      AWS_CONFIG_FILE: ~/project/aws_config
+    working_directory: ~/project/terraform/environment
     steps:
-      - checkout
+      - checkout:
+          path: ~/project
+      - attach_workspace: {at: ~/project}
+      - terraform/install
+      - terraform/setup_ecs_runner
       - run:
-          name: install requirements
-          command: pip3 install -r requirements-rsf.txt
-          working_directory: ~/project/scripts/ci_scripts
-      - run:
-          name: run the function
-          command: python3 run_step_function.py --role migrations-ci --account ${SIRIUS_ACCOUNT} --wait_for ${WAIT_FOR} --workspace ${TF_WORKSPACE}
-          working_directory: ~/project/scripts/ci_scripts
+          name: Run task
+          command: ecs-runner -task << parameters.runner_command >> -timeout << parameters.timeout >>
+          no_output_timeout: 60m
       - when:
           condition: << parameters.notify_validation_fails >>
           steps:
@@ -1037,38 +1036,6 @@ jobs:
                   echo "export V_ERR_4=${line4}" >> $BASH_ENV
                   echo "export V_ERR_5=${line5}" >> $BASH_ENV
             - notififications/notify_validation_results
-      - notififications/notify_env_vars
-      - notififications/notify_if_fail
-
-  run_task:
-    executor: terraform/terraform
-    resource_class: small
-    parameters:
-      tf_workspace:
-        description: terraform workspace
-        type: string
-        default: "development"
-      runner_command:
-        description: ecs command to run
-        type: string
-        default: "api-tests"
-      timeout:
-        description: runner timeout
-        type: string
-        default: "7200"
-    environment:
-      TF_WORKSPACE: << parameters.tf_workspace >>
-    working_directory: ~/project/terraform/environment
-    steps:
-      - checkout:
-          path: ~/project
-      - attach_workspace: {at: ~/project}
-      - terraform/install
-      - terraform/setup_ecs_runner
-      - run:
-          name: Run task
-          command: ecs-runner -task << parameters.runner_command >> -timeout << parameters.timeout >>
-          no_output_timeout: 60m
       - notififications/notify_env_vars
       - notififications/notify_if_fail
 
@@ -1117,28 +1084,6 @@ jobs:
       - run:
           name: Run functional api tests task
           command: ecs-runner -task migration-functional-api-tests -timeout << parameters.timeout >>
-      - notififications/notify_env_vars
-      - notififications/notify_if_fail
-
-  run_behat_tests:
-    executor: terraform/terraform
-    resource_class: small
-    parameters:
-      tf_workspace:
-        description: terraform workspace
-        type: string
-        default: "development"
-    environment:
-      TF_WORKSPACE: << parameters.tf_workspace >>
-    working_directory: ~/project/terraform/environment
-    steps:
-      - checkout:
-          path: ~/project
-      - terraform/install
-      - terraform/setup_ecs_runner
-      - run:
-          name: Run behat tests
-          command: ecs-runner -task behat-migration -timeout 600
       - notififications/notify_env_vars
       - notififications/notify_if_fail
 
