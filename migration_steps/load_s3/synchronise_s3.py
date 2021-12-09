@@ -124,6 +124,9 @@ def main(environment):
     s3 = s3_session.client("s3")
     local_data_path = current_path / csv_dir_suffix
 
+    if not os.path.isdir(local_data_path):
+        os.makedirs(local_data_path)
+
     # envcheck
     # todo not sure this covers all envs?
     if environment == "development":
