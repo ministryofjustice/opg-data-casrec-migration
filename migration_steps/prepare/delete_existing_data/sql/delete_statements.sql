@@ -11,6 +11,14 @@ WHERE p.type = 'actor_client' and (caseactorgroup <> 'CLIENT-PILOT-ONE' or casea
 
 CREATE UNIQUE INDEX stub_person_id_idx ON deletions.base_clients_persons (id);
 
+CREATE TABLE IF NOT EXISTS deletions.pilot_one_feepayers (feepayer_id int);
+INSERT INTO deletions.pilot_one_feepayers (feepayer_id)
+SELECT distinct p.feepayer_id
+FROM persons p
+WHERE p.type = 'actor_client' and caseactorgroup = 'CLIENT-PILOT-ONE';
+
+CREATE UNIQUE INDEX stub_pilot_one_feepayers_idx ON deletions.pilot_one_feepayers (feepayer_id);
+
 CREATE TABLE IF NOT EXISTS deletions.temp_documents_on_cases(
     documentId int,
     caseType VARCHAR(255),
@@ -474,9 +482,15 @@ WHERE id in (
  SELECT id FROM deletions.base_clients_persons
 );
 
+UPDATE persons p set feepayer_id = null
+WHERE id in (
+ SELECT id FROM deletions.deletions_deputy_person
+);
+
 DELETE FROM persons a
 USING deletions.deletions_deputy_person b
-WHERE a.id = b.id;
+WHERE a.id = b.id
+AND a.id NOT IN (SELECT feepayer_id FROM deletions.pilot_one_feepayers);
 
 DELETE FROM order_deputy a
 USING deletions.deletions_deputy_person b
