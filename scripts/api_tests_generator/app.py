@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
+from jsonpath_ng import parse
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../migration_steps/shared")
@@ -28,7 +29,6 @@ csvs = [
     "orders",
     "bonds",
     "deputies",
-    "deputy_fee_payer",
     "deputy_orders",
     "deputy_clients",
     "supervision_level",
@@ -39,7 +39,7 @@ csvs = [
     "crec",
     "visits",
     "reports",
-    "invoice",
+    "invoices",
     "tasks",
     "deputy_notes",
     "client_notes",
@@ -51,25 +51,6 @@ search_headers = [
     "json_locator",
     "test_purpose",
 ]
-
-entities_of_type_list = [
-    "deputy_warnings",
-    "client_warnings",
-    "invoices",
-    "tasks",
-    "visits",
-    "deputy_notes",
-    "client_notes",
-]
-
-entity_further = {
-    "tasks": {
-        "list_in_field": "tasks",
-    },
-    "client_notes": {
-        "list_in_field": "notes",
-    },
-}
 
 
 def get_session(base_url, user, password):
@@ -107,13 +88,13 @@ def create_a_session(base_url, password):
 
 def get_entity_ids(csv_type, caserecnumber, engine, conn):
     person_id_sql = f"""
-        SELECT id
+        SELECT id as id
         FROM persons
         WHERE caserecnumber = '{caserecnumber}'
         AND clientsource = 'CASRECMIGRATION'"""
 
     order_id_sql = f"""
-        SELECT c.id
+        SELECT c.id as id
         FROM persons p
         INNER join cases c
         on c.client_id = p.id
@@ -140,8 +121,8 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
         elif entity_ids.rowcount < 1:
             print(f"No matching rows for {caserecnumber}")
         else:
-            entity_id = entity_ids.one().values()[0]
-            ids.append(entity_id)
+            for entity_id in entity_ids.mappings():
+                ids.append(entity_id["id"])
     elif csv_type in [
         "orders",
         "bonds",
@@ -158,8 +139,9 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
         if entity_ids.rowcount < 1:
             print(f"No matching rows for {caserecnumber}")
         else:
-            for entity_id_row in entity_ids:
-                entity_id = entity_id_row.values()[0]
+            for entity_id_row in entity_ids.mappings():
+                entity_id = entity_id_row["id"]
+
                 if csv_type in [
                     "deputies",
                     "deputy_clients",
@@ -180,22 +162,9 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
     return ids
 
 
-def rationalise_json_value(v, json_block):
-    try:
-        response_var = eval(v)
-        if response_var is None:
-            response_var = ""
-        else:
-            response_var = str(response_var).replace(",", "")
-    except IndexError:
-        response_var = ""
-        pass
-    except KeyError:
-        response_var = ""
-        pass
-    except TypeError:
-        response_var = ""
-        pass
+def rationalise(v):
+    response_var = "" if v is None else str(v)
+
     return response_var
 
 
@@ -324,50 +293,28 @@ def get_response_json(
     return json.loads(response.text)
 
 
-def get_list_of_json_blocks_from_response(csv, response_as_json):
-    json_blocks_to_loop_through = []
-
-    try:
-        list_in_field = entity_further[csv]["list_in_field"]
-        response_as_json = response_as_json[list_in_field]
-    except Exception:
-        pass
-
-    if print_extra_info:
-        print(response_as_json)
-
-    if csv in entities_of_type_list:
-        for sub_json_block in response_as_json:
-            json_blocks_to_loop_through.append(sub_json_block)
-    else:
-        json_blocks_to_loop_through.append(response_as_json)
-
-    return json_blocks_to_loop_through
-
-
-def get_line_structure_object_from_json_blocks(
-    json_blocks_to_loop_through, row, line_structure, csv, json_locator
-):
-    for json_block in json_blocks_to_loop_through:
-        for search_header in search_headers:
-            row_value_from_input_csv = eval(f'row["{search_header}"]')
-            try:
-                line_structure[search_header] = (
-                    line_structure[search_header] + row_value_from_input_csv + "|"
-                )
-            except Exception:
-                # This handles adding the first occurrence
-                line_structure[search_header] = row_value_from_input_csv + "|"
-
-        json_value = f"json_block{json_locator}"
-        rationalised_json_value = rationalise_json_value(json_value, json_block)
+def get_line_structure(response_as_json, row, line_structure, csv, json_locator):
+    for search_header in search_headers:
+        row_value_from_input_csv = eval(f'row["{search_header}"]')
         try:
-            line_structure["api_result"] = (
-                line_structure["api_result"] + rationalised_json_value + "|"
+            line_structure[search_header] = (
+                line_structure[search_header] + row_value_from_input_csv + "|"
             )
         except Exception:
             # This handles adding the first occurrence
-            line_structure["api_result"] = rationalised_json_value + "|"
+            line_structure[search_header] = row_value_from_input_csv + "|"
+
+    json_path_expression = parse(json_locator)
+
+    for match in json_path_expression.find(response_as_json):
+        rationalised_match = rationalise(match.value)
+        try:
+            line_structure["api_result"] = (
+                line_structure["api_result"] + rationalised_match + "|"
+            )
+        except Exception:
+            # This handles adding the first occurrence
+            line_structure["api_result"] = rationalised_match + "|"
 
     return line_structure
 
@@ -418,7 +365,7 @@ def main():
         with open(f"{response_dir}/{csv}.csv", "w") as csv_out_file:
             csv_out_file.write(full_header_line)
 
-        input_csv_data = pd.read_csv(f"{csv}.csv", dtype=str)
+        input_csv_data = pd.read_csv(f"input_files/{csv}.csv", dtype=str)
 
         for index, row in input_csv_data.iterrows():
             endpoint = row["endpoint"]
@@ -434,11 +381,8 @@ def main():
             for entity_id in entity_ids:
                 endpoint_final = get_endpoint_final(entity_id, endpoint, csv)
                 response_as_json = get_response_json(sirius_app_session, endpoint_final)
-                json_blocks_from_response = get_list_of_json_blocks_from_response(
-                    csv, response_as_json
-                )
-                line_structure = get_line_structure_object_from_json_blocks(
-                    json_blocks_from_response, row, line_structure, csv, json_locator
+                line_structure = get_line_structure(
+                    response_as_json, row, line_structure, csv, json_locator
                 )
 
             line_structure = deduplicate_and_clean(line_structure, csv)

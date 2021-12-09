@@ -44,7 +44,7 @@ def main():
 
     s3 = get_s3_session(session, environment, host, ci=ci, account=account)
 
-    path = "validation/api_test_csvs"
+    path = "validation/api_tests"
     for file in os.listdir(current_path / path):
         file_path = f"{current_path}/{path}/{file}"
         s3_file_path = f"{path}/{file}"

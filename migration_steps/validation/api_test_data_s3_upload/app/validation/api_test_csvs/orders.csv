@@ -1,5 +1,0 @@
-endpoint,entity_ref,json_locator,test_purpose,api_response
-/api/v1/orders/{id},10003409,["client"]["firstname"],dev_api_tests,Patricia|Patricia|Patricia
-/api/v1/orders/{id},10006413,["client"]["dob"],dev_api_tests,24/05/1978|24/05/1978
-/api/v1/orders/{id},10007163,["orderStatus"]["handle"],dev_api_tests,ACTIVE|CLOSED
-/api/v1/orders/{id},10007261,["orderSubtype"]["handle"],dev_api_tests,NEW DEPUTY|REPLACEMENT

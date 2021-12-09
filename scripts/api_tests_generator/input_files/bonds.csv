@@ -1,0 +1,1 @@
+endpoint,entity_ref,json_locator,test_purpose/api/v1/orders/{id},10000884,securityBond,dev_api_test/api/v1/orders/{id},10001403,bond.requiredBondAmount,dev_api_test/api/v1/orders/{id},10001668,bond.amountTaken,dev_api_test

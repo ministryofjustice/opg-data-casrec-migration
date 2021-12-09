@@ -1,0 +1,35 @@
+[{
+	"id": 999,
+	"type": {
+		"handle": "CREDIT EXEMPTION",
+		"label": "Credit Exemption"
+	},
+	"reference": "c2da6dd8-259c-4149-92df-999999999",
+	"dateTime": "2021-07-22T14:15:22+00:00",
+	"method": "Exemption credit for invoice S2000999\/20",
+	"amount": 172.71,
+	"amountAllocated": 172.71,
+	"amountUnallocated": 0,
+	"status": {
+		"handle": "APPROVED",
+		"label": "Approved"
+	},
+	"notes": "Credit due to approved exemption",
+	"ledgerEntryAllocations": [{
+		"allowedActions": [],
+		"id": 908,
+		"invoice": {
+			"id": 1850
+		},
+		"reference": "S2000999\/0Z",
+		"dateTime": "2020-07-22T14:15:22+00:00",
+		"amount": 172.71,
+		"status": {
+			"handle": "ALLOCATED",
+			"label": "Applied"
+		},
+		"allocatedDate": "09\/09\/2021"
+	}],
+	"childLedgerEntries": [],
+	"allowedActions": []
+}]

@@ -1,6 +1,0 @@
-endpoint,entity_ref,json_locator,test_purpose,api_response
-/api/v1/clients/{id},10000037,["clientAccommodation"]["handle"],accomodation_housing_assoc,HOUSING ASSOCIATION
-/api/v1/clients/{id},10000884,["clientAccommodation"]["handle"],accomodation_housing_private,PRIVATE RENTED
-/api/v1/clients/{id},10001403,["clientAccommodation"]["handle"],accomodation_housing_care,CARE/NURSING/RESIDENTIAL HOME (PRIVATE/LA/REGISTERED)
-/api/v1/clients/{id},10001668,["salutation"],title_miss,Ms
-/api/v1/clients/{id},10002199,["salutation"],title_master,Master

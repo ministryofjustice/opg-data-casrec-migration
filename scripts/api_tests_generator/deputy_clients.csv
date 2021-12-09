@@ -1,3 +1,0 @@
-endpoint,entity_ref,json_locator,test_purpose
-/api/v1/deputies/{id}/clients,10000037,["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"],dev_api_tests
-/api/v1/deputies/{id}/clients,10000884,["persons"][0]["orders"][0]["deputies"][0]["relationshipToClient"]["label"],dev_api_tests

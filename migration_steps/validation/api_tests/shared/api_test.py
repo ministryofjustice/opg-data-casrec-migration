@@ -7,6 +7,7 @@ import os
 import boto3
 import io
 import logging
+from jsonpath_ng import parse
 from datetime import datetime
 import pandas as pd
 from flatten_json import flatten
@@ -30,8 +31,6 @@ class ApiTests:
     def __init__(self):
         self.csv = None
         self.identifier = None
-        self.assert_on_list = None
-        self.list_in_field = None
         self.no_retries = None
         self.assert_on_count = None
         self.host = os.environ.get("DB_HOST")
@@ -39,6 +38,9 @@ class ApiTests:
         self.base_url = os.environ.get("SIRIUS_FRONT_URL")
         self.account = os.environ["SIRIUS_ACCOUNT"]
         self.environment = os.environ.get("ENVIRONMENT")
+        self.log_assert_to_screen = (
+            True if os.environ.get("ENVIRONMENT") in ["local", "development"] else False
+        )
         env_users = {
             "local": "case.manager@opgtest.com",
             "development": "case.manager@opgtest.com",
@@ -152,11 +154,9 @@ class ApiTests:
         ids = []
         entity_ids = self.engine.execute(sql)
         if entity_ids.rowcount > 1:
-            self.api_log(f"Too many matching rows for {caserecnumber}")
-            self.failed = True
+            self.api_log(f"Too many matching rows for {caserecnumber}", error=True)
         elif entity_ids.rowcount < 1:
-            self.api_log(f"No matching rows for {caserecnumber}")
-            self.failed = True
+            self.api_log(f"No matching rows for {caserecnumber}", error=True)
         else:
             entity_id = entity_ids.one()._mapping["id"]
             ids.append(entity_id)
@@ -181,8 +181,7 @@ class ApiTests:
         ids = []
         entity_ids = self.engine.execute(sql)
         if entity_ids.rowcount < 1:
-            self.api_log(f"No matching rows for {caserecnumber}")
-            self.failed = True
+            self.api_log(f"No matching rows for {caserecnumber}", error=True)
         else:
             for entity_id_row in entity_ids:
                 entity_id = entity_id_row._mapping["id"]
@@ -203,8 +202,7 @@ class ApiTests:
         ids = []
         entity_ids = self.engine.execute(sql)
         if entity_ids.rowcount < 1:
-            self.api_log(f"No matching rows for {caserecnumber}")
-            self.failed = True
+            self.api_log(f"No matching rows for {caserecnumber}", error=True)
         else:
             for entity_id_row in entity_ids:
                 entity_id = entity_id_row._mapping["id"]
@@ -250,8 +248,7 @@ class ApiTests:
         entity_ids = self.get_entity_ids(entity_ref)
 
         if len(entity_ids) == 0:
-            self.api_log(f"No ids found for '{self.csv}', nothing to test")
-            self.failed = True
+            self.api_log(f"No ids found for '{self.csv}', nothing to test", error=True)
         log.debug(f"returning: {entity_ids}")
         return entity_ids
 
@@ -270,8 +267,10 @@ class ApiTests:
                 self.api_log(
                     f"Failed request to {endpoint_final} with status {status_code}."
                 )
+                return None
             elif status_code == 404:
                 self.api_log(f"No entity to pull back on this route. This is expected!")
+                return None
         else:
             while (status_code > 201 or response_text is None) and retry_count < 5:
                 response = self.session["sess"].get(
@@ -289,14 +288,27 @@ class ApiTests:
 
         return response_text
 
-    def get_json_items_to_loop_through(self, json_object):
-        items_to_loop_through = []
-        if self.assert_on_list:
-            for list_item in json_object:
-                items_to_loop_through.append(list_item)
-        else:
-            items_to_loop_through.append(json_object)
-        return items_to_loop_through
+    def rationalise(self, v):
+        response_var = "" if v is None else str(v)
+
+        return response_var
+
+    def get_line_structure(self, line_structure, response_text, json_locator):
+        if response_text:
+            response_as_json = json.loads(response_text)
+            json_path_expression = parse(json_locator)
+
+            for match in json_path_expression.find(response_as_json):
+                rationalised_match = self.rationalise(match.value)
+                try:
+                    line_structure["api_result"] = (
+                        line_structure["api_result"] + rationalised_match + "|"
+                    )
+                except Exception:
+                    # This handles adding the first occurrence
+                    line_structure["api_result"] = rationalised_match + "|"
+
+        return line_structure
 
     def get_formatted_api_response(
         self, entity_ids, endpoint, json_locator, row, entity_ref
@@ -304,33 +316,18 @@ class ApiTests:
         log.debug(
             f"get_formatted_api_response: entity_ids: {entity_ids} entity_ref: {entity_ref} endpoint {endpoint}"
         )
-        response_struct = {}
+        response_structure = {}
         for entity_id in entity_ids:
             endpoint_final = self.get_endpoint_final(entity_id, endpoint)
             self.api_log(f"Checking responses from: {endpoint_final}")
 
             response_text = self.get_response_object(endpoint_final)
-            json_obj = json.loads(response_text)
+            response_structure = self.get_line_structure(
+                response_structure, response_text, json_locator
+            )
 
-            if self.list_in_field:
-                json_obj = json_obj[self.list_in_field]
-
-            json_items_to_loop_through = self.get_json_items_to_loop_through(json_obj)
-
-            for json_item_to_inspect in json_items_to_loop_through:
-                var_to_eval = f"json_item_to_inspect{json_locator}"
-                rationalised_var = self.rationalise_var(
-                    var_to_eval, json_item_to_inspect
-                )
-                try:
-                    response_struct[json_locator] = (
-                        response_struct[json_locator] + rationalised_var + "|"
-                    )
-                except Exception:
-                    response_struct[json_locator] = rationalised_var + "|"
-
-        log.debug(f"returning: {response_struct}")
-        return response_struct
+        log.debug(f"returning: {response_structure}")
+        return response_structure
 
     def get_count_api_response(self, entity_ids, endpoint, json_locator):
         log.debug(
@@ -344,16 +341,18 @@ class ApiTests:
                 f'{self.session["base_url"]}{endpoint_final}',
                 headers=self.session["headers_dict"],
             )
-            json_obj = json.loads(response.text)
 
-            var_to_eval = f"json_obj{json_locator}"
-            count_of_objects = self.get_count_of_object(var_to_eval, json_obj)
+            response_as_json = json.loads(response.text)
+            json_path_expression = parse(json_locator)
+
+            matches = json_path_expression.find(response_as_json)
+
             try:
-                response_struct[json_locator] = (
-                    response_struct[json_locator] + str(count_of_objects) + "|"
+                response_struct["api_result"] = (
+                    response_struct["api_result"] + str(len(matches)) + "|"
                 )
             except Exception:
-                response_struct[json_locator] = str(count_of_objects) + "|"
+                response_struct["api_result"] = str(len(matches)) + "|"
         log.debug(f"returning: {response_struct}")
         return response_struct
 
@@ -375,42 +374,6 @@ class ApiTests:
         actual_response = self.flat_dict(json_obj, ignore_list)
         expected_response = self.flat_dict(content_decoded, ignore_list)
         assert str(actual_response).lower() == str(expected_response).lower()
-
-    def rationalise_var(self, v, json_item_to_inspect):
-        try:
-            response_var = eval(v)
-            if response_var is None:
-                response_var = ""
-            else:
-                response_var = str(response_var).replace(",", "")
-        except IndexError:
-            response_var = ""
-            pass
-        except KeyError:
-            response_var = ""
-            pass
-        except TypeError:
-            response_var = ""
-            pass
-        return response_var
-
-    def get_count_of_object(self, v, json_obj):
-        try:
-            response_var = eval(v)
-            if response_var is None:
-                count = 0
-            else:
-                count = len(response_var)
-        except IndexError:
-            count = 0
-            pass
-        except KeyError:
-            count = 0
-            pass
-        except TypeError:
-            count = 0
-            pass
-        return count
 
     def restructure_text(self, col):
         col_restructured = sorted(col.split("|"))
@@ -483,28 +446,32 @@ class ApiTests:
         log.debug(f"returning: {endpoint_final}")
         return endpoint_final
 
-    def assert_on_fields(self, json_locator, formatted_api_response, row, entity_ref):
+    def assert_on_fields(self, formatted_api_response, row, entity_ref, json_locator):
         # Where we have multiple entity_ids we need rationalise the grouped responses
-        col_restruct_text = self.restructure_text(formatted_api_response[json_locator])
-        formatted_api_response[json_locator] = col_restruct_text
+        col_restruct_text = self.restructure_text(formatted_api_response["api_result"])
+        formatted_api_response["api_result"] = col_restruct_text
         # Check through each value in spreadsheet for that row against each value in our response struct
 
         expected = self.replace_nan(str(row["api_response"]).lower())
-        actual = str(formatted_api_response[json_locator]).lower()
+        actual = str(formatted_api_response["api_result"]).lower()
         try:
             assert expected == actual
         except AssertionError:
             self.api_log(
                 f"""
+                The following assertion has failed...
                 Case: {entity_ref}
-                Field: {json_locator}"""
+                Field: {json_locator}""",
+                error=True,
             )
             self.api_log(
-                f"""Expected: {expected}
-                Actual: {actual}""",
-                False,
+                f"""
+                Expected: {expected}
+                Actual: {actual}
+                """,
+                error=True,
+                log_to_screen=self.log_assert_to_screen,
             )
-            self.failed = True
 
     def remove_dynamic_keys(self, dict, keys):
         for key in keys:
@@ -526,9 +493,13 @@ class ApiTests:
 
         return final_dict
 
-    def api_log(self, message, log_to_screen=True):
+    def api_log(self, message, error=False, log_to_screen=True):
         if log_to_screen:
-            log.info(message)
+            if error:
+                log.error(message)
+                self.failed = True
+            else:
+                log.info(message)
         self.api_result_lines.append(message + "\n")
 
     def upload_log_file(self):
@@ -543,7 +514,7 @@ class ApiTests:
     def run_response_tests(self):
         self.api_log(f"Starting tests against '{self.csv}'")
 
-        s3_csv_path = f"validation/api_test_csvs/{self.csv}.csv"
+        s3_csv_path = f"validation/api_tests/{self.csv}.csv"
         try:
             obj = self.session["s3_sess"].get_object(
                 Bucket=self.bucket_name, Key=s3_csv_path
@@ -577,7 +548,7 @@ class ApiTests:
             if formatted_api_response:
                 # Loop through and check expected results against actual for each field
                 self.assert_on_fields(
-                    json_locator, formatted_api_response, row, entity_ref
+                    formatted_api_response, row, entity_ref, json_locator
                 )
             else:
                 self.api_log("empty dictionary returned!")
@@ -623,7 +594,9 @@ class ApiTests:
         try:
             assert expected_status == actual_status
         except AssertionError:
-            self.api_log(f"Expected: {expected_status} but got {actual_status}")
+            self.api_log(
+                f"Expected: {expected_status} but got {actual_status}", error=True
+            )
             self.failed = True
 
     def run_functional_test(self, entity, entity_setup_object):

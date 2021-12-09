@@ -1,3 +1,0 @@
-endpoint,entity_ref,json_locator,test_purpose
-/api/v1/orders/{id1}/deputies/{id2},10007163,["feePayer"],dev_api_tests
-/api/v1/orders/{id1}/deputies/{id2},10317585,["feePayer"],dev_api_tests

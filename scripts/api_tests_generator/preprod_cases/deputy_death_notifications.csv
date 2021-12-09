@@ -1,6 +1,6 @@
 endpoint,entity_ref,json_locator,test_purpose
-/api/v1/persons/{id}/death-notification,10002199,["proofOfDeathReceived"],deputy_proof_true
-/api/v1/persons/{id}/death-notification,10001403,["dateDeathCertificateReceived"],deputy_cert_received_date_not_null
-/api/v1/persons/{id}/death-notification,10008713,["dateLetterSentOut"],deputy_letter_sent_out_date
-/api/v1/persons/{id}/death-notification,10011968,["notifiedBy"]["handle"],deputy_notified_by_other
-/api/v1/persons/{id}/death-notification,10376251,["notificationMethod"],deputy_notified_how_email
+/api/v1/persons/{id}/death-notification,10002199,proofOfDeathReceived,deputy_proof_true
+/api/v1/persons/{id}/death-notification,10001403,dateDeathCertificateReceived,deputy_cert_received_date_not_null
+/api/v1/persons/{id}/death-notification,10008713,dateLetterSentOut,deputy_letter_sent_out_date
+/api/v1/persons/{id}/death-notification,10011968,notifiedBy.handle,deputy_notified_by_other
+/api/v1/persons/{id}/death-notification,10376251,notificationMethod,deputy_notified_how_email

@@ -1,3 +1,0 @@
-endpoint,entity_ref,json_locator,test_purpose,api_response
-/api/v1/orders/{id1}/deputies/{id2},10000037,["relationshipToClient"]["handle"],dev_api_tests,PARENT|PARENT
-/api/v1/orders/{id1}/deputies/{id2},10000884,["relationshipToClient"]["handle"],dev_api_tests,SIBLING

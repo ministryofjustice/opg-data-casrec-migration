@@ -1,11 +1,13 @@
 FROM opg_casrec_migration_base_image:latest
 RUN apt-get install -y postgresql-client
+COPY validation/requirements.txt /validation/requirements.txt
+RUN pip3 install -r /validation/requirements.txt
 COPY validation/validate.sh /validation/validate.sh
 COPY validation/api_tests.sh /validation/api_tests.sh
 COPY validation/functional_api_tests.sh /validation/functional_api_tests.sh
 COPY validation/validate_db /validation/validate_db
 COPY validation/post_migration_tests /validation/post_migration_tests
-COPY validation/api_tests validation/api_tests
-COPY validation/api_test_data_s3_upload validation/api_test_data_s3_upload
+COPY validation/api_tests /validation/api_tests
+COPY validation/api_test_data_s3_upload /validation/api_test_data_s3_upload
 COPY shared /shared
 CMD ["echo", "NO_OP"]

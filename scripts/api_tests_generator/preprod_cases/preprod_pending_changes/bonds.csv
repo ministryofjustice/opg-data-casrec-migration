@@ -1,9 +1,9 @@
 endpoint,entity_ref,json_locator,test_purpose
-/api/v1/orders/{id},10012240,["bond"]["companyName"],bond_company_security_dispensed_with
-/api/v1/orders/{id},10013560,["bond"]["companyName"],bond_company_security_dispensed_with
-/api/v1/orders/{id},10015094,["bond"]["companyName"],bond_company_security_dispensed_with
-/api/v1/orders/{id},10020349,["bond"]["companyName"],bond_company_security_dispensed_with
-/api/v1/orders/{id},10012240,["bond"]["status"],bond_company_security_dispensed_with
-/api/v1/orders/{id},10013560,["bond"]["status"],bond_company_security_dispensed_with
-/api/v1/orders/{id},10015094,["bond"]["status"],bond_company_security_dispensed_with
-/api/v1/orders/{id},10020349,["bond"]["status"],bond_company_security_dispensed_with
+/api/v1/orders/{id},10012240,bond.companyName,bond_company_security_dispensed_with
+/api/v1/orders/{id},10013560,bond.companyName,bond_company_security_dispensed_with
+/api/v1/orders/{id},10015094,bond.companyName,bond_company_security_dispensed_with
+/api/v1/orders/{id},10020349,bond.companyName,bond_company_security_dispensed_with
+/api/v1/orders/{id},10012240,bond.status,bond_company_security_dispensed_with
+/api/v1/orders/{id},10013560,bond.status,bond_company_security_dispensed_with
+/api/v1/orders/{id},10015094,bond.status,bond_company_security_dispensed_with
+/api/v1/orders/{id},10020349,bond.status,bond_company_security_dispensed_with
