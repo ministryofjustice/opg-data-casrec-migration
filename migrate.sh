@@ -103,6 +103,10 @@ cat docker_load.log
 rm docker_load.log
 echo "=== Step 0 - Filter data ==="
 docker-compose ${COMPOSE_ARGS} run --rm prepare python3 /prepare/filter_data/app/app.py --correfs="${CORREFS}"
+
+# TODO incorporate into existing container/put in correct position among steps etc.
+docker-compose ${COMPOSE_ARGS} run --rm load_casrec_fixtures
+
 echo "=== Step 1 - Transform ==="
 docker-compose ${COMPOSE_ARGS} run --rm transform_casrec transform_casrec/transform.sh --correfs="${CORREFS}"
 echo "=== Step 2 - Integrate with Sirius ==="
