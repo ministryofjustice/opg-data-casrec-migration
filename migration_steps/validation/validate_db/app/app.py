@@ -50,7 +50,12 @@ def get_mappings():
 
     allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
     all_mappings = {
-        "clients": ["client_addresses", "client_persons", "client_phonenumbers"],
+        "clients": [
+            "client_addresses",
+            "client_persons",
+            "client_phonenumbers",
+            "finance_person_ids"
+        ],
         "cases": ["cases"],
         "crec": ["crec_persons"],
         "supervision_level": ["supervision_level_log"],
