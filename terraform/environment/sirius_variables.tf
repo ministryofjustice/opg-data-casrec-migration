@@ -34,11 +34,6 @@ data "aws_ecs_container_definition" "casmigrate_api" {
   container_name  = "api_app"
 }
 
-data "aws_ecs_container_definition" "elasticsearch" {
-  task_definition = "reset-elasticsearch-${local.account.sirius_env}"
-  container_name  = "reset-elasticsearch"
-}
-
 data "aws_region" "current" {}
 
 // Sirius Env Secrets

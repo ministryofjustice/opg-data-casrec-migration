@@ -13,7 +13,7 @@ endpoint,entity_ref,json_locator,test_purpose
 /api/v1/deputies/{id},99268084,surname,surname_exists
 /api/v1/deputies/{id},99171450,addressLine1,address_line_1_exists
 /api/v1/deputies/{id},10199092,mobileNumber,telephone_numbers_mobile
-/api/v1/deputies/{id},10352796,phoneNumbers[*].phoneNumber,telephone_numbers_work
-/api/v1/deputies/{id},10352796,phoneNumbers[*].type,telephone_numbers_type
+/api/v1/deputies/{id},10352796,phoneNumbers.[*].phoneNumber,telephone_numbers_work
+/api/v1/deputies/{id},10352796,phoneNumbers.[*].type,telephone_numbers_type
 /api/v1/deputies/{id},99382470,email,email
 /api/v1/deputies/{id},99114139,postcode,postcode
