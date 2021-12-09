@@ -53,7 +53,3 @@ def insert_fee_reductions(target_db, db_config, mapping_file):
                 target_db.create_empty_table(sirius_details=sirius_details)
                 break
             continue
-
-        except Exception as e:
-            log.error(f"Unexpected error: {e}")
-            os._exit(1)

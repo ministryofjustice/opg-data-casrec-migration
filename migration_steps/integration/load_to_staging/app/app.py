@@ -105,19 +105,19 @@ def update():
 
 
 @click.command()
-@click.option("--team", default="")
+@click.option("--correfs", default="")
 @click.option(
     "--clear",
     prompt=False,
     default=False,
     help="Clear existing database tables: True or False",
 )
-def main(clear, team):
+def main(clear, correfs):
     allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
-    filtered_lay_team = config.get_filtered_lay_team(environment, team)
+    filtered_correfs = config.get_filtered_correfs(environment, correfs)
 
     log.info(log_title(message="Integration Step: Load to Staging"))
-    log.info(log_title(message=f"Team: {filtered_lay_team}"))
+    log.info(log_title(message=f"Correfs: {', '.join(filtered_correfs) if filtered_correfs else 'all'}"))
     log.info(
         log_title(
             message=f"Source: {db_config['source_schema']}, Target: {db_config['target_schema']}, Chunk Size: {db_config['chunk_size']}"
@@ -146,7 +146,7 @@ def main(clear, team):
         connection_string=db_config["db_connection_string"],
         destination_schema=db_config["target_schema"],
         enabled_entities=allowed_entities,
-        team=filtered_lay_team,
+        correfs=filtered_correfs,
     )
 
 

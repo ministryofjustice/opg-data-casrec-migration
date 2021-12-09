@@ -69,7 +69,3 @@ def insert_finance_ledger_credits(target_db, db_config, mapping_file):
                 break
 
             continue
-
-        except Exception as e:
-            log.error(f"Unexpected error: {e}")
-            os._exit(1)

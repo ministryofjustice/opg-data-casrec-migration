@@ -29,7 +29,12 @@ class InsertData:
         self.db_engine = db_engine
         self.schema = schema
         self.empty_string_to_null = empty_string_to_null
-        self.standard_columns = {"casrec_details": "jsonb not null default '{}'::jsonb"}
+        self.standard_columns = {
+            "casrec_details": "jsonb not null default '{}'::jsonb",
+            "casrec_row_id": "text",
+            "casrec_table_name": "text",
+            "casrec_mapping_file_name": "text"
+        }
         self.datatype_remap = {
             "str": "text",
             "date": "timestamp(0)",
@@ -213,8 +218,9 @@ class InsertData:
         for i, col in enumerate(col_diff):
             if col[:2] == "c_":
                 data_type = "text"
+            elif col in self.standard_columns:
+                data_type = self.standard_columns[col]
             else:
-
                 data_type = (
                     self.datatype_remap[mapping_details[col]["data_type"]]
                     if mapping_details[col]["data_type"] in self.datatype_remap

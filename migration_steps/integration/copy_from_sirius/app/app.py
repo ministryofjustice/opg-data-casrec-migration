@@ -51,19 +51,19 @@ custom_logger.setup_logging(
 
 
 @click.command()
-@click.option("--team", default="")
+@click.option("--correfs", default="")
 @click.option(
     "--clear",
     prompt=False,
     default=False,
     help="Clear existing database tables: True or False",
 )
-def main(clear, team):
+def main(clear, correfs):
     allowed_entities = config.allowed_entities(env=os.environ.get("ENVIRONMENT"))
-    filtered_lay_team = config.get_filtered_lay_team(environment, team)
+    filtered_correfs = config.get_filtered_correfs(environment, correfs)
 
     log.info(log_title(message="Integration Step: Copy Sirius data into Staging DB"))
-    log.info(log_title(message=f"Team: {filtered_lay_team}"))
+    log.info(log_title(message=f"Correfs: {', '.join(filtered_correfs) if filtered_correfs else 'all'}"))
     log.info(
         log_title(
             message=f"Source: {db_config['source_schema']}, Target: {db_config['target_schema']}, Chunk Size: {db_config['chunk_size']}"

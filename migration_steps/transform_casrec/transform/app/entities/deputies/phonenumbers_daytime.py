@@ -73,6 +73,3 @@ def insert_phonenumbers_deputies_daytime(db_config, target_db, mapping_file):
                 )
                 break
             continue
-
-        except Exception:
-            break

@@ -47,7 +47,3 @@ def insert_persons_deputies(db_config, target_db, mapping_file):
                 )
                 break
             continue
-
-        except Exception as e:
-            log.debug(f"End of insert_persons_deputies: {e}")
-            break

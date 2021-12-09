@@ -30,6 +30,10 @@ def add_unique_id(
         max_id = df.iloc[0]["max"]
     except Exception:
         max_id = 0
+
+    if max_id is None:
+        max_id = 0
+
     next_id = int(max_id) + 1
 
     source_data_df.insert(

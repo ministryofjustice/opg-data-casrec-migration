@@ -68,7 +68,7 @@ If you clicked "y" you'll now be asked if you want to syncronise the local data 
 If you do then you will need to enter your AWS Vault password and 2FA so you can connect to aws dev s3. If you don't have AWS Vault and 2FA set up, you'll need to grab someone in WebOps
 
 
-Finally, you will be asked if you want to migrate all clients or just those managed by a certain Lay Team. You can leave this at default (all) unless you have a reason not to. See Filtering section below
+Finally, you will be asked if you want to migrate all clients or just those associated with a certain Corref(s). You can leave this at default (all) unless you have a reason not to. See Filtering section below
 
 
 #### No reload
@@ -86,10 +86,10 @@ You should not use this in pipeline if previous build didn't finish.
 
 #### Filtering
 
-By default, all lay clients will be migrated, but you can limit this to those of a certain Lay team in two ways:
+By default, all clients will be migrated, but you can limit this to those of a certain Corref in two ways:
 
-In Env Vars (useful for pipeline/final production) - Specify a number 1-9 in `LAY_TEAM` in docker-compose or leave blank
-At runtime (useful for dev) - you will be promped for a lay team when running `migrate.sh` enter 1-9 or hit return for default All. This will override the env var setting
+In AWS Parameter Store (useful for pipeline/final production) - Specify a comma-separated list of Correfs in `{env-name}-correfs` in AWS Parameter Store or leave 0 to migrate all.
+At runtime (useful for local) - you will be prompted for Correfs when running `migrate.sh` - enter comma-separated list of Correfs or hit return for default All. This will override the env var setting
 
 ## Install Sirius project (optional)
 

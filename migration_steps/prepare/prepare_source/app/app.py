@@ -7,9 +7,9 @@ sys.path.insert(0, str(current_path) + "/../../../shared")
 
 import time
 import psycopg2
-from helpers import get_config
+
 from dotenv import load_dotenv
-from helpers import log_title
+from helpers import log_title, get_config
 from db_helpers import *
 import logging
 import custom_logger
@@ -17,6 +17,7 @@ import click
 
 env_path = current_path / "../../../../.env"
 sql_path = current_path / "sql"
+shared_sql_path = current_path / "../../../shared/sql"
 load_dotenv(dotenv_path=env_path)
 
 environment = os.environ.get("ENVIRONMENT")
@@ -39,31 +40,21 @@ def set_logging_level(verbose):
 
 @click.command()
 @click.option("-v", "--verbose", count=True)
-@click.option("--team", default="")
-@click.option("--clear", prompt=False, default=False)
-def main(verbose, team, clear):
+@click.option("-i", "--preserve_schemas", default="reference")
+def main(verbose, preserve_schemas):
     set_logging_level(verbose)
-    log.info(log_title(message="Filter Data"))
     conn_source = psycopg2.connect(config.get_db_connection_string("migration"))
-    filtered_lay_team = config.get_filtered_lay_team(environment, team)
-
-    if filtered_lay_team:
-        team = "T" + filtered_lay_team
-        log.info(f"Deleting data not associated with lay_team '{team}'")
-        execute_generated_sql(
-            sql_path,
-            "delete_filtered_source_data.template.sql",
-            "{team}",
-            team,
-            conn_source,
-        )
+    log.info("Dropping schemas on Source")
+    delete_all_schemas(log=log, conn=conn_source, preserve_schemas=preserve_schemas)
+    conn_source.close()
 
 
 if __name__ == "__main__":
     t = time.process_time()
 
     log.setLevel(1)
-    log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
+    log.info(log_title(message="Prepare"))
+    log.debug(f"prepare_source (Environment: {os.environ.get('ENVIRONMENT')})")
 
     main()
 

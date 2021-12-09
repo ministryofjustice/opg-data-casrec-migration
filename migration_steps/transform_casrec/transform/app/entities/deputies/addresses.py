@@ -116,6 +116,3 @@ def insert_addresses_deputies(db_config, target_db, mapping_file):
                 )
                 break
             continue
-
-        except Exception:
-            break

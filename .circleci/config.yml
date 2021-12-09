@@ -159,8 +159,14 @@ workflows:
           runner_command: migration-load-casrec
           filters: {branches:{only:[master]}}
       - run_task:
+          name: migration - filter data preproduction
+          requires: [ migration - load casrec preproduction ]
+          tf_workspace: preproduction
+          runner_command: migration-filter-data
+          filters: { branches: { only: [ master ] } }
+      - run_task:
           name: migration - transform preproduction
-          requires: [migration - load casrec preproduction]
+          requires: [migration - filter data preproduction]
           tf_workspace: preproduction
           runner_command: migration-transform
           filters: {branches:{only:[master]}}
@@ -269,8 +275,14 @@ workflows:
           runner_command: migration-load-casrec
           filters: {branches:{only:[master]}}
       - run_task:
+          name: migration - filter data preqa
+          requires: [ migration - load casrec preqa ]
+          tf_workspace: preqa
+          runner_command: migration-filter-data
+          filters: {branches:{only:[master]}}
+      - run_task:
           name: migration - transform preqa
-          requires: [migration - load casrec preqa]
+          requires: [migration - filter data preqa]
           tf_workspace: preqa
           runner_command: migration-transform
           filters: {branches:{only:[master]}}
@@ -348,8 +360,14 @@ workflows:
           runner_command: migration-load-casrec
           filters: {branches:{only:[master]}}
       - run_task:
+          name: migration - filter data qa
+          requires: [ migration - load casrec qa ]
+          tf_workspace: qa
+          runner_command: migration-filter-data
+          filters: {branches:{only:[master]}}
+      - run_task:
           name: migration - transform qa
-          requires: [migration - load casrec qa]
+          requires: [migration - filter data qa]
           tf_workspace: qa
           runner_command: migration-transform
           filters: {branches:{only:[master]}}
@@ -480,8 +498,14 @@ workflows:
           runner_command: migration-load-casrec
           filters: {branches:{only:[master]}}
       - run_task:
+          name: migration - filter data preproduction
+          requires: [ migration - load casrec preproduction ]
+          tf_workspace: preproduction
+          runner_command: migration-filter-data
+          filters: {branches:{only:[master]}}
+      - run_task:
           name: migration - transform preproduction
-          requires: [migration - load casrec preproduction]
+          requires: [migration - filter data preproduction]
           tf_workspace: preproduction
           runner_command: migration-transform
           filters: {branches:{only:[master]}}
@@ -1066,6 +1090,9 @@ jobs:
       - run:
           name: Run load casrec task
           command: ecs-runner -task migration-load-casrec -timeout << parameters.timeout >>
+      - run:
+          name: Run filter data task
+          command: ecs-runner -task migration-filter-data -timeout << parameters.timeout >>
       - run:
           name: Run transform task
           command: ecs-runner -task migration-transform -timeout << parameters.timeout >>

@@ -5,7 +5,7 @@ REBUILD_CASREC_CSV_SCHEMA="y"
 SYNC_CASREC_CSVS="y"
 SKIP_LOAD="false"
 PRESERVE_SCHEMAS=""
-LAY_TEAM=""
+CORREFS=""
 GENERATE_DOCS="false"
 FULL_SIRIUS_APP="n"
 COMPOSE_ARGS=""
@@ -27,12 +27,12 @@ then
     SKIP_LOAD="true"
   fi
 
-  read -rp "Migrate specific Lay Team? (1-9) [All]: " LAY_TEAM
-  if [ "${LAY_TEAM}" == "" ]
+  read -rp "Migrate specific Correfs? (comma-separated list) [All]: " CORREFS
+  if [ "${CORREFS}" == "" ]
   then
-      echo "Migrating ALL Lay teams"
+      echo "Migrating ALL Correfs"
   else
-      echo "Migrating Lay Team ${LAY_TEAM} only"
+      echo "Migrating Correfs ${CORREFS} only"
   fi
 
   read -rp "Migrate to full sirius app? (y/n) [n]: " FULL_SIRIUS_APP
@@ -101,16 +101,18 @@ P4=$!
 wait $P1 $P2 $P3 $P4
 cat docker_load.log
 rm docker_load.log
+echo "=== Step 0 - Filter data ==="
+docker-compose ${COMPOSE_ARGS} run --rm prepare python3 /prepare/filter_data/app/app.py --correfs="${CORREFS}"
 echo "=== Step 1 - Transform ==="
-docker-compose ${COMPOSE_ARGS} run --rm transform_casrec transform_casrec/transform.sh --team="${LAY_TEAM}"
+docker-compose ${COMPOSE_ARGS} run --rm transform_casrec transform_casrec/transform.sh --correfs="${CORREFS}"
 echo "=== Step 2 - Integrate with Sirius ==="
-docker-compose ${COMPOSE_ARGS} run --rm integration integration/integration.sh --team="${LAY_TEAM}"
+docker-compose ${COMPOSE_ARGS} run --rm integration integration/integration.sh --correfs="${CORREFS}"
 echo "=== Step 3 - Validate Staging ==="
-docker-compose ${COMPOSE_ARGS} run --rm validation python3 /validation/validate_db/app/app.py --team="${LAY_TEAM}" --staging
+docker-compose ${COMPOSE_ARGS} run --rm validation python3 /validation/validate_db/app/app.py --correfs="${CORREFS}" --staging
 echo "=== Step 4 - Load to Sirius ==="
 docker-compose ${COMPOSE_ARGS} run --rm load_to_target load_to_sirius/load_to_sirius.sh
 echo "=== Step 5 - Validate Sirius ==="
-docker-compose ${COMPOSE_ARGS} run --rm validation validation/validate.sh --team="${LAY_TEAM}"
+docker-compose ${COMPOSE_ARGS} run --rm validation validation/validate.sh --correfs="${CORREFS}"
 echo "=== Step 6 - API Tests ==="
 docker-compose ${COMPOSE_ARGS} run --rm validation validation/api_tests.sh
 echo "=== Step 7 - Functional API Tests ==="

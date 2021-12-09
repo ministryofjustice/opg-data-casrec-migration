@@ -66,6 +66,3 @@ def insert_client_death_notifications(db_config, target_db, mapping_file):
                 )
                 break
             continue
-
-        except Exception:
-            break
