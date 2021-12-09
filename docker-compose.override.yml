@@ -32,6 +32,11 @@ services:
       - ./migration_steps/load_casrec_schema/app:/load_casrec_schema/app
       - ./migration_steps/shared:/shared
 
+  load_casrec_fixtures:
+    volumes:
+      - ./migration_steps/load_casrec_fixtures/app:/load_casrec_fixtures/app
+      - ./migration_steps/shared:/shared
+
   transform_casrec:
     volumes:
       - ./migration_steps/transform_casrec/transform:/transform_casrec/transform

@@ -63,6 +63,18 @@ services:
       SIRIUS_ACCOUNT: NA
       ACCOUNT_NAME: local
     depends_on: [localstack, casrec_db]
+  load_casrec_fixtures:
+    build:
+      context: ./migration_steps
+      dockerfile: load_casrec_fixtures-dockerfile
+    environment:
+      CASREC_DB_USER: casrec
+      CASREC_DB_PASSWORD: casrec # pragma: allowlist secret
+      CASREC_DB_NAME: casrecmigration
+      CASREC_DB_HOST: casrec_db
+      CASREC_DB_PORT: 5432
+      ENVIRONMENT: local
+    depends_on: [casrec_db]
   transform_casrec:
     build:
       context: ./migration_steps
