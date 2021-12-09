@@ -159,6 +159,22 @@ def get_all_additional_data_files():
     return all_files
 
 
+def get_list_of_tables() -> List:
+    dirname = get_current_directory()
+    file_path = os.path.join(
+        dirname, f"mapping_definitions/tables/table_definitions.json"
+    )
+
+    with open(file_path) as table_data:
+        table_data_dict = json.load(table_data)
+
+    destination_tables = []
+    for t in table_data_dict.items():
+        destination_tables.append(str(t[1]["destination_table_name"]))
+
+    return list(set(destination_tables))
+
+
 def get_table_def(mapping_name: str = None) -> Dict:
     dirname = get_current_directory()
     file_path = os.path.join(

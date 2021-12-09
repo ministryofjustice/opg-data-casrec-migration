@@ -289,9 +289,7 @@ class ApiTests:
         return response_text
 
     def rationalise(self, v):
-        response_var = str(v)
-        if v is None:
-            response_var = ""
+        response_var = "" if v is None else str(v)
 
         return response_var
 

@@ -163,9 +163,7 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
 
 
 def rationalise(v):
-    response_var = str(v)
-    if v is None:
-        response_var = ""
+    response_var = "" if v is None else str(v)
 
     return response_var
 
