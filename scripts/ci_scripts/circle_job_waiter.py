@@ -26,12 +26,12 @@ def get_running_jobs(
         for job in running_jobs_json:
             if job["status"] == "queued" or job["status"] == "running":
                 if job["workflows"]["workflow_id"] != current_workflow_id:
-                    if current_job_committer_date > job["committer_date"]:
-                        if (
-                            "pre" not in job["workflows"]["job_name"]
-                            and "qa" not in job["workflows"]["job_name"]
-                            and "main" not in job["workflows"]["job_name"]
-                        ):
+                    if (
+                        "pre" not in job["workflows"]["job_name"]
+                        and "qa" not in job["workflows"]["job_name"]
+                        and "main" not in job["workflows"]["job_name"]
+                    ):
+                        if current_job_committer_date > job["committer_date"]:
                             print(
                                 f"Job: \"{job['workflows']['job_name']}\", Status: \"{job['status']}\""
                             )
