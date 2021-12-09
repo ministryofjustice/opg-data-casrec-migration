@@ -144,9 +144,9 @@ services:
       - 5555:5432
     environment:
       POSTGRES_USER: api
-      POSTGRES_PASSWORD: api
+      POSTGRES_PASSWORD: api # pragma: allowlist secret
       POSTGRES_DB: api
-      PGPASSWORD: api
+      PGPASSWORD: api # pragma: allowlist secret
   postgres-sirius-restore:
     image: postgres:10.11
     entrypoint: pg_restore
@@ -162,8 +162,8 @@ services:
       - --format=custom
     environment:
       POSTGRES_USER: api
-      POSTGRES_PASSWORD: api
-      PGPASSWORD: api
+      POSTGRES_PASSWORD: api # pragma: allowlist secret
+      PGPASSWORD: api # pragma: allowlist secret
       POSTGRES_DB: api
     depends_on: [postgres-sirius]
   load_to_target:
