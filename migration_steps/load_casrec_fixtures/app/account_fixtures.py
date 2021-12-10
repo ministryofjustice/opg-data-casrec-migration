@@ -9,7 +9,7 @@ from datetime import datetime
 # to map End Date to status and reviewstatus for annual_report_logs
 _now = np.datetime64(datetime.now().strftime("%Y-%m-%d"))
 _end_date_future = np.busday_offset(_now, 7).astype(datetime)
-_end_date_ten_working_days_ago = np.busday_offset(_now, -14).astype(datetime)
+_end_date_ten_working_days_ago = np.busday_offset(_now, -10).astype(datetime)
 _end_date_thirty_working_days_ago = np.busday_offset(_now, -30).astype(datetime)
 _end_date_eighty_working_days_ago = np.busday_offset(_now, -80).astype(datetime)
 
