@@ -329,7 +329,7 @@ fails in the way your were expecting (if testing a failure from preprod).
 
 - Initialises terraform and runs a job that populates a template. This stops us needing to hard code the subnet values etc.
 - Kicks off a container that runs an ECS task. We have added the script to do the anonymising and moving of date to s3
-to the etl0 (prepare job) and this gets called with an override.
+to the etl0 (initialise environments job) and this gets called with an override.
 - ECS task pulls the relevant data, anonymises it, formats it and puts it in a folder in s3 ready for download.
 - We then kick off the synchronise script using preproduction as the environment parameter. This downloads the data locally,
 formats it and merges it with our existing local data.
@@ -348,7 +348,7 @@ Migrations are typically described as 'ETL' (Extract, Transform, Load) but we ar
 The Migration steps, in order, are:
 
 - load_s3
-- prepare
+- initialise_environments
 - load_casrec
 - transform_casrec
 - integration
@@ -359,7 +359,7 @@ The Migration steps, in order, are:
 
 - Runs in local dev only. Takes the anonymised dev data and loads it into an S3 bucket on localdev, so that the next step will find the files in S3 as it does in AWS proper
 
-#### prepare
+#### initialise_environments
 
 - Runs some modifications on our local copy of sirius (dev only)
 - Makes a copy of Sirius `api.public` schema called `pre_migration`. This will be used to hold our migration data before it is ready for loading, providing a final level of assurance that the data will 'fit' Sirius
@@ -498,7 +498,7 @@ There are some other 'safety features' that will need turning off when running t
 - Make sure the latest QA run has been tagged with `production` (this happens as final step of a successful QA run)
 - Remove the `if` clauses in the `integration`, `sirius_load` and `validation` main shell scripts that prevent them from being run on production.
 - Remove the check against `SIRIUS_DB_HOST` and `SIRIUS_FRONT_URL` that sets them to 'NOT_SET' in production
-- In prepare step, take out the check against prod in the `prepare.sh` file
+- In initialise_environments step, take out the check against prod in the `initialise_environments.sh` file
 
 This is the full list of steps and these must be *CHECKED OFF* before running the real migration!!
 
@@ -513,7 +513,7 @@ Commands to run each step individually, still  via docker compose:
 
 ```bash
 docker-compose run --rm load_s3 python3 load_s3_local.py
-docker-compose run --rm prepare prepare/prepare.sh
+docker-compose run --rm initialise_environments initialise_environments/initialise_environments.sh
 docker-compose run --rm load_casrec python3 app.py
 docker-compose run --rm transform_casrec python3 app.py --clear=True
 docker-compose run --rm integration integration/integration.sh
@@ -606,7 +606,7 @@ Several of the steps you can increase the log debugging level with -vv, -vvv etc
 
 ```bash
 python3 migration_steps/load_s3_local.py
-./migration_steps/prepare/prepare.sh -vv
+./migration_steps/initialise_environments/initialise_environments.sh -vv
 python3 migration_steps/load_casrec/app/app.py
 python3 migration_steps/transform_casrec/app/app.py -vv
 ./migration_steps/integration/integration.sh -vv

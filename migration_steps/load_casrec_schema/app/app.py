@@ -22,7 +22,7 @@ config = get_config(environment)
 
 # logging
 log = logging.getLogger("root")
-custom_logger.setup_logging(env=environment, module_name="prepare")
+custom_logger.setup_logging(env=environment, module_name="initialise_environments")
 
 
 def copy_casrec_schema():

@@ -66,7 +66,9 @@ def main(verbose, correfs, clear):
     cursor_target.close()
 
     if pilot_cases:
-        log.info(f"Inserting {len(pilot_cases)} CLIENT-PILOT-ONE cases into cases_to_filter_out table")
+        log.info(
+            f"Inserting {len(pilot_cases)} CLIENT-PILOT-ONE cases into cases_to_filter_out table"
+        )
         values = [f"('{case[0]}', 'pilot')" for case in pilot_cases]
         sql = f"""
             INSERT INTO {config.schemas["pre_transform"]}.cases_to_filter_out (caserecnumber, notes)
