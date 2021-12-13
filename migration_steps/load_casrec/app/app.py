@@ -473,12 +473,15 @@ def main(entities, delay, verbose, skip_load):
             log.info(f'Retrieving "{file_key}" from bucket')
             obj = s3.get_object(Bucket=bucket_name, Key=file_key)
             if file.split(".")[1] == "csv":
-                df = pd.read_csv(io.BytesIO(obj["Body"].read()), keep_default_na=False)
+                df = pd.read_csv(
+                    io.BytesIO(obj["Body"].read()), keep_default_na=False, dtype=str
+                )
             elif file.split(".")[1] == "xlsx":
                 df = pd.read_excel(
                     io.BytesIO(obj["Body"].read()),
                     engine="openpyxl",
                     keep_default_na=False,
+                    dtype=str,
                 )
             else:
                 log.info("Unknown file format")
