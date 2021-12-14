@@ -61,7 +61,7 @@
             "entity": "warnings"
         },
         "transform_casrec": {
-            "casrec_table": "PAT",
+            "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
@@ -86,7 +86,7 @@
             "entity": "warnings"
         },
         "transform_casrec": {
-            "casrec_table": "PAT",
+            "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
@@ -111,9 +111,9 @@
             "entity": "warnings"
         },
         "transform_casrec": {
-            "casrec_table": "PAT",
-            "casrec_column_name": "VWM",
-            "alias": "VWM",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
             "lookup_table": "",
             "default_value": "",
