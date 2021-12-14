@@ -8,5 +8,6 @@ COPY prepare/create_stage_schema /prepare/create_stage_schema
 COPY prepare/case_details_to_s3 /prepare/case_details_to_s3
 COPY prepare/create_skeleton_data /prepare/create_skeleton_data
 COPY prepare/delete_existing_data /prepare/delete_existing_data
+COPY prepare/counts_verification /prepare/counts_verification
 COPY shared /shared
 CMD ["echo", "NO_OP"]
