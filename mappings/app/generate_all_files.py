@@ -16,12 +16,16 @@ def generate_files(spreadsheet_path, destination):
     file_path = os.path.join(dirname, "..", spreadsheet_path)
     excel_df = pd.ExcelFile(file_path)
 
+    all_table_defs = {}
     for sheet in excel_df.sheet_names:
         print(f"sheet: {sheet}")
         df = pd.read_excel(excel_df, sheet_name=sheet)
         if "table_definition" in sheet:
-            create_table_def_json(df=df, name=sheet, destination=destination)
+            new_table_defs = create_table_def_json(df=df, name=sheet)
+            all_table_defs.update(new_table_defs)
         elif "lookup" in sheet:
             create_lookup_table_json(df=df, name=sheet, destination=destination)
         else:
             generate_json_files(df=df, name=sheet, destination=destination)
+
+    return all_table_defs

@@ -3,7 +3,7 @@ import os
 
 
 def create_lookup_table_json(df, name, destination):
-    print(f"creating lookup file: {name}")
+    print(f"--- creating lookup file: {name}")
     df = df[["casrec_code", "sirius_mapping"]]
     df = df.fillna("")
     df = df.set_index("casrec_code")

@@ -187,7 +187,7 @@ def export_single_module_as_json_file(
 
 
 def generate_json_files(df, name, destination):
-    print(f"creating json defs: {name}")
+    print(f"--- creating json defs: {name}")
     module_dict = clean_up_and_convert_to_dict(df=df)
 
     if len(module_dict) > 0:
