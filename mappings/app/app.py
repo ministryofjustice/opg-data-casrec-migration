@@ -45,16 +45,15 @@ def _read_spreadsheets(spreadsheet_dir, dest_dir):
     all_table_defs = {}
 
     for mapping_file_path in glob(os.path.join(spreadsheet_dir, "*.xlsx")):
-        if os.path.isfile(mapping_file_path):
-            if "~$" not in mapping_file_path:
-                print(f"mapping_file: {mapping_file_path}")
+        if "~$" not in mapping_file_path:
+            print(f"mapping_file: {mapping_file_path}")
 
-                new_table_defs = _generate_files(
-                    spreadsheet_dir=mapping_file_path,
-                    dest_dir=dest_dir,
-                )
+            new_table_defs = _generate_files(
+                spreadsheet_dir=mapping_file_path,
+                dest_dir=dest_dir,
+            )
 
-                all_table_defs.update(new_table_defs)
+            all_table_defs.update(new_table_defs)
 
     # write table defs to file
     path = f"./{dest_dir}/tables"
