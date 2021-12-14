@@ -1,5 +1,6 @@
 import os
 import shutil
+from glob import glob
 from config import config
 from generate_all_files import generate_files
 
@@ -19,11 +20,12 @@ def loop_through_files():
 
     remove_old_files()
 
-    for mapping_file in os.listdir(config["SPREADSHEET_PATH"]):
+    for mapping_file_path in glob(os.path.join(config["SPREADSHEET_PATH"], "*.xlsx")):
 
-        if os.path.isfile(os.path.join(config["SPREADSHEET_PATH"], mapping_file)):
-            if mapping_file[:2] != "~$":
-                print(f"mapping_file: {mapping_file}")
+        if os.path.isfile(mapping_file_path):
+            if "~$" not in mapping_file_path:
+                print(f"mapping_file: {mapping_file_path}")
                 generate_files(
-                    spreadsheet_name=mapping_file, destination=config["DEFINITION_PATH"]
+                    spreadsheet_path=mapping_file_path,
+                    destination=config["DEFINITION_PATH"],
                 )

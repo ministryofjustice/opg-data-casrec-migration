@@ -9,13 +9,11 @@ from generate_lookup_table_json import create_lookup_table_json
 from generate_table_defs import create_table_def_json
 
 
-def generate_files(spreadsheet_name, destination):
-    print(f"spreadsheet_name: {spreadsheet_name}")
+def generate_files(spreadsheet_path, destination):
+    print(f"spreadsheet: {spreadsheet_path}")
     dirname = os.path.dirname(__file__)
 
-    file_path = os.path.join(
-        dirname, "..", config["SPREADSHEET_PATH"], spreadsheet_name
-    )
+    file_path = os.path.join(dirname, "..", spreadsheet_path)
     excel_df = pd.ExcelFile(file_path)
 
     for sheet in excel_df.sheet_names:
