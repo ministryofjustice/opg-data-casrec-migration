@@ -1090,8 +1090,6 @@ def insert_finance_person_data_into_sirius(db_config, sirius_db_engine):
     id = get_max_value(table="finance_person", column="id", db_config=db_config)
 
     # Create a finance person for each person.
-    # Intentionally skip creating a finance person for person ID 520, to ensure that finance
-    # entities are still being migrated correctly even if there is no finance person to link them to.
     insert_statement = f"""
         INSERT INTO finance_person (id, person_id, finance_billing_reference, payment_method)
         SELECT
@@ -1099,7 +1097,7 @@ def insert_finance_person_data_into_sirius(db_config, sirius_db_engine):
             id as person_id,
             row_number() over () + 990000 as finance_billing_reference,
             'DEMANDED'
-        from persons where clientsource = 'SKELETON' and id <> 520;
+        from persons where clientsource = 'SKELETON';
     """
     sirius_db_engine.execute(insert_statement)
 
