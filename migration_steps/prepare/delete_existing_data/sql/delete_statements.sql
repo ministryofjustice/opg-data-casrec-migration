@@ -201,6 +201,16 @@ INNER JOIN deletions.base_clients_persons bcp ON bcp.id = c.client_id;
 
 CREATE UNIQUE INDEX deputy_tasks_id_idx ON deletions.deletions_deputy_tasks (id);
 
+CREATE TABLE IF NOT EXISTS deletions.deletions_case_tasks (id int);
+INSERT INTO deletions.deletions_case_tasks (id)
+SELECT t.id
+FROM tasks t
+INNER JOIN caseitem_task ct ON t.id = ct.task_id
+INNER JOIN cases c ON ct.caseitem_id = c.id
+INNER JOIN deletions.base_clients_persons bcp ON bcp.id = c.client_id;
+
+CREATE UNIQUE INDEX case_tasks_id_idx ON deletions.deletions_case_tasks (id);
+
 CREATE TABLE IF NOT EXISTS deletions.deletions_deputy_documents (id int);
 INSERT INTO deletions.deletions_deputy_documents (id)
 SELECT d.id
@@ -333,6 +343,11 @@ WHERE task_id in (
     select id FROM deletions.deletions_client_tasks
 );
 
+UPDATE documents SET task_id = NULL
+WHERE task_id in (
+    select id FROM deletions.deletions_case_tasks
+);
+
 DELETE FROM complaints a
 USING deletions.deletions_client_complaints b
 WHERE a.id = b.id;
@@ -415,6 +430,10 @@ WHERE a.id = b.id;
 
 DELETE FROM tasks a
 USING deletions.deletions_deputy_tasks b
+WHERE a.id = b.id;
+
+DELETE FROM tasks a
+USING deletions.deletions_case_tasks b
 WHERE a.id = b.id;
 
 DELETE FROM person_task a
