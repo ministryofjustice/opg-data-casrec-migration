@@ -127,7 +127,7 @@
         },
         "TaskDefinition": "arn:aws:ecs:eu-west-1:288342028542:task-definition/behat-migration-${cluster}"
       },
-      "migration-prepare":{
+      "migration-initialise-environments":{
         "Cluster":"${casrec-cluster}",
         "LaunchType":"FARGATE",
         "NetworkConfiguration":{
@@ -143,10 +143,10 @@
         "Overrides": {
             "ContainerOverrides": [{
                 "Name": "etl0",
-                "Command": ["prepare/prepare.sh"]
+                "Command": ["initialise_environments/initialise_environments.sh"]
             }]
         },
-        "TaskDefinition":"${casrec-task-definition-prepare}"
+        "TaskDefinition":"${casrec-task-definition-initialise-environments}"
       },
       "migration-load-casrec":{
         "Cluster":"${casrec-cluster}",
@@ -185,10 +185,10 @@
         "Overrides": {
             "ContainerOverrides": [{
                 "Name": "etl0",
-                "Command": ["python3", "prepare/filter_data/app/app.py"]
+                "Command": ["prepare_source_data/prepare_source_data.sh"]
             }]
         },
-        "TaskDefinition":"${casrec-task-definition-prepare}"
+        "TaskDefinition":"${casrec-task-definition-initialise-environments}"
       },
       "migration-transform":{
         "Cluster":"${casrec-cluster}",
@@ -344,7 +344,7 @@
                 ]
             }
         },
-        "TaskDefinition":"${casrec-task-definition-prepare}"
+        "TaskDefinition":"${casrec-task-definition-initialise-environments}"
       },
       "reindex-elasticsearch-by-date": {
         "Cluster": "${cluster}",

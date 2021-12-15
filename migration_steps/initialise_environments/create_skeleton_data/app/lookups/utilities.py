@@ -18,7 +18,9 @@ def get_lookups_to_sync():
     lookups_to_sync = {}
     for file in mapping_files:
         file_name = file[:-5]
-        mapping_dict = get_mapping_dict(file_name=file_name, stage_name="prepare")
+        mapping_dict = get_mapping_dict(
+            file_name=file_name, stage_name="migration-initialise-environments"
+        )
 
         for field, details in mapping_dict.items():
             if "sync_lookup" in details["sync"]:

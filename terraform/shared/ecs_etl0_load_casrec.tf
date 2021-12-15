@@ -1,10 +1,10 @@
-resource "aws_ecs_task_definition" "prepare_load_casrec" {
-  family                   = "prepare-${terraform.workspace}"
+resource "aws_ecs_task_definition" "load_casrec" {
+  family                   = "initialise-environments-${terraform.workspace}"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = 2048
   memory                   = 4096
-  container_definitions    = "[${local.prepare_load_casrec}]"
+  container_definitions    = "[${local.load_casrec}]"
   task_role_arn            = data.aws_iam_role.etl_task.arn
   execution_role_arn       = data.aws_iam_role.etl_execution.arn
   tags = merge(local.default_tags,
@@ -13,17 +13,17 @@ resource "aws_ecs_task_definition" "prepare_load_casrec" {
 }
 
 locals {
-  prepare_load_casrec = jsonencode({
+  load_casrec = jsonencode({
     cpu       = 0,
     essential = true,
     image     = local.images.etl0,
-    name      = "prepare",
+    name      = "initialise-environments",
     logConfiguration = {
       logDriver = "awslogs",
       options = {
         awslogs-group         = data.aws_cloudwatch_log_group.casrec_migration.name,
         awslogs-region        = "eu-west-1",
-        awslogs-stream-prefix = "casrec-migration-prepare-load-casrec-${local.environment}"
+        awslogs-stream-prefix = "casrec-migration-initialise-environments-load-casrec-${local.environment}"
       }
     },
     secrets = [
