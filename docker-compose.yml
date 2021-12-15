@@ -36,10 +36,10 @@ services:
       LOCALSTACK_URL: localstack
     volumes:
       - ./data:/data
-  prepare:
+  initialise:
     build:
       context: ./migration_steps
-      dockerfile: prepare-dockerfile
+      dockerfile: initialise-dockerfile
     environment:
       DEFAULT_CHUNK_SIZE: 500
       DB_USER: casrec

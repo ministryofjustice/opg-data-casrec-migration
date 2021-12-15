@@ -14,9 +14,9 @@ locals {
   subnets_string         = join(",", [for s in data.aws_subnet_ids.private.ids : format("%q", s)])
   load_casrec_definition = <<EOF
 {
-    "StartAt": "Prepare For Migration",
+    "StartAt": "Initialise Environments For Migration",
     "States": {
-        "Prepare For Migration": {
+        "Initialise Environments For Migration": {
             "Type": "Task",
             "Next": "Parrallel Load Casrec",
             "OutputPath": "$$.Execution.Input",
@@ -25,7 +25,7 @@ locals {
                 "LaunchType": "FARGATE",
                 "PlatformVersion": "1.4.0",
                 "Cluster": "${data.aws_ecs_cluster.migration.arn}",
-                "TaskDefinition": "${aws_ecs_task_definition.prepare_load_casrec.arn}",
+                "TaskDefinition": "${aws_ecs_task_definition.load_casrec.arn}",
                 "NetworkConfiguration": {
                     "AwsvpcConfiguration": {
                         "Subnets": [${local.subnets_string}],
@@ -35,8 +35,8 @@ locals {
                 },
                 "Overrides": {
                     "ContainerOverrides": [{
-                        "Name": "prepare",
-                        "Command": ["prepare/prepare_load_casrec_db.sh"]
+                        "Name": "initialise-environments",
+                        "Command": ["initialise_environments/load_casrec_db.sh"]
                     }]
                 }
             }

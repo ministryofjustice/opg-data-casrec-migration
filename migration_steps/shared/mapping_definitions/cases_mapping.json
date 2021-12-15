@@ -724,31 +724,6 @@
             "sync": ""
         }
     },
-    "wouldliketoapplyforfeeremission": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "int",
-            "table_name": "cases",
-            "entity": "cases"
-        },
-        "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
-            "requires_transformation": "",
-            "lookup_table": "",
-            "default_value": 0,
-            "calculated": "",
-            "additional_columns": ""
-        },
-        "prepare": {
-            "sync": ""
-        }
-    },
     "haveappliedforfeeremission": {
         "mapping_status": {
             "is_complete": true
