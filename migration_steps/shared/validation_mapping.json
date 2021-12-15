@@ -926,12 +926,15 @@
             "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.person_task pt ON pt.task_id = tasks.id",
-                "LEFT JOIN {target_schema}.persons ON persons.id = pt.person_id"
+                "LEFT JOIN {target_schema}.persons ON persons.id = pt.person_id",
+                "LEFT JOIN {target_schema}.caseitem_task ON caseitem_task.task_id = tasks.id",
+                "LEFT JOIN {target_schema}.cases ON cases.id = caseitem_task.caseitem_id"
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_tasks exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "tasks.status = 'Not started'",
-                "persons.type = 'actor_client'"
+                "persons.type = 'actor_client'",
+                "cases.client_id = persons.id"
             ]
         },
         "manual_checks": {
