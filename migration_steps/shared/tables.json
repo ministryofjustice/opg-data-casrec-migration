@@ -494,6 +494,28 @@
 		"sequences": [],
 		"order_by": ["person_id", "task_id"]
 	},
+	"caseitem_task": {
+		"sirius_tables": ["caseitem_task"],
+		"entities": {
+			"base_entities": ["tasks"],
+			"relies_on": ["cases"]
+		},
+		"pk": "",
+		"fks": [
+			{
+				"column":"caseitem_id",
+				"parent_table" : "cases",
+				"parent_column": "id"
+			},
+			{
+				"column":"task_id",
+				"parent_table" : "tasks",
+				"parent_column": "id"
+			}],
+		"table_type": "join",
+		"sequences": [],
+		"order_by": ["caseitem_id", "task_id"]
+	},
 	"timeline_event": {
 		"sirius_tables": ["timeline_event"],
 		"entities": {
