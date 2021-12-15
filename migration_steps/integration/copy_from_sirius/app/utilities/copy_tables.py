@@ -27,7 +27,7 @@ def copy_tables(db_config, source_db_engine, target_db_engine, tables):
         log.info(f"Copying {table} ({', '.join(cols)}) from Sirius to Staging")
 
         source_data_query = generate_select_query(
-            db_config["sirius_schema"], table, cols
+            schema=db_config["sirius_schema"], table=table, columns=cols, order_by=None
         )
         source_data_df = pd.read_sql_query(con=source_db_engine, sql=source_data_query)
 

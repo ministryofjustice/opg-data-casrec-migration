@@ -73,6 +73,29 @@
 			"data_type": "str",
 			"table_name": "assignees",
 			"entity": ""
+		},
+		"teamtype": {
+			"is_pk": "",
+			"fk_parents": "",
+			"data_type": "str",
+			"table_name": "assignees",
+			"entity": ""
+		}
+	},
+	"assignee_teams": {
+		"team_id": {
+			"is_pk": "",
+			"fk_parents": "",
+			"data_type": "int",
+			"table_name": "assignee_teams",
+			"entity": ""
+		},
+		"assignablecomposite_id": {
+			"is_pk": "",
+			"fk_parents": "",
+			"data_type": "int",
+			"table_name": "assignee_teams",
+			"entity": ""
 		}
 	}
 }
