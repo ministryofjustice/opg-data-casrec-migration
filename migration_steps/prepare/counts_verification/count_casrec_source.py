@@ -41,7 +41,7 @@ def main(correfs):
         f"Enabled features: {', '.join(config.enabled_feature_flags(environment))}"
     )
     log.info(log_title(message="Begin"))
-    conn_target = psycopg2.connect(config.get_db_connection_string("target"))
+    conn_target = psycopg2.connect(config.get_db_connection_string("migration"))
     execute_sql_file(current_path / "sql", "count_casrec_source.sql", conn_target)
     log.info(f"Updated count record with source data counts.")
 
