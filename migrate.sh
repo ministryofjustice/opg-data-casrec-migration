@@ -85,7 +85,7 @@ then
   fi
 fi
 
-docker-compose ${COMPOSE_ARGS} run --rm prepare prepare/prepare.sh -i "${PRESERVE_SCHEMAS}"
+docker-compose ${COMPOSE_ARGS} run --rm initialise initialise_environments/initialise_environments.sh -i "${PRESERVE_SCHEMAS}"
 docker rm casrec_load_1 &>/dev/null || echo "casrec_load_1 does not exist. This is OK"
 docker rm casrec_load_2 &>/dev/null || echo "casrec_load_2 does not exist. This is OK"
 docker rm casrec_load_3 &>/dev/null || echo "casrec_load_3 does not exist. This is OK"
@@ -102,11 +102,7 @@ wait $P1 $P2 $P3 $P4
 cat docker_load.log
 rm docker_load.log
 echo "=== Step 0 - Filter data ==="
-docker-compose ${COMPOSE_ARGS} run --rm prepare python3 /prepare/filter_data/app/app.py --correfs="${CORREFS}"
-
-# TODO incorporate into existing container/put in correct position among steps etc.
-docker-compose ${COMPOSE_ARGS} run --rm load_casrec_fixtures
-
+docker-compose ${COMPOSE_ARGS} run --rm initialise prepare_source_data/prepare_source_data.sh
 echo "=== Step 1 - Transform ==="
 docker-compose ${COMPOSE_ARGS} run --rm transform_casrec transform_casrec/transform.sh --correfs="${CORREFS}"
 echo "=== Step 2 - Integrate with Sirius ==="

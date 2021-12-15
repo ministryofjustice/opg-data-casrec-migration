@@ -24,7 +24,7 @@ else
   echo "delete_existing_data should not run on ${ENVIRONMENT}"
 fi
 
-python3 "${DIR}/prepare_source/app/app.py" --preserve_schemas="${SCHEMAS}"
+python3 "${DIR}/initialise_source/app/app.py" --preserve_schemas="${SCHEMAS}"
 python3 "${DIR}/create_stage_schema/app/app.py"
 
 

@@ -7,9 +7,9 @@ cd migration_steps/load_s3
 python3 load_s3_local.py
 cd ${DIR}
 
-./migration_steps/prepare/prepare.sh
-cd migration_steps/prepare
-./prepare.sh
+./migration_steps/initialise_environments/initialise_environments.sh
+cd migration_steps/initialise_environments
+./initialise_environments.sh
 cd ${DIR}
 
 python3 migration_steps/load_casrec/app/app.py

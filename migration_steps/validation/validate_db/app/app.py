@@ -64,6 +64,7 @@ def get_mappings():
             "deputy_daytime_phonenumbers",
             "deputy_evening_phonenumbers",
             "deputy_feepayer_id",
+            "deputy_addresses",
         ],
         "bonds": ["bonds_active", "bonds_dispensed"],
         "warnings": [

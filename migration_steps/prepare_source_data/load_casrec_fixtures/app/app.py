@@ -16,8 +16,10 @@ import os
 import pandas as pd
 import sys
 from sqlalchemy import create_engine
+from pathlib import Path
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "/../../../shared"))
+current_path = Path(os.path.dirname(os.path.realpath(__file__)))
+sys.path.insert(0, str(current_path) + "/../../../shared")
 
 from account_fixtures import ACCOUNT_FIXTURES
 import custom_logger
@@ -51,9 +53,8 @@ def _format_sub_clause(field_and_value):
 if __name__ == "__main__":
     LOG.info(log_title(message="DYNAMIC FIXTURES"))
     LOG.info(f"Loading dynamic fixtures into schema {SCHEMA}")
-
     # set up db conn
-    db_conn_string = CONFIG.get_db_connection_string("casrec")
+    db_conn_string = CONFIG.get_db_connection_string("migration")
     engine = create_engine(db_conn_string)
 
     # add the fixtures to the db
