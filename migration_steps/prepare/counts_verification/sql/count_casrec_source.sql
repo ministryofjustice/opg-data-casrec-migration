@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS countverification.filtered_orders (
 );
 INSERT INTO countverification.filtered_orders ("Order No", "Case")
 SELECT "Order No", "Case" FROM casrec_csv.order WHERE "Ord Stat" != 'Open';
-CREATE UNIQUE INDEX countver_filteredorder_orderno_idx ON countverification.filtered_orders ("Order No");
-CREATE INDEX countver_filteredorder_case_idx ON countverification.filtered_orders ("Case");
+CREATE UNIQUE INDEX filteredorder_orderno_idx ON countverification.filtered_orders ("Order No");
+CREATE INDEX filteredorder_case_idx ON countverification.filtered_orders ("Case");
 
 -- We are only migrating deputies linked to cases
 -- so, this is all deputies linked to a deputyship on a case as above
@@ -25,10 +25,7 @@ FROM casrec_csv.deputy dep
         ON ds."Deputy No" = dep."Deputy No"
     INNER JOIN countverification.filtered_orders o
         ON o."Order No" = ds."Order No";
-CREATE UNIQUE INDEX deputynumber_idx ON countverification.filtered_deps ("Deputy No");
-
-CREATE UNIQUE INDEX filteredorder_orderno_idx ON countverification.filtered_orders ("Order No");
-CREATE INDEX filteredorder_case_idx ON countverification.filtered_orders ("Case");
+CREATE UNIQUE INDEX filtereddeps_deputynumber_idx ON countverification.filtered_deps ("Deputy No");
 
 -- persons
 UPDATE countverification.counts SET casrec_source =
@@ -254,6 +251,7 @@ WHERE supervision_table = 'person_warning';
 
 DROP INDEX countverification.filteredorder_orderno_idx;
 DROP INDEX countverification.filteredorder_case_idx;
+DROP INDEX countverification.filtereddeps_deputynumber_idx;
 DROP TABLE countverification.filtered_orders;
 DROP TABLE countverification.filtered_deps;
 

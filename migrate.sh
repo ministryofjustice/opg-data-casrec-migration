@@ -118,6 +118,8 @@ echo "=== Step 6 - API Tests ==="
 docker-compose ${COMPOSE_ARGS} run --rm validation validation/api_tests.sh
 echo "=== Step 7 - Functional API Tests ==="
 docker-compose ${COMPOSE_ARGS} run --rm validation validation/functional_api_tests.sh
+echo "=== Step 8 - Final Counts ==="
+docker-compose ${COMPOSE_ARGS} run --rm prepare python3 /prepare/counts_verification/count_final.py
 
 if [ "${GENERATE_DOCS}" == "true" ]
   then
