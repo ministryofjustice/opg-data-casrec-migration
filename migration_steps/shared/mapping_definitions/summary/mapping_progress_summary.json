@@ -180,6 +180,12 @@
             "total_mapped": 2,
             "percentage_complete": 100
         },
+        "caseitem_task": {
+            "total_rows": 2,
+            "total_unmapped": 0,
+            "total_mapped": 2,
+            "percentage_complete": 100
+        },
         "timeline_event": {
             "total_rows": 6,
             "total_unmapped": 0,
@@ -255,13 +261,13 @@
     },
     "total": {
         "worksheets": {
-            "total_sheets": 42,
+            "total_sheets": 43,
             "total_complete": 1
         },
         "fields": {
-            "total_fields": 414,
+            "total_fields": 416,
             "total_unmapped": 57,
-            "total_mapped": 357,
+            "total_mapped": 359,
             "percentage_complete": 86
         }
     }
