@@ -6,7 +6,6 @@ endpoint,entity_ref,json_locator,test_purpose
 /api/v1/finance/{id}/ledger-entries,10001403,[*].ledgerEntryAllocations.[*].reference,reference_not_null
 /api/v1/finance/{id}/ledger-entries,10007261,[*].ledgerEntryAllocations.[*].reference,reference_not_null
 /api/v1/finance/{id}/ledger-entries,13326921,[*].ledgerEntryAllocations.[*].reference,reference_null
-/api/v1/finance/{id}/ledger-entries,13506583,[*].ledgerEntryAllocations.[*].reference,reference_null
 /api/v1/finance/{id}/ledger-entries,10001403,[*].ledgerEntryAllocations.[*].notes,notes_not_null
 /api/v1/finance/{id}/ledger-entries,10007261,[*].ledgerEntryAllocations.[*].notes,notes_not_null
 /api/v1/finance/{id}/ledger-entries,10007261,[*].ledgerEntryAllocations.[*].allocatedDate,allocatedDate_not_null
@@ -29,7 +28,6 @@ endpoint,entity_ref,json_locator,test_purpose
 /api/v1/finance/{id}/finance-discounts,10451273,[*].statushandle,status_expired
 /api/v1/finance/{id}/ledger-entries,10001403,[*].bankDate,bankDate_not_null
 /api/v1/finance/{id}/ledger-entries,10007261,[*].bankDate,bankDate_not_null
-/api/v1/finance/{id}/ledger-entries,1375520T,[*].bankDate,bankDate_null
 /api/v1/finance/{id}/ledger-entries,10001403,[*].confirmedDate,confirmedDate_null
 /api/v1/finance/{id}/ledger-entries,10007261,[*].confirmedDate,confirmedDate_null
 /api/v1/finance/{id}/ledger-entries,10001403,[*].dateTime,dateTime_not_null
@@ -40,12 +38,8 @@ endpoint,entity_ref,json_locator,test_purpose
 /api/v1/finance/{id}/ledger-entries,10007261,[*].amount,amount_not_null
 /api/v1/finance/{id}/ledger-entries,10001403,[*].notes,notes_not_null
 /api/v1/finance/{id}/ledger-entries,10007261,[*].notes,notes_not_null
-/api/v1/finance/{id}/ledger-entries,13326921,[*].typehandle,type_bacs
-/api/v1/finance/{id}/ledger-entries,13506583,[*].typehandle,type_bacs
-/api/v1/finance/{id}/ledger-entries,13732436,[*].typehandle,type_card
 /api/v1/finance/{id}/ledger-entries,10001403,[*].typehandle,type_credit
 /api/v1/finance/{id}/ledger-entries,10007261,[*].typehandle,type_credit
-/api/v1/finance/{id}/ledger-entries,1375520T,[*].typehandle,type_writeoff
 /api/v1/finance/{id}/invoices,10000037,[*].feeType,feeType_not_null
 /api/v1/finance/{id}/invoices,10000037,[*].feeType,feeType_not_null
 /api/v1/finance/{id}/invoices,10000037,[*].reference,reference_not_null
