@@ -53,8 +53,8 @@ if __name__ == "__main__":
     t = time.process_time()
 
     log.setLevel(1)
-    log.info(log_title(message="Prepare"))
-    log.debug(f"prepare_source (Environment: {os.environ.get('ENVIRONMENT')})")
+    log.info(log_title(message="Initialise Environments"))
+    log.debug(f"Initialise Source (Environment: {os.environ.get('ENVIRONMENT')})")
 
     main()
 

@@ -121,9 +121,9 @@
             "percentage_complete": 91
         },
         "cases": {
-            "total_rows": 58,
+            "total_rows": 57,
             "total_unmapped": 4,
-            "total_mapped": 54,
+            "total_mapped": 53,
             "percentage_complete": 93
         },
         "person_caseitem": {
@@ -175,6 +175,12 @@
             "percentage_complete": 100
         },
         "person_task": {
+            "total_rows": 2,
+            "total_unmapped": 0,
+            "total_mapped": 2,
+            "percentage_complete": 100
+        },
+        "caseitem_task": {
             "total_rows": 2,
             "total_unmapped": 0,
             "total_mapped": 2,
@@ -255,13 +261,13 @@
     },
     "total": {
         "worksheets": {
-            "total_sheets": 42,
+            "total_sheets": 43,
             "total_complete": 1
         },
         "fields": {
-            "total_fields": 415,
+            "total_fields": 416,
             "total_unmapped": 57,
-            "total_mapped": 358,
+            "total_mapped": 359,
             "percentage_complete": 86
         }
     }

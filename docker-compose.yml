@@ -36,10 +36,10 @@ services:
       LOCALSTACK_URL: localstack
     volumes:
       - ./data:/data
-  prepare:
+  initialise:
     build:
       context: ./migration_steps
-      dockerfile: prepare-dockerfile
+      dockerfile: initialise-dockerfile
     environment:
       DEFAULT_CHUNK_SIZE: 500
       DB_USER: casrec
@@ -132,9 +132,9 @@ services:
       - 5555:5432
     environment:
       POSTGRES_USER: api
-      POSTGRES_PASSWORD: api
+      POSTGRES_PASSWORD: api # pragma: allowlist secret
       POSTGRES_DB: api
-      PGPASSWORD: api
+      PGPASSWORD: api # pragma: allowlist secret
   postgres-sirius-restore:
     image: postgres:10.11
     entrypoint: pg_restore
@@ -150,8 +150,8 @@ services:
       - --format=custom
     environment:
       POSTGRES_USER: api
-      POSTGRES_PASSWORD: api
-      PGPASSWORD: api
+      POSTGRES_PASSWORD: api # pragma: allowlist secret
+      PGPASSWORD: api # pragma: allowlist secret
       POSTGRES_DB: api
     depends_on: [postgres-sirius]
   load_to_target:

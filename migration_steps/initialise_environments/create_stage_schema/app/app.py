@@ -37,7 +37,9 @@ sirius_db_engine = create_engine(db_config["sirius_db_connection_string"])
 
 # logging
 log = logging.getLogger("root")
-custom_logger.setup_logging(env=environment, db_config=db_config, module_name="prepare")
+custom_logger.setup_logging(
+    env=environment, db_config=db_config, module_name="initialise_environments"
+)
 
 
 def main():

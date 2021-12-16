@@ -51,7 +51,7 @@ def run_ecs_task(client, caserecnumber):
                     "name": "etl0",
                     "command": [
                         "python3",
-                        "prepare/case_details_to_s3/app/app.py",
+                        "initialise_environments/case_details_to_s3/app/app.py",
                         "-c",
                         caserecnumber,
                     ],

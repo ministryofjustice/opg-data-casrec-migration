@@ -50,20 +50,33 @@ def amend_dev_assignees(db_engine):
         479,
         480,
     ]
-    teams = [f"({team_id}, 'Migration Team', 'assignee_team')" for team_id in team_ids]
+    teams = [
+        f"({team_id}, 'Migration Team {team_id}', 'assignee_team', 'ALLOCATIONS')"
+        for team_id in team_ids
+    ]
     users = [
-        f"({user_id}, 'Migration User', 'assignee_user')"
+        f"({user_id}, 'Migration User', 'assignee_user', null)"
         for user_id in assignee_ids
         if user_id not in team_ids
     ]
     assignees = teams + users
 
+    # assign all users to team ID 100, for dev testing purposes
+    user_teams = [
+        f"(100, {user_id})" for user_id in assignee_ids if user_id not in team_ids
+    ]
+
     sql = f"""
-        INSERT INTO public.assignees (id, name, type)
+        INSERT INTO public.assignees (id, name, type, teamtype)
         VALUES {",".join(assignees)}
         ON CONFLICT (id) DO UPDATE
             SET name = excluded.name,
-                type = excluded.type;
+                type = excluded.type,
+                teamtype = excluded.teamtype;
+
+        INSERT INTO assignee_teams (team_id, assignablecomposite_id)
+        VALUES {",".join(user_teams)}
+        ON CONFLICT ON CONSTRAINT assignee_teams_pkey DO NOTHING;
     """
 
     try:

@@ -4,7 +4,7 @@ services:
     image: ${AWS_REGISTRY}/casrec-migration/etl0:${VERSION}
     build:
       context: ./migration_steps
-      dockerfile: prepare-dockerfile
+      dockerfile: initialise-dockerfile
   etl1:
     image: ${AWS_REGISTRY}/casrec-migration/etl1:${VERSION}
     build:

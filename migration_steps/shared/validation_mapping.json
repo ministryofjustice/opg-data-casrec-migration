@@ -143,7 +143,7 @@
         "casrec": {
             "from_table": "pat",
             "transform": {
-                "address_lines": "CONCAT(\"Adrs1\", ',', \"Adrs2\")"
+                "address_lines": "CONCAT(\"Adrs1\", COALESCE(',' || NULLIF(\"Adrs2\", ''), ''))"
             },
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_addresses exc_table ON exc_table.caserecnumber = pat.\"Case\"",
@@ -926,12 +926,15 @@
             "transform": {},
             "joins": [
                 "LEFT JOIN {target_schema}.person_task pt ON pt.task_id = tasks.id",
-                "LEFT JOIN {target_schema}.persons ON persons.id = pt.person_id"
+                "LEFT JOIN {target_schema}.persons ON persons.id = pt.person_id",
+                "LEFT JOIN {target_schema}.caseitem_task ON caseitem_task.task_id = tasks.id",
+                "LEFT JOIN {target_schema}.cases ON cases.id = caseitem_task.caseitem_id"
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_tasks exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "tasks.status = 'Not started'",
-                "persons.type = 'actor_client'"
+                "persons.type = 'actor_client'",
+                "cases.client_id = persons.id"
             ]
         },
         "manual_checks": {
@@ -1284,6 +1287,58 @@
             "joins": [],
             "exception_table_join": "",
             "where_clauses": []
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
+    },
+    "deputy_addresses": {
+        "exclude": [
+            "person_id"
+        ],
+        "casenumber_source": "cases.caserecnumber",
+        "orderby": {
+            "casesubtype": {
+                "mapping_table": "cases.casesubtype",
+                "direction": "ASC"
+            },
+            "orderdate": {
+                "mapping_table": "cases.orderdate",
+                "direction": "ASC"
+            }
+        },
+        "casrec": {
+            "from_table": "deputyship",
+            "transform": {
+                "address_lines": "CONCAT(\"Dep Adrs1\", COALESCE(',' || NULLIF(\"Dep Adrs2\", ''), ''))",
+                "type": "CASE WHEN deputy_address.\"Dep Addr No\" IS NULL THEN NULL ELSE 'Primary' END"
+            },
+            "joins": [
+                "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\"",
+                "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\"",
+                "INNER JOIN casrec_csv.deputy_address ON casrec_csv.deputy_address.\"Dep Addr No\" = casrec_csv.deputyship.\"Dep Addr No\""
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_addresses exc_table ON exc_table.caserecnumber = casrec_csv.order.\"Case\"",
+            "where_clauses": [
+                "casrec_csv.order.\"Ord Stat\" != 'Open'"
+            ]
+        },
+        "sirius": {
+            "from_table": "order_deputy",
+            "transform": {
+                "address_lines": "array_to_string(ARRAY(SELECT json_array_elements_text(addresses.address_lines)), ',')"
+            },
+            "joins": [
+                "LEFT JOIN {target_schema}.cases ON cases.id = order_deputy.order_id",
+                "LEFT JOIN {target_schema}.persons ON persons.id = order_deputy.deputy_id",
+                "LEFT JOIN {target_schema}.addresses ON addresses.person_id = persons.id"
+            ],
+            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_addresses exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "where_clauses": [
+                "persons.type = 'actor_deputy'",
+                "persons.clientsource = 'CASRECMIGRATION'"
+            ]
         },
         "manual_checks": {
           "column": "",

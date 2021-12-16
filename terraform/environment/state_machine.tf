@@ -39,7 +39,7 @@ data "aws_iam_policy_document" "state_machine" {
       "arn:aws:ecs:eu-west-1:${local.account.account_id}:task-definition/etl3-${terraform.workspace}*",
       "arn:aws:ecs:eu-west-1:${local.account.account_id}:task-definition/etl4-${terraform.workspace}*",
       "arn:aws:ecs:eu-west-1:${local.account.account_id}:task-definition/etl5-${terraform.workspace}*",
-      "arn:aws:ecs:eu-west-1:${local.account.account_id}:task-definition/prepare-${local.account.account_name}*",
+      "arn:aws:ecs:eu-west-1:${local.account.account_id}:task-definition/initialise-environments-${local.account.account_name}*",
       "arn:aws:ecs:eu-west-1:${local.account.account_id}:task-definition/load-casrec-db-${local.account.account_name}*",
       "arn:aws:ecs:eu-west-1:${local.account.account_id}:task-definition/reset-elasticsearch-${local.account.sirius_env}*"
     ]
@@ -91,9 +91,9 @@ locals {
   subnets_string      = join(",", [for s in data.aws_subnet_ids.private.ids : format("%q", s)])
   standard_definition = <<EOF
 {
-    "StartAt": "Prepare For Migration",
+    "StartAt": "Initialise Environments For Migration",
     "States": {
-        "Prepare For Migration": {
+        "Initialise Environments For Migration": {
             "Type": "Task",
             "Next": "Copy Casrec Schema",
             "OutputPath": "$$.Execution.Input",
@@ -113,7 +113,7 @@ locals {
                 "Overrides": {
                     "ContainerOverrides": [{
                         "Name": "etl0",
-                        "Command": ["prepare/prepare.sh"]
+                        "Command": ["initialise_environments/initialise_environments.sh"]
                     }]
                 }
             }
@@ -243,9 +243,9 @@ locals {
 EOF
   short_definition    = <<EOF
 {
-    "StartAt": "Prepare For Migration",
+    "StartAt": "Initialise Environments For Migration",
     "States": {
-        "Prepare For Migration": {
+        "Initialise Environments For Migration": {
             "Type": "Task",
             "Next": "Copy Casrec Schema",
             "OutputPath": "$$.Execution.Input",
@@ -265,7 +265,7 @@ EOF
                 "Overrides": {
                     "ContainerOverrides": [{
                         "Name": "etl0",
-                        "Command": ["prepare/prepare.sh"]
+                        "Command": ["initialise_environments/initialise_environments.sh"]
                     }]
                 }
             }
