@@ -123,7 +123,7 @@ resource "aws_security_group" "etl" {
 
   tags = merge(
     local.default_tags,
-    map("Name", "etl1-ecs-${terraform.workspace}")
+    tomap({ "Name" : "etl1-ecs-${terraform.workspace}" })
   )
 }
 
