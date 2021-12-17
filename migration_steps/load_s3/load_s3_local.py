@@ -83,13 +83,15 @@ def list_bucket_contents(bucket_name, s3):
     files_in_bucket = []
 
     if "Contents" not in resp:
-        os._exit(
-            "Casrec source .csv data files not found - please check you have added files to data/anon/*.csv"
+        print(
+            "ERROR Casrec source .csv data files not found - please check you have added files to data/anon/*.csv"
         )
+        os._exit(1)
 
     for obj in resp["Contents"]:
         files_in_bucket.append(obj["Key"])
         print(obj["Key"])
+
     return files_in_bucket
 
 
@@ -129,6 +131,9 @@ create_bucket(bucket_name, s3_client, region)
 csv_dir_suffix = os.getenv("CSV_DIR_SUFFIX")
 
 anon_data_dir = current_path / csv_dir_suffix
+
+if not os.path.isdir(anon_data_dir):
+    os.makedirs(anon_data_dir, exist_ok=True)
 
 for file in os.listdir(anon_data_dir):
     file_path = f"{anon_data_dir}/{file}"
