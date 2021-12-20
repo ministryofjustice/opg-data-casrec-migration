@@ -47,7 +47,6 @@ ci = os.getenv("CI")
 account_name = os.environ.get("ACCOUNT_NAME")
 bucket_name = f"casrec-migration-{account_name.lower()}"
 account = os.environ["SIRIUS_ACCOUNT"]
-session = boto3.session.Session()
 
 
 def get_anon_id():
@@ -365,7 +364,7 @@ def set_connection_target():
 
 
 def updload_csvs_to_s3():
-    s3 = get_s3_session(session, environment, host)
+    s3 = get_s3_session(environment, host)
     if ci != "true":
         for file in os.listdir(temp_csv_path):
             if file.endswith(".csv"):

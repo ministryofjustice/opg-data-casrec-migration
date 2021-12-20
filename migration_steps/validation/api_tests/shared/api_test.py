@@ -83,9 +83,8 @@ class ApiTests:
     def create_a_session(self):
         sess, headers_dict, status_code = self.get_session()
 
-        aws_sess = boto3.session.Session()
         self.s3_sess = get_s3_session(
-            aws_sess, self.environment, self.host, ci=self.ci, account=self.account
+            self.environment, self.host, ci=self.ci, account=self.account
         )
 
         self.session = {

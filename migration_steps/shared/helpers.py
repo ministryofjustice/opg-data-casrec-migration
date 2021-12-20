@@ -261,9 +261,9 @@ def get_config(env="local"):
     return config
 
 
-def get_s3_session(session, environment, host, ci="false", account=None):
-    # todo refactor and combine multiple instances of get_s3_session
-    s3_session = session
+def get_s3_session(environment, host, ci="false", account=None):
+    s3_session = boto3.session.Session()
+
     if environment == "local":
         if host == "localhost":
             stack_host = "localhost"

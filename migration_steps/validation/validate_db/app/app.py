@@ -54,7 +54,7 @@ def get_mappings():
             "client_addresses",
             "client_persons",
             "client_phonenumbers",
-            "finance_person_ids"
+            "finance_person_ids",
         ],
         "cases": ["cases"],
         "crec": ["crec_persons"],
@@ -107,8 +107,7 @@ account_name = os.environ.get("ACCOUNT_NAME")
 bucket_name = f"casrec-migration-{account_name.lower()}"
 account = os.environ["SIRIUS_ACCOUNT"]
 # S3
-session = boto3.session.Session()
-s3 = get_s3_session(session, environment, host)
+s3 = get_s3_session(environment, host)
 # SQL
 sql_lines = []
 sql_statement_lines = []
