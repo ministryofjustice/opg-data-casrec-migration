@@ -143,7 +143,7 @@
         "casrec": {
             "from_table": "pat",
             "transform": {
-                "address_lines": "CONCAT(\"Adrs1\", COALESCE(',' || NULLIF(\"Adrs2\", ''), ''))"
+                "address_lines": "CONCAT('[\"', \"Adrs1\", '\",\"', \"Adrs2\", '\"]')"
             },
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_addresses exc_table ON exc_table.caserecnumber = pat.\"Case\"",
@@ -152,7 +152,7 @@
         "sirius": {
             "from_table": "addresses",
             "transform": {
-                "address_lines": "array_to_string(ARRAY(SELECT json_array_elements_text(addresses.address_lines)), ',')"
+                "address_lines": "CAST(addresses.address_lines AS TEXT)"
             },
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = addresses.person_id"
@@ -1311,7 +1311,7 @@
         "casrec": {
             "from_table": "deputyship",
             "transform": {
-                "address_lines": "CONCAT(\"Dep Adrs1\", COALESCE(',' || NULLIF(\"Dep Adrs2\", ''), ''))",
+                "address_lines": "CONCAT('[\"', \"Dep Adrs1\", '\",\"', \"Dep Adrs2\", '\"]')",
                 "type": "CASE WHEN deputy_address.\"Dep Addr No\" IS NULL THEN NULL ELSE 'Primary' END"
             },
             "joins": [
@@ -1327,7 +1327,7 @@
         "sirius": {
             "from_table": "order_deputy",
             "transform": {
-                "address_lines": "array_to_string(ARRAY(SELECT json_array_elements_text(addresses.address_lines)), ',')"
+                "address_lines": "CAST(addresses.address_lines AS TEXT)"
             },
             "joins": [
                 "LEFT JOIN {target_schema}.cases ON cases.id = order_deputy.order_id",
