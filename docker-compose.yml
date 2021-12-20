@@ -33,7 +33,7 @@ services:
     environment:
       DEFAULT_CHUNK_SIZE: 20000
       CSV_DIR_SUFFIX: ./data/anon_data
-      LOCALSTACK_URL: localstack
+      S3_URL: localstack:4572
     volumes:
       - ./data:/data
   initialise:
