@@ -25,7 +25,7 @@ environment = "development" if ci == "true" else os.environ["ENVIRONMENT"]
 account = "288342028542" if ci == "true" else os.environ["SIRIUS_ACCOUNT"]
 config = get_config(environment)
 
-host = os.environ.get("DB_HOST")
+s3_url = os.environ.get("S3_URL")
 account_name = os.environ.get("ACCOUNT_NAME")
 bucket_name = f"casrec-migration-{environment.lower()}"
 
@@ -41,7 +41,7 @@ def main():
     log.info("Perform Upload to S3 for API files")
     log.info("Adding csv and response files to bucket...\n")
 
-    s3 = get_s3_session(environment, host, ci=ci, account=account)
+    s3 = get_s3_session(environment, s3_url, ci=ci, account=account)
 
     path = "validation/api_tests"
     for file in os.listdir(current_path / path):

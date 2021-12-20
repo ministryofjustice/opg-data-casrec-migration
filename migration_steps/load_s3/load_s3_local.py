@@ -104,13 +104,13 @@ s3_url = os.getenv("S3_URL")
 
 s3_client = s3_session.client(
     "s3",
-    endpoint_url=f"http://{s3_url}",
+    endpoint_url=f"{s3_url}",
     aws_access_key_id="fake",
     aws_secret_access_key="fake",  # pragma: allowlist secret
 )
 s3_resource = s3_session.resource(
     "s3",
-    endpoint_url=f"http://{s3_url}",
+    endpoint_url=f"{s3_url}",
     aws_access_key_id="fake",
     aws_secret_access_key="fake",  # pragma: allowlist secret
 )

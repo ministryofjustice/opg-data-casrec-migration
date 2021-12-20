@@ -21,8 +21,8 @@ services:
   localstack:
     image: localstack/localstack:0.10.9
     ports:
-        - 4572:4572
-        - 4566:4566
+        - 5572:4572
+        - 5566:4566
     environment:
         - SERVICES=s3:4572
         - DEFAULT_REGION=eu-west-1
@@ -33,7 +33,7 @@ services:
     environment:
       DEFAULT_CHUNK_SIZE: 20000
       CSV_DIR_SUFFIX: ./data/anon_data
-      S3_URL: localstack:4572
+      S3_URL: http://localstack:4572
     volumes:
       - ./data:/data
   initialise:
@@ -55,6 +55,7 @@ services:
       ENVIRONMENT: local
       ACCOUNT_NAME: local
       SIRIUS_ACCOUNT: NA
+      S3_URL: http://localstack:4572
     depends_on: [casrec_db, postgres-sirius]
   load_casrec:
     build:
@@ -71,6 +72,7 @@ services:
       ACCOUNT_NAME: local
       S3_PATH: anon
       SIRIUS_ACCOUNT: NA
+      S3_URL: http://localstack:4572
     depends_on: [localstack, casrec_db]
   transform_casrec:
     build:
@@ -122,6 +124,7 @@ services:
       ACCOUNT_NAME: local
       ENVIRONMENT: local
       SIRIUS_ACCOUNT: NA
+      S3_URL: http://localstack:4572
     depends_on: [casrec_db, postgres-sirius]
   wait-for-it:
     build: ./wait-for-it

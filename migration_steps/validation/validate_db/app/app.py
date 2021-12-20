@@ -101,13 +101,13 @@ validation_sqlfile = "validation.sql"
 transformations_sqlfile = "transformation_functions.sql"
 complex_functions_sqlfile = "complex_functions.sql"
 total_exceptions_sqlfile = "get_exceptions_total.sql"
-host = os.environ.get("DB_HOST")
+s3_url = os.environ.get("S3_URL")
 ci = os.getenv("CI")
 account_name = os.environ.get("ACCOUNT_NAME")
 bucket_name = f"casrec-migration-{account_name.lower()}"
 account = os.environ["SIRIUS_ACCOUNT"]
 # S3
-s3 = get_s3_session(environment, host)
+s3 = get_s3_session(environment, s3_url)
 # SQL
 sql_lines = []
 sql_statement_lines = []

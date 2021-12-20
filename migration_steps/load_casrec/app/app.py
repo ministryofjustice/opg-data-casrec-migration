@@ -378,7 +378,6 @@ def main(entities, delay, verbose, skip_load):
         setup_logging(log, verbose, log_title, bucket_name)
         env_path = current_path / "../../.env"
         load_dotenv(dotenv_path=env_path)
-        host = os.environ.get("DB_HOST")
 
         account = os.environ["SIRIUS_ACCOUNT"]
 
@@ -400,7 +399,8 @@ def main(entities, delay, verbose, skip_load):
 
         engine = create_engine(db_conn_string)
 
-        s3 = get_s3_session(environment, host, ci=ci, account=account)
+        s3_url = os.environ.get("S3_URL")
+        s3 = get_s3_session(environment, s3_url, ci=ci, account=account)
 
         schema = config.schemas["pre_transform"]
 
