@@ -13,10 +13,6 @@ data "aws_ecr_repository" "api_app" {
   provider = aws.management
 }
 
-data "aws_elasticsearch_domain" "sirius" {
-  domain_name = "elasticsearch-${local.account.sirius_env}"
-}
-
 data "aws_secretsmanager_secret" "rds_api" {
   name = "rds-api-${local.account.account_name}"
 }
@@ -129,10 +125,6 @@ locals {
       {
         name  = "OPG_CORE_BACK_BUSINESS_RULES_TASK_15_DUE_DATE_PERIOD",
         value = local.account.name == "development" ? "PT2M" : "P19D"
-      },
-      {
-        name  = "OPG_CORE_BACK_ELASTICSEARCH_HOSTS",
-        value = "${data.aws_elasticsearch_domain.sirius.endpoint}:80"
       },
       {
         name  = "OPG_CORE_BACK_SQS_ENDPOINT_URL",
