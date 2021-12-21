@@ -210,7 +210,7 @@
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_nodebtchase_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
-                "casrec_csv.pat.\"Debt chase\" != ''"
+                "casrec_csv.pat.\"Debt chase\" = '1'"
             ]
         },
         "sirius": {
