@@ -1122,6 +1122,7 @@ jobs:
         default: false
     environment:
       TF_WORKSPACE: << parameters.tf_workspace >>
+      AWS_CONFIG_FILE: ~/project/aws_config
     working_directory: ~/project/terraform/environment
     steps:
       - checkout:
