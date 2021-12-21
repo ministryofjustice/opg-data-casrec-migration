@@ -859,8 +859,8 @@ def main(correfs, staging):
 
     if get_exception_count() > 0:
         # TODO: remove conditional once all validation errors are fixed in preproduction
-        # if environment in ["local", "development"]:
-        #     exit(1)
+        if environment in ["local", "development"]:
+            exit(1)
         log.info("Exceptions WERE found: override / continue anyway\n")
     else:
         log.info("No exceptions found: continue...\n")
