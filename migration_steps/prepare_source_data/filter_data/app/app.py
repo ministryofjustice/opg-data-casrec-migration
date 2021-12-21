@@ -56,7 +56,7 @@ def main(verbose, correfs, clear):
     conn_source = psycopg2.connect(config.get_db_connection_string("migration"))
     cursor_source = conn_source.cursor()
     cursor_source.execute(sql)
-
+    conn_source.commit()
     log.info("Getting CLIENT-PILOT-ONE cases from target")
     sql = "SELECT caserecnumber FROM public.persons WHERE caseactorgroup = 'CLIENT-PILOT-ONE';"
     conn_target = psycopg2.connect(config.get_db_connection_string("target"))
@@ -93,6 +93,9 @@ def main(verbose, correfs, clear):
         cursor_source.execute(sql)
     else:
         log.info("No Corref filtering requested")
+
+    cursor_source.close()
+    conn_source.commit()
 
     if pilot_cases or filtered_correfs:
         log.info(f"Deleting data associated with cases in cases_to_filter_out table")

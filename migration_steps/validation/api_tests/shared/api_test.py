@@ -61,13 +61,16 @@ class ApiTests:
         self.session = None
         self.config = get_config(self.environment)
         self.db_conn_string = self.config.get_db_connection_string("target")
+        self.source_db_conn_string = self.config.get_db_connection_string("migration")
         self.engine = create_engine(self.db_conn_string)
+        self.source_engine = create_engine(self.source_db_conn_string)
         self.api_result_lines = []
         self.api_log_file = (
             f'api_tests_{datetime.now().strftime("%Y-%m-%d-%H-%M-%S")}.log'
         )
         self.s3_file_path = f"validation/logs/{self.api_log_file}"
         self.s3_sess = None
+        self.filtered_cases = self.get_filtered_case_list()
 
     def get_session(self):
         response = requests.get(self.base_url)
@@ -510,6 +513,16 @@ class ApiTests:
             self.bucket_name, self.api_log_file, self.s3_sess, log, self.s3_file_path
         )
 
+    def get_filtered_case_list(self):
+        sql = f'SELECT DISTINCT caserecnumber FROM {self.config.schemas["pre_transform"]}.cases_to_filter_out;'
+        filter_cases = []
+        results = self.source_engine.execute(sql)
+
+        for row in results.fetchall():
+            filter_cases.append(row[0])
+
+        return filter_cases
+
     def run_response_tests(self):
         self.api_log(f"Starting tests against '{self.csv}'")
 
@@ -532,25 +545,26 @@ class ApiTests:
             entity_ref = row["entity_ref"]
             json_locator = row["json_locator"]
 
-            # Get the ids to perform the search on based on the caserecnumber
-            entity_ids = self.get_processed_entity_ids(entity_ref)
+            if entity_ref not in self.filtered_cases:
+                # Get the ids to perform the search on based on the caserecnumber
+                entity_ids = self.get_processed_entity_ids(entity_ref)
 
-            if self.assert_on_count:
-                formatted_api_response = self.get_count_api_response(
-                    entity_ids, endpoint, json_locator
-                )
-            else:
-                formatted_api_response = self.get_formatted_api_response(
-                    entity_ids, endpoint, json_locator, row, entity_ref
-                )
-            # Check we haven't brought back an empty dict as response
-            if formatted_api_response:
-                # Loop through and check expected results against actual for each field
-                self.assert_on_fields(
-                    formatted_api_response, row, entity_ref, json_locator
-                )
-            else:
-                self.api_log("empty dictionary returned!")
+                if self.assert_on_count:
+                    formatted_api_response = self.get_count_api_response(
+                        entity_ids, endpoint, json_locator
+                    )
+                else:
+                    formatted_api_response = self.get_formatted_api_response(
+                        entity_ids, endpoint, json_locator, row, entity_ref
+                    )
+                # Check we haven't brought back an empty dict as response
+                if formatted_api_response:
+                    # Loop through and check expected results against actual for each field
+                    self.assert_on_fields(
+                        formatted_api_response, row, entity_ref, json_locator
+                    )
+                else:
+                    self.api_log("empty dictionary returned!")
         self.api_log(f"Ran happy path tests against {count} cases in {self.csv}")
 
     def functional_tests_by_method(self, method, entity_setup_objects):
