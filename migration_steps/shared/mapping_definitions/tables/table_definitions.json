@@ -688,6 +688,18 @@
         "table_transforms": {},
         "table_type": "join"
     },
+    "scheduled_events_reporting": {
+        "destination_table_name": "scheduled_events",
+        "entity_name": "scheduled_events",
+        "required_entities": "reporting",
+        "source_conditions": {},
+        "source_table_additional_columns": [
+            ""
+        ],
+        "source_table_name": "",
+        "table_transforms": {},
+        "table_type": "data"
+    },
     "supervision_level_log": {
         "destination_table_name": "supervision_level_log",
         "entity_name": "supervision_level",
