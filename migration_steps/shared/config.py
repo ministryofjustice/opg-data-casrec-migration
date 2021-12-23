@@ -47,6 +47,15 @@ class BaseConfig:
         },
     }
 
+    env_users = {
+        "local": "case.manager@opgtest.com",
+        "development": "case.manager@opgtest.com",
+        "preproduction": "opg+siriussmoketest@digital.justice.gov.uk",
+        "preqa": "opg+siriussmoketest@digital.justice.gov.uk",
+        "qa": "opg+siriussmoketest@digital.justice.gov.uk",
+        "production": "opg+siriussmoketest@digital.justice.gov.uk",
+    }
+
     schemas = {
         "pre_transform": "casrec_csv",
         "post_transform": "transform",

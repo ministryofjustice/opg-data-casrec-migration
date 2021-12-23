@@ -290,7 +290,7 @@
         "Overrides": {
             "ContainerOverrides": [{
                 "Name": "etl5",
-                "Command": ["validation/api_tests.sh"]
+                "Command": ["validation/response_api_tests.sh"]
             }]
         },
         "TaskDefinition":"${casrec-task-definition-validation}"
