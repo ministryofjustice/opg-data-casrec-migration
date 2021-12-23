@@ -126,6 +126,7 @@ services:
       SIRIUS_ACCOUNT: NA
       ACCOUNT_NAME: local
       RUN_API_TESTS: "True"
+      LIGHT_TOUCH_COUNT: 200
       API_TEST_PASSWORD: "Password1" # pragma: allowlist secret
       SIRIUS_FRONT_URL: http://host.docker.internal:8080
     depends_on: [casrec_db]

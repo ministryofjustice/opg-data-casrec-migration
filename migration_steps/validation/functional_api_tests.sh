@@ -8,9 +8,9 @@ then
   if [ "${RUN_API_TESTS}" == "True" ]
   then
     cd "${DIR}/api_tests/functional_tests"
-    echo "== Running API tests =="
+    echo "== Running functional API tests =="
     python3 app.py
     echo $?
-    echo "== Finished API tests =="
+    echo "== Finished functional API tests =="
   fi
 fi

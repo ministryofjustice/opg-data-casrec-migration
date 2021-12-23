@@ -17,14 +17,14 @@ custom_logger.setup_logging(env=environment, level="INFO", module_name="API ligh
 from helpers import get_config
 
 
-class AsyncResponse():
+class AsyncResponse:
     def __init__(self):
         self.environment = os.environ.get("ENVIRONMENT")
         self.config = get_config(environment)
         self.base_url = os.environ.get("SIRIUS_FRONT_URL")
         self.user = self.config.env_users[self.environment]
         self.password = os.environ.get("API_TEST_PASSWORD")
-        self.total_records = 200
+        self.total_records = os.environ.get("LIGHT_TOUCH_COUNT")
         self.chunk_size = 50
         self.headers_dict = {}
         self.client_ids = []
@@ -75,7 +75,7 @@ class AsyncResponse():
 
     def run_async_requests(self):
         count = 0
-        expected_chunks = round(self.total_records / self.chunk_size)
+        expected_chunks = round(int(self.total_records) / self.chunk_size)
         for chunk in self.chunks():
             count += 1
             log.info(f"Processing chunk {count} of {expected_chunks}")

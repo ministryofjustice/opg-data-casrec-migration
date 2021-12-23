@@ -143,7 +143,7 @@
         "casrec": {
             "from_table": "pat",
             "transform": {
-                "address_lines": "CONCAT(\"Adrs1\", COALESCE(',' || NULLIF(\"Adrs2\", ''), ''))"
+                "address_lines": "CONCAT(\"Adrs1\", ',', \"Adrs2\")"
             },
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_addresses exc_table ON exc_table.caserecnumber = pat.\"Case\"",
@@ -210,7 +210,7 @@
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_nodebtchase_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
-                "casrec_csv.pat.\"Debt chase\" != ''"
+                "casrec_csv.pat.\"Debt chase\" = '1'"
             ]
         },
         "sirius": {
@@ -1311,7 +1311,7 @@
         "casrec": {
             "from_table": "deputyship",
             "transform": {
-                "address_lines": "CONCAT(\"Dep Adrs1\", COALESCE(',' || NULLIF(\"Dep Adrs2\", ''), ''))",
+                "address_lines": "CONCAT(\"Dep Adrs1\", ',', \"Dep Adrs2\")",
                 "type": "CASE WHEN deputy_address.\"Dep Addr No\" IS NULL THEN NULL ELSE 'Primary' END"
             },
             "joins": [
