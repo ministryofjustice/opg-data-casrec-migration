@@ -107,7 +107,9 @@
         },
         "casrec": {
             "from_table": "order",
-            "transform": {},
+            "transform": {
+                "orderstatus": "CASE WHEN \"Ord Stat\" = 'Active' AND \"Ord Type\" IN ('26','43','45') THEN 'OPEN' ELSE UPPER(\"Ord Stat\") END"
+            },
             "joins": [
                 "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\""
             ],
