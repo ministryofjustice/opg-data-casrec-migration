@@ -59,16 +59,14 @@ Example:
 """
 
 import logging
-import numpy as np
 import pandas as pd
-from datetime import datetime
 
 from transform_data.apply_datatypes import apply_datatypes
 from transform_data.table_transforms_annual_report_logs import TABLE_TRANSFORM_ANNUAL_REPORT_LOGS
 from transform_data.table_transforms_annual_report_lodging_details import (
     TABLE_TRANSFORM_ANNUAL_REPORT_LODGING_DETAILS
 )
-
+from transform_data.table_transforms_cases import TABLE_TRANSFORM_CASES
 
 log = logging.getLogger('root')
 
@@ -79,7 +77,8 @@ log = logging.getLogger('root')
 # and local variables to be applied, typically specified in imported modules
 DEFAULT_TRANSFORMS = {
     'set_annual_report_logs_status': TABLE_TRANSFORM_ANNUAL_REPORT_LOGS,
-    'set_annual_report_lodging_details_status': TABLE_TRANSFORM_ANNUAL_REPORT_LODGING_DETAILS
+    'set_annual_report_lodging_details_status': TABLE_TRANSFORM_ANNUAL_REPORT_LODGING_DETAILS,
+    'set_cases_orderstatus': TABLE_TRANSFORM_CASES
 }
 
 
