@@ -611,9 +611,9 @@ workflows:
       - run_task:
           name: migration - response api tests preproduction
           requires: [migration - validation preproduction]
+          notify_validation_fails: true
           tf_workspace: preproduction
           runner_command: migration-response-api-tests
-          notify_validation_fails: true
           filters: {branches:{only:[master]}}
       - scale-services:
           name: scale up poller service for migration preproduction
