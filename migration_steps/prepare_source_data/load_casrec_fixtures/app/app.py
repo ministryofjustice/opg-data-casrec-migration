@@ -22,6 +22,7 @@ current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
 
 from account_fixtures import ACCOUNT_FIXTURES
+from bond_fixtures import BOND_FIXTURES
 import custom_logger
 from helpers import get_config, log_title
 
@@ -34,7 +35,7 @@ CONFIG = get_config(os.environ.get("ENVIRONMENT"))
 
 SCHEMA = CONFIG.schemas["pre_transform"]
 
-ALL_FIXTURES = ACCOUNT_FIXTURES
+ALL_FIXTURES = [ACCOUNT_FIXTURES, BOND_FIXTURES]
 
 
 # field_and_value is a tuple (field, value,)
@@ -50,12 +51,34 @@ def _format_sub_clause(field_and_value):
     return f"\"{field}\" = '{value}'"
 
 
+def initialise_used_cases_tbl(e):
+    sql = "DROP TABLE IF EXISTS casrec_csv.fixture_used_cases;"
+    e.execute(sql)
+    sql = "CREATE TABLE casrec_csv.fixture_used_cases (caserecnumber text);"
+    e.execute(sql)
+
+
+def insert_fixture_used_cases(e, cases):
+    # We can use this list to filter out cases we have already used so that we hopefully
+    # have cases used for specific test purposes
+    unique_cases = list(set(cases))
+    values = "'),\n('".join(unique_cases)
+    sql = f"""
+        INSERT INTO casrec_csv.fixture_used_cases
+        VALUES ('{values}');
+        """
+    e.execute(sql)
+    LOG.info("Inserted used fixture cases into fixture_used_cases")
+
+
 if __name__ == "__main__":
     LOG.info(log_title(message="DYNAMIC FIXTURES"))
     LOG.info(f"Loading dynamic fixtures into schema {SCHEMA}")
     # set up db conn
     db_conn_string = CONFIG.get_db_connection_string("migration")
     engine = create_engine(db_conn_string)
+    initialise_used_cases_tbl(engine)
+    used_cases = []
 
     # add the fixtures to the db
     for fixture in ALL_FIXTURES:
@@ -80,6 +103,8 @@ if __name__ == "__main__":
                     df.columns,
                 )
 
+                used_cases.append(row["Case"])
+
                 update_sql = fixture["update_query"].format(
                     set_clause=", ".join(set_values),
                     where_clause=" AND ".join(where),
@@ -89,3 +114,5 @@ if __name__ == "__main__":
                 LOG.info(f"Running update SQL: {update_sql}")
 
                 engine.execute(update_sql)
+
+    insert_fixture_used_cases(engine, used_cases)
