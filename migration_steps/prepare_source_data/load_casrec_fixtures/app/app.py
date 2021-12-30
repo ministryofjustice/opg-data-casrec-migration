@@ -11,6 +11,12 @@ This script should run before the transform step begins, so that the fixtures
 added are part of the source data for the transformation.
 """
 
+"""
+Fixtures not needed:
+- Deputy death: All relevant fields are default values
+-
+"""
+
 import logging
 import os
 import pandas as pd
@@ -23,6 +29,10 @@ sys.path.insert(0, str(current_path) + "/../../../shared")
 
 from account_fixtures import ACCOUNT_FIXTURES
 from bond_fixtures import BOND_FIXTURES
+from client_person_fixtures import CLIENT_PERSON_FIXTURES
+from client_death_fixtures import CLIENT_DEATH_FIXTURES
+from client_notes_fixtures import CLIENT_NOTES_FIXTURES
+from client_warnings_fixtures import CLIENT_WARNINGS_FIXTURES
 import custom_logger
 from helpers import get_config, log_title
 
@@ -35,7 +45,14 @@ CONFIG = get_config(os.environ.get("ENVIRONMENT"))
 
 SCHEMA = CONFIG.schemas["pre_transform"]
 
-ALL_FIXTURES = [ACCOUNT_FIXTURES, BOND_FIXTURES]
+ALL_FIXTURES = [
+    ACCOUNT_FIXTURES,
+    BOND_FIXTURES,
+    CLIENT_PERSON_FIXTURES,
+    CLIENT_DEATH_FIXTURES,
+    CLIENT_NOTES_FIXTURES,
+    CLIENT_WARNINGS_FIXTURES,
+]
 
 
 # field_and_value is a tuple (field, value,)

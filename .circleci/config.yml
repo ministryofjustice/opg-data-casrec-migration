@@ -628,11 +628,6 @@ workflows:
           environment_tag: qa
           requires: [migration - response api tests preproduction]
           filters: {branches:{only:[master]}}
-      - run_task:
-          name: run api tests preproduction
-          requires: [tag image for qa]
-          tf_workspace: preproduction
-          filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch preproduction
           requires: [run api tests preproduction]
