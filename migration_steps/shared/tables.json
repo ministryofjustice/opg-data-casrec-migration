@@ -581,7 +581,11 @@
 			}
 		],
 		"table_type": "data",
-		"sequences": [],
+		"sequences": [{
+			"name": "finance_order_id_seq",
+			"column": "id",
+			"type": "pk"
+		}],
 		"order_by": ["id"]
 	}
 }
