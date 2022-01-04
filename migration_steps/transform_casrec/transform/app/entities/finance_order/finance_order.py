@@ -17,10 +17,22 @@ def insert_finance_order(target_db, db_config, mapping_file):
     chunk_no = 0
 
     orders_query = (
-        f'select "id" as order_id, "c_order_no" from {db_config["target_schema"]}.cases;'
+        f'SELECT "id" AS order_id, "c_order_no" FROM {db_config["target_schema"]}.cases;'
     )
     orders_df = pd.read_sql_query(orders_query, db_config["db_connection_string"])
     orders_df = orders_df[["order_id", "c_order_no"]]
+
+    risk_assessment_query = (
+        f'''
+            SET datestyle = "ISO, DMY";
+            SELECT MIN("Start Date"::date) AS billing_start_date,
+            "Order No" AS c_order_no
+            FROM {db_config["source_schema"]}.risk_assessment
+            GROUP BY "Order No";
+        '''
+    )
+    risk_assessment_df = pd.read_sql_query(risk_assessment_query, db_config["db_connection_string"])
+    risk_assessment_df = risk_assessment_df[["billing_start_date", "c_order_no"]]
 
     mapping_file_name = f"{mapping_file}_mapping"
     table_definition = get_table_def(mapping_name=mapping_file)
@@ -47,7 +59,13 @@ def insert_finance_order(target_db, db_config, mapping_file):
                 how="inner",
                 left_on="c_order_no",
                 right_on="c_order_no",
-                suffixes=["_fo", "_cases"],
+            )
+
+            finance_order_joined_df = finance_order_joined_df.merge(
+                risk_assessment_df,
+                how="left",
+                left_on="c_order_no",
+                right_on="c_order_no",
             )
 
             finance_order_joined_df = reapply_datatypes_to_fk_cols(
