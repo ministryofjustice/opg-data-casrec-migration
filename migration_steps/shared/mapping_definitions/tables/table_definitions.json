@@ -555,6 +555,38 @@
         "table_transforms": {},
         "table_type": "data"
     },
+    "finance_order": {
+        "destination_table_name": "finance_order",
+        "entity_name": "finance_order",
+        "required_entities": "cases",
+        "source_conditions": {
+            "c_ord_risk_lvl": "not null",
+            "exclude_values": {
+                "col": "Ord Stat",
+                "values": [
+                    "Open"
+                ]
+            },
+            "include_values": {
+                "col": "Ord Type",
+                "values": [
+                    "1",
+                    "2",
+                    "40",
+                    "41"
+                ]
+            }
+        },
+        "source_table_additional_columns": [
+            "Order No",
+            "Ord Type",
+            "Ord Stat",
+            "Ord Risk Lvl"
+        ],
+        "source_table_name": "order",
+        "table_transforms": {},
+        "table_type": "data"
+    },
     "finance_remissions": {
         "destination_table_name": "finance_remission_exemption",
         "entity_name": "fee_reductions",

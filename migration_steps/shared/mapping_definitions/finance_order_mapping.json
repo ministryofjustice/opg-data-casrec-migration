@@ -1,0 +1,102 @@
+{
+    "id": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": true,
+            "fk_parents": "",
+            "data_type": "int",
+            "table_name": "finance_order",
+            "entity": "finance_order"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
+    "finance_person_id": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "finance_person:id",
+            "data_type": "int",
+            "table_name": "finance_order",
+            "entity": "finance_order"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
+    "order_id": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "int",
+            "table_name": "finance_order",
+            "entity": "finance_order"
+        },
+        "transform_casrec": {
+            "casrec_table": "order",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
+    "billing_start_date": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "date",
+            "table_name": "finance_order",
+            "entity": "finance_order"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    }
+}
