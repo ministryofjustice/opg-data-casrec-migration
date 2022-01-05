@@ -103,16 +103,16 @@ cat docker_load.log
 rm docker_load.log
 echo "=== Step 0 - Filter data ==="
 docker-compose ${COMPOSE_ARGS} run --rm initialise prepare_source_data/prepare_source_data.sh
-#echo "=== Step 1 - Transform ==="
-#docker-compose ${COMPOSE_ARGS} run --rm transform_casrec transform_casrec/transform.sh --correfs="${CORREFS}"
-#echo "=== Step 2 - Integrate with Sirius ==="
-#docker-compose ${COMPOSE_ARGS} run --rm integration integration/integration.sh --correfs="${CORREFS}"
-#echo "=== Step 3 - Validate Staging ==="
-#docker-compose ${COMPOSE_ARGS} run --rm validation python3 /validation/validate_db/app/app.py --correfs="${CORREFS}" --staging
-#echo "=== Step 4 - Load to Sirius ==="
-#docker-compose ${COMPOSE_ARGS} run --rm load_to_target load_to_sirius/load_to_sirius.sh
-#echo "=== Step 5 - Validate Sirius ==="
-#docker-compose ${COMPOSE_ARGS} run --rm validation validation/validate.sh --correfs="${CORREFS}"
+echo "=== Step 1 - Transform ==="
+docker-compose ${COMPOSE_ARGS} run --rm transform_casrec transform_casrec/transform.sh --correfs="${CORREFS}"
+echo "=== Step 2 - Integrate with Sirius ==="
+docker-compose ${COMPOSE_ARGS} run --rm integration integration/integration.sh --correfs="${CORREFS}"
+echo "=== Step 3 - Validate Staging ==="
+docker-compose ${COMPOSE_ARGS} run --rm validation python3 /validation/validate_db/app/app.py --correfs="${CORREFS}" --staging
+echo "=== Step 4 - Load to Sirius ==="
+docker-compose ${COMPOSE_ARGS} run --rm load_to_target load_to_sirius/load_to_sirius.sh
+echo "=== Step 5 - Validate Sirius ==="
+docker-compose ${COMPOSE_ARGS} run --rm validation validation/validate.sh --correfs="${CORREFS}"
 #echo "=== Step 6 - API Tests ==="
 #docker-compose ${COMPOSE_ARGS} run --rm validation validation/api_tests.sh
 #echo "=== Step 7 - Functional API Tests ==="

@@ -14,7 +14,9 @@ added are part of the source data for the transformation.
 """
 Fixtures not needed:
 - Deputy death: All relevant fields are default values
--
+- Deputy Fee Payer: No lookups
+Fixtures TODO:
+- Finance fixtures
 """
 
 import logging
@@ -33,6 +35,13 @@ from client_person_fixtures import CLIENT_PERSON_FIXTURES
 from client_death_fixtures import CLIENT_DEATH_FIXTURES
 from client_notes_fixtures import CLIENT_NOTES_FIXTURES
 from client_warnings_fixtures import CLIENT_WARNINGS_FIXTURES
+from deputy_clients_fixtures import DEPUTY_CLIENTS_FIXTURES
+from deputy_notes_fixtures import DEPUTY_NOTES_FIXTURES
+from deputy_warnings_fixtures import DEPUTY_WARNINGS_FIXTURES
+from client_orders_fixtures import CLIENT_ORDERS_FIXTURES
+from supervision_level_fixtures import SUPERVISION_LEVEL_FIXTURES
+from tasks_fixtures import TASKS_FIXTURES
+from client_visits_fixtures import CLIENT_VISITS_FIXTURES
 import custom_logger
 from helpers import get_config, log_title
 
@@ -52,6 +61,13 @@ ALL_FIXTURES = [
     CLIENT_DEATH_FIXTURES,
     CLIENT_NOTES_FIXTURES,
     CLIENT_WARNINGS_FIXTURES,
+    DEPUTY_CLIENTS_FIXTURES,
+    DEPUTY_NOTES_FIXTURES,
+    DEPUTY_WARNINGS_FIXTURES,
+    CLIENT_ORDERS_FIXTURES,
+    SUPERVISION_LEVEL_FIXTURES,
+    TASKS_FIXTURES,
+    CLIENT_VISITS_FIXTURES,
 ]
 
 
