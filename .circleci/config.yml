@@ -611,9 +611,9 @@ workflows:
       - run_task:
           name: migration - response api tests preproduction
           requires: [migration - validation preproduction]
+          notify_validation_fails: true
           tf_workspace: preproduction
           runner_command: migration-response-api-tests
-          notify_validation_fails: true
           filters: {branches:{only:[master]}}
       - scale-services:
           name: scale up poller service for migration preproduction
@@ -628,24 +628,19 @@ workflows:
           environment_tag: qa
           requires: [migration - response api tests preproduction]
           filters: {branches:{only:[master]}}
-      - run_task:
-          name: run api tests preproduction
-          requires: [tag image for qa]
-          tf_workspace: preproduction
-          filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch preproduction
-          requires: [run api tests preproduction]
+          requires: [migration - response api tests preproduction]
           tf_workspace: preproduction
           filters: {branches:{only:[master]}}
       - kick_off_environment:
           name: kick off preqa
           workspace: preqa
-          requires: [run api tests preproduction]
+          requires: [tag image for qa]
           filters: {branches:{only:[master]}}
       - job_complete:
           name: job complete notification
-          requires: [run api tests preproduction]
+          requires: [tag image for qa]
           workspace: preproduction
           filters: {branches:{only:[master]}}
 
