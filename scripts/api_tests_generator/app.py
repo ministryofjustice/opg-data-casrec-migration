@@ -10,7 +10,7 @@ from jsonpath_ng import parse
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../migration_steps/shared")
-from helpers import get_config, get_s3_session
+from helpers import get_config
 
 env_path = current_path / "../../migration_steps/.env"
 load_dotenv(dotenv_path=env_path)
@@ -24,24 +24,24 @@ engine = create_engine(db_conn_string)
 response_dir = "responses"
 
 csvs = [
-    # "deputy_fee_payer",
-    # "clients", --G
-    # "orders", --G
-    # "bonds", --G
-    # "deputies", --G
-    # "deputy_orders", --G
-    # "deputy_clients", --G
-    # "supervision_level", --G
+    "deputy_fee_payer",
+    "clients",
+    "orders",
+    "bonds",
+    "deputies",
+    "deputy_orders",
+    "deputy_clients",
+    "supervision_level",
     "client_death_notifications",
-    # "deputy_death_notifications", --G
-    # "deputy_warnings", --G
-    # "client_warnings", --G
-    # "crec", --G
+    "deputy_death_notifications",
+    "deputy_warnings",
+    "client_warnings",
+    "crec",
     "visits",
-    # "invoices",
-    # "tasks", --G
-    # "deputy_notes", --G
-    # "client_notes", --G
+    "invoices",
+    "tasks",
+    "deputy_notes",
+    "client_notes",
 ]
 
 search_headers = [

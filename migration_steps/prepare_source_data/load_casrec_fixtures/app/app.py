@@ -43,6 +43,7 @@ from client_orders_fixtures import CLIENT_ORDERS_FIXTURES
 from supervision_level_fixtures import SUPERVISION_LEVEL_FIXTURES
 from tasks_fixtures import TASKS_FIXTURES
 from client_visits_fixtures import CLIENT_VISITS_FIXTURES
+from order_fixtures import ORDER_FIXTURES
 import custom_logger
 from helpers import get_config, log_title
 
@@ -57,6 +58,7 @@ SCHEMA = CONFIG.schemas["pre_transform"]
 
 ALL_FIXTURES = [
     ACCOUNT_FIXTURES,
+    ORDER_FIXTURES,
     BOND_FIXTURES,
     CLIENT_PERSON_FIXTURES,
     CLIENT_DEATH_FIXTURES,

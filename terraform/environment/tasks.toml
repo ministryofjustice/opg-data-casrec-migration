@@ -290,7 +290,7 @@
         "Overrides": {
             "ContainerOverrides": [{
                 "Name": "etl5",
-                "Command": ["validation/api_tests.sh"]
+                "Command": ["validation/response_api_tests.sh"]
             }]
         },
         "TaskDefinition":"${casrec-task-definition-validation}"
@@ -312,6 +312,27 @@
             "ContainerOverrides": [{
                 "Name": "etl5",
                 "Command": ["validation/functional_api_tests.sh"]
+            }]
+        },
+        "TaskDefinition":"${casrec-task-definition-validation}"
+      },
+      "migration-light-touch-api-tests":{
+        "Cluster":"${casrec-cluster}",
+        "LaunchType":"FARGATE",
+        "NetworkConfiguration":{
+            "AwsvpcConfiguration":{
+                "SecurityGroups":[
+                    "${casrec-sec-group}"
+                ],
+                "Subnets":[
+                    ${casrec-subnets}
+                ]
+            }
+        },
+        "Overrides": {
+            "ContainerOverrides": [{
+                "Name": "etl5",
+                "Command": ["validation/light_touch_api_tests.sh"]
             }]
         },
         "TaskDefinition":"${casrec-task-definition-validation}"

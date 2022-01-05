@@ -12,7 +12,7 @@ from utilities.standard_transformations import squash_columns
 log = logging.getLogger("root")
 
 
-def get_source_table(mapping_dict):
+def get_source_table(mapping_dict, table_def):
     source_table_list = [
         v["casrec_table"].lower()
         for k, v in mapping_dict.items()
@@ -21,6 +21,8 @@ def get_source_table(mapping_dict):
     no_dupes = list(set(source_table_list))
     if len(no_dupes) == 1:
         return list(set(source_table_list))[0]
+    elif len(no_dupes) == 0:
+        return table_def["source_table_name"]
     else:
         log.error("Multiple source tables")
         return ""
@@ -40,7 +42,7 @@ def get_basic_data_table(
         file_name=mapping_file_name, stage_name="transform_casrec"
     )
 
-    source_table = get_source_table(mapping_dict=mapping_dict)
+    source_table = get_source_table(mapping_dict=mapping_dict, table_def=table_definition)
 
     additional_columns = table_definition["source_table_additional_columns"]
     if not isinstance(additional_columns, list):

@@ -63,6 +63,7 @@ services:
       - ./migration_steps/validation/post_migration_tests:/validation/post_migration_tests
       - ./migration_steps/validation/validate_db:/validation/validate_db
       - ./migration_steps/validation/validate.sh:/validation/validate.sh
-      - ./migration_steps/validation/api_tests.sh:/validation/api_tests.sh
+      - ./migration_steps/validation/response_api_tests.sh:/validation/response_api_tests.sh
       - ./migration_steps/validation/functional_api_tests.sh:/validation/functional_api_tests.sh
+      - ./migration_steps/validation/light_touch_api_tests.sh:/validation/light_touch_api_tests.sh
       - ./migration_steps/shared:/shared

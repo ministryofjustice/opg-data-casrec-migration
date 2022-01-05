@@ -96,6 +96,12 @@
             "total_mapped": 7,
             "percentage_complete": 88
         },
+        "finance_order": {
+            "total_rows": 4,
+            "total_unmapped": 0,
+            "total_mapped": 4,
+            "percentage_complete": 100
+        },
         "finance_invoice_ad": {
             "total_rows": 14,
             "total_unmapped": 1,
@@ -261,13 +267,13 @@
     },
     "total": {
         "worksheets": {
-            "total_sheets": 43,
+            "total_sheets": 44,
             "total_complete": 1
         },
         "fields": {
-            "total_fields": 416,
+            "total_fields": 420,
             "total_unmapped": 57,
-            "total_mapped": 359,
+            "total_mapped": 363,
             "percentage_complete": 86
         }
     }
