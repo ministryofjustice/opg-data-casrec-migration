@@ -24,25 +24,24 @@ engine = create_engine(db_conn_string)
 response_dir = "responses"
 
 csvs = [
-    "deputy_fee_payer",
-    "clients",
-    "orders",
-    "bonds",
-    "deputies",
-    "deputy_orders",
-    "deputy_clients",
-    "supervision_level",
+    # "deputy_fee_payer",
+    # "clients", --G
+    # "orders", --G
+    # "bonds", --G
+    # "deputies", --G
+    # "deputy_orders", --G
+    # "deputy_clients", --G
+    # "supervision_level", --G
     "client_death_notifications",
-    "deputy_death_notifications",
-    "deputy_warnings",
-    "client_warnings",
-    "crec",
+    # "deputy_death_notifications", --G
+    # "deputy_warnings", --G
+    # "client_warnings", --G
+    # "crec", --G
     "visits",
-    "reports",
-    "invoices",
-    "tasks",
-    "deputy_notes",
-    "client_notes",
+    # "invoices",
+    # "tasks", --G
+    # "deputy_notes", --G
+    # "client_notes", --G
 ]
 
 search_headers = [

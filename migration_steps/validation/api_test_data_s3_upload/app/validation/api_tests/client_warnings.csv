@@ -1,3 +1,9 @@
 endpoint,entity_ref,json_locator,test_purpose,api_response
-/api/v1/persons/{id}/warnings,10194709,[*].warningType,dev_api_tests,Other|REM - Violence Warnings
-/api/v1/persons/{id}/warnings,13323382,[*].warningText,dev_api_tests,Casrec Migration - No Debt to be chased
+/api/v1/persons/{id}/warnings,10000884,[*].warningType,warningType_violence,Other|REM - Violence Warnings
+/api/v1/persons/{id}/warnings,10001403,[*].warningType,warningType_special,Other|REM - Special Interest Markers
+/api/v1/persons/{id}/warnings,10001668,[*].warningType,warningType_saar,Other|Other|Other
+/api/v1/persons/{id}/warnings,10002199,[*].warningType,warningType_no_debt,Other|Other
+/api/v1/persons/{id}/warnings,10000884,[*].warningText,warningText_violence,Casrec Migration - SAAR Check Warning|Casrec Migration - Violent Warning
+/api/v1/persons/{id}/warnings,10001403,[*].warningText,warningText_special,Casrec Migration - SAAR Check Warning|Casrec Migration - Special Interest Warning
+/api/v1/persons/{id}/warnings,10001668,[*].warningText,warningText_saar,Advanced bandwidth-monitored monitoring|Business-focused object-oriented matrix|Casrec Migration - SAAR Check Warning
+/api/v1/persons/{id}/warnings,10002199,[*].warningText,warningText_no_debt,Casrec Migration - No Debt to be chased|Casrec Migration - SAAR Check Warning

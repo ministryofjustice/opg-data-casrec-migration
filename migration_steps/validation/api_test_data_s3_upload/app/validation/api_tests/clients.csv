@@ -1,6 +1,52 @@
 endpoint,entity_ref,json_locator,test_purpose,api_response
-/api/v1/clients/{id},10000037,clientAccommodation.handle,accomodation_housing_assoc,HOUSING ASSOCIATION
-/api/v1/clients/{id},10000884,clientAccommodation.handle,accomodation_housing_private,PRIVATE RENTED
-/api/v1/clients/{id},10001403,clientAccommodation.handle,accomodation_housing_care,CARE/NURSING/RESIDENTIAL HOME (PRIVATE/LA/REGISTERED)
-/api/v1/clients/{id},10001668,salutation,title_miss,Ms
-/api/v1/clients/{id},10002199,salutation,title_master,Master
+/api/v1/clients/{id},10000037,clientAccommodation.handle,accommodation_no_accom,NO ACCOMMODATION TYPE
+/api/v1/clients/{id},10002625,clientAccommodation.handle,accommodation_council,COUNCIL RENTED
+/api/v1/clients/{id},10003409,clientAccommodation.handle,accommodation_supervised,SUPERVISED SHELTERED
+/api/v1/clients/{id},10004038,clientAccommodation.handle,accommodation_hostel,HOSTEL
+/api/v1/clients/{id},10004188,clientAccommodation.handle,accommodation_hotel,HOTEL
+/api/v1/clients/{id},10004257,clientAccommodation.handle,accommodation_health,HEALTH SERVICE PATIENT
+/api/v1/clients/{id},10004637,clientAccommodation.handle,accommodation_care,CARE/NURSING/RESIDENTIAL HOME (PRIVATE/LA/REGISTERED)
+/api/v1/clients/{id},10004741,clientAccommodation.handle,accommodation_oh,OWN HOME
+/api/v1/clients/{id},10004879,clientAccommodation.handle,accommodation_other,OTHER
+/api/v1/clients/{id},10005243,clientAccommodation.handle,accommodation_3part,LA PART 3 ACCOMMODATION
+/api/v1/clients/{id},10005433,clientAccommodation.handle,accommodation_rch,
+/api/v1/clients/{id},10006413,clientAccommodation.handle,accommodation_private,PRIVATE RENTED
+/api/v1/clients/{id},10007163,clientAccommodation.handle,accommodation_rh,
+/api/v1/clients/{id},10007261,clientAccommodation.handle,accommodation_family,FAMILY MEMBER/FRIEND'S HOME
+/api/v1/clients/{id},10008713,clientAccommodation.handle,accommodation_support_house,SUPPORTED HOUSING
+/api/v1/clients/{id},10009307,clientAccommodation.handle,accommodation_lah,
+/api/v1/clients/{id},10010274,clientAccommodation.handle,accommodation_nhs,NHS ACCOMMODATION
+/api/v1/clients/{id},10011951,clientAccommodation.handle,accommodation_support_living,SUPPORTED LIVING
+/api/v1/clients/{id},10012240,clientAccommodation.handle,accommodation_secure,SECURE HOSPITAL
+/api/v1/clients/{id},10000037,salutation,salutation_Mr,Mr
+/api/v1/clients/{id},10002625,salutation,salutation_Mrs,Mrs
+/api/v1/clients/{id},10003409,salutation,salutation_Miss,Miss
+/api/v1/clients/{id},10004038,salutation,salutation_Ms,Ms
+/api/v1/clients/{id},10004188,salutation,salutation_Master,Master
+/api/v1/clients/{id},10004257,salutation,salutation_Sir,Sir
+/api/v1/clients/{id},10004263,salutation,salutation_Lady,Lady
+/api/v1/clients/{id},10004637,salutation,salutation_Professor,Professor
+/api/v1/clients/{id},10004741,salutation,salutation_Lord,Lord
+/api/v1/clients/{id},10004879,salutation,salutation_Right_Honourable,Right Honourable
+/api/v1/clients/{id},1005934T,salutation,salutation_Major,Major
+/api/v1/clients/{id},10005243,salutation,salutation_Father,Father
+/api/v1/clients/{id},10005433,salutation,salutation_Rabbi,Rabbi
+/api/v1/clients/{id},10006413,salutation,salutation_Baron,Baron
+/api/v1/clients/{id},10007163,salutation,salutation_RightHonourableMr,Right Honourable Mr
+/api/v1/clients/{id},10007261,salutation,salutation_RightHonourableMrs,Right Honourable Mrs
+/api/v1/clients/{id},10007877,salutation,salutation_The Honourable,The Honourable
+/api/v1/clients/{id},10008713,salutation,salutation_Canon,Canon
+/api/v1/clients/{id},10009307,salutation,salutation_Sister,Sister
+/api/v1/clients/{id},10010274,salutation,salutation_Messrs,Messrs
+/api/v1/clients/{id},10011951,salutation,salutation_The_Holder_of_The_Office_of,The Holder of The Office of
+/api/v1/clients/{id},10012240,salutation,salutation_Trust_Corporation,Trust Corporation
+/api/v1/clients/{id},10012643,salutation,salutation_Reverend_Mrs,Reverend Mrs
+/api/v1/clients/{id},10013116,salutation,salutation_Captain,Captain
+/api/v1/clients/{id},10013560,salutation,salutation_Dame,Dame
+/api/v1/clients/{id},1005934T,salutation,salutation_Major,Major
+/api/v1/clients/{id},10013583,salutation,salutation_Colonel,Colonel
+/api/v1/clients/{id},10013617,salutation,salutation_The_Authorised_Officer_for,The Authorised Officer for
+/api/v1/clients/{id},1001404T,salutation,salutation_His_Honour,His Honour
+/api/v1/clients/{id},10014200,salutation,salutation_Eur_Ing,Eur Ing
+/api/v1/clients/{id},10015094,salutation,salutation_Sergeant,Sergeant
+/api/v1/clients/{id},10015105,salutation,salutation_Brigadier,Brigadier

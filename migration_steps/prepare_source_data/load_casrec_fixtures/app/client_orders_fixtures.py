@@ -23,7 +23,7 @@ CLIENT_ORDERS_FIXTURES = {
             "source_criteria": {"case": "95056617"},
             "set": {
                 "Ord Type": "2",
-                "Ord Stat": "Open",
+                "Ord Stat": "Active",
                 "Issue Date": "",
                 "Expiry Date": "",
                 "Clause Expiry": "",
@@ -42,7 +42,7 @@ CLIENT_ORDERS_FIXTURES = {
         {
             # pfa / interim / open
             "source_criteria": {"case": "12779384"},
-            "set": {"Ord Type": "41", "Ord Stat": "Open"},
+            "set": {"Ord Type": "41", "Ord Stat": "Active"},
         },
         {
             # pfa / direction / closed

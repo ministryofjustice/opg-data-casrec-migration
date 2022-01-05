@@ -1,5 +1,13 @@
 endpoint,entity_ref,json_locator,test_purpose,api_response
-/api/v1/persons/{id}/death-notification,10076428,person.dateOfDeath,dev_api_tests,31/12/2018
-/api/v1/persons/{id}/death-notification,10264188,notificationMethod,dev_api_tests,Letter
-/api/v1/persons/{id}/death-notification,13263316,notificationMethod,dev_api_tests,Email
-/api/v1/persons/{id}/death-notification,13272728,notificationMethod,dev_api_tests,Phone
+/api/v1/persons/{id}/death-notification,13045198,notifiedBy.label,notifiedBy,Deputy
+/api/v1/persons/{id}/death-notification,11013596,notifiedBy.label,notifiedBy,Executor
+/api/v1/persons/{id}/death-notification,11553037,notifiedBy.label,notifiedBy,Other
+/api/v1/persons/{id}/death-notification,11565044,notifiedBy.label,notifiedBy,Other
+/api/v1/persons/{id}/death-notification,11553037,proofOfDeathReceived,proofOfDeathReceived,True
+/api/v1/persons/{id}/death-notification,11565044,proofOfDeathReceived,proofOfDeathReceived,False
+/api/v1/persons/{id}/death-notification,13045198,notificationMethod,notificationMethod,Fax
+/api/v1/persons/{id}/death-notification,11013596,notificationMethod,notificationMethod,Letter
+/api/v1/persons/{id}/death-notification,11553037,notificationMethod,notificationMethod,Email
+/api/v1/persons/{id}/death-notification,11565044,notificationMethod,notificationMethod,Phone
+/api/v1/persons/{id}/death-notification,13045198,dateNotified,dateNotified,02/03/2019
+/api/v1/persons/{id}/death-notification,11013596,dateLetterSentOut,dateLetterSentOut,02/03/2020

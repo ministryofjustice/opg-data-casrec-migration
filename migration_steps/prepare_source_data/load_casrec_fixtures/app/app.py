@@ -17,6 +17,7 @@ Fixtures not needed:
 - Deputy Fee Payer: No lookups
 Fixtures TODO:
 - Finance fixtures
+- Deputy fee payer
 """
 
 import logging

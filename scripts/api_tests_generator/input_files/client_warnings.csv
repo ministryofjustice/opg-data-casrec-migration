@@ -1,1 +1,9 @@
-endpoint,entity_ref,json_locator,test_purpose/api/v1/persons/{id}/warnings,10194709,[*].warningType,dev_api_tests/api/v1/persons/{id}/warnings,13323382,[*].warningText,dev_api_tests
+endpoint,entity_ref,json_locator,test_purpose
+/api/v1/persons/{id}/warnings,10000884,[*].warningType,warningType_violence
+/api/v1/persons/{id}/warnings,10001403,[*].warningType,warningType_special
+/api/v1/persons/{id}/warnings,10001668,[*].warningType,warningType_saar
+/api/v1/persons/{id}/warnings,10002199,[*].warningType,warningType_no_debt
+/api/v1/persons/{id}/warnings,10000884,[*].warningText,warningText_violence
+/api/v1/persons/{id}/warnings,10001403,[*].warningText,warningText_special
+/api/v1/persons/{id}/warnings,10001668,[*].warningText,warningText_saar
+/api/v1/persons/{id}/warnings,10002199,[*].warningText,warningText_no_debt
