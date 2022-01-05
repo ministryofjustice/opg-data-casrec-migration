@@ -86,6 +86,7 @@ def get_mappings():
         "ledger": ["finance_ledger_credits"],
         "ledger_allocation": ["finance_allocation_credits"],
         "timeline": ["timeline_event", "person_timeline"],
+        "finance_order": ["finance_order"]
     }
 
     for entity, mapping in all_mappings.items():
