@@ -20,7 +20,6 @@ def insert_finance_order(target_db, db_config, mapping_file):
         f'SELECT "id" AS order_id, "c_order_no" FROM {db_config["target_schema"]}.cases;'
     )
     orders_df = pd.read_sql_query(orders_query, db_config["db_connection_string"])
-    orders_df = orders_df[["order_id", "c_order_no"]]
 
     risk_assessment_query = (
         f'''
@@ -32,7 +31,6 @@ def insert_finance_order(target_db, db_config, mapping_file):
         '''
     )
     risk_assessment_df = pd.read_sql_query(risk_assessment_query, db_config["db_connection_string"])
-    risk_assessment_df = risk_assessment_df[["billing_start_date", "c_order_no"]]
 
     mapping_file_name = f"{mapping_file}_mapping"
     table_definition = get_table_def(mapping_name=mapping_file)

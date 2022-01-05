@@ -14,7 +14,7 @@ def runner(target_db, db_config):
     """
 
     entity_name = "finance_order"
-    extra_entities = []
+    extra_entities = ["cases"]
     if not check_entity_enabled(entity_name=entity_name, extra_entities=extra_entities):
         return False
 
