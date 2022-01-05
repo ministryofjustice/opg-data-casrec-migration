@@ -13,10 +13,10 @@ services:
   localstack:
     image: localstack/localstack:0.10.9
     ports:
-        - 4598:4572
+        - 4598:4598
         - 4599:4566
     environment:
-        - SERVICES=s3:4572
+        - SERVICES=s3:4598
         - DEFAULT_REGION=eu-west-1
   load_s3:
     build:
@@ -24,7 +24,7 @@ services:
       dockerfile: load_s3-dockerfile
     environment:
       CSV_DIR_SUFFIX: ./data/anon_data
-      LOCALSTACK_URL: localstack
+      S3_URL: http://localstack:4598
     volumes:
       - ./data:/data
   initialise:
@@ -46,6 +46,7 @@ services:
       ENVIRONMENT: local
       SIRIUS_ACCOUNT: NA
       ACCOUNT_NAME: local
+      S3_URL: http://localstack:4598
     depends_on: [casrec_db]
   load_casrec:
     build:
@@ -62,6 +63,7 @@ services:
       S3_PATH: anon
       SIRIUS_ACCOUNT: NA
       ACCOUNT_NAME: local
+      S3_URL: http://localstack:4598
     depends_on: [localstack, casrec_db]
   load_casrec_fixtures:
     build:
@@ -128,6 +130,7 @@ services:
       RUN_API_TESTS: "True"
       API_TEST_PASSWORD: "Password1" # pragma: allowlist secret
       SIRIUS_FRONT_URL: http://host.docker.internal:8080
+      S3_URL: http://localstack:4598
     depends_on: [casrec_db]
   wait-for-it:
     build: ./wait-for-it

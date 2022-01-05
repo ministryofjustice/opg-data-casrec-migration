@@ -42,12 +42,12 @@ target_schema = None
 source_schema = config.schemas["pre_transform"]
 mapping_dict = None
 
-host = os.environ.get("DB_HOST")
+s3_url = os.environ.get("S3_URL")
+
 ci = os.getenv("CI")
 account_name = os.environ.get("ACCOUNT_NAME")
 bucket_name = f"casrec-migration-{account_name.lower()}"
 account = os.environ["SIRIUS_ACCOUNT"]
-session = boto3.session.Session()
 
 
 def get_anon_id():
@@ -364,8 +364,8 @@ def set_connection_target():
     engine = create_engine(db_conn_string)
 
 
-def updload_csvs_to_s3():
-    s3 = get_s3_session(session, environment, host)
+def upload_csvs_to_s3():
+    s3 = get_s3_session(environment, s3_url)
     if ci != "true":
         for file in os.listdir(temp_csv_path):
             if file.endswith(".csv"):
@@ -402,7 +402,7 @@ def main(verbose, caserecnumber):
         anon_table = anonymise_data(table["table_results"])
         anon_table.to_csv(f"{temp_csv_path}/{table_name}_anon.csv")
     log.info("=== UPLOADING TO S3 ===")
-    updload_csvs_to_s3()
+    upload_csvs_to_s3()
 
 
 if __name__ == "__main__":

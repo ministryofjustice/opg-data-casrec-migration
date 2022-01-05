@@ -33,7 +33,7 @@ class ApiTests:
         self.identifier = None
         self.no_retries = None
         self.assert_on_count = None
-        self.host = os.environ.get("DB_HOST")
+        self.s3_url = os.environ.get("S3_URL")
         self.ci = os.getenv("CI")
         self.base_url = os.environ.get("SIRIUS_FRONT_URL")
         self.account = os.environ["SIRIUS_ACCOUNT"]
@@ -86,9 +86,8 @@ class ApiTests:
     def create_a_session(self):
         sess, headers_dict, status_code = self.get_session()
 
-        aws_sess = boto3.session.Session()
         self.s3_sess = get_s3_session(
-            aws_sess, self.environment, self.host, ci=self.ci, account=self.account
+            self.environment, self.s3_url, ci=self.ci, account=self.account
         )
 
         self.session = {
