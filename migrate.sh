@@ -116,8 +116,10 @@ docker-compose ${COMPOSE_ARGS} run --rm load_to_target load_to_sirius/load_to_si
 echo "=== Step 5 - Validate Sirius ==="
 docker-compose ${COMPOSE_ARGS} run --rm validation validation/validate.sh --correfs="${CORREFS}"
 echo "=== Step 6 - API Tests ==="
-docker-compose ${COMPOSE_ARGS} run --rm validation validation/api_tests.sh
-echo "=== Step 7 - Functional API Tests ==="
+docker-compose ${COMPOSE_ARGS} run --rm validation validation/response_api_tests.sh
+echo "=== Step 7 - Light Touch API Tests ==="
+docker-compose ${COMPOSE_ARGS} run --rm validation validation/light_touch_api_tests.sh
+echo "=== Step 8 - Functional API Tests ==="
 docker-compose ${COMPOSE_ARGS} run --rm validation validation/functional_api_tests.sh
 
 if [ "${GENERATE_DOCS}" == "true" ]

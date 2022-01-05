@@ -29,6 +29,8 @@ custom_logger.setup_logging(env=environment, level="INFO", module_name="API test
 
 class ApiTests:
     def __init__(self):
+        self.environment = os.environ.get("ENVIRONMENT")
+        self.config = get_config(self.environment)
         self.csv = None
         self.identifier = None
         self.no_retries = None
@@ -37,19 +39,10 @@ class ApiTests:
         self.ci = os.getenv("CI")
         self.base_url = os.environ.get("SIRIUS_FRONT_URL")
         self.account = os.environ["SIRIUS_ACCOUNT"]
-        self.environment = os.environ.get("ENVIRONMENT")
         self.log_assert_to_screen = (
             True if os.environ.get("ENVIRONMENT") in ["local", "development"] else False
         )
-        env_users = {
-            "local": "case.manager@opgtest.com",
-            "development": "case.manager@opgtest.com",
-            "preproduction": "opg+siriussmoketest@digital.justice.gov.uk",
-            "preqa": "opg+siriussmoketest@digital.justice.gov.uk",
-            "qa": "opg+siriussmoketest@digital.justice.gov.uk",
-            "production": "opg+siriussmoketest@digital.justice.gov.uk",
-        }
-        self.user = env_users[self.environment]
+        self.user = self.config.env_users[self.environment]
         self.account_name = (
             os.environ.get("ACCOUNT_NAME")
             if os.environ.get("ACCOUNT_NAME") not in ["qa", "preqa"]
@@ -59,7 +52,6 @@ class ApiTests:
         self.bucket_name = f"casrec-migration-{self.account_name.lower() if self.account_name else None}"
         self.failed = False
         self.session = None
-        self.config = get_config(self.environment)
         self.db_conn_string = self.config.get_db_connection_string("target")
         self.source_db_conn_string = self.config.get_db_connection_string("migration")
         self.engine = create_engine(self.db_conn_string)
