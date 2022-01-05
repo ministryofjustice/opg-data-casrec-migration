@@ -71,6 +71,35 @@ def set_fee_reduction_finance_person_ids(db_config, cursor):
     cursor.execute(query)
 
 
+def set_finance_order_finance_person_ids(db_config, cursor):
+    if not check_enabled_by_table_name(table_name="finance_order"):
+        log.info(
+            f"Skip setting finance_person_id on finance_order. Finance Order entity disabled."
+        )
+        return
+
+    log.info("Setting finance_person_id on finance_order...")
+
+    query = f"""
+        WITH order_person AS (
+            SELECT cases.id, finance_person.id AS finance_person_id
+            FROM {db_config['target_schema']}.cases
+            INNER JOIN {db_config['target_schema']}.finance_person ON cases.client_id = finance_person.person_id
+            INNER JOIN {db_config['target_schema']}.persons ON cases.client_id = persons.id
+            WHERE persons.type = 'actor_client'
+            AND persons.clientsource = 'CASRECMIGRATION'
+            AND cases.casetype = 'ORDER'
+        )
+
+        UPDATE {db_config['target_schema']}.finance_order fo
+        SET finance_person_id = op.finance_person_id
+        FROM order_person AS op
+        WHERE op.id = order_id
+        AND fo.finance_person_id IS NULL;
+    """
+    cursor.execute(query)
+
+
 def set_finance_person_ids(db_config):
     connection_string = db_config["db_connection_string"]
     conn = psycopg2.connect(connection_string)
@@ -80,6 +109,7 @@ def set_finance_person_ids(db_config):
         set_invoice_finance_person_ids(db_config=db_config, cursor=cursor)
         set_ledger_finance_person_ids(db_config=db_config, cursor=cursor)
         set_fee_reduction_finance_person_ids(db_config=db_config, cursor=cursor)
+        set_finance_order_finance_person_ids(db_config=db_config, cursor=cursor)
         conn.commit()
         cursor.close()
         conn.close()

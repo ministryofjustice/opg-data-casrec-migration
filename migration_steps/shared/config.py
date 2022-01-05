@@ -93,6 +93,7 @@ class BaseConfig:
         "ledger",
         "ledger_allocation",
         "fee_reductions",
+        "finance_order",
         "remarks",
         "reporting",
         "tasks",
