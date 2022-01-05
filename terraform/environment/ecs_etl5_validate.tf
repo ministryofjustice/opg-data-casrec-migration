@@ -99,7 +99,7 @@ locals {
       },
       {
         name  = "LIGHT_TOUCH_COUNT",
-        value = local.account.name == "development" ? "500" : "5000"
+        value = local.account.name == "development" ? "50" : "1000"
       }
     ]
   })
