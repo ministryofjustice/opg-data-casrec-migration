@@ -159,7 +159,17 @@
             "Ord Stat"
         ],
         "source_table_name": "order",
-        "table_transforms": {},
+        "table_transforms": {
+            "set_cases_orderstatus": {
+                "source_cols": [
+                    "Ord Stat",
+                    "Ord Type"
+                ],
+                "target_cols": [
+                    "orderstatus"
+                ]
+            }
+        },
         "table_type": "data"
     },
     "client_addresses": {

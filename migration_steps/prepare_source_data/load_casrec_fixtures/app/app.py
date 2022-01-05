@@ -22,6 +22,7 @@ current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
 
 from account_fixtures import ACCOUNT_FIXTURES
+from order_fixtures import ORDER_FIXTURES
 import custom_logger
 from helpers import get_config, log_title
 
@@ -34,7 +35,7 @@ CONFIG = get_config(os.environ.get("ENVIRONMENT"))
 
 SCHEMA = CONFIG.schemas["pre_transform"]
 
-ALL_FIXTURES = ACCOUNT_FIXTURES
+ALL_FIXTURES = ACCOUNT_FIXTURES + ORDER_FIXTURES
 
 
 # field_and_value is a tuple (field, value,)
