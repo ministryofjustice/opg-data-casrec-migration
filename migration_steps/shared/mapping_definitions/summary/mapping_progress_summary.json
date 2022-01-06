@@ -168,6 +168,12 @@
             "total_mapped": 5,
             "percentage_complete": 100
         },
+        "scheduled_events_reporting": {
+            "total_rows": 5,
+            "total_unmapped": 0,
+            "total_mapped": 5,
+            "percentage_complete": 100
+        },
         "supervision_level_log": {
             "total_rows": 7,
             "total_unmapped": 3,
@@ -267,13 +273,13 @@
     },
     "total": {
         "worksheets": {
-            "total_sheets": 44,
+            "total_sheets": 45,
             "total_complete": 8
         },
         "fields": {
-            "total_fields": 415,
+            "total_fields": 420,
             "total_unmapped": 19,
-            "total_mapped": 396,
+            "total_mapped": 401,
             "percentage_complete": 95
         }
     }
