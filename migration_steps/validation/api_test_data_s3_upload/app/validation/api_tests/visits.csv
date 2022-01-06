@@ -1,4 +1,56 @@
 endpoint,entity_ref,json_locator,test_purpose,api_response
-/api/v1/clients/{id}/visits,10003409,[*].visitType.handle,dev_api_tests,VT-SUP
-/api/v1/clients/{id}/visits,10005237,[*].visitSubType.handle,dev_api_tests,VST-PRO
-/api/v1/clients/{id}/visits,10009307,[*].whoToVisit.label,dev_api_tests,Client
+/api/v1/clients/{id}/visits,10486336,[*].visitType.label,visitType_super_1,Supervision
+/api/v1/clients/{id}/visits,11203189,[*].visitType.label,visitType_super_2,Supervision
+/api/v1/clients/{id}/visits,11084211,[*].visitType.label,visitType_super_3,Supervision
+/api/v1/clients/{id}/visits,13611831,[*].visitType.label,visitType_super_4,Supervision
+/api/v1/clients/{id}/visits,13263316,[*].visitType.label,visitType_super_5,Supervision
+/api/v1/clients/{id}/visits,10297913,[*].visitType.label,visitType_assurance_6,Assurance
+/api/v1/clients/{id}/visits,10114095,[*].visitType.label,visitType_assurance_7,Assurance
+/api/v1/clients/{id}/visits,12882401,[*].visitType.label,visitType_assurance_8,Assurance
+/api/v1/clients/{id}/visits,10445671,[*].visitType.label,visitType_assurance_9,Assurance
+/api/v1/clients/{id}/visits,10082290,[*].visitType.label,visitType_inv_10,Investigation
+/api/v1/clients/{id}/visits,13527247,[*].visitType.label,visitType_inv_11,Investigation
+/api/v1/clients/{id}/visits,12217002,[*].visitType.label,visitType_inv_12,Investigation
+/api/v1/clients/{id}/visits,10243443,[*].visitType.label,visitType_inv_13,Investigation
+/api/v1/clients/{id}/visits,1294953T,[*].visitType.label,visitType_assurance_14,Assurance
+/api/v1/clients/{id}/visits,10486336,[*].visitSubType.label,visitSubType_pro,Pro Visit
+/api/v1/clients/{id}/visits,11203189,[*].visitSubType.label,visitSubType_lay,Lay Visit
+/api/v1/clients/{id}/visits,11084211,[*].visitSubType.label,visitSubType_pa,PA Visit
+/api/v1/clients/{id}/visits,13611831,[*].visitSubType.label,visitSubType_hw,Health & Welfare
+/api/v1/clients/{id}/visits,13263316,[*].visitSubType.label,visitSubType_med_5,Medical
+/api/v1/clients/{id}/visits,10297913,[*].visitSubType.label,visitSubType_med_6,Medical
+/api/v1/clients/{id}/visits,10114095,[*].visitSubType.label,visitSubType_pro_7,Client Pro
+/api/v1/clients/{id}/visits,12882401,[*].visitSubType.label,visitSubType_pro_8,Client Pro
+/api/v1/clients/{id}/visits,10445671,[*].visitSubType.label,visitSubType_client_9,Client PA
+/api/v1/clients/{id}/visits,10082290,[*].visitSubType.label,visitSubType_dep_10,Deputyship
+/api/v1/clients/{id}/visits,13527247,[*].visitSubType.label,visitSubType_lpa_11,LPA
+/api/v1/clients/{id}/visits,12217002,[*].visitSubType.label,visitSubType_medical_lpa_12,Medical LPA
+/api/v1/clients/{id}/visits,10243443,[*].visitSubType.label,visitSubType_medical_dep_13,Medical Deputyship
+/api/v1/clients/{id}/visits,1294953T,[*].visitSubType.label,visitSubType_pro_14,Client Pro
+/api/v1/clients/{id}/visits,10486336,[*].visitCancellationReason.label,visitCancellationReason_misc_4,Misc/Visitor Decision
+/api/v1/clients/{id}/visits,13263316,[*].visitCancellationReason.label,visitCancellationReason_court_1,Cancelled by Court or OPG
+/api/v1/clients/{id}/visits,10297913,[*].visitCancellationReason.label,visitCancellationReason_refusal_6,Refusal
+/api/v1/clients/{id}/visits,10114095,[*].visitCancellationReason.label,visitCancellationReason_blank_3,
+/api/v1/clients/{id}/visits,12882401,[*].visitCancellationReason.label,visitCancellationReason_death_cli_7,Death of Client
+/api/v1/clients/{id}/visits,10445671,[*].visitCancellationReason.label,visitCancellationReason_death_dep_8,Death of Deputy
+/api/v1/clients/{id}/visits,10082290,[*].visitCancellationReason.label,visitCancellationReason_blank_2,
+/api/v1/clients/{id}/visits,13527247,[*].visitCancellationReason.label,visitCancellationReason_conflict_9,Returned Conflict of Interest
+/api/v1/clients/{id}/visits,12217002,[*].visitCancellationReason.label,visitCancellationReason_duplicate_10,Duplicate Entries
+/api/v1/clients/{id}/visits,10243443,[*].visitCancellationReason.label,visitCancellationReason__visit_area_11,Out of Visitor area
+/api/v1/clients/{id}/visits,1294953T,[*].visitCancellationReason.label,visitCancellationReason_blank_0,
+/api/v1/clients/{id}/visits,10486336,[*].visitReportMarkedAs.label,visitReportMarkedAs_green,Green
+/api/v1/clients/{id}/visits,11203189,[*].visitReportMarkedAs.label,visitReportMarkedAs_amber,Amber
+/api/v1/clients/{id}/visits,11084211,[*].visitReportMarkedAs.label,visitReportMarkedAs_blue,
+/api/v1/clients/{id}/visits,13611831,[*].visitReportMarkedAs.label,visitReportMarkedAs_red,Red
+/api/v1/clients/{id}/visits,10486336,[*].visitOutcome.label,visitOutcome_abort_0,Cancelled
+/api/v1/clients/{id}/visits,11203189,[*].visitOutcome.label,visitOutcome_cancelled_success_1,Successful
+/api/v1/clients/{id}/visits,11084211,[*].visitOutcome.label,visitOutcome_abort_2,Aborted
+/api/v1/clients/{id}/visits,13611831,[*].visitOutcome.label,visitOutcome_3,Aborted
+/api/v1/clients/{id}/visits,13263316,[*].visitOutcome.label,visitOutcome_cancelled_4,Cancelled
+/api/v1/clients/{id}/visits,10297913,[*].visitOutcome.label,visitOutcome_cancelled_5,Cancelled
+/api/v1/clients/{id}/visits,10114095,[*].visitOutcome.label,visitOutcome_abort_6,Aborted
+/api/v1/clients/{id}/visits,12882401,[*].visitOutcome.label,visitOutcome_cancelled_7,Cancelled
+/api/v1/clients/{id}/visits,10445671,[*].visitOutcome.label,visitOutcome_cancelled_8,Cancelled
+/api/v1/clients/{id}/visits,10082290,[*].visitOutcome.label,visitOutcome_abort_9,Aborted
+/api/v1/clients/{id}/visits,13527247,[*].visitOutcome.label,visitOutcome_cancelled_10,Cancelled
+/api/v1/clients/{id}/visits,12217002,[*].visitOutcome.label,visitOutcome_cancelled_11,Cancelled

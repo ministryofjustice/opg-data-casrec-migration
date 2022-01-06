@@ -1,2 +1,5 @@
 endpoint,entity_ref,json_locator,test_purpose,api_response
-/api/v1/persons/{id}/warnings,94007582,[*].warningType,dev_api_tests,REM - Violence Warnings|REM - Violence Warnings
+/api/v1/persons/{id}/warnings,94029318,[*].warningType,special_interest,REM - Special Interest Markers
+/api/v1/persons/{id}/warnings,94029318,[*].warningText,special_interest,Casrec Migration - Special Interest Warning
+/api/v1/persons/{id}/warnings,10433249,[*].warningType,violence,REM - Violence Warnings
+/api/v1/persons/{id}/warnings,10433249,[*].warningText,violence,Casrec Migration - Violent Warning

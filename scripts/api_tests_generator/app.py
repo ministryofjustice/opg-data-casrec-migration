@@ -38,7 +38,6 @@ csvs = [
     "client_warnings",
     "crec",
     "visits",
-    "reports",
     "invoices",
     "tasks",
     "deputy_notes",
