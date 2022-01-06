@@ -42,6 +42,7 @@ from entities import (
     fee_reductions,
     timeline,
     finance_order,
+    scheduled_events,
 )
 from utilities.clear_database import clear_tables
 from db_insert import InsertData
@@ -140,6 +141,7 @@ def main(clear, correfs, chunk_size):
     fee_reductions.runner(target_db=target_db, db_config=db_config)
     timeline.runner(target_db=target_db, db_config=db_config)
     finance_order.runner(target_db=target_db, db_config=db_config)
+    scheduled_events.runner(target_db=target_db, db_config=db_config)
 
     check_row_counts.count_rows(
         connection_string=db_config["db_connection_string"],

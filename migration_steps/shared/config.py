@@ -110,6 +110,7 @@ class BaseConfig:
         "visits",
         "warnings",
         "death",
+        "scheduled_events",
     ]
 
     LOCAL_FEATURE_FLAGS = {

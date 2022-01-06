@@ -587,5 +587,21 @@
 			"type": "pk"
 		}],
 		"order_by": ["id"]
+	},
+	"scheduled_events": {
+		"sirius_tables": ["scheduled_events"],
+		"entities": {
+			"base_entities": ["scheduled_events"],
+			"relies_on": ["reporting"]
+		},
+		"pk": "id",
+		"fks": [],
+		"table_type": "data",
+		"sequences": [{
+			"name": "scheduled_events_id_seq",
+			"column": "id",
+			"type": "pk"
+		}],
+		"order_by": ["id"]
 	}
 }
