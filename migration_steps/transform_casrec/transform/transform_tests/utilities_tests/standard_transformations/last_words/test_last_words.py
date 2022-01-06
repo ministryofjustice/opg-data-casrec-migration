@@ -1,6 +1,6 @@
 from utilities.standard_transformations import last_words
 import pandas as pd
-from pandas.util.testing import assert_frame_equal
+from pandas.testing import assert_frame_equal
 
 
 def test_last_words():
