@@ -24,7 +24,7 @@ def insert_finance_order(target_db, db_config, mapping_file):
     risk_assessment_query = (
         f'''
             SET datestyle = "ISO, DMY";
-            SELECT MIN("Start Date"::date) AS billing_start_date,
+            SELECT MIN(NULLIF("Start Date", '')::date) AS billing_start_date,
             "Order No" AS c_order_no
             FROM {db_config["source_schema"]}.risk_assessment
             GROUP BY "Order No";
