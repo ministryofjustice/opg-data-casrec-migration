@@ -91,6 +91,9 @@ DEFAULT_TRANSFORMS = {
     "set_cases_orderstatus": TABLE_TRANSFORM_CASES,
 }
 
+# name of the column added to dataframes to track when a mapping has been applied to a row
+MAPPED_TRACKING_COLUMN_NAME = "__table_transform_mapped__"
+
 
 # raised when table transform fails for some reason
 class TableTransformException(Exception):
@@ -98,19 +101,19 @@ class TableTransformException(Exception):
 
 
 def apply_table_transformation(
-    df: pd.DataFrame, mapping: dict, local_vars: dict = {}, match_once: bool = False
+    df: pd.DataFrame, mapping: dict, local_vars: dict = {}
 ) -> pd.DataFrame:
     """
     Apply default columns from mapping, or check criteria in mapping and set
-    output columns if criteria are met
+    output columns if criteria are met.
+    Note that if a column named MAPPED_TRACKING_COLUMN_NAME is in the dataframe, it's used
+    to exclude rows from mappings which have a "yes" value in that column.
 
     :param df: dataframe to transform in place
     :param mapping: dict; will either set default_cols, or specify criteria to test against the
         dataframe + output columns to set if criteria met
     :param local_vars: dict; local variables which will be interpolated into the
         criteria in the mappings
-    :param match_once: bool; if True, only the first matching mapping is applied; if False, the
-        last matching mapping will generate the output
     :return: dataframe
     """
     if "default_cols" in mapping:
@@ -141,10 +144,19 @@ def apply_table_transformation(
                     )
                     parsed.append("((" + ") | (".join(clauses) + "))")
 
-        query = "(" + ") & (".join(parsed) + ")"
-
         # find matching rows and set column values
         output_cols = mapping["output_cols"]
+
+        # if we are only matching once, add a criterion here to exclude any rows which
+        # are already marked as being transformed by a previous mapping; also add
+        # an additional output column and output value used to track rows which
+        # have been mapped
+        if MAPPED_TRACKING_COLUMN_NAME in df.columns:
+            parsed.append(f'{MAPPED_TRACKING_COLUMN_NAME} == "no"')
+            output_cols[MAPPED_TRACKING_COLUMN_NAME] = "yes"
+
+        query = "(" + ") & (".join(parsed) + ")"
+
         log.debug(f"Table transform query: {query} => {output_cols}")
 
         try:
@@ -232,6 +244,10 @@ def process_table_transformations(
         local_vars = transform.get("local_vars", {})
         match_once = transform.get("match_once", False)
 
+        # if we're tracking when rows are tracked, add a column for that purpose
+        if match_once:
+            df[MAPPED_TRACKING_COLUMN_NAME] = "no"
+
         for mapping in mappings:
             # validate that default_cols/output_cols in the mapping are all in target_cols
             if "default_cols" in mapping:
@@ -248,6 +264,10 @@ def process_table_transformations(
                     f"in target_cols list {sorted(target_cols)}"
                 )
 
-            df = apply_table_transformation(df, mapping, local_vars, match_once)
+            df = apply_table_transformation(df, mapping, local_vars)
+
+        # if we have been tracking which rows have been mapped, remove the extra tracking column here
+        if MAPPED_TRACKING_COLUMN_NAME in df.columns:
+            df.drop(MAPPED_TRACKING_COLUMN_NAME, axis=1, inplace=True)
 
     return df
