@@ -40,8 +40,8 @@ for date_col in _all_unset_date_cols + ["c_end_date"]:
     _aliased_column_datatypes[date_col] = {"data_type": "date"}
 
 
-# set a default rcvd date to the lodge date, if the row doesn't have a rcvd date
-def _set_default_rcvd_date(df):
+# default rcvd date to the lodge date, if the row doesn't have a rcvd date
+def _set_default_rcvd_date(df: pd.DataFrame) -> pd.Series:
     df.loc[
         (df["c_lodge_date"] != "")
         & df["c_lodge_date"].notna()

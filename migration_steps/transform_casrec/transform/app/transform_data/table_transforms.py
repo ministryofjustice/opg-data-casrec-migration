@@ -38,15 +38,21 @@ Each mapping dict in this list specifies either:
     '<column name>': <value or callable>
   }
 
-  If a value, all rows in that column get that value, regardless of
-  whether they already have a value. If a callable, should be a
-  function which takes a single argument (the whole dataframe) and returns
-  a pandas.Series. The column within the dataframe is then set to this
-  returned series. This allows for setting more complex defaults
-  which don't override all the values in the column.
+  If a primtive value, all rows in that column get that value, regardless of
+  whether they already have a value.
 
-  Usually, this should be the first item in the mappings list, especially
-  if later mappings rely on values which have been set up by default_cols.
+  If a callable, should be a function with this signature:
+
+      def fn(df: pd.DataFrame) -> pd.Series:
+        ...
+
+  This will be passed a single argument (the whole pd.DataFrame) and
+  should return new default values for the column (the pd.Series). This
+  allows for setting more complex defaults which don't override all the
+  values in a column.
+
+  Usually, default_cols should be the first item in the mappings list,
+  especially if later mappings rely on values which have been set up by it.
 
 * a dict with 'criteria' (and-ed together to construct a dataframe query)
   and 'output_cols' keys:
@@ -197,7 +203,9 @@ def process_table_transformations(
         column names. The output columns of the mapping are compared to this list; if a column is
         specified as an output of the mapping but not present in target_cols, an exception is raised.
         (A mapping does not have to set a value for all columns in target_cols, but must only set
-        columns which are in target_cols.)
+        columns which are in target_cols.) Note that is is possible to override column values in
+        the source dataframe (e.g. using default_cols), so target_cols should also include any
+        columns in the source dataframe which will be affected (referenced by their c_* aliases).
     :param transform_definitions: dict. Definitions for valid table transforms; defaults to the
         transforms defined in this module.
     :raises: TableTransformException
