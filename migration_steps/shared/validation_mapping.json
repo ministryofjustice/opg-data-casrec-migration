@@ -1173,7 +1173,8 @@
     },
     "finance_ledger_credits": {
         "exclude": [
-            "finance_person_id"
+            "finance_person_id",
+            "reference"
         ],
         "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},

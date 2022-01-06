@@ -3,8 +3,8 @@ import json
 import numpy as np
 
 
-def create_table_def_json(df, name, destination):
-    print(f"creating table defs: {name}")
+def create_table_def_json(df, name):
+    print(f"--- creating table defs: {name}")
     print(f"name: {name}")
 
     df = df.replace(np.nan, "")
@@ -25,23 +25,11 @@ def create_table_def_json(df, name, destination):
         definition_dict=table_def_dict,
     )
 
-    path = f"./{destination}/tables"
-
-    if not os.path.exists(path):
-        os.makedirs(path)
-
-    try:
-        with open(f"{path}/table_definitions.json", "r") as json_out:
-            data = json_out.read()
-            existing_table_defs = json.loads(data)
-    except Exception:
-        existing_table_defs = {}
-
+    table_defs = {}
     for mapping_file_name, details in table_def_dict.items():
-        existing_table_defs[mapping_file_name] = details
+        table_defs[mapping_file_name] = details
 
-    with open(f"{path}/table_definitions.json", "w") as json_write:
-        json.dump(existing_table_defs, json_write, indent=4, sort_keys=True)
+    return table_defs
 
 
 def convert_col_to_list(column_names, definition_dict):
@@ -72,7 +60,7 @@ def convert_col_to_dict(column_names, definition_dict):
                     condition_details[key] = val
                 details[field] = condition_details
             except KeyError as key:
-                print(f'No key {key} in definition for table - ignoring')
+                print(f"No key {key} in definition for table - ignoring")
                 details[field] = {}
             except Exception as e:
                 print(e)
