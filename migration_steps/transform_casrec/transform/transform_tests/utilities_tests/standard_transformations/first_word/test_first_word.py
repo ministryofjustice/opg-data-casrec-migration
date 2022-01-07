@@ -1,6 +1,6 @@
 from utilities.standard_transformations import first_word
 import pandas as pd
-from pandas.util.testing import assert_frame_equal
+from pandas.testing import assert_frame_equal
 
 
 def test_first_word():

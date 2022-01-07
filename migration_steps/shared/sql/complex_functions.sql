@@ -23,8 +23,9 @@ BEGIN
 		WHEN weekdays_since > 71 THEN 'F2'
 		ELSE 'P0'
 	END;
+	-- lodge date is used to set rcvd_date if rcvd_date is empty; see IN-1088
 	rcvd_date_flag = CASE
-		WHEN COALESCE(rcvd_date, '') = '' THEN 'N'
+		WHEN COALESCE(rcvd_date, lodge_date, '') = '' THEN 'N'
 		ELSE 'Y'
 	END;
 	lodge_date_flag = CASE
