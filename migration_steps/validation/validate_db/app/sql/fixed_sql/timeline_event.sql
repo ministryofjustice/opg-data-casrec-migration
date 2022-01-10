@@ -18,7 +18,7 @@ INSERT INTO casrec_csv.exceptions_timeline_event (
     FROM (
         SELECT
             "Case" AS case_no,
-            TRIM("Forename") || ' ' || TRIM("Surname") AS person_name
+            INITCAP(SPLIT_PART(TRIM("Forename"), ' ', 1)) || ' ' || INITCAP(TRIM("Surname")) AS person_name
         FROM casrec_csv.pat where CAST("Title" AS int) = 99
 
         EXCEPT

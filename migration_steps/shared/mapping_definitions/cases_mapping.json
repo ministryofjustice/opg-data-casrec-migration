@@ -1161,10 +1161,10 @@
             "entity": "cases"
         },
         "transform_casrec": {
-            "casrec_table": "ORDER",
-            "casrec_column_name": "Ord Stat",
-            "alias": "Ord Stat",
-            "requires_transformation": "capitalise",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
             "lookup_table": "",
             "default_value": "",
             "calculated": "",

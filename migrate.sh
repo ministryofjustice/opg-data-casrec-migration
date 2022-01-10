@@ -10,6 +10,7 @@ GENERATE_DOCS="false"
 FULL_SIRIUS_APP="n"
 COMPOSE_ARGS=""
 MAPPING_SHA=$(find migration_steps/shared/mapping_spreadsheet/ -type f -print0 | sort -z | xargs -0 sha1sum | sha1sum | awk '{print $1}')
+S3_HOST_AND_PORT=localstack:4572
 
 if [ "${CI}" != "true" ]
 then
@@ -40,6 +41,7 @@ then
   echo "${FULL_SIRIUS_APP}"
   if [ "${FULL_SIRIUS_APP}" == "y" ]
   then
+      S3_HOST_AND_PORT=localstack:4598
       COMPOSE_ARGS="-f docker-compose.sirius.yml -f docker-compose.override.yml"
   fi
 
@@ -66,7 +68,7 @@ then
   docker-compose ${COMPOSE_ARGS} up --no-deps -d postgres-sirius-restore
 fi
 docker-compose ${COMPOSE_ARGS} run --rm wait-for-it -address casrec_db:5432 --timeout=30 -debug
-docker-compose ${COMPOSE_ARGS} run --rm wait-for-it -address localstack:4572 --timeout=30 -debug
+docker-compose ${COMPOSE_ARGS} run --rm wait-for-it -address $S3_HOST_AND_PORT --timeout=30 -debug
 
 if [ "${REBUILD_CASREC_CSV_SCHEMA}" == "y" ]
 then
@@ -114,8 +116,10 @@ docker-compose ${COMPOSE_ARGS} run --rm load_to_target load_to_sirius/load_to_si
 echo "=== Step 5 - Validate Sirius ==="
 docker-compose ${COMPOSE_ARGS} run --rm validation validation/validate.sh --correfs="${CORREFS}"
 echo "=== Step 6 - API Tests ==="
-docker-compose ${COMPOSE_ARGS} run --rm validation validation/api_tests.sh
-echo "=== Step 7 - Functional API Tests ==="
+docker-compose ${COMPOSE_ARGS} run --rm validation validation/response_api_tests.sh
+echo "=== Step 7 - Light Touch API Tests ==="
+docker-compose ${COMPOSE_ARGS} run --rm validation validation/light_touch_api_tests.sh
+echo "=== Step 8 - Functional API Tests ==="
 docker-compose ${COMPOSE_ARGS} run --rm validation validation/functional_api_tests.sh
 
 if [ "${GENERATE_DOCS}" == "true" ]

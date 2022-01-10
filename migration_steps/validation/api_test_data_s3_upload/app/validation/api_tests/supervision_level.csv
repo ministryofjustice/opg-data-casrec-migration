@@ -1,3 +1,11 @@
 endpoint,entity_ref,json_locator,test_purpose,api_response
-/api/v1/orders/{id},10003409,latestSupervisionLevel.supervisionLevel.handle,dev_api_tests,GENERAL|GENERAL|GENERAL
-/api/v1/orders/{id},10006413,latestSupervisionLevel.assetLevel.handle,dev_api_tests,HIGH|HIGH
+/api/v1/orders/{id},10369939,latestSupervisionLevel.supervisionLevel.handle,supervisionLevel_general_1,GENERAL
+/api/v1/orders/{id},94087154,latestSupervisionLevel.supervisionLevel.handle,supervisionLevel_general_2,GENERAL
+/api/v1/orders/{id},13581220,latestSupervisionLevel.supervisionLevel.handle,supervisionLevel_general_2a,GENERAL
+/api/v1/orders/{id},97432184,latestSupervisionLevel.supervisionLevel.handle,supervisionLevel_minimal_3,MINIMAL
+/api/v1/orders/{id},10424217,latestSupervisionLevel.supervisionLevel.handle,supervisionLevel_null,
+/api/v1/orders/{id},10369939,latestSupervisionLevel.assetLevel.handle,assetLevel_high_1,HIGH
+/api/v1/orders/{id},94087154,latestSupervisionLevel.assetLevel.handle,assetLevel_high_2,HIGH
+/api/v1/orders/{id},13581220,latestSupervisionLevel.assetLevel.handle,assetLevel_high_2a,HIGH
+/api/v1/orders/{id},97432184,latestSupervisionLevel.assetLevel.handle,assetLevel_low_3,LOW
+/api/v1/orders/{id},10424217,latestSupervisionLevel.assetLevel.handle,assetLevel_null,

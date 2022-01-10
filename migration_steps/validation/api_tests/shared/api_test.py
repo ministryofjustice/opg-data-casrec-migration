@@ -29,27 +29,20 @@ custom_logger.setup_logging(env=environment, level="INFO", module_name="API test
 
 class ApiTests:
     def __init__(self):
+        self.environment = os.environ.get("ENVIRONMENT")
+        self.config = get_config(self.environment)
         self.csv = None
         self.identifier = None
         self.no_retries = None
         self.assert_on_count = None
-        self.host = os.environ.get("DB_HOST")
+        self.s3_url = os.environ.get("S3_URL")
         self.ci = os.getenv("CI")
         self.base_url = os.environ.get("SIRIUS_FRONT_URL")
         self.account = os.environ["SIRIUS_ACCOUNT"]
-        self.environment = os.environ.get("ENVIRONMENT")
         self.log_assert_to_screen = (
             True if os.environ.get("ENVIRONMENT") in ["local", "development"] else False
         )
-        env_users = {
-            "local": "case.manager@opgtest.com",
-            "development": "case.manager@opgtest.com",
-            "preproduction": "opg+siriussmoketest@digital.justice.gov.uk",
-            "preqa": "opg+siriussmoketest@digital.justice.gov.uk",
-            "qa": "opg+siriussmoketest@digital.justice.gov.uk",
-            "production": "opg+siriussmoketest@digital.justice.gov.uk",
-        }
-        self.user = env_users[self.environment]
+        self.user = self.config.env_users[self.environment]
         self.account_name = (
             os.environ.get("ACCOUNT_NAME")
             if os.environ.get("ACCOUNT_NAME") not in ["qa", "preqa"]
@@ -59,15 +52,17 @@ class ApiTests:
         self.bucket_name = f"casrec-migration-{self.account_name.lower() if self.account_name else None}"
         self.failed = False
         self.session = None
-        self.config = get_config(self.environment)
         self.db_conn_string = self.config.get_db_connection_string("target")
+        self.source_db_conn_string = self.config.get_db_connection_string("migration")
         self.engine = create_engine(self.db_conn_string)
+        self.source_engine = create_engine(self.source_db_conn_string)
         self.api_result_lines = []
         self.api_log_file = (
             f'api_tests_{datetime.now().strftime("%Y-%m-%d-%H-%M-%S")}.log'
         )
         self.s3_file_path = f"validation/logs/{self.api_log_file}"
         self.s3_sess = None
+        self.filtered_cases = self.get_filtered_case_list()
 
     def get_session(self):
         response = requests.get(self.base_url)
@@ -83,9 +78,8 @@ class ApiTests:
     def create_a_session(self):
         sess, headers_dict, status_code = self.get_session()
 
-        aws_sess = boto3.session.Session()
         self.s3_sess = get_s3_session(
-            aws_sess, self.environment, self.host, ci=self.ci, account=self.account
+            self.environment, self.s3_url, ci=self.ci, account=self.account
         )
 
         self.session = {
@@ -511,6 +505,16 @@ class ApiTests:
             self.bucket_name, self.api_log_file, self.s3_sess, log, self.s3_file_path
         )
 
+    def get_filtered_case_list(self):
+        sql = f'SELECT DISTINCT caserecnumber FROM {self.config.schemas["pre_transform"]}.cases_to_filter_out;'
+        filter_cases = []
+        results = self.source_engine.execute(sql)
+
+        for row in results.fetchall():
+            filter_cases.append(row[0])
+
+        return filter_cases
+
     def run_response_tests(self):
         self.api_log(f"Starting tests against '{self.csv}'")
 
@@ -533,25 +537,26 @@ class ApiTests:
             entity_ref = row["entity_ref"]
             json_locator = row["json_locator"]
 
-            # Get the ids to perform the search on based on the caserecnumber
-            entity_ids = self.get_processed_entity_ids(entity_ref)
+            if entity_ref not in self.filtered_cases:
+                # Get the ids to perform the search on based on the caserecnumber
+                entity_ids = self.get_processed_entity_ids(entity_ref)
 
-            if self.assert_on_count:
-                formatted_api_response = self.get_count_api_response(
-                    entity_ids, endpoint, json_locator
-                )
-            else:
-                formatted_api_response = self.get_formatted_api_response(
-                    entity_ids, endpoint, json_locator, row, entity_ref
-                )
-            # Check we haven't brought back an empty dict as response
-            if formatted_api_response:
-                # Loop through and check expected results against actual for each field
-                self.assert_on_fields(
-                    formatted_api_response, row, entity_ref, json_locator
-                )
-            else:
-                self.api_log("empty dictionary returned!")
+                if self.assert_on_count:
+                    formatted_api_response = self.get_count_api_response(
+                        entity_ids, endpoint, json_locator
+                    )
+                else:
+                    formatted_api_response = self.get_formatted_api_response(
+                        entity_ids, endpoint, json_locator, row, entity_ref
+                    )
+                # Check we haven't brought back an empty dict as response
+                if formatted_api_response:
+                    # Loop through and check expected results against actual for each field
+                    self.assert_on_fields(
+                        formatted_api_response, row, entity_ref, json_locator
+                    )
+                else:
+                    self.api_log("empty dictionary returned!")
         self.api_log(f"Ran happy path tests against {count} cases in {self.csv}")
 
     def functional_tests_by_method(self, method, entity_setup_objects):
@@ -672,7 +677,6 @@ class ApiTests:
         else:
             self.api_log(f"Method {method} is invalid")
 
-        log.info(f"Response text: {response.text}")
         status_code = response.status_code
 
         self.api_log(f"Returns following: {status_code}")

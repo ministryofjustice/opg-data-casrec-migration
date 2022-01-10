@@ -6,6 +6,7 @@ from rules.deputy_fee_payer import update_deputy_feepayer_id
 from rules.backwards_cases_client_link import update_client_id_on_cases
 from rules.global_uids import insert_unique_uids
 from rules.finance_person_ids import set_finance_person_ids
+from rules.reporting_period_scheduled_events import update_report_log_scheduled_events_foreign_keys
 from utilities.clear_tables import clear_tables
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -89,6 +90,7 @@ def main(clear, correfs):
     update_deputy_feepayer_id(db_config=db_config)
     update_client_id_on_cases(db_config=db_config)
     set_finance_person_ids(db_config=db_config)
+    update_report_log_scheduled_events_foreign_keys(db_config=db_config)
 
     check_row_counts.count_rows(
         connection_string=db_config["db_connection_string"],

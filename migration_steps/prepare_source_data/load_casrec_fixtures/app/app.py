@@ -11,6 +11,15 @@ This script should run before the transform step begins, so that the fixtures
 added are part of the source data for the transformation.
 """
 
+"""
+Fixtures not needed:
+- Deputy death: All relevant fields are default values
+- Deputy Fee Payer: No lookups
+Fixtures TODO:
+- Finance fixtures
+- Deputy fee payer
+"""
+
 import logging
 import os
 import pandas as pd
@@ -22,6 +31,19 @@ current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
 
 from account_fixtures import ACCOUNT_FIXTURES
+from bond_fixtures import BOND_FIXTURES
+from client_person_fixtures import CLIENT_PERSON_FIXTURES
+from client_death_fixtures import CLIENT_DEATH_FIXTURES
+from client_notes_fixtures import CLIENT_NOTES_FIXTURES
+from client_warnings_fixtures import CLIENT_WARNINGS_FIXTURES
+from deputy_clients_fixtures import DEPUTY_CLIENTS_FIXTURES
+from deputy_notes_fixtures import DEPUTY_NOTES_FIXTURES
+from deputy_warnings_fixtures import DEPUTY_WARNINGS_FIXTURES
+from client_orders_fixtures import CLIENT_ORDERS_FIXTURES
+from supervision_level_fixtures import SUPERVISION_LEVEL_FIXTURES
+from tasks_fixtures import TASKS_FIXTURES
+from client_visits_fixtures import CLIENT_VISITS_FIXTURES
+from order_fixtures import ORDER_FIXTURES
 import custom_logger
 from helpers import get_config, log_title
 
@@ -34,7 +56,22 @@ CONFIG = get_config(os.environ.get("ENVIRONMENT"))
 
 SCHEMA = CONFIG.schemas["pre_transform"]
 
-ALL_FIXTURES = ACCOUNT_FIXTURES
+ALL_FIXTURES = [
+    ACCOUNT_FIXTURES,
+    ORDER_FIXTURES,
+    BOND_FIXTURES,
+    CLIENT_PERSON_FIXTURES,
+    CLIENT_DEATH_FIXTURES,
+    CLIENT_NOTES_FIXTURES,
+    CLIENT_WARNINGS_FIXTURES,
+    DEPUTY_CLIENTS_FIXTURES,
+    DEPUTY_NOTES_FIXTURES,
+    DEPUTY_WARNINGS_FIXTURES,
+    CLIENT_ORDERS_FIXTURES,
+    SUPERVISION_LEVEL_FIXTURES,
+    TASKS_FIXTURES,
+    CLIENT_VISITS_FIXTURES,
+]
 
 
 # field_and_value is a tuple (field, value,)
@@ -50,12 +87,34 @@ def _format_sub_clause(field_and_value):
     return f"\"{field}\" = '{value}'"
 
 
+def initialise_used_cases_tbl(e):
+    sql = "DROP TABLE IF EXISTS casrec_csv.fixture_used_cases;"
+    e.execute(sql)
+    sql = "CREATE TABLE casrec_csv.fixture_used_cases (caserecnumber text);"
+    e.execute(sql)
+
+
+def insert_fixture_used_cases(e, cases):
+    # We can use this list to filter out cases we have already used so that we hopefully
+    # have cases used for specific test purposes
+    unique_cases = list(set(cases))
+    values = "'),\n('".join(unique_cases)
+    sql = f"""
+        INSERT INTO casrec_csv.fixture_used_cases
+        VALUES ('{values}');
+        """
+    e.execute(sql)
+    LOG.info("Inserted used fixture cases into fixture_used_cases")
+
+
 if __name__ == "__main__":
     LOG.info(log_title(message="DYNAMIC FIXTURES"))
     LOG.info(f"Loading dynamic fixtures into schema {SCHEMA}")
     # set up db conn
     db_conn_string = CONFIG.get_db_connection_string("migration")
     engine = create_engine(db_conn_string)
+    initialise_used_cases_tbl(engine)
+    used_cases = []
 
     # add the fixtures to the db
     for fixture in ALL_FIXTURES:
@@ -80,6 +139,8 @@ if __name__ == "__main__":
                     df.columns,
                 )
 
+                used_cases.append(row["Case"])
+
                 update_sql = fixture["update_query"].format(
                     set_clause=", ".join(set_values),
                     where_clause=" AND ".join(where),
@@ -89,3 +150,5 @@ if __name__ == "__main__":
                 LOG.info(f"Running update SQL: {update_sql}")
 
                 engine.execute(update_sql)
+
+    insert_fixture_used_cases(engine, used_cases)

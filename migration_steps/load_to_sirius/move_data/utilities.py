@@ -2,7 +2,6 @@ import json
 import os
 import logging
 import sys
-import re
 from pathlib import Path
 
 
@@ -23,6 +22,7 @@ SPECIAL_CASES = [
     "annual_report_logs",
     "annual_report_type_assignments",
     "timeline_event",
+    "scheduled_events",
 ]
 
 
@@ -51,6 +51,9 @@ def handle_special_cases(table_name, df):
         df["annualreport_id"] = df["annualreport_id"].astype("Int64")
     if table_name == "timeline_event":
         log.debug("Reformatting timeline_event.event to json")
+        df["event"] = df["event"].apply(json.dumps)
+    if table_name == "scheduled_events":
+        log.debug("Reformatting scheduled_events.event to json")
         df["event"] = df["event"].apply(json.dumps)
     return df
 

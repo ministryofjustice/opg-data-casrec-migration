@@ -1,4 +1,5 @@
 endpoint,entity_ref,json_locator,test_purpose
-/api/v1/deputy/{id}/notes,10050512,[*].noteType,dev_api_tests
-/api/v1/deputy/{id}/notes,10051890,[*].direction,dev_api_tests
-/api/v1/deputy/{id}/notes,10053723,[*].createdTime,dev_api_tests
+/api/v1/deputy/{id}/notes,10199092,[*].noteType,notetype_R1
+/api/v1/deputy/{id}/notes,13559860,[*].noteType,notetype_R8
+/api/v1/deputy/{id}/notes,10199092,[*].direction,direction_R1
+/api/v1/deputy/{id}/notes,13559860,[*].direction,direction_R8

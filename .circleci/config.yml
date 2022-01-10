@@ -224,9 +224,15 @@ workflows:
           tf_workspace: preproduction
           runner_command: migration-response-api-tests
           filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - light touch api tests preproduction
+          requires: [migration - response api tests preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-light-touch-api-tests
+          filters: {branches:{only:[master]}}
       - scale-services:
           name: scale up poller service for migration preproduction
-          requires: [migration - response api tests preproduction]
+          requires: [migration - light touch api tests preproduction]
           replicas: "1"
           profile: "migrations-ci-sirius-pre"
           service: "notify-poller"
@@ -264,7 +270,10 @@ workflows:
           filters: {branches:{only:[master]}}
       - job_complete:
           name: job complete notification
-          requires: [migration - response api tests preproduction]
+          requires: [
+              tag image for qa,
+              scale up poller service for migration preproduction
+          ]
           workspace: preproduction
           filters: {branches:{only:[master]}}
   preqa:
@@ -611,13 +620,19 @@ workflows:
       - run_task:
           name: migration - response api tests preproduction
           requires: [migration - validation preproduction]
+          notify_validation_fails: true
           tf_workspace: preproduction
           runner_command: migration-response-api-tests
-          notify_validation_fails: true
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - light touch api tests preproduction
+          requires: [migration - response api tests preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-light-touch-api-tests
           filters: {branches:{only:[master]}}
       - scale-services:
           name: scale up poller service for migration preproduction
-          requires: [migration - response api tests preproduction]
+          requires: [migration - light touch api tests preproduction]
           replicas: "1"
           profile: "migrations-ci-sirius-pre"
           service: "notify-poller"
@@ -628,24 +643,22 @@ workflows:
           environment_tag: qa
           requires: [migration - response api tests preproduction]
           filters: {branches:{only:[master]}}
-      - run_task:
-          name: run api tests preproduction
-          requires: [tag image for qa]
-          tf_workspace: preproduction
-          filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch preproduction
-          requires: [run api tests preproduction]
+          requires: [migration - response api tests preproduction]
           tf_workspace: preproduction
           filters: {branches:{only:[master]}}
       - kick_off_environment:
           name: kick off preqa
           workspace: preqa
-          requires: [run api tests preproduction]
+          requires: [tag image for qa]
           filters: {branches:{only:[master]}}
       - job_complete:
           name: job complete notification
-          requires: [run api tests preproduction]
+          requires: [
+              kick off preqa,
+              scale up poller service for migration preproduction
+          ]
           workspace: preproduction
           filters: {branches:{only:[master]}}
 
@@ -673,8 +686,8 @@ orbs:
               password: $DOCKER_ACCESS_TOKEN
         resource_class: small
         environment:
-          TF_VERSION: 0.14.11
-          TF_SHA256SUM: 171ef5a4691b6f86eab524feaf9a52d5221c875478bd63dd7e55fef3939f7fd4 # pragma: allowlist secret
+          TF_VERSION: 1.1.2
+          TF_SHA256SUM: 734efa82e2d0d3df8f239ce17f7370dabd38e535d21e64d35c73e45f35dfa95c # pragma: allowlist secret
           TF_CLI_ARGS_plan: -input=false -lock=false
           TF_CLI_ARGS_apply: -input=false -auto-approve
           TF_CLI_ARGS_destroy: -input=false -auto-approve
@@ -1122,6 +1135,7 @@ jobs:
         default: false
     environment:
       TF_WORKSPACE: << parameters.tf_workspace >>
+      AWS_CONFIG_FILE: ~/project/aws_config
     working_directory: ~/project/terraform/environment
     steps:
       - checkout:
@@ -1202,6 +1216,9 @@ jobs:
       - run:
           name: Run functional api tests task
           command: ecs-runner -task migration-functional-api-tests -timeout << parameters.timeout >>
+      - run:
+          name: Run light touch api tests task
+          command: ecs-runner -task migration-light-touch-api-tests -timeout << parameters.timeout >>
       - notififications/notify_env_vars
       - notififications/notify_if_fail
 

@@ -558,5 +558,50 @@
 			"type": "pk"
 		}],
 		"order_by": ["person_id", "timelineevent_id"]
+	},
+	"finance_order": {
+		"sirius_tables": [
+			"finance_order"
+		],
+		"entities": {
+			"base_entities": [
+				"finance_order"
+			],
+			"relies_on": [
+				"clients",
+				"cases"
+			]
+		},
+		"pk": "id",
+		"fks": [
+			{
+				"column": "order_id",
+				"parent_table": "cases",
+				"parent_column": "id"
+			}
+		],
+		"table_type": "data",
+		"sequences": [{
+			"name": "finance_order_id_seq",
+			"column": "id",
+			"type": "pk"
+		}],
+		"order_by": ["id"]
+	},
+	"scheduled_events": {
+		"sirius_tables": ["scheduled_events"],
+		"entities": {
+			"base_entities": ["scheduled_events"],
+			"relies_on": ["reporting"]
+		},
+		"pk": "id",
+		"fks": [],
+		"table_type": "data",
+		"sequences": [{
+			"name": "scheduled_events_id_seq",
+			"column": "id",
+			"type": "pk"
+		}],
+		"order_by": ["id"]
 	}
 }

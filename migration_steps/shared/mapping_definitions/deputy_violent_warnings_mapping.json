@@ -51,7 +51,7 @@
     },
     "warningtype": {
         "mapping_status": {
-            "is_complete": false
+            "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
@@ -61,7 +61,7 @@
             "entity": "warnings"
         },
         "transform_casrec": {
-            "casrec_table": "DEPUTY",
+            "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
@@ -76,7 +76,7 @@
     },
     "warningtext": {
         "mapping_status": {
-            "is_complete": false
+            "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
@@ -86,7 +86,7 @@
             "entity": "warnings"
         },
         "transform_casrec": {
-            "casrec_table": "DEPUTY",
+            "casrec_table": "",
             "casrec_column_name": "",
             "alias": "",
             "requires_transformation": "",
@@ -101,7 +101,7 @@
     },
     "dateadded": {
         "mapping_status": {
-            "is_complete": false
+            "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",
@@ -111,9 +111,9 @@
             "entity": "warnings"
         },
         "transform_casrec": {
-            "casrec_table": "DEPUTY",
-            "casrec_column_name": "VWM",
-            "alias": "VWM",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
             "lookup_table": "",
             "default_value": "",
@@ -126,7 +126,7 @@
     },
     "systemstatus": {
         "mapping_status": {
-            "is_complete": false
+            "is_complete": true
         },
         "sirius_details": {
             "is_pk": "",

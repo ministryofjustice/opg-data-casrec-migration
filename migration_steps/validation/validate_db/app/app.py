@@ -54,7 +54,7 @@ def get_mappings():
             "client_addresses",
             "client_persons",
             "client_phonenumbers",
-            "finance_person_ids"
+            "finance_person_ids",
         ],
         "cases": ["cases"],
         "crec": ["crec_persons"],
@@ -86,6 +86,8 @@ def get_mappings():
         "ledger": ["finance_ledger_credits"],
         "ledger_allocation": ["finance_allocation_credits"],
         "timeline": ["timeline_event", "person_timeline"],
+        "finance_order": ["finance_order"],
+        "scheduled_events": ["scheduled_events_reporting"]
     }
 
     for entity, mapping in all_mappings.items():
@@ -101,14 +103,13 @@ validation_sqlfile = "validation.sql"
 transformations_sqlfile = "transformation_functions.sql"
 complex_functions_sqlfile = "complex_functions.sql"
 total_exceptions_sqlfile = "get_exceptions_total.sql"
-host = os.environ.get("DB_HOST")
+s3_url = os.environ.get("S3_URL")
 ci = os.getenv("CI")
 account_name = os.environ.get("ACCOUNT_NAME")
 bucket_name = f"casrec-migration-{account_name.lower()}"
 account = os.environ["SIRIUS_ACCOUNT"]
 # S3
-session = boto3.session.Session()
-s3 = get_s3_session(session, environment, host)
+s3 = get_s3_session(environment, s3_url)
 # SQL
 sql_lines = []
 sql_statement_lines = []
@@ -859,8 +860,8 @@ def main(correfs, staging):
 
     if get_exception_count() > 0:
         # TODO: remove conditional once all validation errors are fixed in preproduction
-        if environment in ["local", "development"]:
-            exit(1)
+        # if environment in ["local", "development"]:
+        #     exit(1)
         log.info("Exceptions WERE found: override / continue anyway\n")
     else:
         log.info("No exceptions found: continue...\n")

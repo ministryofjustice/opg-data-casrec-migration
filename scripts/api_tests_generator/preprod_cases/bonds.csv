@@ -5,12 +5,10 @@ endpoint,entity_ref,json_locator,test_purpose
 /api/v1/orders/{id},10010274,bond.bondProvider.name,bond_provider_dbs
 /api/v1/orders/{id},10000884,bond.bondProvider.name,bond_provider_marsh
 /api/v1/orders/{id},10015105,bond.bondProvider.name,bond_provider_other
-/api/v1/orders/{id},13761285,bond.bondProvider.name,bond_provider_null
 /api/v1/orders/{id},10259249,bond.amountTaken,bond_amount_opg_null
 /api/v1/orders/{id},11225818,bond.amountTaken,bond_amount_opg_null
 /api/v1/orders/{id},11517036,bond.dischargeDate,bond_discharged
 /api/v1/orders/{id},10115340,bond.dischargeDate,bond_discharged
-/api/v1/orders/{id},13753043,bond.companyName,bond_company_b21w0043
 /api/v1/orders/{id},9934338T,bond.companyName,bond_company_coop_insurance
 /api/v1/orders/{id},10000037,bond.companyName,bond_company_dbs
 /api/v1/orders/{id},10001403,bond.companyName,bond_company_hcc_insurance

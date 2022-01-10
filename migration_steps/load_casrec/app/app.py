@@ -14,7 +14,7 @@ import boto3
 import random as rnd
 import custom_logger
 from dotenv import load_dotenv
-from helpers import get_config, log_title
+from helpers import get_config, log_title, get_s3_session
 import logging
 import click
 from db_helpers import replace_with_sql_friendly_chars
@@ -307,30 +307,6 @@ def sirius_session(account):
     return session
 
 
-def get_s3_session(host, account, ci):
-    # todo refactor and combine multiple instances of get_s3_session
-    s3_session = boto3.session.Session()
-    if environment == "local":
-
-        if host == "localhost":
-            stack_host = "localhost"
-        else:
-            stack_host = "localstack"
-        s3 = s3_session.client(
-            "s3",
-            endpoint_url=f"http://{stack_host}:4572",
-            aws_access_key_id="fake",
-            aws_secret_access_key="fake",  # pragma: allowlist secret
-        )
-    elif ci == "true":
-        s3_session = sirius_session(account)
-        s3 = s3_session.client("s3")
-    else:
-        s3 = s3_session.client("s3")
-
-    return s3
-
-
 def create_table(table, schema, engine, table_cols):
     if not check_table_exists(table, schema, engine):
         log.info(f"Creating {table} table")
@@ -402,7 +378,6 @@ def main(entities, delay, verbose, skip_load):
         setup_logging(log, verbose, log_title, bucket_name)
         env_path = current_path / "../../.env"
         load_dotenv(dotenv_path=env_path)
-        host = os.environ.get("DB_HOST")
 
         account = os.environ["SIRIUS_ACCOUNT"]
 
@@ -424,7 +399,8 @@ def main(entities, delay, verbose, skip_load):
 
         engine = create_engine(db_conn_string)
 
-        s3 = get_s3_session(host, account, ci)
+        s3_url = os.environ.get("S3_URL")
+        s3 = get_s3_session(environment, s3_url, ci=ci, account=account)
 
         schema = config.schemas["pre_transform"]
 

@@ -83,13 +83,15 @@ def list_bucket_contents(bucket_name, s3):
     files_in_bucket = []
 
     if "Contents" not in resp:
-        os._exit(
-            "Casrec source .csv data files not found - please check you have added files to data/anon/*.csv"
+        print(
+            "ERROR Casrec source .csv data files not found - please check you have added files to data/anon/*.csv"
         )
+        os._exit(1)
 
     for obj in resp["Contents"]:
         files_in_bucket.append(obj["Key"])
         print(obj["Key"])
+
     return files_in_bucket
 
 
@@ -100,17 +102,17 @@ current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 env_path = current_path / "../.env"
 load_dotenv(dotenv_path=env_path)
 
-localstack_url = os.getenv("LOCALSTACK_URL")
+s3_url = os.getenv("S3_URL")
 
 s3_client = s3_session.client(
     "s3",
-    endpoint_url=f"http://{localstack_url}:4572",
+    endpoint_url=f"{s3_url}",
     aws_access_key_id="fake",
     aws_secret_access_key="fake",  # pragma: allowlist secret
 )
 s3_resource = s3_session.resource(
     "s3",
-    endpoint_url=f"http://{localstack_url}:4572",
+    endpoint_url=f"{s3_url}",
     aws_access_key_id="fake",
     aws_secret_access_key="fake",  # pragma: allowlist secret
 )
@@ -129,6 +131,9 @@ create_bucket(bucket_name, s3_client, region)
 csv_dir_suffix = os.getenv("CSV_DIR_SUFFIX")
 
 anon_data_dir = current_path / csv_dir_suffix
+
+if not os.path.isdir(anon_data_dir):
+    os.makedirs(anon_data_dir, exist_ok=True)
 
 for file in os.listdir(anon_data_dir):
     file_path = f"{anon_data_dir}/{file}"

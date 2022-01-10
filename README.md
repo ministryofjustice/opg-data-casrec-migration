@@ -566,7 +566,7 @@ aws-vault exec identity -- docker-compose -f docker-compose.commands.yml run --r
 -t ecr-tag-you-want-to-use \
 -i validation \
 -n etl5 \
--c "validation/api_tests.sh" \
+-c "validation/response_api_tests.sh" \
 -l casrec-migration-preproduction
 ```
 
