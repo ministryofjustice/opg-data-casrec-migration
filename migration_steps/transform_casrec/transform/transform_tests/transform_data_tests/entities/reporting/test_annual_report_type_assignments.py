@@ -23,6 +23,31 @@ def test_calculate_report_types_one_case_multiple_orders():
     assert_frame_equal(expected_df, transformed_df)
 
 
+def test_calculate_report_types_one_case_multiple_report_logs_with_same_end_date():
+    """
+    There was a bug where, if an annual_report_log related to two orders with
+    the same end date, but the first row had a "Closed" status, the "Active"
+    row after it was ignored. The ordering of the ord_stat values is important
+    in this test: two rows have the same end date, but the row with "Closed"
+    Ord Stat comes before the row which is "Active".
+    """
+    test_df = pd.DataFrame(
+        {
+            "annualreport_id": [50, 50, 50, 50],
+            "end_date": ["2018-01-01", "2019-01-01", "2020-01-01", "2020-01-01"],
+            "sirius_report_log_casrec_case_no": ["C1", "C1", "C1", "C1"],
+            "ord_stat": ["Closed", "Active", "Closed", "Active"],
+            "ord_risk_lvl": ["3", "3", "3", "3"],
+        }
+    )
+
+    expected_df = pd.DataFrame({"annualreport_id": [50], "reporttype": ["OPG103"]})
+
+    transformed_df = calculate_report_types(test_df)
+
+    assert_frame_equal(expected_df, transformed_df)
+
+
 def test_calculate_report_types_multiple_reports_same_case():
     test_df = pd.DataFrame(
         {
