@@ -564,7 +564,7 @@ Get the tag of the ECR task you want to run. This is generally the commit tag. Y
 ```
 aws-vault exec identity -- docker-compose -f docker-compose.commands.yml run --rm task_runner ./run_ecs_task.sh \
 -t ecr-tag-you-want-to-use \
--i validation \
+-i migration-validation \
 -n etl5 \
 -c "validation/response_api_tests.sh" \
 -l casrec-migration-preproduction
@@ -575,7 +575,7 @@ Another example of running a task (this one loads casrec data on preprod):
 ```
 aws-vault exec identity -- docker-compose -f docker-compose.commands.yml run --rm task_runner ./run_ecs_task.sh \
 -t ecr-tag-you-want-to-use \
--i load-casrec \
+-i migration-load-casrec \
 -n etl1 \
 -c python3,load_casrec/app/app.py \
 -l casrec-migration-preproduction

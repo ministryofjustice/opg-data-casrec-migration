@@ -25,7 +25,7 @@ export TF_CLI_ARGS_init="-backend-config=role_arn=arn:aws:iam::311462405659:role
 terraform init -input=false -upgrade=true -reconfigure
 export TF_WORKSPACE=${WORKSPACE}
 echo "----- CREATING TEMPLATE FILE TO RUN EXTRACT JOB -----"
-terraform apply -input=false -auto-approve -target=local_file.output_casrec
+terraform apply -input=false -auto-approve -target=local_file.output
 cd /
 echo "----- RUNNING ECS TASK -----"
 python3 run_ecs_task.py -i "${ID}" -n "${NAME}" -c "${CMD}" -l "${LOG}"
