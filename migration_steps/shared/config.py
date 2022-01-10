@@ -62,6 +62,7 @@ class BaseConfig:
         "integration": "integration",
         "public": "public",
         "pre_migration": "staging",
+        "count_verification": "countverification",
     }
 
     row_limit = 5
