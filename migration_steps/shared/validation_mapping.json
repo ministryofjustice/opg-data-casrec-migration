@@ -1384,7 +1384,7 @@
                 "billing_start_date": "ra.start_date"
             },
             "joins": [
-                "LEFT JOIN (SELECT MIN(NULLIF(\"Start Date\", 'NaT')::date) AS start_date, \"Order No\" FROM casrec_csv.risk_assessment GROUP BY \"Order No\") ra ON ra.\"Order No\" = casrec_csv.order.\"Order No\"",
+                "LEFT JOIN (SELECT MIN(NULLIF(\"Start Date\", '')::date) AS start_date, \"Order No\" FROM casrec_csv.risk_assessment GROUP BY \"Order No\") ra ON ra.\"Order No\" = casrec_csv.order.\"Order No\"",
                 "LEFT JOIN casrec_csv.pat ON pat.\"Case\" = casrec_csv.order.\"Case\""
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_order exc_table ON exc_table.caserecnumber = pat.\"Case\"",

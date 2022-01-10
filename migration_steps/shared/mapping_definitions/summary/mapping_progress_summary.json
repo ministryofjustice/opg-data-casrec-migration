@@ -164,9 +164,9 @@
         },
         "annual_report_type_assignments": {
             "total_rows": 5,
-            "total_unmapped": 0,
-            "total_mapped": 5,
-            "percentage_complete": 100
+            "total_unmapped": 3,
+            "total_mapped": 2,
+            "percentage_complete": 40
         },
         "scheduled_events_reporting": {
             "total_rows": 5,
@@ -278,8 +278,8 @@
         },
         "fields": {
             "total_fields": 420,
-            "total_unmapped": 19,
-            "total_mapped": 401,
+            "total_unmapped": 22,
+            "total_mapped": 398,
             "percentage_complete": 95
         }
     }
