@@ -1,5 +1,0 @@
-FROM opg_casrec_migration_base_image:latest
-WORKDIR /
-COPY load_casrec_fixtures/ load_casrec_fixtures/
-COPY shared /shared
-CMD ["python3", "/load_casrec_fixtures/app/app.py"]

@@ -23,7 +23,6 @@ def delete_all_schemas(log, conn, preserve_schemas):
             if preserve_schema == "casrec_csv":
                 drop_statement = """
                     DROP TABLE IF EXISTS "casrec_csv"."migration_progress";
-                    DROP TABLE IF EXISTS "casrec_csv"."table_list";
                 """
                 cursor.execute(drop_statement)
                 conn.commit()
@@ -165,7 +164,7 @@ def copy_schema(
                 CREATE SCHEMA {to_schema};
                 SET search_path TO {to_schema},public;
                 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-                """
+                """,
             )
             line = role_name_regex.sub(r"\1%s\2" % to_config["user"], line)
             line = owner_regex.sub(r"\1%s" % to_config["user"], line)
@@ -180,7 +179,7 @@ def copy_schema(
             DO $$
             BEGIN
                 EXECUTE 'ALTER SCHEMA {to_schema} RENAME TO {from_schema}';
-                
+
                 IF EXISTS(
                     SELECT schema_name
                     FROM information_schema.schemata
