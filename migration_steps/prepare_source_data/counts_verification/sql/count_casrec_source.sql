@@ -288,6 +288,46 @@ UPDATE countverification.counts SET casrec_source =
 )
 WHERE supervision_table = 'finance_exemptions';
 
+-- finance_ledger_credits
+UPDATE countverification.counts SET casrec_source =
+(
+    SELECT COUNT(*)
+    FROM casrec_csv.feeexport
+    WHERE CAST(feeexport."Amount" AS DOUBLE PRECISION) < 0
+    AND EXISTS (
+        SELECT 1
+        FROM casrec_csv.feeexport fe
+        LEFT JOIN casrec_csv.sop_aged_debt sad
+            ON sad."Trx Number" = fe."Invoice No"
+        WHERE fe."Invoice No" = casrec_csv.feeexport."Orig Invoice"
+            AND CAST(fe."Amount" AS DOUBLE PRECISION) > 0
+            AND (NULLIF(fe."Create", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0)
+                OR CAST(sad."Outstanding Amount" AS DOUBLE PRECISION) > 0)
+    )
+)
+WHERE supervision_table = 'finance_ledger_credits';
+
+-- finance_allocation_credits
+UPDATE countverification.counts SET casrec_source =
+(
+    SELECT COUNT(*)
+    FROM casrec_csv.feeexport
+    LEFT JOIN casrec_csv.pat ON casrec_csv.pat."Case" = casrec_csv.feeexport."Case"
+    LEFT JOIN casrec_csv.sop_feecheckcredits ON casrec_csv.sop_feecheckcredits."Invoice Number" = casrec_csv.feeexport."Invoice No"
+    WHERE CAST(feeexport."Amount" AS DOUBLE PRECISION) < 0
+    AND EXISTS (
+        SELECT 1
+        FROM casrec_csv.feeexport fe
+        LEFT JOIN casrec_csv.sop_aged_debt sad
+            ON sad."Trx Number" = fe."Invoice No"
+        WHERE fe."Invoice No" = casrec_csv.feeexport."Orig Invoice"
+            AND CAST(fe."Amount" AS DOUBLE PRECISION) > 0
+            AND (NULLIF(fe."Create", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0)
+                OR CAST(sad."Outstanding Amount" AS DOUBLE PRECISION) > 0)
+    )
+)
+WHERE supervision_table = 'finance_allocation_credits';
+
 -- timeline events are calculated from migrated data, so don't exist in casrec source
 -- UPDATE countverification.counts SET casrec_source = 0
 -- WHERE supervision_table = 'timelineevent';

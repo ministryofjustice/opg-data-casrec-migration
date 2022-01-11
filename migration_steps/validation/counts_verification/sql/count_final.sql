@@ -216,7 +216,7 @@ UPDATE countverification.counts SET final_count =
     SELECT COUNT(*)
     FROM finance_remission_exemption rem
     LEFT JOIN finance_person fp ON fp.id = rem.finance_person_id
-    LEFT JOIN persons ON persons.id = fp.person_id
+    INNER JOIN countverification.cp1_clients cli on cli.id = fp.person_id
     WHERE rem.discounttype = 'REMISSION'
 )
 WHERE supervision_table = 'finance_remissions';
@@ -227,10 +227,30 @@ UPDATE countverification.counts SET final_count =
     SELECT COUNT(*)
     FROM finance_remission_exemption rem
     LEFT JOIN finance_person fp ON fp.id = rem.finance_person_id
-    LEFT JOIN persons ON persons.id = fp.person_id
+    INNER JOIN countverification.cp1_clients cli on cli.id = fp.person_id
     WHERE rem.discounttype = 'EXEMPTION'
 )
 WHERE supervision_table = 'finance_exemptions';
+
+-- finance_ledger_credits
+UPDATE countverification.counts SET final_count =
+(
+    SELECT COUNT(*)
+    FROM finance_ledger lgr
+    LEFT JOIN finance_person fp ON fp.id = lgr.finance_person_id
+    INNER JOIN countverification.cp1_clients cli on cli.id = fp.person_id
+)
+WHERE supervision_table = 'finance_ledger_credits';
+
+-- finance_allocation_credits
+UPDATE countverification.counts SET final_count =
+(
+    SELECT COUNT(*)
+    FROM finance_ledger_allocation fla
+    LEFT JOIN finance_invoice inv ON inv.id = fla.invoice_id
+    INNER JOIN countverification.cp1_clients cli on cli.id = inv.person_id
+)
+WHERE supervision_table = 'finance_allocation_credits';
 
 -- order_deputy
 UPDATE countverification.counts SET final_count =

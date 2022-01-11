@@ -223,6 +223,20 @@ LEFT JOIN finance_person fp ON fp.id = rem.finance_person_id
 INNER JOIN countverification.cp1_clients cli on cli.id = fp.person_id
 WHERE rem.discounttype = 'EXEMPTION';
 
+-- finance_ledger_credits
+INSERT INTO countverification.counts (supervision_table, cp1existing)
+SELECT 'finance_ledger_credits' AS supervision_table, COUNT(*)
+FROM finance_ledger lgr
+LEFT JOIN finance_person fp ON fp.id = lgr.finance_person_id
+INNER JOIN countverification.cp1_clients cli on cli.id = fp.person_id;
+
+-- finance_allocation_credits
+INSERT INTO countverification.counts (supervision_table, cp1existing)
+SELECT 'finance_allocation_credits' AS supervision_table, COUNT(*)
+FROM finance_ledger_allocation fla
+LEFT JOIN finance_invoice inv ON inv.id = fla.invoice_id
+INNER JOIN countverification.cp1_clients cli on cli.id = inv.person_id;
+
 -- order_deputy
 INSERT INTO countverification.counts (supervision_table, cp1existing)
 SELECT 'order_deputy' AS supervision_table, COUNT(*) AS cp1existing
