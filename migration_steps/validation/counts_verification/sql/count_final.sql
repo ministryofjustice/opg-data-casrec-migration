@@ -174,21 +174,46 @@ UPDATE countverification.counts SET final_count =
 WHERE supervision_table = 'feepayer_id';
 
 -- timeline_event
+-- might be slow because of data in timeline_event table
 UPDATE countverification.counts SET final_count =
 (
-    -- client
     SELECT COUNT(*)
-    FROM timeline_event te
-    INNER JOIN person_timeline pt on pt.timelineevent_id = te.id
-    INNER JOIN countverification.cp1_clients cli on cli.id = pt.person_id
-)+(
-    -- dpeuty
-    SELECT COUNT(*)
-    FROM timeline_event te
-    INNER JOIN person_timeline pt on pt.timelineevent_id = te.id
-    INNER JOIN countverification.cp1_deputies dep on dep.id = pt.person_id
+    FROM timeline_event
+    WHERE event->'payload'->>'type' = 'Case note'
+      AND event->'payload'->>'courtReference' IN (
+        SELECT p.caserecnumber FROM persons p
+        INNER JOIN countverification.cp1_clients cli ON cli.id = p.id
+    )
 )
 WHERE supervision_table = 'timeline_event';
+-- -- timeline_event alternative
+-- -- might be faster, but relies on person_timeline table
+-- UPDATE countverification.counts SET final_count =
+-- (
+--     SELECT COUNT(*)
+--     FROM timeline_event te
+--     INNER JOIN person_timeline pt ON pt.timelineevent_id = te.id
+--     INNER JOIN countverification.cp1_clients cli ON cli.id = pt.person_id
+-- )
+-- WHERE supervision_table = 'timeline_event';
+
+-- person_timeline
+UPDATE countverification.counts SET final_count =
+(
+    SELECT COUNT(*)
+    FROM person_timeline pt
+    INNER JOIN countverification.cp1_clients cli on cli.id = pt.person_id
+)
+WHERE supervision_table = 'person_timeline';
+
+-- supervision_level_log
+UPDATE countverification.counts SET final_count =
+(
+    SELECT COUNT(*)
+    FROM supervision_level_log sll
+    INNER JOIN countverification.cp1_cases ON cp1_cases.id = sll.order_id
+)
+WHERE supervision_table = 'supervision_level_log';
 
 -- finance_invoice_ad
 UPDATE countverification.counts SET final_count =
@@ -252,6 +277,15 @@ UPDATE countverification.counts SET final_count =
 )
 WHERE supervision_table = 'finance_allocation_credits';
 
+-- finance_person
+UPDATE countverification.counts SET final_count =
+(
+    SELECT COUNT(*)
+    FROM finance_person fp
+    INNER JOIN countverification.cp1_clients cli on cli.id = fp.person_id
+)
+WHERE supervision_table = 'finance_person';
+
 -- order_deputy
 UPDATE countverification.counts SET final_count =
 (
@@ -299,19 +333,6 @@ UPDATE countverification.counts SET final_count =
     INNER JOIN countverification.cp1_deputies dep on dep.id = pt.person_id
 )
 WHERE supervision_table = 'person_task';
-
--- person_timeline
-UPDATE countverification.counts SET final_count =
-(
-    SELECT COUNT(*)
-    FROM person_timeline pt
-    INNER JOIN countverification.cp1_clients cli on cli.id = pt.person_id
-)+(
-    SELECT COUNT(*)
-    FROM person_timeline pt
-    INNER JOIN countverification.cp1_deputies dep on dep.id = pt.person_id
-)
-WHERE supervision_table = 'person_timeline';
 
 UPDATE countverification.counts SET expected = cp1existing+casrec_source;
 UPDATE countverification.counts

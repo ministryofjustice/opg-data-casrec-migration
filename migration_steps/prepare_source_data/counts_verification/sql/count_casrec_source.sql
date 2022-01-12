@@ -226,6 +226,28 @@ UPDATE countverification.counts SET casrec_source =
 )
 WHERE supervision_table = 'feepayer_id';
 
+-- timeline_event
+UPDATE countverification.counts SET casrec_source =
+(
+    SELECT COUNT(*) FROM casrec_csv.pat
+)
+WHERE supervision_table = 'timeline_event';
+
+-- person_timeline
+UPDATE countverification.counts SET casrec_source =
+(
+    SELECT COUNT(*) FROM casrec_csv.pat
+)
+WHERE supervision_table = 'person_timeline';
+
+-- supervision_level_log
+UPDATE countverification.counts SET casrec_source =
+(
+    SELECT COUNT(*)
+    FROM countverification.filtered_orders
+)
+WHERE supervision_table = 'supervision_level_log';
+
 -- finance_invoice_ad
 SET datestyle = "ISO, DMY";
 UPDATE countverification.counts SET casrec_source =
@@ -328,10 +350,6 @@ UPDATE countverification.counts SET casrec_source =
 )
 WHERE supervision_table = 'finance_allocation_credits';
 
--- timeline events are calculated from migrated data, so don't exist in casrec source
--- UPDATE countverification.counts SET casrec_source = 0
--- WHERE supervision_table = 'timelineevent';
-
 -- order_deputy
 UPDATE countverification.counts SET casrec_source =
 (
@@ -358,9 +376,6 @@ UPDATE countverification.counts SET casrec_source =
     WHERE act."Status" IN ('INACTIVE','ACTIVE')
 )
 WHERE supervision_table = 'person_task';
-
-UPDATE countverification.counts SET casrec_source = 0
-WHERE supervision_table = 'person_timeline';
 
 UPDATE countverification.counts SET casrec_source =
 (

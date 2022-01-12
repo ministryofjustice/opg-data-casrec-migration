@@ -169,21 +169,12 @@ WHERE p.feepayer_id IS NOT NULL;
 
 -- timeline_event
 INSERT INTO countverification.counts (supervision_table, cp1existing)
-SELECT
-'timeline_event' AS supervision_table,
-(
-    -- client
-    SELECT COUNT(*)
-    FROM timeline_event te
-    INNER JOIN person_timeline pt on pt.timelineevent_id = te.id
-    INNER JOIN countverification.cp1_clients cli on cli.id = pt.person_id
-)+(
-    -- deputy
-    SELECT COUNT(*)
-    FROM timeline_event te
-    INNER JOIN person_timeline pt on pt.timelineevent_id = te.id
-    INNER JOIN countverification.cp1_deputies dep on dep.id = pt.person_id
-) AS cp1existing;
+SELECT 'timeline_event' AS supervision_table, COUNT(*)
+FROM timeline_event
+WHERE event->'payload'->>'courtReference' IN (
+    SELECT p.caserecnumber FROM persons p
+    INNER JOIN countverification.cp1_clients cli ON cli.id = p.id
+);
 
 -- supervision_level_log
 INSERT INTO countverification.counts (supervision_table, cp1existing)
@@ -236,6 +227,12 @@ SELECT 'finance_allocation_credits' AS supervision_table, COUNT(*)
 FROM finance_ledger_allocation fla
 LEFT JOIN finance_invoice inv ON inv.id = fla.invoice_id
 INNER JOIN countverification.cp1_clients cli on cli.id = inv.person_id;
+
+-- finance_person
+INSERT INTO countverification.counts (supervision_table, cp1existing)
+SELECT 'finance_person' AS supervision_table, COUNT(*)
+FROM finance_person fp
+INNER JOIN countverification.cp1_clients cli on cli.id = fp.person_id;
 
 -- order_deputy
 INSERT INTO countverification.counts (supervision_table, cp1existing)
