@@ -1,5 +1,3 @@
-TRUNCATE TABLE events;
-
 DROP SCHEMA IF EXISTS deletions CASCADE;
 CREATE SCHEMA deletions;
 
@@ -318,6 +316,39 @@ INNER JOIN order_deputy od ON dep.id = od.deputy_id
 INNER JOIN cases c  ON c.id = od.order_id
 INNER JOIN deletions.base_clients_persons bcp ON bcp.id = c.client_id;
 
+CREATE TABLE IF NOT EXISTS deletions.deletions_finance_invoice (id int);
+INSERT INTO deletions.deletions_finance_invoice (id)
+SELECT fi.id
+FROM finance_invoice fi
+INNER JOIN deletions.base_clients_persons bcp ON bcp.id = fi.person_id;
+
+CREATE TABLE IF NOT EXISTS deletions.deletions_finance_ledger (id int);
+INSERT INTO deletions.deletions_finance_ledger (id)
+SELECT fl.id
+FROM finance_ledger fl
+INNER JOIN finance_person fp ON fp.id = fl.finance_person_id
+INNER JOIN deletions.base_clients_persons bcp ON bcp.id = fp.person_id;
+
+CREATE TABLE IF NOT EXISTS deletions.deletions_finance_ledger_allocation (id int);
+INSERT INTO deletions.deletions_finance_ledger_allocation (id)
+SELECT fla.id
+FROM finance_ledger_allocation fla
+INNER JOIN finance_invoice fi ON fi.id = fla.invoice_id
+INNER JOIN deletions.base_clients_persons bcp ON bcp.id = fi.person_id;
+
+CREATE TABLE IF NOT EXISTS deletions.deletions_finance_remission_exemption (id int);
+INSERT INTO deletions.deletions_finance_remission_exemption (id)
+SELECT fre.id
+FROM finance_remission_exemption fre
+INNER JOIN finance_person fp ON fp.id = fre.finance_person_id
+INNER JOIN deletions.base_clients_persons bcp ON bcp.id = fp.person_id;
+
+CREATE TABLE IF NOT EXISTS deletions.deletions_finance_order (id int);
+INSERT INTO deletions.deletions_finance_order (id)
+SELECT fo.id
+FROM finance_order fo
+INNER JOIN deletions.deletions_client_cases dcc ON dcc.id = fo.order_id;
+
 UPDATE cases SET correspondent_id = NULL
 WHERE id in (
     SELECT id FROM deletions.deletions_client_cases
@@ -518,3 +549,79 @@ WHERE a.deputy_id = b.id;
 DELETE FROM cases a
 USING deletions.deletions_client_cases b
 WHERE a.id = b.id;
+
+DELETE FROM events e
+USING deletions.deletions_client_complaints bcp
+WHERE bcp.id = e.source_complaint_id;
+
+DELETE FROM events e
+USING deletions.deletions_deputy_document_pages bcp
+WHERE bcp.id = e.source_page_id;
+
+DELETE FROM events e
+USING deletions.deletions_client_annual_report_logs bcp
+WHERE bcp.id = e.source_annualreportlog_id;
+
+DELETE FROM events e
+USING deletions.deletions_client_hold_period bcp
+WHERE bcp.id = e.source_holdperiod_id;
+
+DELETE FROM events e
+USING deletions.deletions_deputy_hold_period bcp
+WHERE bcp.id = e.source_holdperiod_id;
+
+DELETE FROM events e
+USING deletions.deletions_client_investigation bcp
+WHERE bcp.id = e.source_investigation_id;
+
+DELETE FROM events e
+USING deletions.deletions_deputy_investigation bcp
+WHERE bcp.id = e.source_investigation_id;
+
+DELETE FROM events e
+USING deletions.deletions_client_phonenumbers bcp
+WHERE bcp.id = e.source_phonenumber_id;
+
+DELETE FROM events e
+USING deletions.deletions_deputy_phonenumbers bcp
+WHERE bcp.id = e.source_phonenumber_id;
+
+DELETE FROM events e
+USING deletions.deletions_client_addresses bcp
+WHERE bcp.id = e.source_address_id;
+
+DELETE FROM events e
+USING deletions.deletions_deputy_addresses bcp
+WHERE bcp.id = e.source_address_id;
+
+DELETE FROM events e
+USING deletions.deletions_validation_check bcp
+WHERE bcp.id = e.source_validationcheck_id;
+
+DELETE FROM events e
+USING deletions.deletions_client_warnings bcp
+WHERE bcp.id = e.source_warning_id;
+
+DELETE FROM events e
+USING deletions.deletions_deputy_warnings bcp
+WHERE bcp.id = e.source_warning_id;
+
+DELETE FROM events e
+USING deletions.deletions_client_tasks bcp
+WHERE bcp.id = e.source_task_id;
+
+DELETE FROM events e
+USING deletions.deletions_deputy_tasks bcp
+WHERE bcp.id = e.source_task_id;
+
+DELETE FROM events e
+USING deletions.deletions_deputy_documents bcp
+WHERE bcp.id = e.source_document_id;
+
+DELETE FROM events e
+USING deletions.deletions_client_persons bcp
+WHERE bcp.id = e.owning_donor_id;
+
+DELETE FROM events e
+USING deletions.deletions_client_cases bcp
+WHERE bcp.id = e.owning_case_id;

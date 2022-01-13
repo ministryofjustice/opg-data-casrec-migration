@@ -42,18 +42,32 @@ custom_logger.setup_logging(
 
 completed_tables = []
 
+# Sirius tables that we are not automatically deleting from.
+# Stop migration if their respective deletions_ tables are not empty.
+sirius_deletion_check_tables = [
+    "finance_invoice",
+    "finance_ledger",
+    "finance_ledger_allocation",
+    "finance_remission_exemption",
+    "finance_order"
+]
+
 
 def main():
     log.info(helpers.log_title(message="Delete data adjoining sirius data"))
-    log.critical(
-        "THIS IS A DEVELOPMENT ONLY SCRIPT - IT MUST NOT BE RUN ON PRODUCTION DATA UNTIL FULLY TESTED AND APPROVED!"
-    )
     log.info(
         helpers.log_title(
             message=f"Source: {db_config['source_schema']}, Target: {db_config['target_schema']}, Chunk Size: {db_config['chunk_size']}"
         )
     )
     log.info(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
+
+    if os.environ.get("ENVIRONMENT") in ["preproduction", "preqa"]:
+        # Currently, it takes too long to run event deletions and no amount of indexing or using different joins helps.
+        # It's just a huge amount of data in the events table, so we will take the practical approach
+        # of just truncating it for our most frequent deploys (preproduction and preqa)
+        log.info(f"Truncating the events table for speed")
+        target_db_engine.execute("TRUNCATE TABLE events;")
 
     sql_statements = []
     sql_statement = ""
@@ -70,13 +84,28 @@ def main():
                     sql_statement = ""
     log.info(f"Finished preparing delete statements to run")
 
-    if os.environ.get("ENVIRONMENT") in ["local", "preproduction", "preqa", "qa"]:
-        for statement in sql_statements:
-            log.info(f"Running statement: \n{statement}")
-            response = target_db_engine.execute(statement)
-            log.info(f"{response.rowcount} rows updated\n")
-    else:
-        log.info(f"Not running delete statements {os.environ.get('ENVIRONMENT')}!")
+    for statement in sql_statements:
+        log.info(f"Running statement: \n{statement}")
+        response = target_db_engine.execute(statement)
+        log.info(f"{response.rowcount} rows updated\n")
+
+    log.info("Checking deletion table counts")
+    stop_migration = False
+    for table in sirius_deletion_check_tables:
+        statement = f"SELECT id FROM deletions.deletions_{table};"
+        response = target_db_engine.execute(statement)
+        row_count = response.rowcount
+        log.info(f"Found {row_count} records in deletions.deletions_{table}. Expected 0.")
+        if row_count == 0:
+            continue
+        stop_migration = True
+        ids = [r.values()[0] for r in response]
+        log.info("To delete these records manually, run:")
+        log.info(f"DELETE FROM {table} WHERE id IN ({','.join([str(i) for i in ids])});")
+
+    if stop_migration:
+        log.error("Stopping migration due to unexpected deletion counts. Check log output above.")
+        os._exit(1)
 
 
 if __name__ == "__main__":
