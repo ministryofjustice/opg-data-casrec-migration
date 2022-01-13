@@ -69,6 +69,13 @@ def main():
         log.info(f"Truncating the events table for speed")
         target_db_engine.execute("TRUNCATE TABLE events;")
 
+    elif os.environ.get("ENVIRONMENT") in ["local", "development"]:
+        # Delete finance data linked to clients without a CLIENT-PILOT-ONE flag.
+        # This only runs on local and dev environments.
+        # Finance data does not get deleted automatically by the deletion script and will fail the build.
+        log.info(f"Deleting non-CP1 finance data")
+        target_db_engine.execute("DELETE FROM finance_order WHERE id IN (1,2,3,4,5,6,7);")
+
     sql_statements = []
     sql_statement = ""
 
