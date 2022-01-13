@@ -99,7 +99,7 @@ def main():
         if row_count == 0:
             continue
         stop_migration = True
-        ids = [r.values()[0] for r in response]
+        ids = [r._mapping['id'] for r in response]
         log.info("To delete these records manually, run:")
         log.info(f"DELETE FROM {table} WHERE id IN ({','.join([str(i) for i in ids])});")
 
