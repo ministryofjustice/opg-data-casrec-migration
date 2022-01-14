@@ -103,12 +103,11 @@ def main():
         response = target_db_engine.execute(statement)
         row_count = response.rowcount
         log.info(f"Found {row_count} records in deletions.deletions_{table}. Expected 0.")
-        if row_count == 0:
-            continue
-        stop_migration = True
-        ids = [r._mapping['id'] for r in response]
-        log.info("To delete these records manually, run:")
-        log.info(f"DELETE FROM {table} WHERE id IN ({','.join([str(i) for i in ids])});")
+        if row_count > 0:
+            stop_migration = True
+            ids = [r._mapping['id'] for r in response]
+            log.info("To delete these records manually, run:")
+            log.info(f"DELETE FROM {table} WHERE id IN ({','.join([str(i) for i in ids])});")
 
     if stop_migration:
         log.error("Stopping migration due to unexpected deletion counts. Check log output above.")
