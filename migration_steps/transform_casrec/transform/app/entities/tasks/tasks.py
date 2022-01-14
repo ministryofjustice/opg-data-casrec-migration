@@ -22,6 +22,13 @@ def insert_tasks(db_config, target_db, mapping_file):
         only_complete_fields=False,
     )
 
+    # only migrate tasks with a case no. which corresponds to one
+    # in the cases table
+    cases_df = pd.read_sql_query(
+        f"SELECT DISTINCT caserecnumber FROM {db_config['target_schema']}.cases",
+        db_config["db_connection_string"],
+    )
+
     while True:
         offset += chunk_size
         chunk_no += 1
@@ -34,6 +41,11 @@ def insert_tasks(db_config, target_db, mapping_file):
                 table_definition=table_definition,
                 sirius_details=sirius_details,
                 chunk_details={"chunk_size": chunk_size, "offset": offset},
+            )
+
+            # inner join to cases to exclude tasks with a case no. not in that table
+            tasks_df = tasks_df.merge(
+                cases_df, how="inner", left_on="c_case", right_on="caserecnumber"
             )
 
             num_tasks = len(tasks_df)
