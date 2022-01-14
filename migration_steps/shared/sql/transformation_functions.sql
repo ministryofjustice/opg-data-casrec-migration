@@ -79,7 +79,7 @@ BEGIN
 
     TimeVal = TimeVal::time::varchar;
 
-    RETURN CONCAT(DateVal, ' ', TimeVal)::timestamp;
+    RETURN CONCAT(DateVal, ' ', TimeVal)::timestamp AT TIME ZONE 'Europe/London' AT TIME ZONE 'UTC';
 END;
 $$ LANGUAGE plpgsql;
 

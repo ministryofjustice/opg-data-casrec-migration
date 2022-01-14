@@ -12,6 +12,7 @@ def test_convert_to_timestamp():
             "2020-06-14",
             "",
             "NaT",
+            "2020-12-01",
         ],
         "time_col": [
             "",
@@ -19,6 +20,7 @@ def test_convert_to_timestamp():
             "08:54:04.032000",
             "09:54:04.032000",
             "10:54:04.032000",
+            "07:00:00.032000",
         ],
     }
 
@@ -26,16 +28,17 @@ def test_convert_to_timestamp():
 
     expected_data = {
         "datetime_col": [
-            "2020-06-12 00:00:00",
-            "2020-06-13 00:00:00",
-            "2020-06-14 08:54:04",
+            "2020-06-11 23:00:00",
+            "2020-06-12 23:00:00",
+            "2020-06-14 07:54:04",
             None,
             None,
+            "2020-12-01 07:00:00"
         ],
     }
 
     expected_data_df = pd.DataFrame(expected_data, columns=[x for x in expected_data])
-    expected_data_df["datetime_col"] = pd.to_datetime(expected_data["datetime_col"], dayfirst=True)
+    expected_data_df["datetime_col"] = pd.to_datetime(expected_data["datetime_col"], dayfirst=True, utc=True)
 
     result_df = convert_to_timestamp(
         original_cols=["date_col", "time_col"],
