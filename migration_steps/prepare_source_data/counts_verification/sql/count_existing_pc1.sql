@@ -231,6 +231,12 @@ SELECT 'finance_person' AS supervision_table, COUNT(*)
 FROM finance_person fp
 INNER JOIN countverification.cp1_clients cli on cli.id = fp.person_id;
 
+-- finance_order
+INSERT INTO countverification.counts (supervision_table, cp1existing)
+SELECT 'finance_order' AS supervision_table, COUNT(*)
+FROM finance_order fo
+INNER JOIN countverification.cp1_cases ON cp1_cases.id = fo.order_id;
+
 -- order_deputy
 INSERT INTO countverification.counts (supervision_table, cp1existing)
 SELECT 'order_deputy' AS supervision_table, COUNT(*) AS cp1existing

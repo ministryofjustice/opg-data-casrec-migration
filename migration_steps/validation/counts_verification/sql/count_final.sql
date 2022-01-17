@@ -290,6 +290,15 @@ UPDATE countverification.counts SET final_count =
 )
 WHERE supervision_table = 'finance_person';
 
+-- finance_order
+UPDATE countverification.counts SET final_count =
+(
+    SELECT COUNT(*)
+    FROM finance_order fo
+    INNER JOIN countverification.cp1_cases ON cp1_cases.id = fo.order_id
+)
+WHERE supervision_table = 'finance_order';
+
 -- order_deputy
 UPDATE countverification.counts SET final_count =
 (

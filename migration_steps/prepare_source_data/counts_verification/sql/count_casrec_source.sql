@@ -356,6 +356,29 @@ UPDATE countverification.counts SET casrec_source =
 )
 WHERE supervision_table = 'finance_allocation_credits';
 
+-- finance_order
+UPDATE countverification.counts SET casrec_source =
+(
+    SELECT COUNT(*) FROM (
+        SELECT DISTINCT
+            casrec_csv.pat."Case" AS caserecnumber,
+            ra.start_date AS billing_start_date
+        FROM casrec_csv.order
+        LEFT JOIN (
+            SELECT MIN(NULLIF("Start Date", '')::date) AS start_date,
+            "Order No"
+            FROM casrec_csv.risk_assessment
+            GROUP BY "Order No"
+        ) ra
+            ON ra."Order No" = casrec_csv.order."Order No"
+        LEFT JOIN casrec_csv.pat ON pat."Case" = casrec_csv.order."Case"
+        WHERE casrec_csv.order."Ord Type" IN ('1','2','40','41')
+          AND casrec_csv.order."Ord Stat" <> 'Open'
+          AND casrec_csv.order."Ord Risk Lvl" <> ''
+    ) t1
+)
+WHERE supervision_table = 'finance_order';
+
 -- order_deputy
 UPDATE countverification.counts SET casrec_source =
 (
