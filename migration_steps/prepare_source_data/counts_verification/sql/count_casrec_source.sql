@@ -196,7 +196,6 @@ UPDATE countverification.counts SET casrec_source =
     SELECT COUNT(*) FROM (
         SELECT DISTINCT vis."casrec_row_id"
         FROM casrec_csv.REPVIS vis
---         INNER JOIN countverification.filtered_orders o ON o."Case" = vis."Case"
     ) t1
 )
 WHERE supervision_table = 'visits';
@@ -205,14 +204,16 @@ WHERE supervision_table = 'visits';
 UPDATE countverification.counts SET casrec_source =
 (
     -- active
-    SELECT COUNT(*) FROM casrec_csv.order
-    WHERE casrec_csv.order."Ord Stat" != 'Open'
-    AND casrec_csv.order."Bond Rqd" = 'Y'
+    SELECT COUNT(*)
+    FROM casrec_csv.order o
+    INNER JOIN countverification.filtered_orders fo ON fo."Order No" = o."Order No"
+    WHERE o."Bond Rqd" = 'Y'
 )+(
     -- dispensed
-    SELECT COUNT(*) FROM casrec_csv.order
-    WHERE casrec_csv.order."Ord Stat" != 'Open'
-    AND casrec_csv.order."Bond Rqd" = 'S'
+    SELECT COUNT(*)
+    FROM casrec_csv.order o
+    INNER JOIN countverification.filtered_orders fo ON fo."Order No" = o."Order No"
+    WHERE o."Bond Rqd" = 'S'
 )
 WHERE supervision_table = 'bonds';
 
@@ -256,8 +257,7 @@ UPDATE countverification.counts SET casrec_source =
         SELECT DISTINCT "Invoice No"
         FROM casrec_csv.feeexport fx
         LEFT JOIN casrec_csv.sop_aged_debt sad ON sad."Trx Number" = fx."Invoice No"
-        WHERE True
-          AND LEFT(fx."Invoice No", 2) = 'AD'
+        WHERE LEFT(fx."Invoice No", 2) = 'AD'
           AND CAST(fx."Amount" AS DOUBLE PRECISION) > 0
           AND (NULLIF(fx."Create", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0)
                    OR CAST(sad."Outstanding Amount" AS DOUBLE PRECISION) > 0)
@@ -273,8 +273,7 @@ UPDATE countverification.counts SET casrec_source =
         SELECT DISTINCT "Invoice No"
         FROM casrec_csv.feeexport fx
         LEFT JOIN casrec_csv.sop_aged_debt sad ON sad."Trx Number" = fx."Invoice No"
-        WHERE True
-            AND LEFT(fx."Invoice No", 2) <> 'AD'
+        WHERE LEFT(fx."Invoice No", 2) <> 'AD'
             AND CAST(fx."Amount" AS DOUBLE PRECISION) > 0
             AND (NULLIF(fx."Create", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0)
                 OR CAST(sad."Outstanding Amount" AS DOUBLE PRECISION) > 0)
@@ -353,21 +352,19 @@ WHERE supervision_table = 'finance_allocation_credits';
 -- order_deputy
 UPDATE countverification.counts SET casrec_source =
 (
-    SELECT COUNT(*) FROM countverification.filtered_deps
+    SELECT COUNT(*) FROM casrec_csv.deputyship ds
+    INNER JOIN countverification.filtered_orders fo ON fo."Order No" = ds."Order No"
 )
 WHERE supervision_table = 'order_deputy';
 
+-- person_caseitem
 UPDATE countverification.counts SET casrec_source =
 (
-    SELECT COUNT(*) FROM (
-        SELECT DISTINCT p."Case"
-        FROM casrec_csv.order o
-        INNER JOIN casrec_csv.pat p ON o."Case" = p."Case"
-        WHERE o."Ord Stat" != 'Open'
-    ) t1
+    SELECT COUNT(*) FROM countverification.filtered_orders
 )
 WHERE supervision_table = 'person_caseitem';
 
+-- person_task
 UPDATE countverification.counts SET casrec_source =
 (
     SELECT COUNT(*)
@@ -377,6 +374,7 @@ UPDATE countverification.counts SET casrec_source =
 )
 WHERE supervision_table = 'person_task';
 
+-- person_warning
 UPDATE countverification.counts SET casrec_source =
 (
     SELECT counts.casrec_source FROM countverification.counts WHERE supervision_table = 'warnings'
