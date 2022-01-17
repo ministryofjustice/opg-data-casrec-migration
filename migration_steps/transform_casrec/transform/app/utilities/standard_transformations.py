@@ -299,6 +299,7 @@ def convert_to_timestamp(
         axis=1,
     )
     df[result_col] = df[result_col].astype("datetime64[ns]")
+    df[result_col] = df[result_col].dt.tz_localize('Europe/London').dt.tz_convert('UTC')
 
     df = df.drop(columns=original_cols)
 
