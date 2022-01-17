@@ -134,19 +134,16 @@ SELECT
 
 -- annual_report_logs
 INSERT INTO countverification.counts (supervision_table, cp1existing)
-SELECT
-'annual_report_logs' AS supervision_table,
-(
-    -- client
-    SELECT COUNT(*)
-    FROM annual_report_logs al
-    INNER JOIN countverification.cp1_clients cli ON cli.id = al.client_id
-)+(
-    -- deputy
-    SELECT COUNT(*)
-    FROM annual_report_logs al
-    INNER JOIN countverification.cp1_cases ON cp1_cases.id = al.order_id
-) AS cp1existing;
+SELECT 'annual_report_logs' AS supervision_table, COUNT(*) AS cp1existing
+FROM annual_report_logs arl
+INNER JOIN countverification.cp1_clients cli ON cli.id = arl.client_id;
+
+-- annual_report_lodging_details
+INSERT INTO countverification.counts (supervision_table, cp1existing)
+SELECT 'annual_report_lodging_details' AS supervision_table, COUNT(*) AS cp1existing
+FROM annual_report_lodging_details det
+INNER JOIN annual_report_logs arl ON arl.id = det.annual_report_log_id
+INNER JOIN countverification.cp1_clients cli ON cli.id = arl.client_id;
 
 -- visits
 INSERT INTO countverification.counts (supervision_table, cp1existing)

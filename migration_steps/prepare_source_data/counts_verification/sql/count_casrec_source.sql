@@ -190,6 +190,13 @@ UPDATE countverification.counts SET casrec_source =
 )
 WHERE supervision_table = 'annual_report_logs';
 
+-- annual_report_lodging_details
+UPDATE countverification.counts SET casrec_source =
+(
+    SELECT COUNT(*) FROM casrec_csv.account
+)
+WHERE supervision_table = 'annual_report_lodging_details';
+
 -- visits
 UPDATE countverification.counts SET casrec_source =
 (

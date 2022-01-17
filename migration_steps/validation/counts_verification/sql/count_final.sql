@@ -133,17 +133,21 @@ WHERE supervision_table = 'warnings';
 -- annual_report_logs
 UPDATE countverification.counts SET final_count =
 (
-    -- client
     SELECT COUNT(*)
-    FROM annual_report_logs al
-    INNER JOIN countverification.cp1_clients cli ON cli.id = al.client_id
-)+(
-    -- deputy
-    SELECT COUNT(*)
-    FROM annual_report_logs al
-    INNER JOIN countverification.cp1_cases ON cp1_cases.id = al.order_id
+    FROM annual_report_logs arl
+    INNER JOIN countverification.cp1_clients cli ON cli.id = arl.client_id
 )
 WHERE supervision_table = 'annual_report_logs';
+
+-- annual_report_lodging_details
+UPDATE countverification.counts SET final_count =
+(
+    SELECT COUNT(*)
+    FROM annual_report_lodging_details det
+    INNER JOIN annual_report_logs arl ON arl.id = det.annual_report_log_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = arl.client_id
+)
+WHERE supervision_table = 'annual_report_lodging_details';
 
 -- visits
 UPDATE countverification.counts SET final_count =
