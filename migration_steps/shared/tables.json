@@ -340,7 +340,13 @@
 			}
 		],
 		"table_type": "data",
-		"sequences": [],
+		"sequences": [
+			{
+				"name": "annual_report_type_assignments_id_seq",
+				"column": "id",
+				"type": "pk"
+			}
+		],
 		"order_by": ["id"]
 	},
 	"finance_remission_exemption": {
