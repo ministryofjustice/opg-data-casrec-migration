@@ -185,7 +185,7 @@ SELECT 'finance_invoice_ad' AS supervision_table, COUNT(*) AS cp1existing
 FROM finance_invoice inv
 INNER JOIN countverification.cp1_clients cli on cli.id = inv.person_id
 WHERE inv.source = 'CASRECMIGRATION'
-AND inv.feetype <> 'AD';
+AND inv.feetype = 'AD';
 
 -- finance_invoice_non_ad
 INSERT INTO countverification.counts (supervision_table, cp1existing)
@@ -193,7 +193,7 @@ SELECT 'finance_invoice_non_ad' AS supervision_table, COUNT(*) AS cp1existing
 FROM finance_invoice inv
 INNER JOIN countverification.cp1_clients cli on cli.id = inv.person_id
 WHERE inv.source = 'CASRECMIGRATION'
-AND inv.feetype = 'AD';
+AND inv.feetype <> 'AD';
 
 -- finance_remissions
 INSERT INTO countverification.counts (supervision_table, cp1existing)

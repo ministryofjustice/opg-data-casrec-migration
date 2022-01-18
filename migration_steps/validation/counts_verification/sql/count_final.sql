@@ -154,7 +154,7 @@ UPDATE countverification.counts SET final_count =
 (
     SELECT COUNT(*)
     FROM visits v
-    LEFT JOIN countverification.cp1_clients cli ON cli.id = v.client_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = v.client_id
 )
 WHERE supervision_table = 'visits';
 
