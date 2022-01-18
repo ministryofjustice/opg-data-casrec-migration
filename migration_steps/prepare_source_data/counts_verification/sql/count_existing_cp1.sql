@@ -27,14 +27,19 @@ CREATE TABLE IF NOT EXISTS countverification.counts (
     cp1existing int
 );
 
--- persons
+-- persons_clients
 INSERT INTO countverification.counts (supervision_table, cp1existing)
-SELECT 'persons' AS supervision_table,
-(
-    SELECT COUNT(*) FROM countverification.cp1_clients
-)+(
-    SELECT COUNT(*) FROM countverification.cp1_deputies
-) AS cp1existing;
+VALUES (
+    'persons_clients',
+    (SELECT COUNT(*) FROM countverification.cp1_clients)
+);
+
+-- persons_deputies
+INSERT INTO countverification.counts (supervision_table, cp1existing)
+VALUES (
+    'persons_deputies',
+    (SELECT COUNT(*) FROM countverification.cp1_deputies)
+);
 
 -- cases
 INSERT INTO countverification.counts (supervision_table, cp1existing)
