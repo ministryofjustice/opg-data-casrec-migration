@@ -88,17 +88,18 @@ then
 fi
 
 docker-compose ${COMPOSE_ARGS} run --rm initialise initialise_environments/initialise_environments.sh -i "${PRESERVE_SCHEMAS}"
+
 docker rm casrec_load_1 &>/dev/null || echo "casrec_load_1 does not exist. This is OK"
 docker rm casrec_load_2 &>/dev/null || echo "casrec_load_2 does not exist. This is OK"
 docker rm casrec_load_3 &>/dev/null || echo "casrec_load_3 does not exist. This is OK"
 docker rm casrec_load_4 &>/dev/null || echo "casrec_load_4 does not exist. This is OK"
-docker-compose ${COMPOSE_ARGS} run --rm --name casrec_load_1 load_casrec python3 load_casrec/app/app.py --delay=0 --skip_load="${SKIP_LOAD}" >> docker_load.log &
+docker-compose ${COMPOSE_ARGS} run --rm --name casrec_load_1 load_casrec python3 load_casrec/app/app.py -p "1" -t "4" >> docker_load.log &
 P1=$!
-docker-compose ${COMPOSE_ARGS} run --rm --name casrec_load_2 load_casrec python3 load_casrec/app/app.py --delay=2 --skip_load="${SKIP_LOAD}" >> docker_load.log &
+docker-compose ${COMPOSE_ARGS} run --rm --name casrec_load_2 load_casrec python3 load_casrec/app/app.py -p "2" -t "4" >> docker_load.log &
 P2=$!
-docker-compose ${COMPOSE_ARGS} run --rm --name casrec_load_3 load_casrec python3 load_casrec/app/app.py --delay=3 --skip_load="${SKIP_LOAD}" >> docker_load.log &
+docker-compose ${COMPOSE_ARGS} run --rm --name casrec_load_3 load_casrec python3 load_casrec/app/app.py -p "3" -t "4" >> docker_load.log &
 P3=$!
-docker-compose ${COMPOSE_ARGS} run --rm --name casrec_load_4 load_casrec python3 load_casrec/app/app.py --delay=4 --skip_load="${SKIP_LOAD}" >> docker_load.log &
+docker-compose ${COMPOSE_ARGS} run --rm --name casrec_load_4 load_casrec python3 load_casrec/app/app.py -p "4" -t "4" >> docker_load.log &
 P4=$!
 wait $P1 $P2 $P3 $P4
 cat docker_load.log
