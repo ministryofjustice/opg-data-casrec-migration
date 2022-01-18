@@ -283,6 +283,18 @@
         "table_transforms": {},
         "table_type": "data"
     },
+    "client_status": {
+        "destination_table_name": "persons",
+        "entity_name": "client_status",
+        "required_entities": "clients",
+        "source_conditions": {},
+        "source_table_additional_columns": [
+            ""
+        ],
+        "source_table_name": "order",
+        "table_transforms": {},
+        "table_type": "data"
+    },
     "client_violent_warnings": {
         "destination_table_name": "warnings",
         "entity_name": "warnings",

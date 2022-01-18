@@ -20,6 +20,7 @@ def main():
     entities = {
         "clients": [
             {"csv": "clients", "identifier": "client"},
+            {"csv": "client_status", "identifier": "client"},
         ],
         "cases": [
             {"csv": "orders", "identifier": "order"},

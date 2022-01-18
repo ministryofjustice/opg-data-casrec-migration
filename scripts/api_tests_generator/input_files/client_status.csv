@@ -1,0 +1,8 @@
+endpoint,entity_ref,json_locator,test_purpose
+/api/v1/clients/{id},10005928,clientStatus.label,dead_notified_no_proof
+/api/v1/clients/{id},10006315,clientStatus.label,dead_notified_with_proof
+/api/v1/clients/{id},10016235,clientStatus.label,latest_order_active_expect_active
+/api/v1/clients/{id},10016431,clientStatus.label,previous_order_active_expect_active
+/api/v1/clients/{id},10016667,clientStatus.label,duplicate_and_closed_orders_latest_subtype_40_expect_closed
+/api/v1/clients/{id},10017181,clientStatus.label,duplicate_and_closed_orders_latest_subtype_5_expect_inactive
+/api/v1/clients/{id},10019377,clientStatus.label,latest_status_open_expect_open

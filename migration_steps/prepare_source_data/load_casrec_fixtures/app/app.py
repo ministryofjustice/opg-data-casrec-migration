@@ -44,6 +44,10 @@ from supervision_level_fixtures import SUPERVISION_LEVEL_FIXTURES
 from tasks_fixtures import TASKS_FIXTURES
 from client_visits_fixtures import CLIENT_VISITS_FIXTURES
 from order_fixtures import ORDER_FIXTURES
+from client_status_fixtures import (
+    CLIENT_STATUS_FIXTURES_ORDER,
+    CLIENT_STATUS_FIXTURES_DEATH,
+)
 import custom_logger
 from helpers import get_config, log_title
 
@@ -71,6 +75,8 @@ ALL_FIXTURES = [
     SUPERVISION_LEVEL_FIXTURES,
     TASKS_FIXTURES,
     CLIENT_VISITS_FIXTURES,
+    CLIENT_STATUS_FIXTURES_ORDER,
+    CLIENT_STATUS_FIXTURES_DEATH,
 ]
 
 
