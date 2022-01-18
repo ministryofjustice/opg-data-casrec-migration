@@ -26,7 +26,7 @@ config = helpers.get_config(env=environment)
 
 custom_logger.setup_logging(
     env=environment,
-    module_name="count casrec source data",
+    module_name="Count client-pilot-one data",
 )
 log = logging.getLogger("root")
 config.custom_log_level()
@@ -37,7 +37,7 @@ conn_target = psycopg2.connect(config.get_db_connection_string("target"))
 def output_title(correfs):
     allowed_entities = config.allowed_entities(env=environment)
     filtered_correfs = config.get_filtered_correfs(environment, correfs)
-    log.info(log_title(message="Counts Verification Step 2/3: Count Casrec source data"))
+    log.info(log_title(message="Counts Verification: Pre-Migration counts"))
     log.debug(f"Environment: {environment}")
     log.info(f"Correfs: {', '.join(filtered_correfs) if filtered_correfs else 'all'}")
     log.info(f"Enabled entities: {', '.join(allowed_entities)}")
@@ -47,11 +47,14 @@ def output_title(correfs):
     log.info(log_title(message="Begin"))
 
 
-@click.command()
-@click.option("--correfs", default="")
-def main(correfs):
-    output_title(correfs)
+def count_existing_cp1():
+    log.info("Step 1/3: Count Existing Client-Pilot-One data on target")
+    execute_sql_file(current_path / "sql", "count_existing_cp1.sql", conn_target)
+    log.info(f"Updated count record with pre-existing Client Pilot One counts from Sirius.")
 
+
+def count_casrec_source():
+    log.info("Step 2/3: Count Casrec source data")
     if not schema_exists(
         conn=conn_target,
         schema=config.schemas['count_verification']
@@ -74,13 +77,21 @@ def main(correfs):
         execute_sql_file(current_path / "sql", "count_casrec_source.sql", conn_migration)
         log.info(f"Updated count record with source data counts.")
 
-        df = pd.read_sql(
-            sql="SELECT * FROM countverification.counts ORDER BY supervision_table;",
-            con=conn_migration
-        )
-        headers = ["Supervision Table", "CP1 Existing", "Casrec"]
-        report_table = tabulate(df, headers, tablefmt="psql")
-        print(report_table)
+
+@click.command()
+@click.option("--correfs", default="")
+def main(correfs):
+    output_title(correfs)
+    count_existing_cp1()
+    count_casrec_source()
+
+    df = pd.read_sql(
+        sql="SELECT * FROM countverification.counts ORDER BY supervision_table;",
+        con=conn_migration
+    )
+    headers = ["Supervision Table", "CP1 Existing", "Casrec"]
+    report_table = tabulate(df, headers, tablefmt="psql")
+    print(report_table)
 
 
 if __name__ == "__main__":
