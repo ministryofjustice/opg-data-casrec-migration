@@ -47,35 +47,31 @@ def output_title(correfs):
     log.info(log_title(message="Begin"))
 
 
+def count_non_cp1():
+    log.info("Step 1/4: Count Non-Client-Pilot-One data on target")
+    execute_sql_file(current_path / "sql", "count_non_cp1.sql", conn_target)
+
+
 def count_existing_cp1():
-    log.info("Step 1/3: Count Existing Client-Pilot-One data on target")
+    log.info("Step 2/4: Count Existing Client-Pilot-One data on target")
     execute_sql_file(current_path / "sql", "count_existing_cp1.sql", conn_target)
-    log.info(f"Updated count record with pre-existing Client Pilot One counts from Sirius.")
 
 
 def count_casrec_source():
-    log.info("Step 2/3: Count Casrec source data")
-    if not schema_exists(
-        conn=conn_target,
-        schema=config.schemas['count_verification']
-    ):
-        log.error(f"This step requires Counts Verification Step 1/3 - count Client Pilot One data")
-        log.info(f"{config.schemas['count_verification']} schema not found in target DB")
-        log.info(f"Aborting.")
-    else:
-        log.info(f"Copy {config.schemas['count_verification']} schema to casrecmigration DB")
-        copy_schema(
-            log=log,
-            sql_path=current_path / "../../shared/sql",
-            config=config,
-            from_db="target",
-            from_schema=config.schemas["count_verification"],
-            to_db="migration",
-            to_schema=config.schemas["count_verification"],
-        )
+    log.info("Step 3/4: Count Casrec source data")
+    log.info(f"Copy {config.schemas['count_verification']} schema to casrecmigration DB")
+    copy_schema(
+        log=log,
+        sql_path=current_path / "../../shared/sql",
+        config=config,
+        from_db="target",
+        from_schema=config.schemas["count_verification"],
+        to_db="migration",
+        to_schema=config.schemas["count_verification"],
+    )
 
-        execute_sql_file(current_path / "sql", "count_casrec_source.sql", conn_migration)
-        log.info(f"Updated count record with source data counts.")
+    execute_sql_file(current_path / "sql", "count_casrec_source.sql", conn_migration)
+    log.info(f"Updated count record with source data counts.")
 
 
 @click.command()
@@ -83,13 +79,22 @@ def count_casrec_source():
 def main(correfs):
     output_title(correfs)
     count_existing_cp1()
-    count_casrec_source()
+
+    if not schema_exists(
+        conn=conn_target,
+        schema=config.schemas['count_verification']
+    ):
+        log.error(f"{config.schemas['count_verification']} schema not found in target DB")
+        log.info(f"Skipping remainder of counts verification.")
+    else:
+        count_non_cp1()
+        count_casrec_source()
 
     df = pd.read_sql(
         sql="SELECT * FROM countverification.counts ORDER BY supervision_table;",
         con=conn_migration
     )
-    headers = ["Supervision Table", "CP1 Existing", "Casrec"]
+    headers = ["Supervision Table", "CP1 Existing", "Non-CP1 Remaining", "Casrec"]
     report_table = tabulate(df, headers, tablefmt="psql")
     print(report_table)
 
