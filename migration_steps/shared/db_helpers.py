@@ -75,6 +75,15 @@ def create_schema(log, engine, schema):
         log.debug(f"Schema {schema} already exists\n\n")
 
 
+def schema_exists(conn, schema):
+    sql = f"""SELECT EXISTS (
+          SELECT FROM information_schema.schemata WHERE schema_name = '{schema}'
+          );"""
+    cursor = conn.cursor()
+    cursor.execute(sql)
+    return cursor.fetchone()[0]
+
+
 def copy_schema(
     log, sql_path, config, from_db, from_schema, to_db, to_schema, structure_only=False
 ):
