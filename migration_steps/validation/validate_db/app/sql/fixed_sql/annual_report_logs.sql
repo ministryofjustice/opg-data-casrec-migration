@@ -14,68 +14,90 @@ CREATE TABLE casrec_csv.exceptions_annual_report_logs(
 );
 
 INSERT INTO casrec_csv.exceptions_annual_report_logs(
-	SELECT
-	    caserecnumber,
-	    CAST(reportingperiodenddate AS date) AS reportingperiodenddate,
-	    CAST(reportingperiodenddate AS date) - INTERVAL '1 year' + INTERVAL '1 day' AS reportingperiodstartdate,
-	    duedate,
-	    CAST(nullif(receiveddate, '') AS date) AS receiveddate,
-	    CAST(nullif(revisedduedate, '') AS date) AS revisedduedate,
-	    numberofchaseletters,
-	    casrec_csv.report_element(full_status, 1) AS status,
-	    casrec_csv.report_element(full_status, 3) AS reviewstatus
-    FROM (
+    -- non-pending annual_report_logs derived from casrec account table
+    SELECT * FROM (
         SELECT
-	        caserecnumber,
-	        reportingperiodenddate,
-	        duedate,
-	        receiveddate,
-	        revisedduedate,
-	        numberofchaseletters,
-	        casrec_csv.report_status(
-	            casrec_csv.report_status_aggregate(
-	                review_status, wd_count_end_date, receiveddate, lodged_date, reviewdate, next_yr_flag
-	            )
-	        ) full_status
+            caserecnumber,
+            CAST(reportingperiodenddate AS date) AS reportingperiodenddate,
+            reportingperiodstartdate,
+            duedate,
+            CAST(nullif(receiveddate, '') AS date) AS receiveddate,
+            CAST(nullif(revisedduedate, '') AS date) AS revisedduedate,
+            numberofchaseletters,
+            casrec_csv.report_element(full_status, 1) AS status,
+            casrec_csv.report_element(full_status, 3) AS reviewstatus
         FROM (
             SELECT
-                "Case" AS caserecnumber,
-                account."End Date" AS reportingperiodenddate,
-                transf_calculate_duedate(account."End Date") AS duedate,
-                GREATEST(
-                    NULLIF(account."Rcvd Date", ''),
-                    NULLIF(account."Rcvd Date1", ''),
-                    NULLIF(account."Rcvd Date2", ''),
-                    NULLIF(account."Rcvd Date3", ''),
-                    NULLIF(account."Rcvd Date4", ''),
-                    NULLIF(account."Rcvd Date5", ''),
-                    NULLIF(account."Rcvd Date6", '')
-                ) AS receiveddate,
-                "Revise Date" AS revisedduedate,
-                0 AS numberofchaseletters,
-                casrec_csv.weekday_count(account."End Date") AS wd_count_end_date,
-                "Rev Stat" AS review_status,
-                "Lodge Date" AS lodged_date,
-                "Review Date" AS reviewdate,
-                "Next Yr" AS next_yr_flag
-            FROM
-                casrec_csv.account
-        ) AS csv_data
-    ) AS final_data
-    except
-    SELECT * FROM(
+                caserecnumber,
+                reportingperiodenddate,
+                reportingperiodstartdate,
+                duedate,
+                receiveddate,
+                revisedduedate,
+                numberofchaseletters,
+                casrec_csv.report_status(
+                    casrec_csv.report_status_aggregate(
+                        review_status, wd_count_end_date, receiveddate, lodged_date, reviewdate, next_yr_flag
+                    )
+                ) full_status
+            FROM (
+                SELECT
+                    "Case" AS caserecnumber,
+                    account."End Date" AS reportingperiodenddate,
+                    CAST(account."End Date" AS date) - 366 AS reportingperiodstartdate,
+                    transf_calculate_duedate(account."End Date") AS duedate,
+                    GREATEST(
+                        NULLIF(account."Rcvd Date", ''),
+                        NULLIF(account."Rcvd Date1", ''),
+                        NULLIF(account."Rcvd Date2", ''),
+                        NULLIF(account."Rcvd Date3", ''),
+                        NULLIF(account."Rcvd Date4", ''),
+                        NULLIF(account."Rcvd Date5", ''),
+                        NULLIF(account."Rcvd Date6", '')
+                    ) AS receiveddate,
+                    "Revise Date" AS revisedduedate,
+                    0 AS numberofchaseletters,
+                    casrec_csv.weekday_count(account."End Date") AS wd_count_end_date,
+                    "Rev Stat" AS review_status,
+                    "Lodge Date" AS lodged_date,
+                    "Review Date" AS reviewdate,
+                    "Next Yr" AS next_yr_flag
+                FROM
+                    casrec_csv.account
+            ) AS account_annual_report_logs
+        ) AS non_pending_annual_report_logs
+
+        UNION
+
+        -- pending annual_report_logs derived from casrec pat table
         SELECT
-            persons.caserecnumber AS caserecnumber,
-            annual_report_logs.reportingperiodenddate AS reportingperiodenddate,
-            annual_report_logs.reportingperiodstartdate AS reportingperiodstartdate,
-            annual_report_logs.duedate AS duedate,
-            annual_report_logs.receiveddate AS receiveddate,
-            annual_report_logs.revisedduedate AS revisedduedate,
-            annual_report_logs.numberofchaseletters AS numberofchaseletters,
-            annual_report_logs.status,
-            annual_report_logs.reviewstatus
+            "Case" AS caserecnumber,
+            CAST(pat."Report Due" AS date) AS reportingperiodenddate,
+            CAST(pat."Report Due" AS date) - 366 AS reportingperiodstartdate,
+            transf_calculate_duedate(pat."Report Due") AS duedate,
+            NULL AS receiveddate,
+            NULL AS revisedduedate,
+            0 AS numberofchaseletters,
+            'PENDING' AS status,
+            NULL AS review_status
         FROM
-            {target_schema}.annual_report_logs
-            LEFT JOIN {target_schema}.persons on persons.id = annual_report_logs.client_id
-        ) AS sirius_data
+            casrec_csv.pat
+        WHERE pat."Report Due" != ''
+    ) AS casrec_annual_report_logs
+
+    EXCEPT
+
+    SELECT
+        persons.caserecnumber AS caserecnumber,
+        annual_report_logs.reportingperiodenddate AS reportingperiodenddate,
+        annual_report_logs.reportingperiodstartdate AS reportingperiodstartdate,
+        annual_report_logs.duedate AS duedate,
+        annual_report_logs.receiveddate AS receiveddate,
+        annual_report_logs.revisedduedate AS revisedduedate,
+        annual_report_logs.numberofchaseletters AS numberofchaseletters,
+        annual_report_logs.status,
+        annual_report_logs.reviewstatus
+    FROM {target_schema}.annual_report_logs
+    LEFT JOIN {target_schema}.persons
+    ON persons.id = annual_report_logs.client_id
 );
