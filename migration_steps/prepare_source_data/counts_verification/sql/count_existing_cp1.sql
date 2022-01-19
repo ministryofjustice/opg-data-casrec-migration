@@ -27,14 +27,19 @@ CREATE TABLE IF NOT EXISTS countverification.counts (
     cp1existing int
 );
 
--- persons
+-- persons_clients
 INSERT INTO countverification.counts (supervision_table, cp1existing)
-SELECT 'persons' AS supervision_table,
-(
-    SELECT COUNT(*) FROM countverification.cp1_clients
-)+(
-    SELECT COUNT(*) FROM countverification.cp1_deputies
-) AS cp1existing;
+VALUES (
+    'persons_clients',
+    (SELECT COUNT(*) FROM countverification.cp1_clients)
+);
+
+-- persons_deputies
+INSERT INTO countverification.counts (supervision_table, cp1existing)
+VALUES (
+    'persons_deputies',
+    (SELECT COUNT(*) FROM countverification.cp1_deputies)
+);
 
 -- cases
 INSERT INTO countverification.counts (supervision_table, cp1existing)
@@ -185,7 +190,7 @@ SELECT 'finance_invoice_ad' AS supervision_table, COUNT(*) AS cp1existing
 FROM finance_invoice inv
 INNER JOIN countverification.cp1_clients cli on cli.id = inv.person_id
 WHERE inv.source = 'CASRECMIGRATION'
-AND inv.feetype <> 'AD';
+AND inv.feetype = 'AD';
 
 -- finance_invoice_non_ad
 INSERT INTO countverification.counts (supervision_table, cp1existing)
@@ -193,7 +198,7 @@ SELECT 'finance_invoice_non_ad' AS supervision_table, COUNT(*) AS cp1existing
 FROM finance_invoice inv
 INNER JOIN countverification.cp1_clients cli on cli.id = inv.person_id
 WHERE inv.source = 'CASRECMIGRATION'
-AND inv.feetype = 'AD';
+AND inv.feetype <> 'AD';
 
 -- finance_remissions
 INSERT INTO countverification.counts (supervision_table, cp1existing)

@@ -27,14 +27,19 @@ FROM countverification.cp1_cases
     INNER JOIN persons dep ON dep.id = od.deputy_id;
 CREATE UNIQUE INDEX cp1_deputies_idx ON countverification.cp1_deputies (id);
 
--- persons
+-- persons_clients
 UPDATE countverification.counts SET final_count =
 (
     SELECT COUNT(*) FROM countverification.cp1_clients
-)+(
+)
+WHERE supervision_table = 'persons_clients';
+
+-- persons_deputies
+UPDATE countverification.counts SET final_count =
+(
     SELECT COUNT(*) FROM countverification.cp1_deputies
 )
-WHERE supervision_table = 'persons';
+WHERE supervision_table = 'persons_deputies';
 
 -- cases
 UPDATE countverification.counts SET final_count =
@@ -154,7 +159,7 @@ UPDATE countverification.counts SET final_count =
 (
     SELECT COUNT(*)
     FROM visits v
-    LEFT JOIN countverification.cp1_clients cli ON cli.id = v.client_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = v.client_id
 )
 WHERE supervision_table = 'visits';
 

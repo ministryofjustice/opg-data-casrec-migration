@@ -37,7 +37,7 @@ conn_target = psycopg2.connect(config.get_db_connection_string("target"))
 def output_title(correfs):
     allowed_entities = config.allowed_entities(env=environment)
     filtered_correfs = config.get_filtered_correfs(environment, correfs)
-    log.info(log_title(message="Counts Verification Step 3/3: Count final migrated rows"))
+    log.info(log_title(message="Counts Verification Step 4/4: Count final migrated rows"))
     log.debug(f"Environment: {environment}")
     log.info(f"Correfs: {', '.join(filtered_correfs) if filtered_correfs else 'all'}")
     log.info(f"Enabled entities: {', '.join(allowed_entities)}")
@@ -79,7 +79,7 @@ def main(correfs):
             sql = "SELECT * FROM countverification.counts ORDER BY supervision_table;",
             con=conn_target
         )
-        headers = ["Supervision Table", "CP1 Existing", "Casrec", "Expected", "Final Count", "Result"]
+        headers = ["Supervision Table", "CP1 Existing", "Non-CP1 Remaining", "Casrec", "Expected", "Final Count", "Result"]
         report_table = tabulate(df, headers, tablefmt="psql")
         print(report_table)
 

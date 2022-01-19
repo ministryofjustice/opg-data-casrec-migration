@@ -47,14 +47,19 @@ SELECT CASE
     END
 $$;
 
--- persons
+-- persons_clients
 UPDATE countverification.counts SET casrec_source =
 (
     SELECT COUNT(*) FROM casrec_csv.pat
-)+(
+)
+WHERE supervision_table = 'persons_clients';
+
+-- persons_deputies
+UPDATE countverification.counts SET casrec_source =
+(
     SELECT COUNT(*) FROM countverification.filtered_deps
 )
-WHERE supervision_table = 'persons';
+WHERE supervision_table = 'persons_deputies';
 
 -- cases
 UPDATE countverification.counts SET casrec_source =
