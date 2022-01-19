@@ -6,7 +6,10 @@ from rules.deputy_fee_payer import update_deputy_feepayer_id
 from rules.backwards_cases_client_link import update_client_id_on_cases
 from rules.global_uids import insert_unique_uids
 from rules.finance_person_ids import set_finance_person_ids
-from rules.reporting_period_scheduled_events import update_report_log_scheduled_events_foreign_keys
+from rules.client_statuses import update_client_status
+from rules.reporting_period_scheduled_events import (
+    update_report_log_scheduled_events_foreign_keys,
+)
 from utilities.clear_tables import clear_tables
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -69,7 +72,11 @@ def main(clear, correfs):
     log.info(
         log_title(message="Integration Step: Apply Sirius business rules to Staging DB")
     )
-    log.info(log_title(message=f"Correfs: {', '.join(filtered_correfs) if filtered_correfs else 'all'}"))
+    log.info(
+        log_title(
+            message=f"Correfs: {', '.join(filtered_correfs) if filtered_correfs else 'all'}"
+        )
+    )
     log.info(
         log_title(
             message=f"Source: {db_config['source_schema']}, Target: {db_config['target_schema']}, Chunk Size: {db_config['chunk_size']}"
@@ -91,6 +98,7 @@ def main(clear, correfs):
     update_client_id_on_cases(db_config=db_config)
     set_finance_person_ids(db_config=db_config)
     update_report_log_scheduled_events_foreign_keys(db_config=db_config)
+    update_client_status(db_config=db_config)
 
     check_row_counts.count_rows(
         connection_string=db_config["db_connection_string"],

@@ -36,6 +36,12 @@
             "total_mapped": 9,
             "percentage_complete": 100
         },
+        "client_status": {
+            "total_rows": 1,
+            "total_unmapped": 0,
+            "total_mapped": 1,
+            "percentage_complete": 100
+        },
         "crec_persons": {
             "total_rows": 3,
             "total_unmapped": 0,
@@ -273,13 +279,13 @@
     },
     "total": {
         "worksheets": {
-            "total_sheets": 45,
+            "total_sheets": 46,
             "total_complete": 8
         },
         "fields": {
-            "total_fields": 420,
+            "total_fields": 421,
             "total_unmapped": 22,
-            "total_mapped": 398,
+            "total_mapped": 399,
             "percentage_complete": 95
         }
     }

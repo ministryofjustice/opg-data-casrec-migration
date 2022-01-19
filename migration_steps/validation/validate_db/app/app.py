@@ -55,6 +55,7 @@ def get_mappings():
             "client_persons",
             "client_phonenumbers",
             "finance_person_ids",
+            "client_status",
         ],
         "cases": ["cases"],
         "crec": ["crec_persons"],
@@ -87,7 +88,7 @@ def get_mappings():
         "ledger_allocation": ["finance_allocation_credits"],
         "timeline": ["timeline_event", "person_timeline"],
         "finance_order": ["finance_order"],
-        "scheduled_events": ["scheduled_events_reporting"]
+        "scheduled_events": ["scheduled_events_reporting"],
     }
 
     for entity, mapping in all_mappings.items():
