@@ -65,7 +65,7 @@ locals {
                                 "Overrides": {
                                     "ContainerOverrides": [{
                                         "Name": "load-casrec-db",
-                                        "Command": ["python3","load_casrec/app/app.py","--skip_load=false","--delay=0"]
+                                        "Command": ["python3","load_casrec/app/app.py","--process=1","--process_total=4"]
                                     }]
                                 }
                             },
@@ -93,7 +93,7 @@ locals {
                                 "Overrides": {
                                     "ContainerOverrides": [{
                                         "Name": "load-casrec-db",
-                                        "Command": ["python3","load_casrec/app/app.py","--skip_load=false","--delay=2"]
+                                        "Command": ["python3","load_casrec/app/app.py","--process=2","--process_total=4"]
                                     }]
                                 }
                             },
@@ -121,7 +121,7 @@ locals {
                                 "Overrides": {
                                     "ContainerOverrides": [{
                                         "Name": "load-casrec-db",
-                                        "Command": ["python3","load_casrec/app/app.py","--skip_load=false","--delay=3"]
+                                        "Command": ["python3","load_casrec/app/app.py","--process=3","--process_total=4"]
                                     }]
                                 }
                             },
@@ -149,7 +149,7 @@ locals {
                                 "Overrides": {
                                     "ContainerOverrides": [{
                                         "Name": "load-casrec-db",
-                                        "Command": ["python3","load_casrec/app/app.py","--skip_load=false","--delay=4"]
+                                        "Command": ["python3","load_casrec/app/app.py","--process=4","--process_total=4"]
                                     }]
                                 }
                             },

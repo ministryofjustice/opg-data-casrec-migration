@@ -20,14 +20,13 @@ DEFAULT_REPORT_TYPE = "-"
 #      with the latest date
 # :returns: reporttype value, or None if no mapping exists
 def _calculate_reporttype(row):
-    if row["ord_stat"] == "Active":
-        ord_risk_lvl = row["ord_risk_lvl"]
+    ord_risk_lvl = row["ord_risk_lvl"]
 
-        if ord_risk_lvl == "3":
-            return "OPG103"
+    if ord_risk_lvl == "3":
+        return "OPG103"
 
-        if ord_risk_lvl in ["1", "2", "2A"]:
-            return "OPG102"
+    if ord_risk_lvl in ["1", "2", "2A"]:
+        return "OPG102"
 
     return None
 
@@ -59,8 +58,20 @@ def calculate_report_types(report_logs_df: pd.DataFrame) -> pd.DataFrame:
     # Select the order row with the latest end date from each group
     # and determine its reporttype
     for _, group in grouped:
-        latest_row = group.loc[group["end_date"].idxmax()].copy()
-        latest_row["reporttype"] = _calculate_reporttype(latest_row)
+        with_active_orders = group[group["ord_stat"] == "Active"]
+
+        if len(with_active_orders) > 0:
+            # Use the latest "Active" order to determine reporttype
+            latest_row = with_active_orders.loc[
+                with_active_orders["end_date"].idxmax()
+            ].copy()
+            latest_row["reporttype"] = _calculate_reporttype(latest_row)
+        else:
+            # No active order; use the latest "Closed" row and
+            # set reporttype to null
+            latest_row = group.loc[group["end_date"].idxmax()].copy()
+            latest_row["reporttype"] = None
+
         report_type_assignments_df = report_type_assignments_df.append(latest_row)
 
     # Cast annualreport_id to correct datatype

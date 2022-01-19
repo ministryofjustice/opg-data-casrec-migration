@@ -11,7 +11,6 @@ import re
 import time
 from sqlalchemy import create_engine
 import boto3
-import random as rnd
 import custom_logger
 from dotenv import load_dotenv
 from helpers import get_config, log_title, get_s3_session
@@ -19,23 +18,52 @@ import logging
 import click
 from db_helpers import replace_with_sql_friendly_chars
 
+env_path = current_path / "../../.env"
+load_dotenv(dotenv_path=env_path)
+
+# Env variables
+ci = os.getenv("CI")
+account = os.environ["SIRIUS_ACCOUNT"]
+path = os.environ["S3_PATH"]
 environment = os.environ.get("ENVIRONMENT")
 account_name = os.environ.get("ACCOUNT_NAME")
+
+# Config
 config = get_config(environment)
-config.custom_log_level()
-verbosity_levels = config.verbosity_levels
+chunk_size = config.DEFAULT_CHUNK_SIZE
+schema = config.schemas["pre_transform"]
+
+# logging
 log = logging.getLogger("root")
-log.addHandler(custom_logger.MyHandler())
+custom_logger.setup_logging(env=environment, module_name="load casrec schema")
+log = logging.getLogger("root")
+
+# Orchestration table
+progress_table = "migration_progress"
+progress_table_cols = [
+    "file",
+    "state",
+    "process",
+]
+
+# DB
+db_conn_string = config.get_db_connection_string("migration")
+engine = create_engine(db_conn_string)
+
+# S3
+s3_url = os.environ.get("S3_URL")
+s3 = get_s3_session(environment, s3_url, ci=ci, account=account)
+bucket_name = f"casrec-migration-{account_name.lower()}"
 
 
 def get_list_of_files(bucket_name, s3, path, tables):
+    log.info(f"Get files from {bucket_name}:")
     resp = s3.list_objects_v2(Bucket=bucket_name)
     files_in_bucket = []
     files_to_process = []
 
     for obj in resp["Contents"]:
         file_folder = obj["Key"]
-        log.info(file_folder)
         folder = file_folder.split("/")[0]
         file = file_folder.split("/")[1]
         if folder == path and len(file) > 1:
@@ -43,7 +71,9 @@ def get_list_of_files(bucket_name, s3, path, tables):
             if any(word in file for word in ignore_list):
                 log.info(f"ignoring {file} files for now...")
             else:
-                files_in_bucket.append(file)
+                if file.endswith(".csv") or file.endswith(".xlsx"):
+                    log.info(file_folder)
+                    files_in_bucket.append(file)
 
     if tables[0].lower() == "all":
         log.info("Will process all files")
@@ -58,28 +88,14 @@ def get_list_of_files(bucket_name, s3, path, tables):
     return files_to_process
 
 
-def setup_logging(log, verbose, log_title, bucket_name):
-    try:
-        log.setLevel(verbosity_levels[verbose])
-        log.info(f"{verbosity_levels[verbose]} logging enabled")
-    except KeyError:
-        log.setLevel("INFO")
-        log.info(f"{verbose} is not a valid verbosity level")
-        log.info(f"INFO logging enabled")
+def get_remaining_files(table_name, schema_name, engine, status, process=None):
 
-    log.info(log_title(message="Load CasRec: CSV to DB transfer"))
-    log.info(log_title(message=f"s3 bucket: {bucket_name}"))
-    log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
-
-
-def get_remaining_files(table_name, schema_name, engine, status, processor_id=None):
-
-    if processor_id is not None:
+    if process is not None:
         remaining_files = f"""
             SELECT file
             FROM \"{schema_name}\".\"{table_name}\"
             WHERE state = '{status}'
-            AND processor_id = '{processor_id}';
+            AND process = '{process}';
             """
     else:
         remaining_files = f"""
@@ -97,7 +113,7 @@ def get_remaining_files(table_name, schema_name, engine, status, processor_id=No
 
 
 def update_progress(
-    table_name, schema_name, engine, file, status="IN_PROGRESS", processor_id=None
+    table_name, schema_name, engine, file, status="IN_PROGRESS", process=None
 ):
     file_left = file.split(".")[0]
     if status == "READY_TO_PROCESS" and file_left[-1].isdigit():
@@ -105,13 +121,14 @@ def update_progress(
         file_left = regex.sub("", file_left)
         row_update = f"""
             UPDATE \"{schema_name}\".\"{table_name}\"
-            SET state = '{status}', processor_id = '{processor_id}'
-            WHERE file LIKE '{str(file_left)}%%';
+            SET state = '{status}', process = '{process}'
+            WHERE file LIKE '{str(file_left)}%%'
+            AND state = 'UNPROCESSED';
             """
-    elif processor_id is not None:
+    elif process is not None:
         row_update = f"""
             UPDATE \"{schema_name}\".\"{table_name}\"
-            SET state = '{status}', processor_id = '{processor_id}'
+            SET state = '{status}', process = '{process}'
             WHERE file = '{file}';
             """
     else:
@@ -136,21 +153,26 @@ def check_table_exists(table_name, schema_name, engine):
     """
 
     check_exists_result = engine.execute(check_exists_statement)
+
     for r in check_exists_result:
         table_exists = r.values()[0]
         return table_exists
 
 
-def table_exists_already(table_name, table_lookup, schema_name, engine):
+def check_table_multipart(table_name, tbl, schema_name, engine):
     check_exists_statement = f"""
         SELECT COUNT(*)
-        FROM "{schema_name}"."{table_lookup}"
-        WHERE table_name = \'{table_name}\';
+        FROM "{schema_name}"."{tbl}"
+        WHERE file ~ \'{table_name}\\d\'
+        AND state IN ('COMPLETE');
     """
+    log.info(check_exists_statement)
 
     check_exists_result = engine.execute(check_exists_statement)
+
     for r in check_exists_result:
         row_count = r.values()[0]
+        log.info(f"row count: {row_count}")
     if row_count > 0:
         return True
     else:
@@ -158,7 +180,6 @@ def table_exists_already(table_name, table_lookup, schema_name, engine):
 
 
 def check_columns_exist(table_name, schema, csv_cols, engine):
-
     existing_cols_statement = (
         f"SELECT column_name FROM "
         f"information_schema.columns "
@@ -209,13 +230,6 @@ def create_table_statement(table_name, schema, columns):
     return create_statement
 
 
-def add_lookup_table_row(table_name, table_lookup, schema_name, engine):
-    insert_statement = f"""
-        INSERT INTO "{schema_name}"."{table_lookup}" (table_name) VALUES (\'{table_name}\');
-    """
-    engine.execute(insert_statement)
-
-
 def truncate_table(table_name, schema, engine):
     log.info(f"Truncating table {schema}.{table_name}")
     truncate_statement = f'TRUNCATE TABLE "{schema}"."{table_name}"'
@@ -247,15 +261,15 @@ def create_insert_statement(table_name, schema, columns, df):
     return insert_statement
 
 
-def get_row_count(table_name, schema_name, engine, status=None, processor_id=None):
+def get_row_count(table_name, schema_name, engine, status=None, process=None):
     get_count_statement = f"""
         SELECT COUNT(*) FROM {schema_name}.{table_name}
         """
 
     if status is not None:
         get_count_statement += f" WHERE state = '{status}'"
-        if processor_id is not None:
-            get_count_statement += f" AND processor_id = '{processor_id}'"
+        if process is not None:
+            get_count_statement += f" AND process = '{process}'"
 
     get_count_result = engine.execute(get_count_statement)
     for r in get_count_result:
@@ -315,225 +329,198 @@ def create_table(table, schema, engine, table_cols):
         log.info(f"{table} table exists")
 
 
+def get_df_from_file(file):
+    file_key = f"{path}/{file}"
+    log.info(f'Retrieving "{file_key}" from bucket')
+    obj = s3.get_object(Bucket=bucket_name, Key=file_key)
+    if file.split(".")[1] == "csv":
+        df = pd.read_csv(
+            io.BytesIO(obj["Body"].read()), keep_default_na=False, dtype=str
+        )
+    elif file.split(".")[1] == "xlsx":
+        df = pd.read_excel(
+            io.BytesIO(obj["Body"].read()),
+            engine="openpyxl",
+            keep_default_na=False,
+            dtype=str,
+        )
+    else:
+        log.info("Unknown file format")
+        exit(1)
+    df_renamed = df.rename(columns={"Unnamed: 0": "csv_record"})
+
+    return df_renamed
+
+
 def initialise_progress_table(
-    progress_table, list_of_files, schema, engine, progress_table_cols, processor_id
+    progress_table,
+    list_of_files,
+    schema,
+    engine,
+    progress_table_cols,
+    process,
+    process_total,
 ):
-    progress_df = pd.DataFrame(list_of_files)
-    progress_df["state"] = "UNPROCESSED"
-    progress_df["process"] = "None"
-    progress_df.rename(index={0: "file"})
-    if (
-        get_row_count(progress_table, schema, engine) > 0
-        and get_row_count(progress_table, schema, engine, "UNPROCESSED") == 0
-        and get_row_count(progress_table, schema, engine, "READY_TO_PROCESS") == 0
-    ):
+    if process == 1:
+        progress_df = pd.DataFrame(list_of_files)
+        progress_df["state"] = "UNPROCESSED"
+        progress_df["process"] = "None"
+        progress_df.rename(index={0: "file"})
         truncate_table(progress_table, schema, engine)
 
-    if get_row_count(progress_table, schema, engine) < 1:
         engine.execute(
             create_insert_statement(
                 progress_table, schema, progress_table_cols, progress_df
             )
         )
 
-    while get_row_count(progress_table, schema, engine, status="UNPROCESSED") > 0:
-        files = get_remaining_files(progress_table, schema, engine, "UNPROCESSED")
-        if len(files) > 0:
-            file_to_set = files[0]
+        while get_row_count(progress_table, schema, engine, status="UNPROCESSED") > 0:
+            files = get_remaining_files(progress_table, schema, engine, "UNPROCESSED")
+            if len(files) > 0:
+                file_to_set = files[0]
 
+                # Increment process for each loop until we get to max then reset
+                process += 1
+                if process > process_total:
+                    process = 1
+
+                update_progress(
+                    progress_table,
+                    schema,
+                    engine,
+                    file_to_set,
+                    "READY_TO_PROCESS",
+                    process,
+                )
+    else:
+        while not check_table_exists(progress_table, schema, engine):
+            time.sleep(2)
+        while True:
+            if (
+                get_row_count(progress_table, schema, engine, "UNPROCESSED") == 0
+                and get_row_count(progress_table, schema, engine, "READY_TO_PROCESS")
+                > 1
+            ):
+                break
+            else:
+                time.sleep(2)
+
+
+def get_table_name(file):
+    table_name = file.split(".")[0].lower()
+    if table_name[-1].isdigit():
+        regex = re.compile("[^a-zA-Z_]")
+        table_name = regex.sub("", table_name)
+
+    return table_name
+
+
+def create_or_update_table_from_csv(table_name, columns):
+    if check_table_multipart(table_name, progress_table, schema, engine):
+        log.info("Multipart file table detected")
+
+        col_diff = check_columns_exist(
+            table_name=table_name,
+            schema=schema,
+            csv_cols=columns,
+            engine=engine,
+        )
+        if len(col_diff) != 0:
+            add_cols_statement = add_missing_columns_statement(
+                table=table_name, schema=schema, col_diff=col_diff
+            )
+            engine.execute(add_cols_statement)
+    else:
+        log.info(f"Table {schema}.{table_name} doesn't exist. Creating table...")
+        engine.execute(create_table_statement(table_name, schema, columns))
+        log.info(f"Table {schema}.{table_name} created")
+
+
+def insert_rows_from_dataframe(df, table_name, columns, process, file):
+    if len(df.index) > 0:
+        try:
+            n = chunk_size  # chunk row size
+            list_df = [df[i : i + n] for i in range(0, df.shape[0], n)]
+
+            for df_chunked in list_df:
+                engine.execute(
+                    create_insert_statement(table_name, schema, columns, df_chunked)
+                )
+                log.info(
+                    f'Rows inserted into "{schema}"."{table_name}": {get_row_count(table_name, schema, engine)}'
+                )
+            update_progress(progress_table, schema, engine, file, "COMPLETE", process)
+            log.info(f"Processed {file}\n\n")
+        except Exception as e:
             update_progress(
                 progress_table,
                 schema,
                 engine,
-                file_to_set,
-                "READY_TO_PROCESS",
-                processor_id,
+                file,
+                f"FAILED {e}",
+                process,
             )
-        # To allow multiple processes to get involved
-        # envcheck - not sure what this is for so leaving it alone!
-        if environment == "local":
-            secs = 0
-        else:
-            secs = rnd.uniform(3.00, 5.99)
-        time.sleep(secs)
+            log.info(f"Failed to process {file}\n\n")
+    else:
+        log.info(f"No rows to insert for table {table_name}")
+        update_progress(progress_table, schema, engine, file, "COMPLETE", process)
 
 
 @click.command()
+@click.option("-p", "--process", default="1", help="process being used")
+@click.option("-t", "--process_total", default="1", help="total processes")
 @click.option("-e", "--entities", default="all", help="list of entities to load")
-@click.option("-d", "--delay", default="0", help="delay in seconds for process")
-@click.option("-v", "--verbose", count=True)
-@click.option(
-    "-s", "--skip_load", default="false", help="whether to skip the s3 load or not"
-)
-def main(entities, delay, verbose, skip_load):
-    # We add this delay to let the first process get to create table first
-    if skip_load == "true":
-        log.info(f"Skipping the s3 load step as skip flag has been set")
-    else:
-        log.info(f"Starting copy of s3 tables into casrec_csv")
-        time.sleep(int(delay))
-        table_list = entities.split(",")
-        chunk_size = config.DEFAULT_CHUNK_SIZE
-        bucket_name = f"casrec-migration-{account_name.lower()}"
-        setup_logging(log, verbose, log_title, bucket_name)
-        env_path = current_path / "../../.env"
-        load_dotenv(dotenv_path=env_path)
-
-        account = os.environ["SIRIUS_ACCOUNT"]
-
-        path = os.environ["S3_PATH"]
-        progress_table = "migration_progress"
-        progress_table_cols = [
-            "file",
-            "state",
-            "processor_id",
-        ]
-        table_lookup = "table_list"
-        table_lookup_cols = ["table_name"]
-
-        ci = os.getenv("CI")
-
-        processor_id = rnd.randint(0, 99999)
-
-        db_conn_string = config.get_db_connection_string("migration")
-
-        engine = create_engine(db_conn_string)
-
-        s3_url = os.environ.get("S3_URL")
-        s3 = get_s3_session(environment, s3_url, ci=ci, account=account)
-
-        schema = config.schemas["pre_transform"]
-
-        log.info(f"Using bucket {bucket_name}")
-
-        log.info(f"Creating schema {schema}")
+def main(process, process_total, entities):
+    table_list = entities.split(",")
+    process = int(process)
+    process_total = int(process_total)
+    if process == 1:
         create_schema(schema, engine)
-
         create_table(progress_table, schema, engine, progress_table_cols)
+    list_of_files = get_list_of_files(bucket_name, s3, path, table_list)
 
-        create_table(table_lookup, schema, engine, table_lookup_cols)
+    initialise_progress_table(
+        progress_table,
+        list_of_files,
+        schema,
+        engine,
+        progress_table_cols,
+        process,
+        process_total,
+    )
 
-        list_of_files = get_list_of_files(bucket_name, s3, path, table_list)
-
-        initialise_progress_table(
+    while (
+        get_row_count(
             progress_table,
-            list_of_files,
             schema,
             engine,
-            progress_table_cols,
-            processor_id,
+            status="READY_TO_PROCESS",
+            process=process,
         )
+        > 0
+    ):
 
-        while (
-            get_row_count(
-                progress_table,
-                schema,
-                engine,
-                status="READY_TO_PROCESS",
-                processor_id=processor_id,
-            )
-            > 0
-        ):
+        file = get_remaining_files(
+            progress_table,
+            schema,
+            engine,
+            status="READY_TO_PROCESS",
+            process=process,
+        )[0]
 
-            file = get_remaining_files(
-                progress_table,
-                schema,
-                engine,
-                status="READY_TO_PROCESS",
-                processor_id=processor_id,
-            )[0]
-            update_progress(progress_table, schema, engine, file, status="IN_PROGRESS")
-            log.info(f"Processor {processor_id} has picked up {file}")
+        log.info(f"Processor {process} has picked up {file}")
+        update_progress(progress_table, schema, engine, file, status="IN_PROGRESS")
 
-            file_key = f"{path}/{file}"
-            log.info(f'Retrieving "{file_key}" from bucket')
-            obj = s3.get_object(Bucket=bucket_name, Key=file_key)
-            if file.split(".")[1] == "csv":
-                df = pd.read_csv(
-                    io.BytesIO(obj["Body"].read()), keep_default_na=False, dtype=str
-                )
-            elif file.split(".")[1] == "xlsx":
-                df = pd.read_excel(
-                    io.BytesIO(obj["Body"].read()),
-                    engine="openpyxl",
-                    keep_default_na=False,
-                    dtype=str,
-                )
-            else:
-                log.info("Unknown file format")
-                exit(1)
+        table_name = get_table_name(file)
+        df = get_df_from_file(file)
+        columns = [x for x in df.columns.values]
 
-            table_name = file.split(".")[0].lower()
+        create_or_update_table_from_csv(table_name, columns)
 
-            df_renamed = df.rename(columns={"Unnamed: 0": "csv_record"})
-            columns = [x for x in df_renamed.columns.values]
+        log.info(f'Inserting records into "{schema}"."{table_name}"')
+        insert_rows_from_dataframe(df, table_name, columns, process, file)
 
-            # find the last digits
-            if table_name[-1].isdigit():
-                regex = re.compile("[^a-zA-Z_]")
-                table_name = regex.sub("", table_name)
-
-            if table_exists_already(table_name, table_lookup, schema, engine):
-                log.info("Multipart file table detected")
-
-                col_diff = check_columns_exist(
-                    table_name=table_name,
-                    schema=schema,
-                    csv_cols=columns,
-                    engine=engine,
-                )
-                if len(col_diff) != 0:
-                    add_cols_statement = add_missing_columns_statement(
-                        table=table_name, schema=schema, col_diff=col_diff
-                    )
-                    engine.execute(add_cols_statement)
-
-            else:
-                log.info(
-                    f"Table {schema}.{table_name} doesn't exist. Creating table..."
-                )
-                engine.execute(create_table_statement(table_name, schema, columns))
-                log.info(f"Table {schema}.{table_name} created")
-                add_lookup_table_row(table_name, table_lookup, schema, engine)
-
-            log.info(f'Inserting records into "{schema}"."{table_name}"')
-            if len(df_renamed.index) > 0:
-                try:
-                    n = chunk_size  # chunk row size
-                    list_df = [
-                        df_renamed[i : i + n] for i in range(0, df_renamed.shape[0], n)
-                    ]
-
-                    for df_chunked in list_df:
-                        engine.execute(
-                            create_insert_statement(
-                                table_name, schema, columns, df_chunked
-                            )
-                        )
-                        log.info(
-                            f'Rows inserted into "{schema}"."{table_name}": {get_row_count(table_name, schema, engine)}'
-                        )
-                    update_progress(
-                        progress_table, schema, engine, file, "COMPLETE", processor_id
-                    )
-                    log.info(f"Processed {file}\n\n")
-                except Exception as e:
-                    update_progress(
-                        progress_table,
-                        schema,
-                        engine,
-                        file,
-                        f"FAILED {e}",
-                        processor_id,
-                    )
-                    log.info(f"Failed to process {file}\n\n")
-            else:
-                log.info(f"No rows to insert for table {table_name}")
-                update_progress(
-                    progress_table, schema, engine, file, "COMPLETE", processor_id
-                )
-
-        log.info(f"Processor {processor_id} has finished processing")
+    log.info(f"Processor {process} has finished processing")
 
 
 if __name__ == "__main__":
