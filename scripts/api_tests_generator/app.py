@@ -42,6 +42,7 @@ csvs = [
     "tasks",
     "deputy_notes",
     "client_notes",
+    "client_status",
 ]
 
 search_headers = [
@@ -113,6 +114,7 @@ def get_entity_ids(csv_type, caserecnumber, engine, conn):
         "invoices",
         "tasks",
         "client_notes",
+        "client_status",
     ]:
         entity_ids = engine.execute(person_id_sql)
         if entity_ids.rowcount > 1:
