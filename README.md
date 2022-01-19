@@ -621,6 +621,7 @@ From the root directory run the following:
 `sh ./migrate_tagged_version.sh`
 
 Follow the instructions carefully, being mindful to pick the relevant environment and tag.
+You may get a `400 Bad Request` error on the first try - just rerun the script and pick the same options again.
 You can then go and have a look at your job running in circle. During the get latest image stage,
 it will actually override with the image you selected and you can check this in the 'show image' stage.
 

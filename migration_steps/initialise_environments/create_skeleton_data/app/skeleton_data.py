@@ -1109,7 +1109,7 @@ def insert_finance_person_data_into_sirius(db_config, sirius_db_engine):
     sirius_db_engine.execute(reset_sequence_statement)
 
 
-def create_batch_number_counter_in_sirius(db_config, sirius_db_engine):
+def create_batch_number_counter_in_sirius(sirius_db_engine):
     # Create the counter if it doesn't exist
     insert_statement = f"""
         INSERT INTO finance_counter (id, key, counter)
@@ -1124,5 +1124,5 @@ def insert_skeleton_data(db_config):
 
     insert_client_data_into_sirius(db_config, sirius_db_engine)
     insert_finance_person_data_into_sirius(db_config, sirius_db_engine)
-    create_batch_number_counter_in_sirius(db_config, sirius_db_engine)
+    create_batch_number_counter_in_sirius(sirius_db_engine)
     # insert_client_address_data_into_sirius(db_config, sirius_db_engine)

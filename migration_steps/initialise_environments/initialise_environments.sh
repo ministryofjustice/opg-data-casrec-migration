@@ -12,18 +12,7 @@ done
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-# envcheck - linked skeleton data should NOT be deleted on prod
-if [ "${ENVIRONMENT}" == "local" ] \
-  || [ "${ENVIRONMENT}" == "development" ] \
-  || [ "${ENVIRONMENT}" == "preproduction" ] \
-  || [ "${ENVIRONMENT}" == "preqa" ] \
-  || [ "${ENVIRONMENT}" == "qa" ]
-  then
-  python3 "${DIR}/delete_existing_data/app.py"
-else
-  echo "delete_existing_data should not run on ${ENVIRONMENT}"
-fi
-
+python3 "${DIR}/delete_existing_data/app.py"
 python3 "${DIR}/initialise_source/app/app.py" --preserve_schemas="${SCHEMAS}"
 python3 "${DIR}/create_stage_schema/app/app.py"
 
