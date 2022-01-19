@@ -78,7 +78,7 @@ UPDATE countverification.counts SET non_cp1 = (
     SELECT COUNT(*)
     FROM cases
     WHERE client_id IN (
-        SELECT id FROM casmigrate_clients
+        SELECT id FROM countverification.non_cp1_clients
     )
 )
 WHERE supervision_table = 'cases';
