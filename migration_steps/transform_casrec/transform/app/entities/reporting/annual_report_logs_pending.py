@@ -19,7 +19,7 @@ import pandas as pd
 from helpers import get_mapping_dict, get_table_def
 from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 from transform_data.unique_id import add_unique_id
-from utilities.standard_transformations import calculate_duedate
+from utilities.standard_transformations import calculate_duedate, calculate_startdate
 
 log = logging.getLogger("root")
 
@@ -64,13 +64,6 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
             sql=chunk_query, con=db_config["db_connection_string"]
         )
 
-        """
-        TODO
-        set reportingperiodstartdate:
-        1. Get latest reporting period for the client and store the end date
-        2. Add 1 day to this end date and use value to set reportingperiodstartdate
-        """
-
         num_rows = len(annual_report_log_df)
 
         # NB we don't try to create the table if there are
@@ -105,18 +98,24 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
             )
             continue
 
+        """
+        TODO
+        set reportingperiodstartdate:
+        1. Get latest reporting period for the client and store the end date
+        2. Add 1 day to this end date and use value to set reportingperiodstartdate
+        """
+        # FIXME - this is temporary so I can at least get something in to test validation
+        annual_report_log_df = calculate_startdate(
+            original_col="reportingperiodenddate",
+            result_col="reportingperiodstartdate",
+            df=annual_report_log_df,
+        )
+
         # calculate the duedate
         annual_report_log_df = calculate_duedate(
             original_col="reportingperiodenddate",
             result_col="duedate",
             df=annual_report_log_df,
-        )
-
-        # order_id is NULL for now
-        annual_report_log_df["order_id"] = None
-
-        annual_report_log_df = reapply_datatypes_to_fk_cols(
-            columns=["client_id", "order_id"], df=annual_report_log_df
         )
 
         # set an ID on all the new records
@@ -125,6 +124,24 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
             db_schema=db_config["target_schema"],
             table_definition=table_definition,
             source_data_df=annual_report_log_df,
+        )
+
+        # set all columns to NULL which aren't set in the dataframe yet;
+        # we're doing this manually here because we can't use the get_basic_data_table()
+        # to do it for us, because we have a different source table from the one
+        # defined in the mapping
+        for column in sirius_details.keys():
+            if column not in annual_report_log_df:
+                annual_report_log_df[column] = None
+
+        annual_report_log_df = reapply_datatypes_to_fk_cols(
+            columns=[
+                "client_id",
+                "order_id",
+                "reviewedby_id",
+                "lodgingchecklistdocument_id",
+            ],
+            df=annual_report_log_df,
         )
 
         target_db.insert_data(
