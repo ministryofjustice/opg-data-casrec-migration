@@ -225,7 +225,7 @@ def get_max_col(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.Da
 #     if 'next' and calculated date is on a weekend, move to next working day;
 #     if None, apply no adjustment
 # return: datetime, or None if the base_date is None or ""
-def _calculate_date(base_date, delta: pd.DateOffset, weekend_adjustment: str = None):
+def calculate_date(base_date, operator: str, days: int, weekend_adjustment: str = None):
     if base_date is None or base_date == "":
         return None
 
@@ -247,11 +247,7 @@ def calculate_duedate(
     original_col: str, result_col: str, df: pd.DataFrame
 ) -> pd.DataFrame:
     df[result_col] = df[original_col].apply(
-        lambda base_date: _calculate_date(
-            base_date=base_date,
-            delta=pd.offsets.DateOffset(days=21),
-            weekend_adjustment="next",
-        )
+        lambda base_date: calculate_date(base_date, "+", 21, "next")
     )
     return df
 
@@ -260,9 +256,7 @@ def calculate_startdate(
     original_col: str, result_col: str, df: pd.DataFrame
 ) -> pd.DataFrame:
     df[result_col] = df[original_col].apply(
-        lambda base_date: _calculate_date(
-            base_date=base_date, delta=pd.offsets.DateOffset(days=1, years=-1)
-        )
+        lambda base_date: calculate_date(base_date, "-", 366)
     )
     return df
 

@@ -19,7 +19,11 @@ import pandas as pd
 from helpers import get_mapping_dict, get_table_def
 from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 from transform_data.unique_id import add_unique_id
-from utilities.standard_transformations import calculate_duedate, calculate_startdate
+from utilities.standard_transformations import (
+    calculate_date,
+    calculate_duedate,
+    calculate_startdate,
+)
 
 log = logging.getLogger("root")
 
@@ -36,6 +40,30 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
     )
 
     persons_df = pd.read_sql_query(persons_query, db_config["db_connection_string"])
+
+    # latest End Dates for each account associated with an active order
+    case_end_dates_query = f"""
+        SELECT account_case, latest_reporting_period_end_date
+        FROM {db_config["source_schema"]}.order o
+        INNER JOIN (
+            SELECT
+                "Case" as account_case,
+                "End Date" as latest_reporting_period_end_date,
+                row_number() OVER (
+                    PARTITION BY "Case"
+                    ORDER BY "End Date" DESC
+                ) AS rownum
+            FROM {db_config["source_schema"]}.account a
+            ORDER BY "Case"
+        ) AS cases
+        ON o."Case" = cases.account_case
+        WHERE cases.rownum = 1
+        AND o."Ord Stat" = 'Active';
+    """
+
+    case_end_dates_df = pd.read_sql_query(
+        case_end_dates_query, db_config["db_connection_string"]
+    )
 
     mapping_file_name = f"{mapping_file}_mapping"
     table_definition = get_table_def(mapping_name=mapping_file)
@@ -98,18 +126,35 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
             )
             continue
 
+        # set reportingperiodstartdate from the most-recent row in the
+        # account table for each pending report
+        annual_report_log_df = annual_report_log_df.merge(
+            case_end_dates_df,
+            how="inner",
+            left_on="c_case",
+            right_on="account_case",
+        )
+
+        num_rows = len(annual_report_log_df)
+        log.debug(
+            f"After joining pat to account (to get most-recent reporting period), "
+            f"{num_rows} rows remain"
+        )
+
+        if num_rows == 0:
+            log.info(
+                "No rows remain to insert after join to account; going to next chunk"
+            )
+            continue
+
         """
-        TODO
         set reportingperiodstartdate:
         1. Get latest reporting period for the client and store the end date
         2. Add 1 day to this end date and use value to set reportingperiodstartdate
         """
-        # FIXME - this is temporary so I can at least get something in to test validation
-        annual_report_log_df = calculate_startdate(
-            original_col="reportingperiodenddate",
-            result_col="reportingperiodstartdate",
-            df=annual_report_log_df,
-        )
+        annual_report_log_df["reportingperiodstartdate"] = annual_report_log_df[
+            "latest_reporting_period_end_date"
+        ].apply(lambda base_date: calculate_date(base_date, "+", 1))
 
         # calculate the duedate
         annual_report_log_df = calculate_duedate(
@@ -142,6 +187,11 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
                 "lodgingchecklistdocument_id",
             ],
             df=annual_report_log_df,
+        )
+
+        # drop columns added when joining to other dataframes
+        annual_report_log_df = annual_report_log_df.drop(
+            columns=["account_case", "latest_reporting_period_end_date"]
         )
 
         target_db.insert_data(
