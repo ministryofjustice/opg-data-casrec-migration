@@ -72,17 +72,38 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
         -- pending annual_report_logs derived from casrec pat table
         SELECT
             "Case" AS caserecnumber,
-            CAST(pat."Report Due" AS date) AS reportingperiodenddate,
-            CAST(pat."Report Due" AS date) - 366 AS reportingperiodstartdate,
-            transf_calculate_duedate(pat."Report Due") AS duedate,
+            CAST(p."Report Due" AS date) AS reportingperiodenddate,
+            active_cases.reportingperiodstartdate,
+            transf_calculate_duedate(p."Report Due") AS duedate,
             NULL AS receiveddate,
             NULL AS revisedduedate,
             0 AS numberofchaseletters,
             'PENDING' AS status,
             NULL AS review_status
         FROM
-            casrec_csv.pat
-        WHERE pat."Report Due" != ''
+            casrec_csv.pat p
+
+        INNER JOIN(
+            SELECT account_case, reportingperiodstartdate
+            FROM casrec_csv.order o
+            INNER JOIN (
+                SELECT
+                    a."Case" as account_case,
+                    CAST(a."End Date" AS date) + 1 as reportingperiodstartdate,
+                    row_number() OVER (
+                        PARTITION BY a."Case"
+                        ORDER BY a."End Date" DESC
+                    ) AS rownum
+                FROM casrec_csv.account a
+            ) AS cases
+            ON o."Case" = cases.account_case
+            WHERE cases.rownum = 1
+            AND o."Ord Stat" = 'Active'
+        ) AS active_cases
+
+        ON p."Case" = active_cases.account_case
+
+        WHERE p."Report Due" != ''
     ) AS casrec_annual_report_logs
 
     EXCEPT

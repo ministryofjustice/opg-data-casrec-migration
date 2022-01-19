@@ -41,14 +41,16 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
 
     persons_df = pd.read_sql_query(persons_query, db_config["db_connection_string"])
 
-    # latest End Dates for each account associated with an active order
+    # reportingperiodstartdate is the End Date of the most recent
+    # reporting period + 1 day; we only consider accounts associated
+    # with 'Active' orders
     case_end_dates_query = f"""
-        SELECT account_case, latest_reporting_period_end_date
+        SELECT account_case, reportingperiodstartdate
         FROM {db_config["source_schema"]}.order o
         INNER JOIN (
             SELECT
                 "Case" as account_case,
-                "End Date" as latest_reporting_period_end_date,
+                CAST("End Date" AS date) + 1 as reportingperiodstartdate,
                 row_number() OVER (
                     PARTITION BY "Case"
                     ORDER BY "End Date" DESC
@@ -126,7 +128,7 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
             )
             continue
 
-        # set reportingperiodstartdate from the most-recent row in the
+        # join to set reportingperiodstartdate from the most-recent row in the
         # account table for each pending report
         annual_report_log_df = annual_report_log_df.merge(
             case_end_dates_df,
@@ -146,15 +148,6 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
                 "No rows remain to insert after join to account; going to next chunk"
             )
             continue
-
-        """
-        set reportingperiodstartdate:
-        1. Get latest reporting period for the client and store the end date
-        2. Add 1 day to this end date and use value to set reportingperiodstartdate
-        """
-        annual_report_log_df["reportingperiodstartdate"] = annual_report_log_df[
-            "latest_reporting_period_end_date"
-        ].apply(lambda base_date: calculate_date(base_date, "+", 1))
 
         # calculate the duedate
         annual_report_log_df = calculate_duedate(
@@ -190,9 +183,7 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
         )
 
         # drop columns added when joining to other dataframes
-        annual_report_log_df = annual_report_log_df.drop(
-            columns=["account_case", "latest_reporting_period_end_date"]
-        )
+        annual_report_log_df = annual_report_log_df.drop(columns=["account_case"])
 
         target_db.insert_data(
             table_name=table_definition["destination_table_name"],
