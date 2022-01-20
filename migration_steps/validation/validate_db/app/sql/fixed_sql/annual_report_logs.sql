@@ -17,7 +17,7 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
 	SELECT
 	    caserecnumber,
 	    CAST(reportingperiodenddate AS date) AS reportingperiodenddate,
-	    CAST(reportingperiodenddate AS date) - 366 AS reportingperiodstartdate,
+	    CAST(reportingperiodenddate AS date) - INTERVAL '1 year' + INTERVAL '1 day' AS reportingperiodstartdate,
 	    duedate,
 	    CAST(nullif(receiveddate, '') AS date) AS receiveddate,
 	    CAST(nullif(revisedduedate, '') AS date) AS revisedduedate,
