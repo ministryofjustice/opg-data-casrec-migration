@@ -6,13 +6,25 @@ from pytest_cases import parametrize_with_cases
 from utilities.standard_transformations import calculate_startdate
 
 
-# startdate cases
-def case_calculate_startdate():
-    return "2021-10-20", "2020-10-19"
+# startdate cases (1-4 provided in IN-1123)
+def case_calculate_startdate_1():
+    return "2021-12-08", "2020-12-09"
+
+
+def case_calculate_startdate_2():
+    return "2020-12-08", "2019-12-09"
+
+
+def case_calculate_startdate_3():
+    return "2019-12-08", "2018-12-09"
+
+
+def case_calculate_startdate_4():
+    return "2018-12-08", "2017-12-09"
 
 
 def case_calculate_startdate_datetime():
-    return datetime.strptime("2021-10-20", "%Y-%m-%d"), "2020-10-19"
+    return datetime.strptime("2021-10-20", "%Y-%m-%d"), "2020-10-21"
 
 
 def case_calculate_startdate_base_not_a_date():
