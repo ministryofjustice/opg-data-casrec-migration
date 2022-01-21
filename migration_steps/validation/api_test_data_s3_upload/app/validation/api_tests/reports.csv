@@ -31,7 +31,7 @@ endpoint,entity_ref,json_locator,test_purpose,api_response
 /api/v1/clients/{id}/annual-reports,10072905,[0].lodgingDetail.lodgedStatus.handle,acknowledged_status,ACKNOWLEDGED
 /api/v1/clients/{id}/annual-reports,10072905,[0].lodgingDetail.dateReportLodged,lodge_date_exists,09/11/2018
 /api/v1/clients/{id}/annual-reports,10072905,[0].reportingPeriodEndDate,end_period_exists,30/09/2018
-/api/v1/clients/{id}/annual-reports,10072905,[0].reportingPeriodStartDate,end_period_starts,29/09/2017
+/api/v1/clients/{id}/annual-reports,10072905,[0].reportingPeriodStartDate,end_period_starts,01/10/2017
 /api/v1/clients/{id}/annual-reports,10072905,[0].numberOfChaseLetters,zero_chase_letters,0
 /api/v1/clients/{id}/annual-reports,10072905,[0].dueDate,due_date_exists,22/10/2018
 /api/v1/clients/{id}/annual-reports,10072905,[0].reportDueReminderDate,reminder_date_exists,09/09/2018
