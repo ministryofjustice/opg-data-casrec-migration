@@ -14,7 +14,7 @@ endpoint,entity_ref,json_locator,test_purpose,api_response
 /api/v1/clients/{id}/annual-reports,10000037,[0].reportDueReminderDate,reminder_date_exists,28/04/2020
 /api/v1/clients/{id}/annual-reports,10000037,[0].dueDate,due_date_exists,09/06/2020
 /api/v1/clients/{id}/annual-reports,10000037,[0].reportingPeriodEndDate,end_period_exists,19/05/2020
-/api/v1/clients/{id}/annual-reports,10000037,[0].reportingPeriodStartDate,end_period_starts,19/05/2019
+/api/v1/clients/{id}/annual-reports,10000037,[0].reportingPeriodStartDate,end_period_starts,20/05/2019
 /api/v1/clients/{id}/annual-reports,10000037,[0].revisedDueDate,revised_due_exists,30/06/2020
 /api/v1/clients/{id}/annual-reports,10000037,[0].numberOfChaseLetters,zero_chase_letters,0
 /api/v1/clients/{id}/annual-reports,94055780,[0].status.handle,pending_status,PENDING
