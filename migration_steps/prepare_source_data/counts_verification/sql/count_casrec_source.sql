@@ -98,12 +98,14 @@ UPDATE countverification.counts SET casrec_source =
 )+(
     -- deputy
     SELECT COUNT(*) FROM (
-        SELECT DISTINCT add."Dep Addr No"
+        SELECT DISTINCT d."Email", d."Dep Surname", d."Dep Forename", add."Dep Postcode"
         FROM casrec_csv.deputy_address add
         INNER JOIN casrec_csv.deputyship ds
             ON ds."Dep Addr No" = add."Dep Addr No"
         INNER JOIN countverification.filtered_orders o
             ON o."Order No" = ds."Order No"
+        INNER JOIN casrec_csv.deputy d
+        ON ds."Deputy No" = d."Deputy No"
     ) t1
 )
 WHERE supervision_table = 'addresses';
@@ -235,7 +237,10 @@ UPDATE countverification.counts SET casrec_source =
     SELECT COUNT(*)
     FROM countverification.filtered_orders o
     LEFT JOIN casrec_csv.deputyship ds ON ds."Order No" = o."Order No"
+    LEFT JOIN casrec_csv.deputy d ON ds."Deputy No" = d."Deputy No"
     WHERE ds."Fee Payer" = 'Y'
+    AND d."Stat" = '1'
+    AND d."Disch Death" = ''
 )
 WHERE supervision_table = 'feepayer_id';
 
@@ -272,7 +277,7 @@ UPDATE countverification.counts SET casrec_source =
         WHERE LEFT(fx."Invoice No", 2) = 'AD'
           AND CAST(fx."Amount" AS DOUBLE PRECISION) > 0
           AND (NULLIF(fx."Create", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0)
-                   OR CAST(sad."Outstanding Amount" AS DOUBLE PRECISION) > 0)
+                   OR CAST(sad."Outstanding Amount" AS DOUBLE PRECISION) is not null)
     ) t1
 )
 WHERE supervision_table = 'finance_invoice_ad';
@@ -288,7 +293,7 @@ UPDATE countverification.counts SET casrec_source =
         WHERE LEFT(fx."Invoice No", 2) <> 'AD'
             AND CAST(fx."Amount" AS DOUBLE PRECISION) > 0
             AND (NULLIF(fx."Create", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0)
-                OR CAST(sad."Outstanding Amount" AS DOUBLE PRECISION) > 0)
+                OR CAST(sad."Outstanding Amount" AS DOUBLE PRECISION) is not null)
     ) t1
 )
 WHERE supervision_table = 'finance_invoice_non_ad';
@@ -335,7 +340,7 @@ UPDATE countverification.counts SET casrec_source =
         WHERE fe."Invoice No" = casrec_csv.feeexport."Orig Invoice"
             AND CAST(fe."Amount" AS DOUBLE PRECISION) > 0
             AND (NULLIF(fe."Create", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0)
-                OR CAST(sad."Outstanding Amount" AS DOUBLE PRECISION) > 0)
+                OR CAST(sad."Outstanding Amount" AS DOUBLE PRECISION) is not null)
     )
 )
 WHERE supervision_table = 'finance_ledger_credits';
@@ -356,7 +361,7 @@ UPDATE countverification.counts SET casrec_source =
         WHERE fe."Invoice No" = casrec_csv.feeexport."Orig Invoice"
             AND CAST(fe."Amount" AS DOUBLE PRECISION) > 0
             AND (NULLIF(fe."Create", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0)
-                OR CAST(sad."Outstanding Amount" AS DOUBLE PRECISION) > 0)
+                OR CAST(sad."Outstanding Amount" AS DOUBLE PRECISION) is not null)
     )
 )
 WHERE supervision_table = 'finance_allocation_credits';
@@ -415,3 +420,29 @@ UPDATE countverification.counts SET casrec_source =
     SELECT counts.casrec_source FROM countverification.counts WHERE supervision_table = 'warnings'
 )
 WHERE supervision_table = 'person_warning';
+
+
+
+
+
+
+
+
+
+
+
+select distinct nd.id, nd.deputy_no, multiple_addresses.dep_addr_no, nd.firstname, nd.lastname, nd.email1, nd.address1, nd.address2, nd.address3, nd.address4, nd.address5, nd.address_postcode, o.email_identifier , o."name", (select count(*)from client c where c.organisation_id=o.id) as no_clients
+from named_deputy nd
+inner join client c
+on nd.id = c.named_deputy_id
+inner join organisation o
+on c.organisation_id = o.id
+inner join (
+	select dep_addr_no, email1 from named_deputy
+	group by dep_addr_no having count(*) > 1
+) as multiple_addresses on nd.id = multiple_addresses.id
+where email1 in (
+	select email1 from named_deputy
+	group by email1 having count(*) > 1
+)
+order by o.email_identifier

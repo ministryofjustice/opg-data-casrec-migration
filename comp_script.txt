@@ -1,0 +1,74 @@
++----+-------------------------------+----------------+----------+
+|    | Supervision Table             |   CP1 Existing |   Casrec |
+|----+-------------------------------+----------------+----------|
+|  0 | addresses                     |              0 |     1836 |
+|  1 | annual_report_lodging_details |              0 |    11288 |
+|  2 | annual_report_logs            |              0 |    11288 |
+|  3 | bonds                         |              0 |     1194 |
+|  4 | cases                         |              0 |     1805 |
+|  5 | death_notifications           |              0 |       75 |
+|  6 | feepayer_id                   |              0 |      809 |
+|  7 | finance_allocation_credits    |              0 |      120 |
+|  8 | finance_exemptions            |              0 |       12 |
+|  9 | finance_invoice_ad            |              0 |      111 |
+| 10 | finance_invoice_non_ad        |              0 |      514 |
+| 11 | finance_ledger_credits        |              0 |      120 |
+| 12 | finance_order                 |              0 |     1539 |
+| 13 | finance_person                |              0 |       -1 |
+| 14 | finance_remissions            |              0 |        3 |
+| 15 | order_deputy                  |              0 |     1730 |
+| 16 | person_caseitem               |              0 |     1805 |
+| 17 | persons                       |              0 |     2008 |
+| 18 | person_task                   |              0 |     1182 |
+| 19 | person_timeline               |              0 |     1000 |
+| 20 | person_warning                |              0 |      220 |
+| 21 | phonenumbers                  |              0 |     3004 |
+| 22 | supervision_level_log         |              0 |     1805 |
+| 23 | supervision_notes             |              0 |    63802 |
+| 24 | tasks                         |              0 |     1182 |
+| 25 | timeline_event                |              0 |     1000 |
+| 26 | visits                        |              0 |      999 |
+| 27 | warnings                      |              0 |      220 |
++----+-------------------------------+----------------+----------+
+
+
++----+-------------------------------+----------------+----------+------------+---------------+------------+
+|    | Supervision Table             |   CP1 Existing |   Casrec |   Expected |   Final Count | Result     |
+|----+-------------------------------+----------------+----------+------------+---------------+------------|
+|  0 | addresses                     |              0 |     1836 |       1836 |          1938 | ERROR      |
+|  1 | annual_report_lodging_details |              0 |    11288 |      11288 |         11288 | OK         |
+|  2 | annual_report_logs            |              0 |    11288 |      11288 |         11288 | OK         |
+|  3 | bonds                         |              0 |     1194 |       1194 |          1194 | OK         |
+|  4 | cases                         |              0 |     1805 |       1805 |          1805 | OK         |
+|  5 | death_notifications           |              0 |       75 |         75 |            75 | OK         |
+|  6 | feepayer_id                   |              0 |      809 |        809 |           806 | ERROR      |
+|  7 | finance_allocation_credits    |              0 |      120 |        120 |           121 | ERROR      |
+|  8 | finance_exemptions            |              0 |       12 |         12 |            12 | OK         |
+|  9 | finance_invoice_ad            |              0 |      111 |        111 |           111 | OK         |
+| 10 | finance_invoice_non_ad        |              0 |      514 |        514 |           519 | ERROR      |
+| 11 | finance_ledger_credits        |              0 |      120 |        120 |           121 | ERROR      |
+| 12 | finance_order                 |              0 |     1539 |       1539 |          1578 | ERROR      |
+| 13 | finance_person                |              0 |       -1 |         -1 |          1000 | INCOMPLETE |
+| 14 | finance_remissions            |              0 |        3 |          3 |             3 | OK         |
+| 15 | order_deputy                  |              0 |     1730 |       1730 |          1730 | OK         |
+| 16 | person_caseitem               |              0 |     1805 |       1805 |          1805 | OK         |
+| 17 | persons                       |              0 |     2008 |       2008 |          2008 | OK         |
+| 18 | person_task                   |              0 |     1182 |       1182 |          1182 | OK         |
+| 19 | person_timeline               |              0 |     1000 |       1000 |          1000 | OK         |
+| 20 | person_warning                |              0 |      220 |        220 |           217 | ERROR      |
+| 21 | phonenumbers                  |              0 |     3004 |       3004 |          3004 | OK         |
+| 22 | supervision_level_log         |              0 |     1805 |       1805 |          1805 | OK         |
+| 23 | supervision_notes             |              0 |    63802 |      63802 |         63802 | OK         |
+| 24 | tasks                         |              0 |     1182 |       1182 |          1182 | OK         |
+| 25 | timeline_event                |              0 |     1000 |       1000 |          1000 | OK         |
+| 26 | visits                        |              0 |      999 |        999 |           999 | OK         |
+| 27 | warnings                      |              0 |      220 |        220 |           217 | ERROR      |
++----+-------------------------------+----------------+----------+------------+---------------+------------+
+
+Because deputyship from links address to case, if other cases have same deputy but different address then only
+the addresses linked to the case will show up.
+
+On sirius side nothing links address to case, only address to deputy and then deputy to case. As such deputy will
+have all the addresses that were assigned to any case in casrec assigned to them.
+
+Other issue is that where deputies share and address, a new address is created for each deputy.
