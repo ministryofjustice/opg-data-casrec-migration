@@ -4,6 +4,9 @@ from entities.reporting.annual_report_lodging_details import (
     insert_annual_report_lodging_details,
 )
 from entities.reporting.annual_report_logs import insert_annual_report_logs
+from entities.reporting.annual_report_logs_pending import (
+    insert_annual_report_logs_pending,
+)
 from entities.reporting.annual_report_type_assignments import (
     insert_annual_report_type_assignments,
 )
@@ -31,6 +34,13 @@ def runner(target_db, db_config):
 
     log.debug("insert_annual_report_logs")
     insert_annual_report_logs(
+        mapping_file="annual_report_logs",
+        target_db=target_db,
+        db_config=db_config,
+    )
+
+    log.debug("insert_annual_report_logs_pending")
+    insert_annual_report_logs_pending(
         mapping_file="annual_report_logs",
         target_db=target_db,
         db_config=db_config,

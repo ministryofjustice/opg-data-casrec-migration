@@ -38,7 +38,7 @@ ACCOUNT_FIXTURES = {
         },
         {
             # status=DUE, reviewstatus=NO_REVIEW
-            "source_criteria": {"case": "12233313"},
+            "source_criteria": {"case": "10005928"},
             "set": {
                 "End Date": _end_date_ten_working_days_ago.strftime("%Y-%m-%d"),
                 "Lodge Date": None,
@@ -48,7 +48,7 @@ ACCOUNT_FIXTURES = {
         },
         {
             # status=OVERDUE, reviewstatus=NO_REVIEW
-            "source_criteria": {"case": "94061819"},
+            "source_criteria": {"case": "10461469"},
             "set": {
                 "End Date": _end_date_thirty_working_days_ago.strftime("%Y-%m-%d"),
                 "Lodge Date": None,
@@ -58,7 +58,7 @@ ACCOUNT_FIXTURES = {
         },
         {
             # status=NON_COMPLIANT, reviewstatus=NO_REVIEW
-            "source_criteria": {"case": "95002441"},
+            "source_criteria": {"case": "97200058"},
             "set": {
                 "End Date": _end_date_eighty_working_days_ago.strftime("%Y-%m-%d"),
                 "Lodge Date": None,
