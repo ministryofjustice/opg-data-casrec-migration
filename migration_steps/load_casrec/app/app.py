@@ -163,7 +163,7 @@ def check_table_multipart(table_name, tbl, schema_name, engine):
     check_exists_statement = f"""
         SELECT COUNT(*)
         FROM "{schema_name}"."{tbl}"
-        WHERE file ~ \'{table_name}\\d\'
+        WHERE file ~ \'^{table_name}\\d\'
         AND state IN ('COMPLETE');
     """
     log.info(check_exists_statement)
