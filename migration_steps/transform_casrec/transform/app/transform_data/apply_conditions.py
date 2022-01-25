@@ -196,10 +196,6 @@ def recent_or_open_invoices(df, cols):
         right_on="Trx Number",
     )
 
-    print("JIIIMMMY2")
-    print(df.columns.values)
-    print(df[df["Invoice No"].isin(["S248296/17"])])
-
     filtered_df = filter_recent_or_open_invoices(df=df, cols=cols, debt_col=debt_col)
     filtered_df = filtered_df.drop(columns=["Trx Number", debt_col])
 
@@ -233,9 +229,6 @@ def filter_recent_or_open_invoices(df, cols, debt_col):
     log.debug(
         f"Removing rows where '{col}' is on or before {date_from} and {debt_col} is null"
     )
-
-    print(df.columns.values)
-    print(df[df["Invoice No"].isin(["S248296/17"])])
 
     def is_recent_or_open(date_col, debt_col):
         src_date = pd.to_datetime(date_col, dayfirst=True)

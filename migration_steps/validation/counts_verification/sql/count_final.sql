@@ -73,8 +73,13 @@ UPDATE countverification.counts SET final_count =
 )+(
     -- deputy
     SELECT COUNT(*)
-    FROM addresses ad
-    INNER JOIN countverification.cp1_deputies dep ON dep.id = ad.person_id
+    FROM
+    (
+        SELECT DISTINCT p.email, p.surname, p.firstname, ad.postcode
+        FROM addresses ad
+        INNER JOIN countverification.cp1_deputies dep ON dep.id = ad.person_id
+        INNER JOIN persons p ON p.id = dep.id
+    ) as a
 )
 WHERE supervision_table = 'addresses';
 
@@ -99,7 +104,7 @@ UPDATE countverification.counts SET final_count =
     SELECT COUNT(*)
     FROM tasks t
     INNER JOIN person_task pt ON pt.task_id = t.id
-    INNER JOIN countverification.cp1_clients cli on cli.id = pt.person_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = pt.person_id
 )
 WHERE supervision_table = 'tasks';
 
@@ -109,12 +114,12 @@ UPDATE countverification.counts SET final_count =
     -- client
     SELECT COUNT(*)
     FROM death_notifications dn
-    INNER JOIN countverification.cp1_clients cli on cli.id = dn.person_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = dn.person_id
 )+(
     -- deputy
     SELECT COUNT(*)
     FROM death_notifications dn
-    INNER JOIN countverification.cp1_deputies dep on dep.id = dn.person_id
+    INNER JOIN countverification.cp1_deputies dep ON dep.id = dn.person_id
 )
 WHERE supervision_table = 'death_notifications';
 
@@ -124,14 +129,14 @@ UPDATE countverification.counts SET final_count =
     -- client
     SELECT COUNT(*)
     FROM warnings w
-    INNER JOIN person_warning pw on pw.warning_id = w.id
-    INNER JOIN countverification.cp1_clients cli on cli.id = pw.person_id
+    INNER JOIN person_warning pw ON pw.warning_id = w.id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = pw.person_id
 )+(
     -- deputy
     SELECT COUNT(*)
     FROM warnings w
-    INNER JOIN person_warning pw on pw.warning_id = w.id
-    INNER JOIN countverification.cp1_deputies dep on dep.id = pw.person_id
+    INNER JOIN person_warning pw ON pw.warning_id = w.id
+    INNER JOIN countverification.cp1_deputies dep ON dep.id = pw.person_id
 )
 WHERE supervision_table = 'warnings';
 
@@ -196,7 +201,7 @@ UPDATE countverification.counts SET final_count =
 )
 WHERE supervision_table = 'timeline_event';
 -- -- timeline_event alternative
--- -- might be faster, but relies on person_timeline table
+-- -- might be faster, but relies ON person_timeline table
 -- UPDATE countverification.counts SET final_count =
 -- (
 --     SELECT COUNT(*)
@@ -211,7 +216,7 @@ UPDATE countverification.counts SET final_count =
 (
     SELECT COUNT(*)
     FROM person_timeline pt
-    INNER JOIN countverification.cp1_clients cli on cli.id = pt.person_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = pt.person_id
 )
 WHERE supervision_table = 'person_timeline';
 
@@ -250,7 +255,7 @@ UPDATE countverification.counts SET final_count =
     SELECT COUNT(*)
     FROM finance_remission_exemption rem
     LEFT JOIN finance_person fp ON fp.id = rem.finance_person_id
-    INNER JOIN countverification.cp1_clients cli on cli.id = fp.person_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = fp.person_id
     WHERE rem.discounttype = 'REMISSION'
 )
 WHERE supervision_table = 'finance_remissions';
@@ -261,7 +266,7 @@ UPDATE countverification.counts SET final_count =
     SELECT COUNT(*)
     FROM finance_remission_exemption rem
     LEFT JOIN finance_person fp ON fp.id = rem.finance_person_id
-    INNER JOIN countverification.cp1_clients cli on cli.id = fp.person_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = fp.person_id
     WHERE rem.discounttype = 'EXEMPTION'
 )
 WHERE supervision_table = 'finance_exemptions';
@@ -272,7 +277,7 @@ UPDATE countverification.counts SET final_count =
     SELECT COUNT(*)
     FROM finance_ledger lgr
     LEFT JOIN finance_person fp ON fp.id = lgr.finance_person_id
-    INNER JOIN countverification.cp1_clients cli on cli.id = fp.person_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = fp.person_id
 )
 WHERE supervision_table = 'finance_ledger_credits';
 
@@ -282,7 +287,7 @@ UPDATE countverification.counts SET final_count =
     SELECT COUNT(*)
     FROM finance_ledger_allocation fla
     LEFT JOIN finance_invoice inv ON inv.id = fla.invoice_id
-    INNER JOIN countverification.cp1_clients cli on cli.id = inv.person_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = inv.person_id
 )
 WHERE supervision_table = 'finance_allocation_credits';
 
@@ -291,16 +296,26 @@ UPDATE countverification.counts SET final_count =
 (
     SELECT COUNT(*)
     FROM finance_person fp
-    INNER JOIN countverification.cp1_clients cli on cli.id = fp.person_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = fp.person_id
 )
 WHERE supervision_table = 'finance_person';
 
 -- finance_order
 UPDATE countverification.counts SET final_count =
 (
+
     SELECT COUNT(*)
-    FROM finance_order fo
-    INNER JOIN countverification.cp1_cases ON cp1_cases.id = fo.order_id
+    FROM
+    (
+        SELECT distinct p.caserecnumber, fo.billing_start_date
+        FROM finance_order fo
+        INNER JOIN countverification.cp1_cases
+        ON cp1_cases.id = fo.order_id
+        INNER JOIN finance_person fp
+        ON fp.id = fo.finance_person_id
+        INNER JOIN persons p
+        ON p.id = fp.person_id
+    ) as a
 )
 WHERE supervision_table = 'finance_order';
 
@@ -318,7 +333,7 @@ UPDATE countverification.counts SET final_count =
 (
     SELECT COUNT(*)
     FROM person_caseitem pci
-    INNER JOIN countverification.cp1_clients cli on cli.id = pci.person_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = pci.person_id
 )
 WHERE supervision_table = 'person_caseitem';
 
@@ -328,12 +343,12 @@ UPDATE countverification.counts SET final_count =
     -- client
     SELECT COUNT(*)
     FROM person_warning pw
-    INNER JOIN countverification.cp1_clients cli on cli.id = pw.person_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = pw.person_id
 )+(
     -- deputy
     SELECT COUNT(*)
     FROM person_warning pw
-    INNER JOIN countverification.cp1_deputies dep on dep.id = pw.person_id
+    INNER JOIN countverification.cp1_deputies dep ON dep.id = pw.person_id
 )
 WHERE supervision_table = 'person_warning';
 
@@ -343,12 +358,12 @@ UPDATE countverification.counts SET final_count =
     -- client
     SELECT COUNT(*)
     FROM person_task pt
-    INNER JOIN countverification.cp1_clients cli on cli.id = pt.person_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = pt.person_id
 )+(
     -- deputy
     SELECT COUNT(*)
     FROM person_task pt
-    INNER JOIN countverification.cp1_deputies dep on dep.id = pt.person_id
+    INNER JOIN countverification.cp1_deputies dep ON dep.id = pt.person_id
 )
 WHERE supervision_table = 'person_task';
 

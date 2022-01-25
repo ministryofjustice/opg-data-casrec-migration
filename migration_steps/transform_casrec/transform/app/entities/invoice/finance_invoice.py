@@ -12,7 +12,6 @@ log = logging.getLogger("root")
 
 
 def insert_finance_invoice(target_db, db_config, mapping_file):
-    pd.set_option("display.max_columns", None)
     chunk_size = db_config["chunk_size"]
     offset = -chunk_size
     chunk_no = 0
@@ -47,10 +46,6 @@ def insert_finance_invoice(target_db, db_config, mapping_file):
                 sirius_details=sirius_details,
                 chunk_details={"chunk_size": chunk_size, "offset": offset},
             )
-
-            print("JIIIMMMY")
-            print(mapping_file)
-            print(invoice_df[invoice_df["reference"].isin(["S248296/17"])])
 
             # Join persons table so we can populate finance_invoice.person_id
             invoice_joined_df = invoice_df.merge(

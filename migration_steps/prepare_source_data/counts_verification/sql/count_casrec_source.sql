@@ -153,11 +153,13 @@ UPDATE countverification.counts SET casrec_source =
     SELECT COUNT(*)
     FROM casrec_csv.pat
     WHERE casrec_csv.pat."Debt chase" != ''
+    AND casrec_csv.pat."Debt chase" != '0'
 )+(
     -- client_saarcheck
     SELECT COUNT(*)
     FROM casrec_csv.pat
     WHERE casrec_csv.pat."SAAR Check" != ''
+    AND casrec_csv.pat."SAAR Check" != '0'
 )+(
     -- client_special
     SELECT COUNT(*)
@@ -178,15 +180,21 @@ UPDATE countverification.counts SET casrec_source =
 )+(
     -- deputy_special
     SELECT COUNT(*)
-    FROM countverification.filtered_deps fd
-    INNER JOIN casrec_csv.deputy dep ON dep."Deputy No" = fd."Deputy No"
-    WHERE dep."SIM" != '' AND dep."SIM" != '0'
+    FROM (
+        SELECT DISTINCT dep."Deputy No"
+        FROM countverification.filtered_deps fd
+        INNER JOIN casrec_csv.deputy dep ON dep."Deputy No" = fd."Deputy No"
+        WHERE dep."SIM" != '' AND dep."SIM" != '0'
+    ) as a
 )+(
     -- deputy_violent
     SELECT COUNT(*)
-    FROM countverification.filtered_deps fd
-    INNER JOIN casrec_csv.deputy dep ON dep."Deputy No" = fd."Deputy No"
-    WHERE countverification.warning_violent_lookup(dep."VWM") = 'Marker'
+    FROM (
+        SELECT DISTINCT dep."Deputy No"
+        FROM countverification.filtered_deps fd
+        INNER JOIN casrec_csv.deputy dep ON dep."Deputy No" = fd."Deputy No"
+        WHERE countverification.warning_violent_lookup(dep."VWM") = 'Marker'
+    ) as a
 )
 WHERE supervision_table = 'warnings';
 
@@ -445,29 +453,3 @@ UPDATE countverification.counts SET casrec_source =
     SELECT counts.casrec_source FROM countverification.counts WHERE supervision_table = 'warnings'
 )
 WHERE supervision_table = 'person_warning';
-
-
-
-
-
-
-
-
-
-
-
-select distinct nd.id, nd.deputy_no, multiple_addresses.dep_addr_no, nd.firstname, nd.lastname, nd.email1, nd.address1, nd.address2, nd.address3, nd.address4, nd.address5, nd.address_postcode, o.email_identifier , o."name", (select count(*)from client c where c.organisation_id=o.id) as no_clients
-from named_deputy nd
-inner join client c
-on nd.id = c.named_deputy_id
-inner join organisation o
-on c.organisation_id = o.id
-inner join (
-	select dep_addr_no, email1 from named_deputy
-	group by dep_addr_no having count(*) > 1
-) as multiple_addresses on nd.id = multiple_addresses.id
-where email1 in (
-	select email1 from named_deputy
-	group by email1 having count(*) > 1
-)
-order by o.email_identifier
