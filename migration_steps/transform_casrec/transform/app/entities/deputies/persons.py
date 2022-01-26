@@ -14,7 +14,9 @@ def _set_columns_for_deputy_type(row: pd.Series) -> pd.Series:
     row["organisationname"] = None
     row["deputysubtype"] = None
 
-    if row["deputytype"] == "PUBLICAUTHORITY":
+    # deputytype is set from the deputy_type_lookup
+    # in the Deputy spreadsheet
+    if row["deputytype"] == "PA":
         row["deputysubtype"] = "ORGANISATION"
 
         # Clear name columns for public authorities
