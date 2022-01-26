@@ -108,7 +108,7 @@ then
   rm docker_load.log
 fi
 echo "=== Step 0 - Filter data ==="
-docker-compose ${COMPOSE_ARGS} run --rm initialise prepare_source_data/prepare_source_data.sh
+docker-compose ${COMPOSE_ARGS} run --rm initialise prepare_source_data/prepare_source_data.sh --correfs="${CORREFS}"
 echo "=== Step 1 - Transform ==="
 docker-compose ${COMPOSE_ARGS} run --rm transform_casrec transform_casrec/transform.sh --correfs="${CORREFS}"
 echo "=== Step 2 - Integrate with Sirius ==="

@@ -2,7 +2,7 @@
 set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-python3 "${DIR}/filter_data/app/app.py"
+python3 "${DIR}/filter_data/app/app.py" "$@"
 
 if [ "${ENVIRONMENT}" == "local" ] \
   || [ "${ENVIRONMENT}" == "development" ]
@@ -12,4 +12,4 @@ else
   echo "load_casrec_fixtures should not run on ${ENVIRONMENT}"
 fi
 
-python3 "${DIR}/counts_verification/pre_migration_counts.py"
+python3 "${DIR}/counts_verification/pre_migration_counts.py" "$@"
