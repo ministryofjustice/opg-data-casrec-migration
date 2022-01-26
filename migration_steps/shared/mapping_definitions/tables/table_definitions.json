@@ -205,7 +205,12 @@
         "entity_name": "warnings",
         "required_entities": "",
         "source_conditions": {
-            "c_debt_chase": "not null"
+            "include_values": {
+                "col": "Debt chase",
+                "values": [
+                    "1"
+                ]
+            }
         },
         "source_table_additional_columns": [
             "Case",
@@ -258,7 +263,12 @@
         "entity_name": "warnings",
         "required_entities": "",
         "source_conditions": {
-            "c_saar_check": "not null"
+            "include_values": {
+                "col": "SAAR Check",
+                "values": [
+                    "Y"
+                ]
+            }
         },
         "source_table_additional_columns": [
             "Case",
@@ -273,7 +283,12 @@
         "entity_name": "warnings",
         "required_entities": "",
         "source_conditions": {
-            "c_sim": "not null"
+            "include_values": {
+                "col": "SIM",
+                "values": [
+                    "3"
+                ]
+            }
         },
         "source_table_additional_columns": [
             "Case",
@@ -300,7 +315,12 @@
         "entity_name": "warnings",
         "required_entities": "",
         "source_conditions": {
-            "c_vwm": "not null"
+            "include_values": {
+                "col": "VWM",
+                "values": [
+                    "4"
+                ]
+            }
         },
         "source_table_additional_columns": [
             "Case",
@@ -419,7 +439,12 @@
         "entity_name": "warnings",
         "required_entities": "",
         "source_conditions": {
-            "c_sim": "not null"
+            "include_values": {
+                "col": "SIM",
+                "values": [
+                    "3"
+                ]
+            }
         },
         "source_table_additional_columns": [
             "Deputy No",
@@ -434,7 +459,12 @@
         "entity_name": "warnings",
         "required_entities": "",
         "source_conditions": {
-            "c_vwm": "not null"
+            "include_values": {
+                "col": "VWM",
+                "values": [
+                    "4"
+                ]
+            }
         },
         "source_table_additional_columns": [
             "Deputy No",
