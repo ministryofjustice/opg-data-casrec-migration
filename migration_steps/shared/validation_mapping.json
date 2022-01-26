@@ -668,7 +668,8 @@
             "caserecnumber",
             "dateofdeath",
             "middlenames",
-            "uid"
+            "uid",
+            "deputycasrecid"
         ],
         "casenumber_source": "cases.caserecnumber",
         "orderby": {
@@ -683,7 +684,13 @@
         },
         "casrec": {
             "from_table": "deputyship",
-            "transform": {},
+            "transform": {
+                "organisationname": "CASE WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'PUBLICAUTHORITY' THEN transf_capitalise_first_letter(TRIM(casrec_csv.deputy.\"Dep Surname\")) ELSE NULL END",
+                "deputysubtype": "CASE WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'PUBLICAUTHORITY' THEN 'ORGANISATION' ELSE 'PERSON' END",
+                "surname": "CASE WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'PUBLICAUTHORITY' THEN NULL ELSE transf_capitalise_first_letter(NULLIF(TRIM(casrec_csv.deputy.\"Dep Surname\"), '')) END",
+                "salutation": "CASE WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'PUBLICAUTHORITY' THEN NULL ELSE casrec_csv.title_codes_lookup(TRIM(casrec_csv.deputy.\"Title\")) END",
+                "firstname": "CASE WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'PUBLICAUTHORITY' THEN NULL ELSE transf_first_word(NULLIF(TRIM(casrec_csv.deputy.\"Dep Forename\"), '')) END"
+            },
             "joins": [
                 "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\"",
                 "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\"",
