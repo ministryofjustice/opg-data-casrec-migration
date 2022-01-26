@@ -98,12 +98,14 @@ UPDATE countverification.counts SET casrec_source =
 )+(
     -- deputy
     SELECT COUNT(*) FROM (
-        SELECT DISTINCT add."Dep Addr No"
+        SELECT DISTINCT d."Email", d."Dep Surname", d."Dep Forename", add."Dep Postcode"
         FROM casrec_csv.deputy_address add
         INNER JOIN casrec_csv.deputyship ds
             ON ds."Dep Addr No" = add."Dep Addr No"
         INNER JOIN countverification.filtered_orders o
             ON o."Order No" = ds."Order No"
+        INNER JOIN casrec_csv.deputy d
+        ON ds."Deputy No" = d."Deputy No"
     ) t1
 )
 WHERE supervision_table = 'addresses';
@@ -150,24 +152,22 @@ UPDATE countverification.counts SET casrec_source =
     -- client_nodebtchase
     SELECT COUNT(*)
     FROM casrec_csv.pat
-    WHERE casrec_csv.pat."Debt chase" != ''
+    WHERE casrec_csv.pat."Debt chase" = '1'
 )+(
     -- client_saarcheck
     SELECT COUNT(*)
     FROM casrec_csv.pat
-    WHERE casrec_csv.pat."SAAR Check" != ''
+    WHERE casrec_csv.pat."SAAR Check" = 'Y'
 )+(
     -- client_special
     SELECT COUNT(*)
     FROM casrec_csv.pat
-    WHERE casrec_csv.pat."SIM" != ''
-        AND casrec_csv.pat."SIM" != '0'
+    WHERE casrec_csv.pat."SIM" = '3'
 )+(
     -- client_violent
     SELECT COUNT(*)
     FROM casrec_csv.pat
-    WHERE casrec_csv.pat."VWM" != ''
-        AND countverification.warning_violent_lookup(casrec_csv.pat."VWM") = 'Marker'
+    WHERE casrec_csv.pat."VWM" = '4'
 )+(
     -- p1_client_remarks
     SELECT COUNT(*)
@@ -178,13 +178,13 @@ UPDATE countverification.counts SET casrec_source =
     SELECT COUNT(*)
     FROM countverification.filtered_deps fd
     INNER JOIN casrec_csv.deputy dep ON dep."Deputy No" = fd."Deputy No"
-    WHERE dep."SIM" != '' AND dep."SIM" != '0'
+    WHERE dep."SIM" = '3'
 )+(
     -- deputy_violent
     SELECT COUNT(*)
     FROM countverification.filtered_deps fd
     INNER JOIN casrec_csv.deputy dep ON dep."Deputy No" = fd."Deputy No"
-    WHERE countverification.warning_violent_lookup(dep."VWM") = 'Marker'
+    WHERE dep."VWM" = '4'
 )
 WHERE supervision_table = 'warnings';
 
@@ -260,7 +260,10 @@ UPDATE countverification.counts SET casrec_source =
     SELECT COUNT(*)
     FROM countverification.filtered_orders o
     LEFT JOIN casrec_csv.deputyship ds ON ds."Order No" = o."Order No"
+    LEFT JOIN casrec_csv.deputy d ON ds."Deputy No" = d."Deputy No"
     WHERE ds."Fee Payer" = 'Y'
+    AND d."Stat" = '1'
+    AND d."Disch Death" = ''
 )
 WHERE supervision_table = 'feepayer_id';
 
@@ -297,7 +300,7 @@ UPDATE countverification.counts SET casrec_source =
         WHERE LEFT(fx."Invoice No", 2) = 'AD'
           AND CAST(fx."Amount" AS DOUBLE PRECISION) > 0
           AND (NULLIF(fx."Create", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0)
-                   OR CAST(sad."Outstanding Amount" AS DOUBLE PRECISION) > 0)
+                   OR CAST(sad."Outstanding Amount" AS DOUBLE PRECISION) != 0)
     ) t1
 )
 WHERE supervision_table = 'finance_invoice_ad';
@@ -313,7 +316,7 @@ UPDATE countverification.counts SET casrec_source =
         WHERE LEFT(fx."Invoice No", 2) <> 'AD'
             AND CAST(fx."Amount" AS DOUBLE PRECISION) > 0
             AND (NULLIF(fx."Create", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0)
-                OR CAST(sad."Outstanding Amount" AS DOUBLE PRECISION) > 0)
+                OR CAST(sad."Outstanding Amount" AS DOUBLE PRECISION) != 0)
     ) t1
 )
 WHERE supervision_table = 'finance_invoice_non_ad';
@@ -360,7 +363,7 @@ UPDATE countverification.counts SET casrec_source =
         WHERE fe."Invoice No" = casrec_csv.feeexport."Orig Invoice"
             AND CAST(fe."Amount" AS DOUBLE PRECISION) > 0
             AND (NULLIF(fe."Create", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0)
-                OR CAST(sad."Outstanding Amount" AS DOUBLE PRECISION) > 0)
+                OR CAST(sad."Outstanding Amount" AS DOUBLE PRECISION) != 0)
     )
 )
 WHERE supervision_table = 'finance_ledger_credits';
@@ -381,7 +384,7 @@ UPDATE countverification.counts SET casrec_source =
         WHERE fe."Invoice No" = casrec_csv.feeexport."Orig Invoice"
             AND CAST(fe."Amount" AS DOUBLE PRECISION) > 0
             AND (NULLIF(fe."Create", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0)
-                OR CAST(sad."Outstanding Amount" AS DOUBLE PRECISION) > 0)
+                OR CAST(sad."Outstanding Amount" AS DOUBLE PRECISION) != 0)
     )
 )
 WHERE supervision_table = 'finance_allocation_credits';

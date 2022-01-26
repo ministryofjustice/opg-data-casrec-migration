@@ -20,6 +20,7 @@ INSERT INTO casrec_csv.exceptions_deputy_feepayer_id(
             ON deputy."Deputy No" = deputyship."Deputy No"
         WHERE True
             AND deputy."Stat" = '1'
+            AND deputy."Disch Death" = ''
             AND "order"."Ord Stat" <> 'Open'
             AND deputyship."Fee Payer" = 'Y'
             AND pat."Case" NOT IN (

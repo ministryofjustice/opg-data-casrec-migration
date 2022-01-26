@@ -313,7 +313,7 @@
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_saarcheck_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
-                "casrec_csv.pat.\"SAAR Check\" != ''"
+                "casrec_csv.pat.\"SAAR Check\" = 'Y'"
             ]
         },
         "sirius": {
@@ -346,8 +346,7 @@
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_special_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
-                "casrec_csv.pat.\"SIM\" != ''",
-                "casrec_csv.pat.\"SIM\" != '0'"
+                "casrec_csv.pat.\"SIM\" = '3'"
             ]
         },
         "sirius": {
@@ -380,8 +379,7 @@
             "joins": [],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_violent_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
-                "casrec_csv.pat.\"VWM\" != ''",
-                "casrec_csv.warning_violent_lookup(casrec_csv.pat.\"VWM\") = 'Marker'"
+                "casrec_csv.pat.\"VWM\" = '4'"
             ]
         },
         "sirius": {
@@ -749,8 +747,7 @@
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_special_warnings exc_table ON exc_table.caserecnumber = casrec_csv.order.\"Case\"",
             "where_clauses": [
-                "casrec_csv.deputy.\"SIM\" != ''",
-                "casrec_csv.deputy.\"SIM\" != '0'",
+                "casrec_csv.deputy.\"SIM\" = '3'",
                 "casrec_csv.order.\"Ord Stat\" != 'Open'"
             ]
         },
@@ -798,7 +795,7 @@
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_violent_warnings exc_table ON exc_table.caserecnumber = casrec_csv.order.\"Case\"",
             "where_clauses": [
-                "casrec_csv.warning_violent_lookup(casrec_csv.deputy.\"VWM\") = 'Marker'",
+                "casrec_csv.deputy.\"VWM\" = '4'",
                 "casrec_csv.order.\"Ord Stat\" != 'Open'"
             ]
         },
@@ -1074,7 +1071,7 @@
             "where_clauses": [
                 "LEFT(feeexport.\"Invoice No\", 2) = 'AD'",
                 "CAST(feeexport.\"Amount\" AS DOUBLE PRECISION) > 0",
-                "(NULLIF(feeexport.\"Create\", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0) OR CAST(sop_aged_debt.\"Outstanding Amount\" AS DOUBLE PRECISION) > 0)"
+                "(NULLIF(feeexport.\"Create\", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0) OR CAST(sop_aged_debt.\"Outstanding Amount\" AS DOUBLE PRECISION) != 0)"
             ]
         },
         "sirius": {
@@ -1116,7 +1113,7 @@
             "where_clauses": [
                 "LEFT(feeexport.\"Invoice No\", 2) <> 'AD'",
                 "CAST(feeexport.\"Amount\" AS DOUBLE PRECISION) > 0",
-                "(NULLIF(feeexport.\"Create\", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0) OR CAST(sop_aged_debt.\"Outstanding Amount\" AS DOUBLE PRECISION) > 0)"
+                "(NULLIF(feeexport.\"Create\", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0) OR CAST(sop_aged_debt.\"Outstanding Amount\" AS DOUBLE PRECISION) != 0)"
             ]
         },
         "sirius": {
@@ -1221,7 +1218,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_ledger_credits exc_table ON exc_table.caserecnumber = feeexport.\"Case\"",
             "where_clauses": [
                 "CAST(feeexport.\"Amount\" AS DOUBLE PRECISION) < 0",
-                "EXISTS (SELECT 1 FROM casrec_csv.feeexport fe LEFT JOIN casrec_csv.sop_aged_debt sad ON sad.\"Trx Number\" = fe.\"Invoice No\" WHERE fe.\"Invoice No\" = casrec_csv.feeexport.\"Orig Invoice\" AND CAST(fe.\"Amount\" AS DOUBLE PRECISION) > 0 AND (NULLIF(fe.\"Create\", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0) OR CAST(sad.\"Outstanding Amount\" AS DOUBLE PRECISION) > 0))"
+                "EXISTS (SELECT 1 FROM casrec_csv.feeexport fe LEFT JOIN casrec_csv.sop_aged_debt sad ON sad.\"Trx Number\" = fe.\"Invoice No\" WHERE fe.\"Invoice No\" = casrec_csv.feeexport.\"Orig Invoice\" AND CAST(fe.\"Amount\" AS DOUBLE PRECISION) > 0 AND (NULLIF(fe.\"Create\", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0) OR CAST(sad.\"Outstanding Amount\" AS DOUBLE PRECISION) != 0))"
             ]
         },
         "sirius": {
@@ -1261,7 +1258,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_allocation_credits exc_table ON exc_table.caserecnumber = feeexport.\"Case\"",
             "where_clauses": [
                 "CAST(feeexport.\"Amount\" AS DOUBLE PRECISION) < 0",
-                "EXISTS (SELECT 1 FROM casrec_csv.feeexport fe LEFT JOIN casrec_csv.sop_aged_debt sad ON sad.\"Trx Number\" = fe.\"Invoice No\" WHERE fe.\"Invoice No\" = casrec_csv.feeexport.\"Orig Invoice\" AND CAST(fe.\"Amount\" AS DOUBLE PRECISION) > 0 AND (NULLIF(fe.\"Create\", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0) OR CAST(sad.\"Outstanding Amount\" AS DOUBLE PRECISION) > 0))"
+                "EXISTS (SELECT 1 FROM casrec_csv.feeexport fe LEFT JOIN casrec_csv.sop_aged_debt sad ON sad.\"Trx Number\" = fe.\"Invoice No\" WHERE fe.\"Invoice No\" = casrec_csv.feeexport.\"Orig Invoice\" AND CAST(fe.\"Amount\" AS DOUBLE PRECISION) > 0 AND (NULLIF(fe.\"Create\", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0) OR CAST(sad.\"Outstanding Amount\" AS DOUBLE PRECISION) != 0))"
             ]
         },
         "sirius": {

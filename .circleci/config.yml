@@ -624,12 +624,6 @@ workflows:
           tf_workspace: preproduction
           runner_command: migration-response-api-tests
           filters: {branches:{only:[master]}}
-      - run_task:
-          name: migration - light touch api tests preproduction
-          requires: [migration - response api tests preproduction]
-          tf_workspace: preproduction
-          runner_command: migration-light-touch-api-tests
-          filters: {branches:{only:[master]}}
       - scale-services:
           name: scale up poller service for migration preproduction
           requires: [migration - light touch api tests preproduction]
@@ -652,6 +646,12 @@ workflows:
           name: kick off preqa
           workspace: preqa
           requires: [tag image for qa]
+          filters: {branches:{only:[master]}}
+      - run_task:
+          name: migration - light touch api tests preproduction
+          requires: [kick off preqa]
+          tf_workspace: preproduction
+          runner_command: migration-light-touch-api-tests
           filters: {branches:{only:[master]}}
       - job_complete:
           name: job complete notification
