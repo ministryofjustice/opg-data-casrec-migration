@@ -22,8 +22,24 @@ parameters:
     default: ""
 
 workflows:
+  dependabot_request:
+    when:
+      and:
+        - matches: {pattern: "^dependabot/.+$", value: << pipeline.git.branch >>}
+        - << pipeline.parameters.run_main >>
+    jobs:
+      - build:
+          name: build and unit tests dependabot
+      - job_complete:
+          name: job complete notification
+          requires: [build and unit tests dependabot]
+          workspace: development
+
   pull_request:
-    when: << pipeline.parameters.run_main >>
+    when:
+      and:
+        - not: {matches: {pattern: "^dependabot/.+$", value: << pipeline.git.branch >>}}
+        - << pipeline.parameters.run_main >>
     jobs:
       - persist_parameters:
           name: persist parameters development
