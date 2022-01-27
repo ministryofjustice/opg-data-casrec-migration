@@ -47,7 +47,7 @@ def get_next_token(response):
 
 @click.command()
 @click.option("--role", default="operator")
-@click.option("--image_tag", default="master")
+@click.option("--image_tag", default="main")
 def main(role, image_tag):
     account = "311462405659"
     region = "eu-west-1"

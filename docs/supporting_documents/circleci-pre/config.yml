@@ -6,28 +6,28 @@ workflows:
     jobs:
       - manage_workflow:
           name: manage workflow
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{ignore:[main]}}
       - build:
           name: build and unit tests
           requires: [manage workflow]
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{ignore:[main]}}
       - infrastructure:
           name: build infra preproduction
           requires: [build and unit tests]
           tf_workspace: preproduction
           tf_command: apply
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{ignore:[main]}}
       - run_step_function:
           name: run the step function preproduction
           requires: [build infra preproduction]
           account: "492687888235"
           wait_for: "6000"
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{ignore:[main]}}
       - run_elasticsearch_reset:
           name: run elasticsearch reset preproduction
           tf_workspace: preproduction
           requires: [run the step function preproduction]
-          filters: {branches:{ignore:[master]}}
+          filters: {branches:{ignore:[main]}}
 
 orbs:
   aws-cli: circleci/aws-cli@1.3.0
@@ -124,7 +124,7 @@ orbs:
                 --circle_branch="${CIRCLE_BRANCH}" \
                 --circle_builds_token="${CIRCLE_BUILDS_TOKEN}" \
                 --terms_to_waitfor="plan infra" \
-                --prod_job_terms="build infra ,master"
+                --prod_job_terms="build infra ,main"
               working_directory: ~/project/scripts/ci_scripts
           - run:
               name: wait for others builds to finish
@@ -160,7 +160,7 @@ jobs:
             --url https://circleci.com/api/v2/project/github/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pipeline \
             --header "Circle-Token: ${CIRCLE_BUILDS_TOKEN}" \
             --header 'content-type: application/json' \
-            --data '{"branch":"master", "parameters":{"run_master":false, "run_preprod":true}}'
+            --data '{"branch":"main", "parameters":{"run_main":false, "run_preprod":true}}'
 
   run_step_function:
     executor: migration/python
