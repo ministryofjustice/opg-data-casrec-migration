@@ -1,9 +1,11 @@
 DROP SCHEMA IF EXISTS deletions CASCADE;
 CREATE SCHEMA deletions;
 
--- Base clients
+-- Create base clients table
 CREATE TABLE IF NOT EXISTS deletions.base_clients_persons (id int, caserecnumber varchar);
-INSERT INTO deletions.base_clients_persons (id)
+
+-- Insert base clients
+INSERT INTO deletions.base_clients_persons (id, caserecnumber)
 SELECT distinct p.id, p.caserecnumber
 FROM persons p
 WHERE p.type = 'actor_client' and (caseactorgroup <> 'CLIENT-PILOT-ONE' or caseactorgroup is null);
@@ -20,11 +22,11 @@ FROM persons dep
 INNER JOIN order_deputy od ON dep.id = od.deputy_id
 INNER JOIN cases c  ON c.id = od.order_id
 INNER JOIN persons p ON p.id = c.client_id
-WHERE p.type = 'actor_client' and caseactorgroup = 'CLIENT-PILOT-ONE'
+WHERE p.type = 'actor_client' and p.caseactorgroup = 'CLIENT-PILOT-ONE'
 UNION
 SELECT distinct p.feepayer_id
 FROM persons p
-WHERE p.type = 'actor_client' and caseactorgroup = 'CLIENT-PILOT-ONE';
+WHERE p.type = 'actor_client' and p.caseactorgroup = 'CLIENT-PILOT-ONE';
 
 CREATE UNIQUE INDEX stub_pilot_one_deputies_idx ON deletions.pilot_one_deputies (id);
 
@@ -92,8 +94,7 @@ FROM document_pages dpd
 INNER JOIN documents doc ON doc.id = dpd.document_id
 INNER JOIN caseitem_document cd ON doc.id = cd.document_id
 INNER JOIN cases c ON c.id = cd.caseitem_id
-INNER JOIN deletions.base_clients_persons bcp ON bcp.id = c.client_id
-WHERE dep.id NOT IN (SELECT id FROM deletions.pilot_one_deputies);
+INNER JOIN deletions.base_clients_persons bcp ON bcp.id = c.client_id;
 
 -- Create delete from deputy document pages linked to stub cases
 CREATE TABLE IF NOT EXISTS deletions.deletions_client_annual_report_logs (id int, caserecnumber varchar);
@@ -411,8 +412,8 @@ INNER JOIN deletions.base_clients_persons bcp ON bcp.id = fp.person_id;
 
 -- Create finance order temp table to be used in count check (no delete statement for this)
 CREATE TABLE IF NOT EXISTS deletions.deletions_finance_order (id int, caserecnumber varchar);
-INSERT INTO deletions.deletions_finance_order (id, caserecnumber)
-SELECT fo.id, bcp.caserecnumber
+INSERT INTO deletions.deletions_finance_order (id)
+SELECT fo.id
 FROM finance_order fo
 INNER JOIN deletions.deletions_client_cases dcc ON dcc.id = fo.order_id;
 
@@ -606,8 +607,7 @@ WHERE id in (
 
 DELETE FROM persons a
 USING deletions.deletions_deputy_person b
-WHERE a.id = b.id
-AND a.id NOT IN (SELECT feepayer_id FROM deletions.pilot_one_feepayers);
+WHERE a.id = b.id;
 
 DELETE FROM order_deputy a
 USING deletions.deletions_deputy_person b
