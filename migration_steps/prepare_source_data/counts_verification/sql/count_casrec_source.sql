@@ -97,27 +97,17 @@ UPDATE countverification.counts SET casrec_source =
     SELECT COUNT(*) FROM casrec_csv.pat
 )+(
     -- deputy
-    SELECT DISTINCT lower(d."Email"), lower(d."Dep Surname"), lower(d."Dep Forename"), lower(add."Dep Postcode")
-    FROM casrec_csv.deputy_address add
-    INNER JOIN casrec_csv.deputyship ds
-        ON ds."Dep Addr No" = add."Dep Addr No"
-    INNER JOIN countverification.filtered_orders o
-        ON o."Order No" = ds."Order No"
-    INNER JOIN casrec_csv.deputy d
-    ON ds."Deputy No" = d."Deputy No"
-    except
-    SELECT DISTINCT lower(p.email), lower(p.surname), lower(p.firstname), lower(ad.postcode)
-    FROM addresses ad
-    INNER JOIN countverification.cp1_post_deputies dep ON dep.id = ad.person_id
-    INNER JOIN persons p ON p.id = dep.id
+   SELECT COUNT(*) FROM (
+        SELECT DISTINCT d."Email", d."Dep Surname", d."Dep Forename", add."Dep Postcode"
+        FROM casrec_csv.deputy_address add
+        INNER JOIN casrec_csv.deputyship ds
+            ON ds."Dep Addr No" = add."Dep Addr No"
+        INNER JOIN countverification.filtered_orders o
+            ON o."Order No" = ds."Order No"
+        INNER JOIN casrec_csv.deputy d
+        ON ds."Deputy No" = d."Deputy No"
+   ) t1
 )
-
-    SELECT DISTINCT lower(p.email), lower(p.surname), lower(p.firstname), lower(ad.postcode)
-    FROM addresses ad
-    INNER JOIN countverification.cp1_post_deputies dep ON dep.id = ad.person_id
-    INNER JOIN persons p ON p.id = dep.id
-    WHERE lower(ad.postcode) = 'ne3 5dt'
-
 WHERE supervision_table = 'addresses';
 
 -- supervision_notes
@@ -139,6 +129,12 @@ UPDATE countverification.counts SET casrec_source =
     SELECT COUNT(*)
     FROM casrec_csv.SUP_ACTIVITY act
     WHERE act."Status" IN ('INACTIVE','ACTIVE')
+    AND EXISTS (
+        SELECT "Case"
+        FROM casrec_csv.order o
+        WHERE o."Case" = act."Case"
+        AND "Ord Stat" != 'Open'
+    )
 )
 WHERE supervision_table = 'tasks';
 
@@ -264,7 +260,8 @@ UPDATE countverification.counts SET casrec_source =
 )
 WHERE supervision_table = 'bonds';
 
--- feepayer_id
+-- feepayer_id (logic in transforms look like this should be here but it does not work):
+-- AND d."Disch Death" = ''
 UPDATE countverification.counts SET casrec_source =
 (
     SELECT COUNT(*)
@@ -273,7 +270,6 @@ UPDATE countverification.counts SET casrec_source =
     LEFT JOIN casrec_csv.deputy d ON ds."Deputy No" = d."Deputy No"
     WHERE ds."Fee Payer" = 'Y'
     AND d."Stat" = '1'
-    AND d."Disch Death" = ''
 )
 WHERE supervision_table = 'feepayer_id';
 
@@ -444,6 +440,12 @@ UPDATE countverification.counts SET casrec_source =
     FROM casrec_csv.SUP_ACTIVITY act
     INNER JOIN casrec_csv.pat ON pat."Case" = act."Case"
     WHERE act."Status" IN ('INACTIVE','ACTIVE')
+    AND EXISTS (
+        SELECT "Case"
+        FROM casrec_csv.order o
+        WHERE o."Case" = act."Case"
+        AND "Ord Stat" != 'Open'
+    )
 )
 WHERE supervision_table = 'person_task';
 

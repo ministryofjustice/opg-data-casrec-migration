@@ -1,13 +1,13 @@
 DROP SCHEMA IF EXISTS countverification CASCADE;
 CREATE SCHEMA countverification;
 
-CREATE TABLE IF NOT EXISTS countverification.cp1_pre_clients (id int);
-INSERT INTO countverification.cp1_pre_clients (id)
+CREATE TABLE IF NOT EXISTS countverification.cp1_clients (id int);
+INSERT INTO countverification.cp1_clients (id)
 SELECT id FROM persons p
 WHERE p.type = 'actor_client'
   AND p.caseactorgroup = 'CLIENT-PILOT-ONE'
   AND COALESCE(p.clientsource, '') != 'CASRECMIGRATION';
-CREATE UNIQUE INDEX cp1_pre_clients_idx ON countverification.cp1_pre_clients (id);
+CREATE UNIQUE INDEX cp1_clients_idx ON countverification.cp1_clients (id);
 
 CREATE TABLE IF NOT EXISTS countverification.cp1_cases (id int);
 INSERT INTO countverification.cp1_cases (id)
@@ -78,7 +78,7 @@ SELECT
     (
         SELECT DISTINCT p.email, p.surname, p.firstname, ad.postcode
         FROM addresses ad
-        INNER JOIN countverification.cp1_post_deputies dep ON dep.id = ad.person_id
+        INNER JOIN countverification.cp1_deputies dep ON dep.id = ad.person_id
         INNER JOIN persons p ON p.id = dep.id
     ) as a
 ) AS cp1existing;
@@ -244,8 +244,17 @@ INNER JOIN countverification.cp1_clients cli on cli.id = fp.person_id;
 -- finance_order
 INSERT INTO countverification.counts (supervision_table, cp1existing)
 SELECT 'finance_order' AS supervision_table, COUNT(*)
-FROM finance_order fo
-INNER JOIN countverification.cp1_cases ON cp1_cases.id = fo.order_id;
+FROM
+(
+    SELECT distinct p.caserecnumber, fo.billing_start_date
+    FROM finance_order fo
+    INNER JOIN countverification.cp1_cases
+    ON cp1_cases.id = fo.order_id
+    INNER JOIN finance_person fp
+    ON fp.id = fo.finance_person_id
+    INNER JOIN persons p
+    ON p.id = fp.person_id
+) as a
 
 -- order_deputy
 INSERT INTO countverification.counts (supervision_table, cp1existing)

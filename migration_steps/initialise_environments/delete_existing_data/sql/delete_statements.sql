@@ -282,6 +282,13 @@ SELECT v.id, bcp.caserecnumber
 FROM visits v
 INNER JOIN deletions.base_clients_persons bcp ON bcp.id = v.client_id;
 
+-- Create delete from client timeline_events
+CREATE TABLE IF NOT EXISTS deletions.deletions_client_timeline_events (id int, caserecnumber varchar);
+INSERT INTO deletions.deletions_client_timeline_events (id, caserecnumber)
+SELECT e.id, bcp.caserecnumber
+FROM timeline_events e
+INNER JOIN deletions.base_clients_persons bcp ON bcp.caserecnumber = e.event->'payload'->>'courtReference';
+
 -- Create delete from client supervision notes linked to stub cases
 CREATE TABLE IF NOT EXISTS deletions.deletions_client_supervision_notes (id int, caserecnumber varchar);
 INSERT INTO deletions.deletions_client_supervision_notes (id, caserecnumber)
@@ -561,6 +568,10 @@ WHERE a.id = b.id;
 
 DELETE FROM person_timeline a
 USING deletions.deletions_deputy_person_timeline b
+WHERE a.id = b.id;
+
+DELETE FROM timeline_events a
+USING deletions.deletions_client_timeline_events b
 WHERE a.id = b.id;
 
 DELETE FROM person_caseitem a
