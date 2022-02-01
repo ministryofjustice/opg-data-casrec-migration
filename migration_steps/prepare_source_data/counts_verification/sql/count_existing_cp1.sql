@@ -254,7 +254,7 @@ FROM
     ON fp.id = fo.finance_person_id
     INNER JOIN persons p
     ON p.id = fp.person_id
-) as a
+) as a;
 
 -- order_deputy
 INSERT INTO countverification.counts (supervision_table, cp1existing)

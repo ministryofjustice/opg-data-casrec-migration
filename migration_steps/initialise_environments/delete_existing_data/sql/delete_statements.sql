@@ -12,6 +12,15 @@ WHERE p.type = 'actor_client' and (caseactorgroup <> 'CLIENT-PILOT-ONE' or casea
 
 CREATE UNIQUE INDEX stub_person_id_idx ON deletions.base_clients_persons (id);
 
+-- Create table for list of clients to keep
+CREATE TABLE IF NOT EXISTS deletions.pilot_one_clients (id int);
+
+-- Insert cp1 clients into table of cp1 clients to keep
+INSERT INTO deletions.pilot_one_clients (id)
+SELECT distinct p.id
+FROM persons p
+WHERE p.type = 'actor_client' and p.caseactorgroup = 'CLIENT-PILOT-ONE';
+
 -- Create table for list of deputies to keep
 CREATE TABLE IF NOT EXISTS deletions.pilot_one_deputies (id int);
 
@@ -176,7 +185,13 @@ CREATE TABLE IF NOT EXISTS deletions.deletions_client_addresses (id int, caserec
 INSERT INTO deletions.deletions_client_addresses (id, caserecnumber)
 SELECT ad.id, bcp.caserecnumber
 FROM addresses ad
-INNER JOIN deletions.base_clients_persons bcp ON bcp.id = ad.person_id;
+INNER JOIN deletions.base_clients_persons bcp ON bcp.id = ad.person_id
+WHERE ad.id NOT IN (
+    SELECT a.id
+    FROM addresses a
+    INNER JOIN deletions.pilot_one_clients cp1
+    ON cp1.id = a.person_id
+);
 
 -- Create delete from deputy addresses linked to stub cases
 CREATE TABLE IF NOT EXISTS deletions.deletions_deputy_addresses (id int, caserecnumber varchar);
@@ -286,7 +301,7 @@ INNER JOIN deletions.base_clients_persons bcp ON bcp.id = v.client_id;
 CREATE TABLE IF NOT EXISTS deletions.deletions_client_timeline_events (id int, caserecnumber varchar);
 INSERT INTO deletions.deletions_client_timeline_events (id, caserecnumber)
 SELECT e.id, bcp.caserecnumber
-FROM timeline_events e
+FROM timeline_event e
 INNER JOIN deletions.base_clients_persons bcp ON bcp.caserecnumber = e.event->'payload'->>'courtReference';
 
 -- Create delete from client supervision notes linked to stub cases
@@ -570,7 +585,7 @@ DELETE FROM person_timeline a
 USING deletions.deletions_deputy_person_timeline b
 WHERE a.id = b.id;
 
-DELETE FROM timeline_events a
+DELETE FROM timeline_event a
 USING deletions.deletions_client_timeline_events b
 WHERE a.id = b.id;
 
