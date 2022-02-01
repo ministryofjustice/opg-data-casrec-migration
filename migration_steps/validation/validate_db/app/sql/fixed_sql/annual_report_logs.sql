@@ -25,7 +25,7 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
             CAST(nullif(revisedduedate, '') AS date) AS revisedduedate,
             numberofchaseletters,
             casrec_csv.report_element(full_status, 1) AS status,
-            casrec_csv.report_element(full_status, 3) AS reviewstatus
+            NULLIF(casrec_csv.report_element(full_status, 3), '') AS reviewstatus
         FROM (
             SELECT
                 caserecnumber,
