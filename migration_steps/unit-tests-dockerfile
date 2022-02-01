@@ -1,0 +1,8 @@
+FROM opg_casrec_migration_base_image:latest
+COPY transform_casrec migration_steps/transform_casrec
+COPY shared migration_steps/shared
+COPY unit-tests.sh unit-tests.sh
+RUN chmod +x unit-tests.sh
+RUN pip3 install -r migration_steps/shared/shared_tests/requirements.txt
+ENV PYTHONPATH=migration_steps/transform_casrec/transform/transform_tests:migration_steps/transform_casrec/transform/app:migration_steps/transform_casrec/transform:migration_steps/shared:migration_steps/shared/shared_tests
+CMD ["./unit-tests.sh"]

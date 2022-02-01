@@ -62,3 +62,9 @@ services:
       - ./migration_steps/validation/functional_api_tests.sh:/validation/functional_api_tests.sh
       - ./migration_steps/validation/light_touch_api_tests.sh:/validation/light_touch_api_tests.sh
       - ./migration_steps/shared:/shared
+
+  unit_tests:
+    volumes:
+      - ./migration_steps/unit-test.sh:/unit-test.sh
+      - ./migration_steps/transform_casrec:/transform_casrec
+      - ./migration_steps/shared:/shared
