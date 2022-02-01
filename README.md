@@ -422,7 +422,7 @@ it can fail faster and not hold up the environment. It also avoids devs thinking
 - We notify the channel apon completion or failure of the workflow.
 - Once workflow is completed, another dev can approve your PR and you can merge your code.
 - No further job is run against Dev as the pipeline is single file and you are forced to rebase before merge so whatever
-goes in is accurate representation of master.
+goes in is accurate representation of main.
 
 #### Where to find everything...
 
@@ -462,7 +462,7 @@ To do a full deploy to pre you should follow the following steps:
 and click on `Build with Parameters` and pick `casrecdmpp` in the dropdown and and check the restore_database checkbox.
 - Once complete you need to go to the most recent build through CirclCi and click the approval for kick off preprod.
 - You can run it again by picking any previous preproduction workflow and restarting it from beginning. This works as it doesn't pull from build stage
-but actually looks for the most recent image that has been pushed to ECR and tagged with master.
+but actually looks for the most recent image that has been pushed to ECR and tagged with main.
 
 In all other respects the build is the same as in development. Same setup as above except that we use `casrecdmpp` as the sirius cluster
 and `casrec-migration-preproduction` as the migration cluster.

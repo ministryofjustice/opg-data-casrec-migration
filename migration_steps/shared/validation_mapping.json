@@ -943,7 +943,7 @@
             "transform": {},
             "joins": [
                 "INNER JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.sup_activity.\"Case\"",
-                "INNER JOIN casrec_csv.order ON casrec_csv.order.\"Case\" = casrec_csv.sup_activity.\"Case\""
+                "INNER JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.sup_activity.\"Order No\""
             ],
             "exception_table_join": "INNER JOIN casrec_csv.exceptions_tasks exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
