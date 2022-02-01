@@ -1,13 +1,13 @@
 DROP SCHEMA IF EXISTS countverification CASCADE;
 CREATE SCHEMA countverification;
 
-CREATE TABLE IF NOT EXISTS countverification.cp1_clients (id int);
-INSERT INTO countverification.cp1_clients (id)
+CREATE TABLE IF NOT EXISTS countverification.cp1_pre_clients (id int);
+INSERT INTO countverification.cp1_pre_clients (id)
 SELECT id FROM persons p
 WHERE p.type = 'actor_client'
   AND p.caseactorgroup = 'CLIENT-PILOT-ONE'
-  AND p.clientsource != 'CASRECMIGRATION';
-CREATE UNIQUE INDEX cp1_clients_idx ON countverification.cp1_clients (id);
+  AND COALESCE(p.clientsource, '') != 'CASRECMIGRATION';
+CREATE UNIQUE INDEX cp1_pre_clients_idx ON countverification.cp1_pre_clients (id);
 
 CREATE TABLE IF NOT EXISTS countverification.cp1_cases (id int);
 INSERT INTO countverification.cp1_cases (id)
@@ -74,8 +74,13 @@ SELECT
 )+(
     -- deputy
     SELECT COUNT(*)
-    FROM addresses ad
-    INNER JOIN countverification.cp1_deputies dep ON dep.id = ad.person_id
+    FROM
+    (
+        SELECT DISTINCT p.email, p.surname, p.firstname, ad.postcode
+        FROM addresses ad
+        INNER JOIN countverification.cp1_post_deputies dep ON dep.id = ad.person_id
+        INNER JOIN persons p ON p.id = dep.id
+    ) as a
 ) AS cp1existing;
 
 -- supervision_notes

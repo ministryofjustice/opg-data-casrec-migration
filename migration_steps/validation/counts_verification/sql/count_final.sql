@@ -27,6 +27,30 @@ FROM countverification.cp1_cases
     INNER JOIN persons dep ON dep.id = od.deputy_id;
 CREATE UNIQUE INDEX cp1_deputies_idx ON countverification.cp1_deputies (id);
 
+
+DROP TABLE IF EXISTS countverification.cp1_post_clients;
+CREATE TABLE IF NOT EXISTS countverification.cp1_post_clients (id int);
+INSERT INTO countverification.cp1_post_clients (id)
+SELECT id FROM persons p WHERE p.type = 'actor_client' AND p.caseactorgroup = 'CLIENT-PILOT-ONE' AND p.clientsource = 'CASRECMIGRATION';
+CREATE UNIQUE INDEX cp1_post_clients_idx ON countverification.cp1_post_clients (id);
+
+DROP TABLE IF EXISTS countverification.cp1_post_cases;
+CREATE TABLE IF NOT EXISTS countverification.cp1_post_cases (id int);
+INSERT INTO countverification.cp1_post_cases (id)
+SELECT cases.id FROM countverification.cp1_post_clients INNER JOIN cases ON cases.client_id = cp1_post_clients.id;
+CREATE UNIQUE INDEX cp1_post_cases_idx ON countverification.cp1_post_cases (id);
+
+DROP TABLE IF EXISTS countverification.cp1_post_deputies;
+CREATE TABLE IF NOT EXISTS countverification.cp1_post_deputies (id int);
+INSERT INTO countverification.cp1_post_deputies (id)
+SELECT DISTINCT dep.id
+FROM countverification.cp1_post_cases
+    INNER JOIN order_deputy od ON od.order_id = cp1_post_cases.id
+    INNER JOIN persons dep ON dep.id = od.deputy_id;
+CREATE UNIQUE INDEX cp1_post_deputies_idx ON countverification.cp1_post_deputies (id);
+
+
+
 -- persons_clients
 UPDATE countverification.counts SET final_count =
 (
@@ -77,7 +101,7 @@ UPDATE countverification.counts SET final_count =
     (
         SELECT DISTINCT p.email, p.surname, p.firstname, ad.postcode
         FROM addresses ad
-        INNER JOIN countverification.cp1_deputies dep ON dep.id = ad.person_id
+        INNER JOIN countverification.cp1_post_deputies dep ON dep.id = ad.person_id
         INNER JOIN persons p ON p.id = dep.id
     ) as a
 )
