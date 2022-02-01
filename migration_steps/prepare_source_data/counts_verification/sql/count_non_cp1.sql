@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS countverification.non_cp1_clients (id int);
 INSERT INTO countverification.non_cp1_clients (id) (
     SELECT id FROM persons p
     WHERE p.type = 'actor_client'
-      AND (caseactorgroup != 'CLIENT-PILOT-ONE' OR caseactorgroup IS NULL)
+      AND (COALESCE(caseactorgroup, '') != 'CLIENT-PILOT-ONE')
 );
 CREATE UNIQUE INDEX non_cp1_clients_idx ON countverification.non_cp1_clients (id);
 

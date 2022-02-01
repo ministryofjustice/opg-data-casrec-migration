@@ -303,7 +303,6 @@ WHERE supervision_table = 'finance_person';
 -- finance_order
 UPDATE countverification.counts SET final_count =
 (
-
     SELECT COUNT(*)
     FROM
     (
