@@ -1,3 +1,10 @@
 endpoint,entity_ref,json_locator,test_purpose,api_response
-/api/v1/deputies/{id},10000037,correspondenceByPhone,dev_api_tests,False|False
-/api/v1/deputies/{id},10000884,surname,dev_api_tests,Holmes
+/api/v1/deputies/{id},10000037,correspondenceByPhone,deputy_correspondence_by_phone,False|False
+/api/v1/deputies/{id},10000884,surname,deputy_surname,Holmes
+/api/v1/deputies/{id},10000884,deputyType.handle,deputy_type_lay,LAY
+/api/v1/deputies/{id},10000884,deputySubType.handle,deputy_subtype_person,PERSON
+/api/v1/deputies/{id},10000884,deputyNumber,deputy_number,397
+/api/v1/deputies/{id},10011951,deputyType.handle,deputy_type_pa,LAY|LAY|PA
+/api/v1/deputies/{id},10011951,deputySubType.handle,deputy_subtype_organisation,ORGANISATION|PERSON|PERSON
+/api/v1/deputies/{id},10011951,organisationName,deputy_organisation_name,Atkinson
+/api/v1/deputies/{id},10011951,deputyNumber,deputy_number,456|456|56
