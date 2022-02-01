@@ -117,7 +117,6 @@ class BaseConfig:
     LOCAL_FEATURE_FLAGS = {
         "match-existing-data": True,
         "additional-data": False,
-        "row-counts": True,
         "generate-progress": False,
     }
 

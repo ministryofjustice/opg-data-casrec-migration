@@ -9,8 +9,6 @@ from move import generate_inserts, completed_tables
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
 
-from quick_validation import check_row_counts
-
 import logging
 import time
 import click
@@ -141,13 +139,6 @@ def main(clear, correfs):
         thread.start()
         thread.join()
         log.debug(f"Result: {result}")
-
-    check_row_counts.count_rows(
-        connection_string=db_config["db_connection_string"],
-        destination_schema=db_config["target_schema"],
-        enabled_entities=allowed_entities,
-        correfs=filtered_correfs,
-    )
 
 
 if __name__ == "__main__":
