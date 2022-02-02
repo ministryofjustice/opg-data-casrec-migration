@@ -28,7 +28,7 @@ workflows:
         - matches: {pattern: "^dependabot/.+$", value: << pipeline.git.branch >>}
         - << pipeline.parameters.run_main >>
     jobs:
-      - build:
+      - build_short:
           name: build and unit tests dependabot
       - job_complete:
           name: job complete notification
@@ -234,6 +234,7 @@ workflows:
       - tag_image_for_environment:
           name: tag image for qa
           environment_tag: qa
+          previous_tag: main
           requires: [migration - response api tests preproduction]
       - approve:
           name: approve qa kick off
@@ -431,6 +432,7 @@ workflows:
       - tag_image_for_environment:
           name: tag image for production
           environment_tag: production
+          previous_tag: qa
           requires: [migration - validation qa]
       - run_elasticsearch_reset:
           name: full reindex elasticsearch qa
@@ -750,10 +752,18 @@ orbs:
                   then echo "export CI_PULL_REQUEST=\"${CIRCLE_BUILD_URL}\"" >> $BASH_ENV
                 fi
 
-                ENTITIES=$(cat ENTITIES)
+                if [ -f ENTITIES ]; then
+                    ENTITIES=$(cat ENTITIES)
+                else
+                    ENTITIES="None"
+                fi
                 echo "export ENTITIES=\"${ENTITIES}\"" >> $BASH_ENV
 
-                ENVIRONMENT_TITLE=$(cat ENVIRONMENT_TITLE)
+                if [ -f ENVIRONMENT_TITLE ]; then
+                    ENVIRONMENT_TITLE=$(cat ENVIRONMENT_TITLE)
+                else
+                    ENVIRONMENT_TITLE="Development"
+                fi
                 echo "export ENVIRONMENT_TITLE=\"${ENVIRONMENT_TITLE}\"" >> $BASH_ENV
               working_directory: ~/project
       notify_if_success:
@@ -1017,11 +1027,16 @@ jobs:
         description: environment tag for where image can be used
         type: string
         default: "development"
+      previous_tag:
+        description: environment tag for where image can be used
+        type: string
+        default: "development"
     environment:
       AWS_REGION: eu-west-1
       AWS_CONFIG_FILE: ~/project/aws_config
       AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
       ENVIRONMENT_TAG: << parameters.environment_tag >>
+      PREVIOUS_TAG: << parameters.previous_tag >>
     working_directory: ~/project
     steps:
       - checkout
@@ -1048,7 +1063,7 @@ jobs:
       - run:
           name: Retag images
           command: |
-            for i in `docker image ls | grep main- | awk '{print $1":"$2}'`
+            for i in `docker image ls | grep "${PREVIOUS_TAG}-" | awk '{print $1":"$2}'`
             do
               docker tag $i `echo $i | awk '-F:' '{print $1":"}'`${NEW_TAG}
             done
@@ -1246,6 +1261,39 @@ jobs:
       - notififications/notify_env_vars
       - notififications/notify_if_fail
 
+  build_short:
+    executor: migration/python
+    resource_class: small
+    environment:
+      AWS_REGION: eu-west-1
+      AWS_CONFIG_FILE: ~/project/aws_config
+      AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
+    steps:
+      - dockerhub_helper/dockerhub_login
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Export version as latest
+          command: echo "export VERSION=latest" >> $BASH_ENV
+      - run:
+          name: Switch out docker-compose.override file
+          command: |
+            echo "Switching override so we do not use volume mounts"
+            rm docker-compose.override.yml
+            mv docker-compose.override.ci.yml docker-compose.override.yml
+      - run:
+          name: Build base image
+          command: docker build base_image -t opg_casrec_migration_base_image:latest
+      - run:
+          name: Build images
+          command: docker-compose -f docker-compose.ci.yml build --parallel
+      - run:
+          name: Run unit tests
+          command: docker-compose up unit_tests
+      - run:
+          name: Full local migration run through
+          command: ./migrate.sh
+
   build:
     executor: migration/python
     resource_class: small
@@ -1281,24 +1329,12 @@ jobs:
       - run:
           name: Show version
           command: echo ${VERSION}
-      - run:
-          name: Install python requirements
-          command: |
-            pip3 install -r base_image/requirements.txt
-            pip3 install -r migration_steps/shared/shared_tests/requirements.txt
-      - run:
-          name: Run transform_casrec unit tests
-          command: |
-            export PYTHONPATH=~/project/migration_steps/transform_casrec:~/project/migration_steps/transform_casrec/transform/app
-            python3 -m pytest migration_steps/transform_casrec/transform/transform_tests --cov-fail-under=85
-      - run:
-          name: Run shared utilities unit tests
-          command: |
-            export PYTHONPATH=~/project/migration_steps/shared:~/project/migration_steps/shared/shared_tests
-            python3 -m pytest migration_steps/shared/shared_tests
       - when:
           condition: << parameters.push_mappings >>
           steps:
+            - run:
+                name: Install requirements
+                command: pip install boto3 click
             - run:
                 name: zip and upload mappings zip file
                 command: python3 upload_mappings.py --role migrations-ci
@@ -1313,13 +1349,17 @@ jobs:
           name: Build images
           command: docker-compose -f docker-compose.ci.yml build --parallel
       - run:
-          name: Full local run through
+          name: Switch out docker-compose.override file
           command: |
             echo "Switching override so we do not use volume mounts"
             rm docker-compose.override.yml
             mv docker-compose.override.ci.yml docker-compose.override.yml
-            echo "Running migrate.sh"
-            ./migrate.sh
+      - run:
+          name: Run unit tests
+          command: docker-compose up unit_tests
+      - run:
+          name: Full local migration run through
+          command: ./migrate.sh
       - run:
           name: Push images
           command: docker-compose -f docker-compose.ci.yml push

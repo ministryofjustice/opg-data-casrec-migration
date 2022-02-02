@@ -35,6 +35,8 @@ def handle_special_cases(table_name, df):
         df["risk_score"] = df["risk_score"].astype("Int64")
         log.debug("Reformat 'feepayer_id' to nullable int")
         df["feepayer_id"] = df["feepayer_id"].astype("Int64")
+        log.debug("Reformat 'deputycasrecid' to nullable int")
+        df["deputycasrecid"] = df["deputycasrecid"].astype("Int64")
     if table_name == "finance_invoice":
         log.debug("Reformat 'finance_person_id' to nullable int")
         df["finance_person_id"] = df["finance_person_id"].astype("Int64")

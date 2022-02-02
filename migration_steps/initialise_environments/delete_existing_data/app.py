@@ -49,7 +49,7 @@ sirius_deletion_check_tables = [
     "finance_ledger",
     "finance_ledger_allocation",
     "finance_remission_exemption",
-    "finance_order"
+    "finance_order",
 ]
 
 
@@ -74,7 +74,9 @@ def main():
         # This only runs on local and dev environments.
         # Finance data does not get deleted automatically by the deletion script and will fail the build.
         log.info(f"Deleting non-CP1 finance data")
-        target_db_engine.execute("DELETE FROM finance_order WHERE id IN (1,2,3,4,5,6,7);")
+        target_db_engine.execute(
+            "DELETE FROM finance_order WHERE id IN (1,2,3,4,5,6,7);"
+        )
 
     sql_statements = []
     sql_statement = ""
@@ -93,8 +95,9 @@ def main():
 
     for statement in sql_statements:
         log.info(f"Running statement: \n{statement}")
-        response = target_db_engine.execute(statement)
-        log.info(f"{response.rowcount} rows updated\n")
+        with target_db_engine.begin() as connection:
+            response = connection.execute(statement)
+            log.info(f"{response.rowcount} rows updated\n")
 
     log.info("Checking deletion table counts")
     stop_migration = False
@@ -102,15 +105,21 @@ def main():
         statement = f"SELECT id FROM deletions.deletions_{table};"
         response = target_db_engine.execute(statement)
         row_count = response.rowcount
-        log.info(f"Found {row_count} records in deletions.deletions_{table}. Expected 0.")
+        log.info(
+            f"Found {row_count} records in deletions.deletions_{table}. Expected 0."
+        )
         if row_count > 0:
             stop_migration = True
-            ids = [r._mapping['id'] for r in response]
+            ids = [r._mapping["id"] for r in response]
             log.info("To delete these records manually, run:")
-            log.info(f"DELETE FROM {table} WHERE id IN ({','.join([str(i) for i in ids])});")
+            log.info(
+                f"DELETE FROM {table} WHERE id IN ({','.join([str(i) for i in ids])});"
+            )
 
     if stop_migration:
-        log.error("Stopping migration due to unexpected deletion counts. Check log output above.")
+        log.error(
+            "Stopping migration due to unexpected deletion counts. Check log output above."
+        )
         os._exit(1)
 
 

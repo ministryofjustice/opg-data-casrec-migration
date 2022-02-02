@@ -86,12 +86,12 @@
             "entity": "deputy"
         },
         "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
+            "casrec_table": "deputy",
+            "casrec_column_name": "Dep Type",
+            "alias": "Dep Type",
             "requires_transformation": "",
-            "lookup_table": "",
-            "default_value": "LAY",
+            "lookup_table": "deputy_type_lookup",
+            "default_value": "",
             "calculated": "",
             "additional_columns": ""
         },
@@ -138,7 +138,7 @@
         "transform_casrec": {
             "casrec_table": "deputy",
             "casrec_column_name": "Dep Type",
-            "alias": "Dep Type",
+            "alias": "Dep Type 1",
             "requires_transformation": "",
             "lookup_table": "deputy_relationship_lookup",
             "default_value": "",
