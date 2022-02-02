@@ -61,9 +61,9 @@
             "percentage_complete": 100
         },
         "deputy_persons": {
-            "total_rows": 28,
+            "total_rows": 32,
             "total_unmapped": 0,
-            "total_mapped": 28,
+            "total_mapped": 32,
             "percentage_complete": 100
         },
         "order_deputy": {
@@ -283,9 +283,9 @@
             "total_complete": 8
         },
         "fields": {
-            "total_fields": 421,
+            "total_fields": 425,
             "total_unmapped": 22,
-            "total_mapped": 399,
+            "total_mapped": 403,
             "percentage_complete": 95
         }
     }

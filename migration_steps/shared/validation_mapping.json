@@ -668,7 +668,8 @@
             "caserecnumber",
             "dateofdeath",
             "middlenames",
-            "uid"
+            "uid",
+            "deputycasrecid"
         ],
         "casenumber_source": "cases.caserecnumber",
         "orderby": {
@@ -683,7 +684,14 @@
         },
         "casrec": {
             "from_table": "deputyship",
-            "transform": {},
+            "transform": {
+                "deputynumber": "CAST(NULLIF(TRIM(casrec_csv.deputy.\"Deputy No\"), '') AS integer)",
+                "organisationname": "CASE WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'PA' THEN transf_capitalise_first_letter(TRIM(casrec_csv.deputy.\"Dep Surname\")) ELSE NULL END",
+                "deputysubtype": "CASE WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'PA' THEN 'ORGANISATION' WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'LAY' THEN 'PERSON' ELSE NULL END",
+                "surname": "CASE WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'PA' THEN NULL ELSE transf_capitalise_first_letter(NULLIF(TRIM(casrec_csv.deputy.\"Dep Surname\"), '')) END",
+                "salutation": "CASE WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'PA' THEN NULL ELSE casrec_csv.title_codes_lookup(TRIM(casrec_csv.deputy.\"Title\")) END",
+                "firstname": "CASE WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'PA' THEN NULL ELSE transf_first_word(NULLIF(TRIM(casrec_csv.deputy.\"Dep Forename\"), '')) END"
+            },
             "joins": [
                 "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\"",
                 "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\"",
@@ -943,7 +951,7 @@
             "transform": {},
             "joins": [
                 "INNER JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.sup_activity.\"Case\"",
-                "INNER JOIN casrec_csv.order ON casrec_csv.order.\"Case\" = casrec_csv.sup_activity.\"Case\""
+                "INNER JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.sup_activity.\"Order No\""
             ],
             "exception_table_join": "INNER JOIN casrec_csv.exceptions_tasks exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [

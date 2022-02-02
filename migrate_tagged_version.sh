@@ -12,7 +12,7 @@ END
 FILTER_VARS=$(cat <<-END
     \n
     1. all\n
-    2. master\n
+    2. main\n
     3. qa\n
 END
 )
@@ -35,7 +35,7 @@ then
   TAG_FILTER="all"
 elif [ ${FILTER} == "2" ]
 then
-  TAG_FILTER="master"
+  TAG_FILTER="main"
 elif [ ${FILTER} == "3" ]
 then
   TAG_FILTER="qa"
@@ -84,7 +84,7 @@ then
               --url https://circleci.com/api/v2/project/github/ministryofjustice/opg-data-casrec-migration/pipeline \
               --header "Circle-Token: ${CIRCLE_TOKEN}" \
               --header 'content-type: application/json' \
-              --data "{\"branch\":\"master\", \"parameters\":{\"run_master\": false, \"run_preprod\": $RUN_PREPROD, \"run_qa\": $RUN_QA, \"run_preqa\": $RUN_PRE_QA, \"override_tag\": \"$TAG\"}}"
+              --data "{\"branch\":\"main\", \"parameters\":{\"run_main\": false, \"run_preprod\": $RUN_PREPROD, \"run_qa\": $RUN_QA, \"run_preqa\": $RUN_PRE_QA, \"override_tag\": \"$TAG\"}}"
 else
   echo "You chose not to deploy. Good bye!"
   exit 0

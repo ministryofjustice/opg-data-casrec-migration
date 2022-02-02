@@ -2,7 +2,7 @@
 version: 2.1
 
 parameters:
-  run_master:
+  run_main:
     type: boolean
     default: true
   run_preprod:
@@ -22,50 +22,59 @@ parameters:
     default: ""
 
 workflows:
+  dependabot_request:
+    when:
+      and:
+        - matches: {pattern: "^dependabot/.+$", value: << pipeline.git.branch >>}
+        - << pipeline.parameters.run_main >>
+    jobs:
+      - build_short:
+          name: build and unit tests dependabot
+      - job_complete:
+          name: job complete notification
+          requires: [build and unit tests dependabot]
+          workspace: development
+
   pull_request:
-    when: << pipeline.parameters.run_master >>
+    when:
+      and:
+        - not: {matches: {pattern: "^dependabot/.+$", value: << pipeline.git.branch >>}}
+        - not: {equal: [main, << pipeline.git.branch >>]}
+        - << pipeline.parameters.run_main >>
     jobs:
       - persist_parameters:
           name: persist parameters development
           param_workspace: development
           environment_title: Development-Branch
-          filters: {branches:{ignore:[master]}}
       - manage_workflow:
           requires: [persist parameters development]
           name: manage workflow
-          filters: {branches:{ignore:[master]}}
       - reset_sirius:
           name: reset the sirius fixtures development
           requires: [manage workflow]
           tf_workspace: development
-          filters: {branches:{ignore:[master]}}
       - build:
           name: build and unit tests
           requires: [manage workflow, persist parameters development]
-          filters: {branches:{ignore:[master]}}
       - infrastructure:
           name: build shared infra development
           requires: [build and unit tests]
           tf_workspace: development
           tf_command: apply
           folder: shared
-          filters: {branches:{ignore:[master]}}
       - load_casrec_db:
           name: load casrec db
           requires: [build shared infra development]
-          filters: {branches:{ignore:[master]}}
       - infrastructure:
           name: plan infra development
           requires: [build shared infra development]
           tf_workspace: development
           tf_command: plan
-          filters: {branches:{ignore:[master]}}
       - infrastructure:
           name: build infra development
           requires: [plan infra development]
           tf_workspace: development
           tf_command: apply
-          filters: {branches:{ignore:[master]}}
       - scale-services:
           name: scale down poller service for migration development
           requires: [reset the sirius fixtures development]
@@ -73,7 +82,6 @@ workflows:
           profile: "migrations-ci-sirius-dev"
           service: "notify-poller"
           cluster: "casmigrate"
-          filters: {branches:{ignore:[master]}}
       - run_tasks:
           name: migration - run all tasks development
           requires: [
@@ -83,7 +91,6 @@ workflows:
             scale down poller service for migration development
           ]
           tf_workspace: development
-          filters: {branches:{ignore:[master]}}
       - scale-services:
           name: scale up poller service for migration development
           requires: [migration - run all tasks development]
@@ -91,79 +98,72 @@ workflows:
           profile: "migrations-ci-sirius-dev"
           service: "notify-poller"
           cluster: "casmigrate"
-          filters: {branches:{ignore:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch development
           requires: [migration - run all tasks development]
           tf_workspace: development
-          filters: {branches:{ignore:[master]}}
       - job_complete:
           name: job complete notification
           requires: [migration - run all tasks development]
           workspace: development
-          filters: {branches:{ignore:[master]}}
 
-  master:
-    when: << pipeline.parameters.run_master >>
+  main:
+    when:
+      and:
+        - equal: [main, << pipeline.git.branch >>]
+        - << pipeline.parameters.run_main >>
     jobs:
       - persist_parameters:
           name: persist parameters main
           param_workspace: development
           environment_title: Development-Merge
-          filters: {branches:{only:[master]}}
       - build:
           name: build and unit tests main
           requires: [persist parameters main]
           push_mappings: true
-          filters: {branches:{only:[master]}}
       - approve:
           name: approve preproduction kick off
           type: approval
           requires: [build and unit tests main]
-          filters: {branches:{only:[master]}}
       - kick_off_environment:
           name: kick off preproduction
           workspace: preproduction
           requires: [approve preproduction kick off]
-          filters: {branches:{only:[master]}}
 
   preprod:
-    when: << pipeline.parameters.run_preprod >>
+    when:
+      and:
+        - equal: [main, << pipeline.git.branch >>]
+        - << pipeline.parameters.run_preprod >>
     jobs:
       - persist_parameters:
           name: persist parameters preproduction
           param_workspace: preproduction
           environment_title: Preproduction-Manual
-          filters: {branches:{only:[master]}}
       - reset_sirius_full_restore:
           name: run and monitor jenkins restore job preproduction
           requires: [persist parameters preproduction]
           sirius_environment: casrecdmpp
-          filters: {branches:{only:[master]}}
       - get_latest_image:
           name: get latest tag preproduction
           requires: [persist parameters preproduction]
-          image_tag: master
-          filters: {branches:{only:[master]}}
+          image_tag: main
       - infrastructure:
           name: build shared infra preproduction
           requires: [get latest tag preproduction]
           tf_workspace: preproduction
           tf_command: apply
           folder: shared
-          filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra preproduction
           requires: [build shared infra preproduction]
           tf_workspace: preproduction
           tf_command: plan
-          filters: {branches:{only:[master]}}
       - infrastructure:
           name: build infra preproduction
           requires: [plan infra preproduction]
           tf_workspace: preproduction
           tf_command: apply
-          filters: {branches:{only:[master]}}
       - scale-services:
           name: scale down poller service for migration preproduction
           requires: [run and monitor jenkins restore job preproduction]
@@ -171,7 +171,6 @@ workflows:
           profile: "migrations-ci-sirius-pre"
           service: "notify-poller"
           cluster: "casrecdmpp"
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - initialise environments preproduction
           requires: [
@@ -181,55 +180,46 @@ workflows:
          ]
           runner_command: migration-initialise-environments
           tf_workspace: preproduction
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - load casrec preproduction
           requires: [migration - initialise environments preproduction]
           tf_workspace: preproduction
           runner_command: migration-load-casrec
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - filter data preproduction
           requires: [migration - load casrec preproduction]
           tf_workspace: preproduction
           runner_command: migration-filter-data
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - transform preproduction
           requires: [migration - filter data preproduction]
           tf_workspace: preproduction
           runner_command: migration-transform
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - integration preproduction
           requires: [migration - transform preproduction]
           tf_workspace: preproduction
           runner_command: migration-integration
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - load sirius preproduction
           requires: [migration - integration preproduction]
           tf_workspace: preproduction
           runner_command: migration-load-sirius
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - validation preproduction
           requires: [migration - load sirius preproduction]
           tf_workspace: preproduction
           runner_command: migration-validation
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - response api tests preproduction
           requires: [migration - validation preproduction]
           tf_workspace: preproduction
           runner_command: migration-response-api-tests
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - light touch api tests preproduction
           requires: [migration - response api tests preproduction]
           tf_workspace: preproduction
           runner_command: migration-light-touch-api-tests
-          filters: {branches:{only:[master]}}
       - scale-services:
           name: scale up poller service for migration preproduction
           requires: [migration - light touch api tests preproduction]
@@ -237,37 +227,31 @@ workflows:
           profile: "migrations-ci-sirius-pre"
           service: "notify-poller"
           cluster: "casrecdmpp"
-          filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch preprod
           requires: [migration - response api tests preproduction]
           tf_workspace: preproduction
-          filters: {branches:{only:[master]}}
       - tag_image_for_environment:
           name: tag image for qa
           environment_tag: qa
+          previous_tag: main
           requires: [migration - response api tests preproduction]
-          filters: {branches:{only:[master]}}
       - approve:
           name: approve qa kick off
           type: approval
           requires: [tag image for qa]
-          filters: {branches:{only:[master]}}
       - kick_off_environment:
           name: kick off qa
           workspace: qa
           requires: [approve qa kick off]
-          filters: {branches:{only:[master]}}
       - approve:
           name: approve preqa kick off
           type: approval
           requires: [tag image for qa]
-          filters: {branches:{only:[master]}}
       - kick_off_environment:
           name: kick off preqa
           workspace: preqa
           requires: [approve preqa kick off]
-          filters: {branches:{only:[master]}}
       - job_complete:
           name: job complete notification
           requires: [
@@ -275,37 +259,34 @@ workflows:
               scale up poller service for migration preproduction
           ]
           workspace: preproduction
-          filters: {branches:{only:[master]}}
   preqa:
-    when: << pipeline.parameters.run_preqa >>
+    when:
+      and:
+        - equal: [main, << pipeline.git.branch >>]
+        - << pipeline.parameters.run_preqa >>
     jobs:
       - persist_parameters:
           name: persist parameters preqa
           param_workspace: preqa
           environment_title: PreQA-Manual
-          filters: {branches:{only:[master]}}
       - get_latest_image:
           name: get latest tag preqa
           requires: [persist parameters preqa]
           image_tag: qa
-          filters: {branches:{only:[master]}}
       - reset_sirius_full_restore:
           name: run and monitor jenkins restore job preqa
           requires: [persist parameters preqa]
           sirius_environment: casrecdmpq
-          filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra preqa
           requires: [get latest tag preqa]
           tf_workspace: preqa
           tf_command: plan
-          filters: {branches:{only:[master]}}
       - infrastructure:
           name: build infra preqa
           requires: [plan infra preqa]
           tf_workspace: preqa
           tf_command: apply
-          filters: {branches:{only:[master]}}
       - scale-services:
           name: scale down poller service for migration preqa
           requires: [run and monitor jenkins restore job preqa]
@@ -313,7 +294,6 @@ workflows:
           profile: "migrations-ci-sirius-pre"
           service: "notify-poller"
           cluster: "casrecdmpq"
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - initialise environments preqa
           requires: [
@@ -323,43 +303,36 @@ workflows:
          ]
           runner_command: migration-initialise-environments
           tf_workspace: preqa
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - load casrec preqa
           requires: [migration - initialise environments preqa]
           tf_workspace: preqa
           runner_command: migration-load-casrec
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - filter data preqa
           requires: [migration - load casrec preqa]
           tf_workspace: preqa
           runner_command: migration-filter-data
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - transform preqa
           requires: [migration - filter data preqa]
           tf_workspace: preqa
           runner_command: migration-transform
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - integration preqa
           requires: [migration - transform preqa]
           tf_workspace: preqa
           runner_command: migration-integration
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - load sirius preqa
           requires: [migration - integration preqa]
           tf_workspace: preqa
           runner_command: migration-load-sirius
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - validation preqa
           requires: [migration - load sirius preqa]
           tf_workspace: preqa
           runner_command: migration-validation
-          filters: {branches:{only:[master]}}
       - scale-services:
           name: scale up poller service for migration preqa
           requires: [migration - validation preqa]
@@ -367,47 +340,42 @@ workflows:
           profile: "migrations-ci-sirius-pre"
           service: "notify-poller"
           cluster: "casrecdmpq"
-          filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch preqa
           requires: [migration - validation preqa]
           tf_workspace: preqa
-          filters: {branches:{only:[master]}}
       - job_complete:
           name: job complete notification
           requires: [migration - validation preqa]
           workspace: preqa
-          filters: {branches:{only:[master]}}
   qa:
-    when: << pipeline.parameters.run_qa >>
+    when:
+      and:
+        - equal: [main, << pipeline.git.branch >>]
+        - << pipeline.parameters.run_qa >>
     jobs:
       - persist_parameters:
           name: persist parameters qa
           param_workspace: qa
           environment_title: QA-Manual
-          filters: {branches:{only:[master]}}
       - reset_sirius_full_restore:
           name: run and monitor jenkins restore job qa
           requires: [persist parameters qa]
           sirius_environment: casrecdmqa
-          filters: {branches:{only:[master]}}
       - get_latest_image:
           name: get latest tag qa
           requires: [persist parameters qa]
           image_tag: qa
-          filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra qa
           requires: [get latest tag qa]
           tf_workspace: qa
           tf_command: plan
-          filters: {branches:{only:[master]}}
       - infrastructure:
           name: build infra qa
           requires: [plan infra qa]
           tf_workspace: qa
           tf_command: apply
-          filters: {branches:{only:[master]}}
       - scale-services:
           name: scale down poller service for migration qa
           requires: [run and monitor jenkins restore job qa]
@@ -415,7 +383,6 @@ workflows:
           profile: "migrations-ci-sirius-pre"
           service: "notify-poller"
           cluster: "casrecdmqa"
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - initialise environments qa
           requires: [
@@ -425,43 +392,36 @@ workflows:
          ]
           runner_command: migration-initialise-environments
           tf_workspace: qa
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - load casrec qa
           requires: [migration - initialise environments qa]
           tf_workspace: qa
           runner_command: migration-load-casrec
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - filter data qa
           requires: [migration - load casrec qa]
           tf_workspace: qa
           runner_command: migration-filter-data
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - transform qa
           requires: [migration - filter data qa]
           tf_workspace: qa
           runner_command: migration-transform
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - integration qa
           requires: [migration - transform qa]
           tf_workspace: qa
           runner_command: migration-integration
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - load sirius qa
           requires: [migration - integration qa]
           tf_workspace: qa
           runner_command: migration-load-sirius
-          filters: {branches:{only:[master]}}
       - run_task:
           name: migration - validation qa
           requires: [migration - load sirius qa]
           tf_workspace: qa
           runner_command: migration-validation
-          filters: {branches:{only:[master]}}
       - scale-services:
           name: scale up poller service for migration qa
           requires: [migration - validation qa]
@@ -469,100 +429,96 @@ workflows:
           profile: "migrations-ci-sirius-pre"
           service: "notify-poller"
           cluster: "casrecdmqa"
-          filters: {branches:{only:[master]}}
       - tag_image_for_environment:
           name: tag image for production
           environment_tag: production
+          previous_tag: qa
           requires: [migration - validation qa]
-          filters: {branches:{only:[master]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch qa
           requires: [migration - validation qa]
           tf_workspace: qa
-          filters: {branches:{only:[master]}}
       - job_complete:
           name: job complete notification
           requires: [migration - validation qa]
           workspace: qa
-          filters: {branches:{only:[master]}}
 
   production:
-    when: << pipeline.parameters.run_production >>
+    when:
+      and:
+        - equal: [main, << pipeline.git.branch >>]
+        - << pipeline.parameters.run_production >>
     jobs:
       - persist_parameters:
           name: persist parameters production
           param_workspace: production
           environment_title: Production-Manual
-          filters: {branches:{only:[master]}}
       - get_latest_image:
           name: get latest tag production
           requires: [persist parameters production]
           image_tag: production
-          filters: {branches:{only:[master]}}
       - infrastructure:
           name: plan infra production
           requires: [get latest tag production]
           tf_workspace: production
           tf_command: plan
-          filters: {branches:{only:[master]}}
       - infrastructure:
           name: build infra production
           requires: [plan infra production]
           tf_workspace: production
           tf_command: apply
-          filters: {branches:{only:[master]}}
 
   nightly_development_restore:
     triggers:
       - schedule:
           cron: "30 07 * * *"
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
     jobs:
       - persist_parameters:
           name: persist parameters development
           param_workspace: development
           environment_title: Development-Nightly
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
       - reset_sirius_full_restore:
           name: run and monitor jenkins restore job development
           requires: [persist parameters development]
           sirius_environment: casmigrate
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
 
   nightly_preproduction_run:
     triggers:
       - schedule:
           cron: "10 03 * * *"
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
     jobs:
       - persist_parameters:
           name: persist parameters preproduction
           param_workspace: preproduction
           environment_title: Preproduction-Nightly
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
       - get_latest_image:
           name: get latest tag preproduction
           requires: [persist parameters preproduction]
-          image_tag: master
-          filters: {branches:{only:[master]}}
+          image_tag: main
+          filters: {branches:{only:[main]}}
       - reset_sirius_full_restore:
           name: run and monitor jenkins restore job preproduction
           requires: [persist parameters preproduction]
           sirius_environment: casrecdmpp
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
       - infrastructure:
           name: build shared infra preproduction
           requires: [get latest tag preproduction]
           tf_workspace: preproduction
           tf_command: apply
           folder: shared
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
       - infrastructure:
           name: build infra preproduction
           requires: [build shared infra preproduction]
           tf_workspace: preproduction
           tf_command: apply
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
       - scale-services:
           name: scale down poller service for migration preproduction
           requires: [run and monitor jenkins restore job preproduction]
@@ -570,7 +526,7 @@ workflows:
           profile: "migrations-ci-sirius-pre"
           service: "notify-poller"
           cluster: "casrecdmpp"
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
       - run_task:
           name: migration - initialise environments preproduction
           requires: [
@@ -580,50 +536,50 @@ workflows:
          ]
           runner_command: migration-initialise-environments
           tf_workspace: preproduction
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
       - run_task:
           name: migration - load casrec preproduction
           requires: [migration - initialise environments preproduction]
           tf_workspace: preproduction
           runner_command: migration-load-casrec
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
       - run_task:
           name: migration - filter data preproduction
           requires: [migration - load casrec preproduction]
           tf_workspace: preproduction
           runner_command: migration-filter-data
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
       - run_task:
           name: migration - transform preproduction
           requires: [migration - filter data preproduction]
           tf_workspace: preproduction
           runner_command: migration-transform
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
       - run_task:
           name: migration - integration preproduction
           requires: [migration - transform preproduction]
           tf_workspace: preproduction
           runner_command: migration-integration
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
       - run_task:
           name: migration - load sirius preproduction
           requires: [migration - integration preproduction]
           tf_workspace: preproduction
           runner_command: migration-load-sirius
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
       - run_task:
           name: migration - validation preproduction
           requires: [migration - load sirius preproduction]
           tf_workspace: preproduction
           runner_command: migration-validation
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
       - run_task:
           name: migration - response api tests preproduction
           requires: [migration - validation preproduction]
           notify_validation_fails: true
           tf_workspace: preproduction
           runner_command: migration-response-api-tests
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
       - scale-services:
           name: scale up poller service for migration preproduction
           requires: [migration - light touch api tests preproduction]
@@ -631,28 +587,28 @@ workflows:
           profile: "migrations-ci-sirius-pre"
           service: "notify-poller"
           cluster: "casrecdmpp"
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
       - tag_image_for_environment:
           name: tag image for qa
           environment_tag: qa
           requires: [migration - response api tests preproduction]
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch preproduction
           requires: [migration - response api tests preproduction]
           tf_workspace: preproduction
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
       - kick_off_environment:
           name: kick off preqa
           workspace: preqa
           requires: [tag image for qa]
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
       - run_task:
           name: migration - light touch api tests preproduction
           requires: [kick off preqa]
           tf_workspace: preproduction
           runner_command: migration-light-touch-api-tests
-          filters: {branches:{only:[master]}}
+          filters: {branches:{only:[main]}}
       - job_complete:
           name: job complete notification
           requires: [
@@ -660,8 +616,7 @@ workflows:
               scale up poller service for migration preproduction
           ]
           workspace: preproduction
-          filters: {branches:{only:[master]}}
-
+          filters: {branches:{only:[main]}}
 
 orbs:
   aws-cli: circleci/aws-cli@1.3.0
@@ -767,7 +722,7 @@ orbs:
                 --circle_branch="${CIRCLE_BRANCH}" \
                 --circle_builds_token="${CIRCLE_BUILDS_TOKEN}" \
                 --terms_to_waitfor="plan infra" \
-                --prod_job_terms="build infra ,master"
+                --prod_job_terms="build infra ,main"
               working_directory: ~/project/scripts/ci_scripts
           - run:
               name: wait for others builds to finish
@@ -797,10 +752,18 @@ orbs:
                   then echo "export CI_PULL_REQUEST=\"${CIRCLE_BUILD_URL}\"" >> $BASH_ENV
                 fi
 
-                ENTITIES=$(cat ENTITIES)
+                if [ -f ENTITIES ]; then
+                    ENTITIES=$(cat ENTITIES)
+                else
+                    ENTITIES="None"
+                fi
                 echo "export ENTITIES=\"${ENTITIES}\"" >> $BASH_ENV
 
-                ENVIRONMENT_TITLE=$(cat ENVIRONMENT_TITLE)
+                if [ -f ENVIRONMENT_TITLE ]; then
+                    ENVIRONMENT_TITLE=$(cat ENVIRONMENT_TITLE)
+                else
+                    ENVIRONMENT_TITLE="Development"
+                fi
                 echo "export ENVIRONMENT_TITLE=\"${ENVIRONMENT_TITLE}\"" >> $BASH_ENV
               working_directory: ~/project
       notify_if_success:
@@ -1052,7 +1015,7 @@ jobs:
             --url https://circleci.com/api/v2/project/github/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pipeline \
             --header "Circle-Token: ${CIRCLE_BUILDS_TOKEN}" \
             --header 'content-type: application/json' \
-            --data "{\"branch\":\"master\", \"parameters\":{\"run_master\": false, \"run_preprod\": $RUN_PREPROD, \"run_qa\": $RUN_QA, \"run_preqa\": $RUN_PRE_QA}}"
+            --data "{\"branch\":\"main\", \"parameters\":{\"run_main\": false, \"run_preprod\": $RUN_PREPROD, \"run_qa\": $RUN_QA, \"run_preqa\": $RUN_PRE_QA}}"
       - notififications/notify_env_vars
       - notififications/notify_if_fail
 
@@ -1064,11 +1027,16 @@ jobs:
         description: environment tag for where image can be used
         type: string
         default: "development"
+      previous_tag:
+        description: environment tag for where image can be used
+        type: string
+        default: "development"
     environment:
       AWS_REGION: eu-west-1
       AWS_CONFIG_FILE: ~/project/aws_config
       AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
       ENVIRONMENT_TAG: << parameters.environment_tag >>
+      PREVIOUS_TAG: << parameters.previous_tag >>
     working_directory: ~/project
     steps:
       - checkout
@@ -1095,7 +1063,7 @@ jobs:
       - run:
           name: Retag images
           command: |
-            for i in `docker image ls | grep master- | awk '{print $1":"$2}'`
+            for i in `docker image ls | grep "${PREVIOUS_TAG}-" | awk '{print $1":"$2}'`
             do
               docker tag $i `echo $i | awk '-F:' '{print $1":"}'`${NEW_TAG}
             done
@@ -1293,6 +1261,39 @@ jobs:
       - notififications/notify_env_vars
       - notififications/notify_if_fail
 
+  build_short:
+    executor: migration/python
+    resource_class: small
+    environment:
+      AWS_REGION: eu-west-1
+      AWS_CONFIG_FILE: ~/project/aws_config
+      AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
+    steps:
+      - dockerhub_helper/dockerhub_login
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Export version as latest
+          command: echo "export VERSION=latest" >> $BASH_ENV
+      - run:
+          name: Switch out docker-compose.override file
+          command: |
+            echo "Switching override so we do not use volume mounts"
+            rm docker-compose.override.yml
+            mv docker-compose.override.ci.yml docker-compose.override.yml
+      - run:
+          name: Build base image
+          command: docker build base_image -t opg_casrec_migration_base_image:latest
+      - run:
+          name: Build images
+          command: docker-compose -f docker-compose.ci.yml build --parallel
+      - run:
+          name: Run unit tests
+          command: docker-compose up unit_tests
+      - run:
+          name: Full local migration run through
+          command: ./migrate.sh
+
   build:
     executor: migration/python
     resource_class: small
@@ -1328,24 +1329,12 @@ jobs:
       - run:
           name: Show version
           command: echo ${VERSION}
-      - run:
-          name: Install python requirements
-          command: |
-            pip3 install -r base_image/requirements.txt
-            pip3 install -r migration_steps/shared/shared_tests/requirements.txt
-      - run:
-          name: Run transform_casrec unit tests
-          command: |
-            export PYTHONPATH=~/project/migration_steps/transform_casrec:~/project/migration_steps/transform_casrec/transform/app
-            python3 -m pytest migration_steps/transform_casrec/transform/transform_tests --cov-fail-under=85
-      - run:
-          name: Run shared utilities unit tests
-          command: |
-            export PYTHONPATH=~/project/migration_steps/shared:~/project/migration_steps/shared/shared_tests
-            python3 -m pytest migration_steps/shared/shared_tests
       - when:
           condition: << parameters.push_mappings >>
           steps:
+            - run:
+                name: Install requirements
+                command: pip install boto3 click
             - run:
                 name: zip and upload mappings zip file
                 command: python3 upload_mappings.py --role migrations-ci
@@ -1360,13 +1349,17 @@ jobs:
           name: Build images
           command: docker-compose -f docker-compose.ci.yml build --parallel
       - run:
-          name: Full local run through
+          name: Switch out docker-compose.override file
           command: |
             echo "Switching override so we do not use volume mounts"
             rm docker-compose.override.yml
             mv docker-compose.override.ci.yml docker-compose.override.yml
-            echo "Running migrate.sh"
-            ./migrate.sh
+      - run:
+          name: Run unit tests
+          command: docker-compose up unit_tests
+      - run:
+          name: Full local migration run through
+          command: ./migrate.sh
       - run:
           name: Push images
           command: docker-compose -f docker-compose.ci.yml push
@@ -1419,7 +1412,7 @@ jobs:
       image_tag:
         description: image tag to use
         type: string
-        default: "master"
+        default: "main"
       check_preprod_run:
         description: check that preprod has run successfully
         type: boolean
