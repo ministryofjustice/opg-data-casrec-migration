@@ -37,7 +37,7 @@ def _make_test_data():
     return data
 
 
-def case_table_transforms_annual_report_logs_pending_no_review():
+def case_table_transforms_annual_report_logs_rev_stat_n_no_dates_future_end_date():
     """rev stat = 'N', end date in future, all other dates null"""
     data = _make_test_data()
     data["c_rev_stat"] = ["N"]
@@ -46,7 +46,7 @@ def case_table_transforms_annual_report_logs_pending_no_review():
     return (data, {"status": "PENDING", "reviewstatus": "NO_REVIEW"})
 
 
-def case_table_transforms_annual_report_logs_due_no_review():
+def case_table_transforms_annual_report_logs_rev_stat_n_no_dates_end_date_passed1():
     """rev stat = 'N', end date in past but < 15 working days ago, all other dates null"""
     data = _make_test_data()
     data["c_rev_stat"] = ["N"]
@@ -55,7 +55,7 @@ def case_table_transforms_annual_report_logs_due_no_review():
     return (data, {"status": "DUE", "reviewstatus": "NO_REVIEW"})
 
 
-def case_table_transforms_annual_report_logs_overdue_no_review():
+def case_table_transforms_annual_report_logs_rev_stat_n_no_dates_end_date_passed2():
     """
     rev stat = 'N', end date at least 15 days ago but less than 71 days ago,
     all other dates null
@@ -67,7 +67,7 @@ def case_table_transforms_annual_report_logs_overdue_no_review():
     return (data, {"status": "OVERDUE", "reviewstatus": "NO_REVIEW"})
 
 
-def case_table_transforms_annual_report_logs_non_compliant_no_review():
+def case_table_transforms_annual_report_logs_rev_stat_n_no_dates_end_date_passed3():
     """
     rev stat = 'N', end date 71+ days ago, all other dates null
     """
@@ -78,9 +78,9 @@ def case_table_transforms_annual_report_logs_non_compliant_no_review():
     return (data, {"status": "NON_COMPLIANT", "reviewstatus": "NO_REVIEW"})
 
 
-def case_table_transforms_annual_report_logs_received_no_review():
+def case_table_transforms_annual_report_logs_rev_stat_n_no_lodge_or_review_dates():
     """
-    rev stat = 'N', at least one rcvd date col set, lodge date and review date not set
+    rev stat = 'N', at least one rcvd date set, lodge date and review date not set
     """
     data = _make_test_data()
     data["c_rev_stat"] = ["N"]
@@ -89,9 +89,9 @@ def case_table_transforms_annual_report_logs_received_no_review():
     return (data, {"status": "RECEIVED", "reviewstatus": "NO_REVIEW"})
 
 
-def case_table_transforms_annual_report_logs_received_lodged():
+def case_table_transforms_annual_report_logs_rev_stat_n_no_review_date():
     """
-    rev stat = 'N', at least one rcvd date col set, lodge date set, review date not set
+    rev stat = 'N', at least one rcvd date set, lodge date set, review date not set
     """
     data = _make_test_data()
     data["c_rev_stat"] = ["N"]
@@ -102,9 +102,23 @@ def case_table_transforms_annual_report_logs_received_lodged():
     return (data, {"status": "LODGED", "reviewstatus": "NO_REVIEW"})
 
 
-def case_table_transforms_annual_report_logs_incomplete_no_review():
+def case_table_transforms_annual_report_logs_rev_stat_n_all_dates_set():
     """
-    rev stat = 'I', at least one rcvd date col set, lodge date set, review date not set
+    rev stat = 'N', at least one rcvd date set, lodge date set, review date set
+    """
+    data = _make_test_data()
+    data["c_rev_stat"] = ["N"]
+    data["c_rcvd_date"] = [SEVENTY_ONE_WORKING_DAYS_AGO]
+    data["c_rcvd_date1"] = [THIRTY_WORKING_DAYS_AGO]
+    data["c_lodge_date"] = [THIRTY_WORKING_DAYS_AGO]
+    data["c_review_date"] = [THIRTY_WORKING_DAYS_AGO]
+
+    return (data, {"status": "LODGED", "reviewstatus": None})
+
+
+def case_table_transforms_annual_report_logs_rev_stat_i_no_review_date():
+    """
+    rev stat = 'I', at least one rcvd date set, lodge date set, review date not set
     """
     data = _make_test_data()
     data["c_rev_stat"] = ["I"]
@@ -116,9 +130,24 @@ def case_table_transforms_annual_report_logs_incomplete_no_review():
     return (data, {"status": "INCOMPLETE", "reviewstatus": "NO_REVIEW"})
 
 
-def case_table_transforms_annual_report_logs_lodged_staff_referred():
+def case_table_transforms_annual_report_logs_rev_stat_i_all_dates_set():
     """
-    rev stat = 'S', at least one rcvd date col set, lodge date set, review date not set
+    rev stat = 'I', at least one rcvd date set, lodge date set, review date set
+    """
+    data = _make_test_data()
+    data["c_rev_stat"] = ["I"]
+    data["c_rcvd_date"] = [SEVENTY_ONE_WORKING_DAYS_AGO]
+    data["c_rcvd_date1"] = [THIRTY_WORKING_DAYS_AGO]
+    data["c_rcvd_date2"] = [FOURTEEN_WORKING_DAYS_AGO]
+    data["c_lodge_date"] = [FOURTEEN_WORKING_DAYS_AGO]
+    data["c_review_date"] = [FOURTEEN_WORKING_DAYS_AGO]
+
+    return (data, {"status": "INCOMPLETE", "reviewstatus": "NO_REVIEW"})
+
+
+def case_table_transforms_annual_report_logs_rev_stat_s_no_review_date():
+    """
+    rev stat = 'S', at least one rcvd date set, lodge date set, review date not set
     """
     data = _make_test_data()
     data["c_rev_stat"] = ["S"]
@@ -130,9 +159,9 @@ def case_table_transforms_annual_report_logs_lodged_staff_referred():
     return (data, {"status": "LODGED", "reviewstatus": "STAFF_REFERRED"})
 
 
-def case_table_transforms_annual_report_logs_rev_stat_s_lodged_reviewed():
+def case_table_transforms_annual_report_logs_rev_stat_s_all_dates_set():
     """
-    rev stat = 'S', at least one rcvd date col set, lodge date set, review date set
+    rev stat = 'S', at least one rcvd date set, lodge date set, review date set
     """
     data = _make_test_data()
     data["c_rev_stat"] = ["S"]
@@ -144,9 +173,31 @@ def case_table_transforms_annual_report_logs_rev_stat_s_lodged_reviewed():
     return (data, {"status": "LODGED", "reviewstatus": "REVIEWED"})
 
 
-def case_table_transforms_annual_report_logs_rev_stat_r_lodged_reviewed():
+def case_table_transforms_annual_report_logs_rev_stat_s_no_lodge_or_review_dates():
     """
-    rev stat = 'R', at least one rcvd date col set, lodge date set, review date set
+    rev stat = 'S', at least one rcvd date set, lodge date not set, review date not set
+    """
+    data = _make_test_data()
+    data["c_rev_stat"] = ["S"]
+    data["c_rcvd_date"] = [SEVENTY_ONE_WORKING_DAYS_AGO]
+    data["c_rcvd_date1"] = [THIRTY_WORKING_DAYS_AGO]
+
+    return (data, {"status": "DUE", "reviewstatus": "STAFF_REFERRED"})
+
+
+def case_table_transforms_annual_report_logs_rev_stat_s_no_dates_set():
+    """
+    rev stat = 'S', rcvd date not set, lodge date not set, review date not set
+    """
+    data = _make_test_data()
+    data["c_rev_stat"] = ["S"]
+
+    return (data, {"status": "OVERDUE", "reviewstatus": None})
+
+
+def case_table_transforms_annual_report_logs_rev_stat_r_all_dates_set():
+    """
+    rev stat = 'R', at least one rcvd date set, lodge date set, review date set
     """
     data = _make_test_data()
     data["c_rev_stat"] = ["R"]
@@ -158,9 +209,44 @@ def case_table_transforms_annual_report_logs_rev_stat_r_lodged_reviewed():
     return (data, {"status": "LODGED", "reviewstatus": "REVIEWED"})
 
 
-def case_table_transforms_annual_report_logs_rev_stat_g_lodged_reviewed():
+def case_table_transforms_annual_report_logs_rev_stat_r_no_dates_set():
     """
-    rev stat = 'G', at least one rcvd date col set, lodge date set, review date set
+    rev stat = 'R', rcvd date not set, lodge date not set, review date not set
+    """
+    data = _make_test_data()
+    data["c_rev_stat"] = ["R"]
+
+    return (data, {"status": "OVERDUE", "reviewstatus": None})
+
+
+def case_table_transforms_annual_report_logs_rev_stat_r_no_review_date():
+    """
+    rev stat = 'R', rcvd date set, lodge date set, review date not set
+    """
+    data = _make_test_data()
+    data["c_rev_stat"] = ["R"]
+    data["c_rcvd_date"] = [SEVENTY_ONE_WORKING_DAYS_AGO]
+    data["c_rcvd_date1"] = [THIRTY_WORKING_DAYS_AGO]
+    data["c_lodge_date"] = [THIRTY_WORKING_DAYS_AGO]
+
+    return (data, {"status": "OVERDUE", "reviewstatus": None})
+
+
+def case_table_transforms_annual_report_logs_rev_stat_r_no_lodge_or_review_dates():
+    """
+    rev stat = 'R', rcvd date set, lodge date not set, review date not set
+    """
+    data = _make_test_data()
+    data["c_rev_stat"] = ["R"]
+    data["c_rcvd_date"] = [SEVENTY_ONE_WORKING_DAYS_AGO]
+    data["c_rcvd_date1"] = [THIRTY_WORKING_DAYS_AGO]
+
+    return (data, {"status": "DUE", "reviewstatus": "STAFF_REFERRED"})
+
+
+def case_table_transforms_annual_report_logs_rev_stat_g_all_dates_set():
+    """
+    rev stat = 'G', at least one rcvd date set, lodge date set, review date set
     """
     data = _make_test_data()
     data["c_rev_stat"] = ["G"]
@@ -172,9 +258,22 @@ def case_table_transforms_annual_report_logs_rev_stat_g_lodged_reviewed():
     return (data, {"status": "LODGED", "reviewstatus": "REVIEWED"})
 
 
-def case_table_transforms_annual_report_logs_rev_stat_m_lodged_reviewed():
+def case_table_transforms_annual_report_logs_rev_stat_g_no_review_date():
     """
-    rev stat = 'M', at least one rcvd date col set, lodge date set, review date set
+    rev stat = 'G', at least one rcvd date set, lodge date set, review date not set
+    """
+    data = _make_test_data()
+    data["c_rev_stat"] = ["G"]
+    data["c_rcvd_date"] = [SEVENTY_ONE_WORKING_DAYS_AGO]
+    data["c_rcvd_date1"] = [THIRTY_WORKING_DAYS_AGO]
+    data["c_lodge_date"] = [THIRTY_WORKING_DAYS_AGO]
+
+    return (data, {"status": "LODGED", "reviewstatus": "STAFF_REFERRED"})
+
+
+def case_table_transforms_annual_report_logs_rev_stat_m_all_dates_set():
+    """
+    rev stat = 'M', at least one rcvd date set, lodge date set, review date set
     """
     data = _make_test_data()
     data["c_rev_stat"] = ["M"]
@@ -186,7 +285,21 @@ def case_table_transforms_annual_report_logs_rev_stat_m_lodged_reviewed():
     return (data, {"status": "LODGED", "reviewstatus": "REVIEWED"})
 
 
-def case_table_transforms_annual_report_logs_abandoned_no_review():
+def case_table_transforms_annual_report_logs_rev_stat_x_all_dates_set():
+    """
+    rev stat = 'X', at least one rcvd date set, lodge date set, review date set
+    """
+    data = _make_test_data()
+    data["c_rev_stat"] = ["X"]
+    data["c_rcvd_date"] = [SEVENTY_ONE_WORKING_DAYS_AGO]
+    data["c_rcvd_date1"] = [THIRTY_WORKING_DAYS_AGO]
+    data["c_lodge_date"] = [THIRTY_WORKING_DAYS_AGO]
+    data["c_review_date"] = [FOURTEEN_WORKING_DAYS_AGO]
+
+    return (data, {"status": "ABANDONED", "reviewstatus": "NO_REVIEW"})
+
+
+def case_table_transforms_annual_report_logs_rev_stat_x_no_dates_set():
     """
     rev stat = 'X', no date cols set
     """
@@ -196,7 +309,7 @@ def case_table_transforms_annual_report_logs_abandoned_no_review():
     return (data, {"status": "ABANDONED", "reviewstatus": "NO_REVIEW"})
 
 
-def case_table_transforms_annual_report_logs_pending_staff_preselected():
+def case_table_transforms_annual_report_logs_rev_stat_not_set():
     """
     rev stat not set, end date in the future, other date cols not set, `Next Yr` is "Y"
     """

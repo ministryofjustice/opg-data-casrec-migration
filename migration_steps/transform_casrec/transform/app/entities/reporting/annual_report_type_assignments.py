@@ -72,7 +72,12 @@ def calculate_report_types(report_logs_df: pd.DataFrame) -> pd.DataFrame:
             latest_row = group.loc[group["end_date"].idxmax()].copy()
             latest_row["reporttype"] = None
 
-        report_type_assignments_df = report_type_assignments_df.append(latest_row)
+        # Convert the row to a dataframe and transpose it so that the
+        # rows become columns (by default, to_frame() creates one row
+        # in the output DataFrame per column in the original Series)
+        report_type_assignments_df = pd.concat(
+            [report_type_assignments_df, latest_row.to_frame().transpose()]
+        )
 
     # Cast annualreport_id to correct datatype
     report_type_assignments_df["annualreport_id"] = report_type_assignments_df[
