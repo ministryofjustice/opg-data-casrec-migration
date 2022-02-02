@@ -234,6 +234,7 @@ workflows:
       - tag_image_for_environment:
           name: tag image for qa
           environment_tag: qa
+          previous_tag: main
           requires: [migration - response api tests preproduction]
       - approve:
           name: approve qa kick off
@@ -431,6 +432,7 @@ workflows:
       - tag_image_for_environment:
           name: tag image for production
           environment_tag: production
+          previous_tag: qa
           requires: [migration - validation qa]
       - run_elasticsearch_reset:
           name: full reindex elasticsearch qa
@@ -1025,11 +1027,16 @@ jobs:
         description: environment tag for where image can be used
         type: string
         default: "development"
+      previous_tag:
+        description: environment tag for where image can be used
+        type: string
+        default: "development"
     environment:
       AWS_REGION: eu-west-1
       AWS_CONFIG_FILE: ~/project/aws_config
       AWS_REGISTRY: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
       ENVIRONMENT_TAG: << parameters.environment_tag >>
+      PREVIOUS_TAG: << parameters.previous_tag >>
     working_directory: ~/project
     steps:
       - checkout
@@ -1056,7 +1063,7 @@ jobs:
       - run:
           name: Retag images
           command: |
-            for i in `docker image ls | grep main- | awk '{print $1":"$2}'`
+            for i in `docker image ls | grep "${PREVIOUS_TAG}-" | awk '{print $1":"$2}'`
             do
               docker tag $i `echo $i | awk '-F:' '{print $1":"}'`${NEW_TAG}
             done
@@ -1325,6 +1332,9 @@ jobs:
       - when:
           condition: << parameters.push_mappings >>
           steps:
+            - run:
+                name: Install requirements
+                command: pip install boto3 click
             - run:
                 name: zip and upload mappings zip file
                 command: python3 upload_mappings.py --role migrations-ci

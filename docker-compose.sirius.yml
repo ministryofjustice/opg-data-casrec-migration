@@ -141,3 +141,9 @@ services:
       SIRIUS_DB_PORT: 5432
       ENVIRONMENT: local
     depends_on: [casrec_db]
+  unit_tests:
+    build:
+      context: ./migration_steps
+      dockerfile: unit-tests-dockerfile
+    environment:
+      ENVIRONMENT: local
