@@ -45,15 +45,12 @@ def get_post_data(entity):
                     "clientAccommodation": {
                         "handle": "HOSTEL",
                         "label": "Hostel",
-                        "deprecated": False
+                        "deprecated": False,
                     },
                     "medicalCondition": "",
                     "memorablePhrase": "",
                     "maritalStatus": "Divorced",
-                    "clientStatus": {
-                        "handle": "ACTIVE",
-                        "label": "Active"
-                    },
+                    "clientStatus": {"handle": "ACTIVE", "label": "Active"},
                     "statusDate": "",
                     "correspondenceByPost": True,
                     "correspondenceByEmail": "",
@@ -73,12 +70,12 @@ def get_post_data(entity):
                         "audioTape": True,
                         "largePrint": "",
                         "hearingImpaired": "",
-                        "spellingOfNameRequiresCare": ""
-                    }
+                        "spellingOfNameRequiresCare": "",
+                    },
                 },
-                "url":             "clients",
+                "url": "clients",
                 "expected_status": 201,
-                "source": None
+                "source": None,
             },
         ],
         "death": [
@@ -90,17 +87,14 @@ def get_post_data(entity):
                     "dateOfDeath": "09/08/2021",
                     "dateDeathCertificateReceived": "",
                     "dateNotified": "09/08/2021",
-                    "notifiedBy": {
-                      "handle": "DEPUTY",
-                      "label": "Deputy"
-                    },
+                    "notifiedBy": {"handle": "DEPUTY", "label": "Deputy"},
                     "notifiedByOther": "",
                     "notificationMethod": "Phone",
-                    "notes": ""
+                    "notes": "",
                 },
-                "url":             "persons/{id}/death-notification",
+                "url": "persons/{id}/death-notification",
                 "expected_status": 201,
-                "source":          "clients",
+                "source": "clients",
                 "case_references": ["10138356"],
             }
         ],
@@ -158,7 +152,7 @@ def get_post_data(entity):
         ],
         "visits": [
             {
-                "title": "Create New Orders",
+                "title": "Create New Visit",
                 "data": {
                     "visitType": {"handle": "VT-SUP", "label": "Supervision"},
                     "visitSubType": {"handle": "VST-PA", "label": "PA Visit"},
@@ -168,8 +162,21 @@ def get_post_data(entity):
                 "url": "clients/{id}/visits",
                 "expected_status": 201,
                 "source": "clients",
-                "case_references": ["10013583"],
-            }
+                "case_references": ["10285929"],
+            },
+            {
+                "title": "Extend Report Due Date",
+                "data": {
+                    "extendedVisitReportDueDate": "18/09/2008",
+                    "reasonForVisitReportDueDateExtension": "<p>For no apparent reason</p>",
+                },
+                "url": "clients/{id}/visits/{id2}/extend-visit-report-due-date",
+                "source": "clients",
+                "id2_url": "clients/{id}/visits",
+                "id2_json_path": '[0]["id"]',
+                "expected_status": 200,
+                "case_references": ["10363460"],
+            },
         ],
         "invoice": [
             {
@@ -251,6 +258,84 @@ def get_put_data(entity):
                 "id2_url": None,
                 "id2_json_path": None,
                 "case_references": ["10036052"],
+            },
+        ],
+        "reports": [
+            {
+                "title": "Lodge a Report",
+                "data": {
+                    "digidepsReport": True,
+                    "dateReportLodged": "20/05/2018",
+                    "dateReportReceived": "20/05/2018",
+                    "lodgedStatus": {"handle": "ACKNOWLEDGED", "label": "Acknowledged"},
+                    "reasonForDetermination": "<p>valid reason</p>",
+                    "bankStatementsReceived": False,
+                    "deadlineDate": None,
+                    "resubmittedDate": None,
+                    "bankStatementDeadlineDate": None,
+                },
+                "url": "clients/{id}/annual-reports/{id2}/lodge",
+                "expected_status": 200,
+                "source": "clients",
+                "id2_url": "clients/{id}/annual-reports",
+                "id2_json_path": '[0]["id"]',
+                "case_references": ["13034690"],
+            },
+            {
+                "title": "Update Lodging Details",
+                "data": {
+                    "digidepsReport": True,
+                    "dateReportLodged": "20/05/2018",
+                    "dateReportReceived": "20/05/2018",
+                    "lodgedStatus": {"handle": "INCOMPLETE", "label": "Incomplete"},
+                    "reasonForDetermination": "<p>good reason</p>",
+                    "bankStatementsReceived": False,
+                    "deadlineDate": "01/01/2024",
+                    "resubmittedDate": "01/01/2020",
+                    "bankStatementDeadlineDate": None,
+                },
+                "url": "clients/{id}/annual-reports/{id2}/lodge",
+                "expected_status": 200,
+                "source": "clients",
+                "id2_url": "clients/{id}/annual-reports",
+                "id2_json_path": '[0]["id"]',
+                "case_references": ["13034690"],
+            },
+            {
+                "title": "Abandon a Report",
+                "data": {
+                    "abandonedDate": "03/02/2022",
+                    "reasonForAbandonment": "<p>Testing</p>",
+                },
+                "url": "clients/{id}/annual-reports/{id2}/abandon",
+                "expected_status": 200,
+                "source": "clients",
+                "id2_url": "clients/{id}/annual-reports",
+                "id2_json_path": '[0]["id"]',
+                "case_references": ["11522637"],
+            },
+        ],
+        "visits": [
+            {
+                "title": "Edit a Visit",
+                "data": {
+                    "whoToVisit": {"handle": "VPT-CLIENT", "label": "Client"},
+                    "visitDueDate": None,
+                    "visitVisitorAllocated": "Jack Jackson",
+                    "visitCommissionDate": "08/06/2009",
+                    "visitOutcome": None,
+                    "visitCancellationReason": None,
+                    "visitCompletedDate": None,
+                    "visitReportReceivedDate": "02/08/2009",
+                    "visitReportMarkedAs": {"handle": "AMBER", "label": "Amber"},
+                    "visitReportReviewedDate": "02/08/2009",
+                },
+                "url": "clients/{id}/visits/{id2}",
+                "expected_status": 200,
+                "source": "clients",
+                "id2_url": "clients/{id}/visits",
+                "id2_json_path": '[0]["id"]',
+                "case_references": ["13259818"],
             },
         ],
         "bonds": [
@@ -486,7 +571,8 @@ def main():
         "death",
         "supervision",
         "crec",
-        "invoice"
+        "invoice",
+        "visits" "reports",
     ]
 
     api_tests = ApiTests()

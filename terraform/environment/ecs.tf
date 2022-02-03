@@ -243,7 +243,6 @@ data "aws_security_group" "casrec_load_db" {
 }
 
 resource "aws_security_group_rule" "etl_to_sirius_db_ingress" {
-  count                    = local.account.name == "production" ? 0 : 1
   type                     = "ingress"
   protocol                 = "tcp"
   description              = "ETL direct access to Sirius DB for migration"
@@ -262,7 +261,6 @@ data "aws_security_group" "sirius_frontend" {
 }
 
 resource "aws_security_group_rule" "etl_to_frontend_sirius_ingress" {
-  count                    = local.account.name == "production" ? 0 : 1
   type                     = "ingress"
   protocol                 = "tcp"
   description              = "ETL direct access to frontend for API tests"

@@ -80,7 +80,6 @@ resource "aws_iam_role_policy" "state_machine" {
   role   = aws_iam_role.state_machine.id
 }
 
-
 resource "aws_sfn_state_machine" "casrec_migration" {
   name       = "casrec-mig-state-machine-${local.account.name}"
   role_arn   = aws_iam_role.state_machine.arn

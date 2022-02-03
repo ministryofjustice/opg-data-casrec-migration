@@ -33,7 +33,7 @@ locals {
       },
       {
         name      = "SIRIUS_DB_PASSWORD"
-        valueFrom = data.aws_secretsmanager_secret.sirius_db.arn
+        valueFrom = local.sirius_db_password
       },
       {
         name      = "API_TEST_PASSWORD"
@@ -59,7 +59,7 @@ locals {
       },
       {
         name  = "SIRIUS_DB_HOST",
-        value = local.account.name == "production" ? "NOT_SET" : data.aws_rds_cluster.sirius.endpoint
+        value = local.sirius_db_endpoint
       },
       {
         name  = "SIRIUS_DB_PORT",

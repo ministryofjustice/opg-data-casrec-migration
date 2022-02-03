@@ -34,7 +34,6 @@ data "aws_security_group" "cloud9" {
 // Access to frontend for Cloud9
 
 resource "aws_security_group_rule" "cloud9_to_frontend_sirius_ingress" {
-  count                    = local.account.name == "production" ? 0 : 1
   type                     = "ingress"
   protocol                 = "tcp"
   description              = "Cloud9 direct access to frontend for manual API test runs"
