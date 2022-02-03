@@ -679,7 +679,7 @@ orbs:
           - run:
               name: Get template file
               command: |
-                terraform apply -target=local_file.output
+                terraform apply
           - run:
               name: Install ecs-runner
               command: |

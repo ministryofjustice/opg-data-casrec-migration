@@ -48,6 +48,7 @@ from client_status_fixtures import (
     CLIENT_STATUS_FIXTURES_ORDER,
     CLIENT_STATUS_FIXTURES_DEATH,
 )
+from finance_credit_ledger_fixtures import FINANCE_CREDIT_LEDGER_FIXTURES
 import custom_logger
 from helpers import get_config, log_title
 
@@ -77,6 +78,7 @@ ALL_FIXTURES = [
     CLIENT_VISITS_FIXTURES,
     CLIENT_STATUS_FIXTURES_ORDER,
     CLIENT_STATUS_FIXTURES_DEATH,
+    FINANCE_CREDIT_LEDGER_FIXTURES,
 ]
 
 
