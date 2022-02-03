@@ -1,5 +1,17 @@
 endpoint,entity_ref,json_locator,test_purpose,api_response
-/api/v1/finance/{id}/invoices,13547686,[*].feeType,dev_api_tests,AD
-/api/v1/finance/{id}/invoices,13567819,[*].reference,dev_api_tests,AD53590/20
-/api/v1/finance/{id}/invoices,94029163,[*].ledgerEntryAllocations.[*].ledgerEntry.dateTime,dev_api_tests,2020-03-23T00:00:00+00:00
-/api/v1/finance/{id}/invoices,13082997,[*].amount,dev_api_tests,100|320
+/api/v1/finance/{id}/invoices,13547686,[*].feeType,basic_data_check,AD
+/api/v1/finance/{id}/invoices,13567819,[*].reference,basic_data_check,AD53590/20
+/api/v1/finance/{id}/invoices,94029163,[*].ledgerEntryAllocations.[*].ledgerEntry.dateTime,basic_data_check,2020-03-23T00:00:00+00:00
+/api/v1/finance/{id}/invoices,13082997,[*].amount,basic_data_check,100|320
+/api/v1/finance/{id}/finance-discounts,13456190,[*].startDate,exemption_start,01/04/2021
+/api/v1/finance/{id}/finance-discounts,13456190,[*].endDate,exemption_end,31/03/2022
+/api/v1/finance/{id}/finance-discounts,13456190,[*].discountType.handle,exemption_handle,EXEMPTION
+/api/v1/finance/{id}/finance-discounts,10185735,[*].startDate,exemption_start,01/04/2021
+/api/v1/finance/{id}/finance-discounts,10185735,[*].endDate,exemption_end,31/03/2022
+/api/v1/finance/{id}/finance-discounts,10185735,[*].discountType.handle,exemption_handle,REMISSION
+/api/v1/finance/{id}/ledger-entries,10072548,[*].type.handle,entry_type,CREDIT REMISSION
+/api/v1/finance/{id}/ledger-entries,10090422,[*].type.handle,entry_type,CREDIT REMISSION
+/api/v1/finance/{id}/ledger-entries,10184300,[*].type.handle,entry_type,CREDIT MEMO
+/api/v1/finance/{id}/ledger-entries,10297297,[*].type.handle,entry_type,CREDIT MEMO
+/api/v1/finance/{id}/ledger-entries,13399214,[*].type.handle,entry_type,CREDIT WRITE OFF
+/api/v1/finance/{id}/ledger-entries,13410324,[*].type.handle,entry_type,CREDIT WRITE OFF

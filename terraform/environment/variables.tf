@@ -28,6 +28,9 @@ locals {
   }
 
   default_tags = merge(local.mandatory_moj_tags, local.optional_tags)
+
+  sirius_db_endpoint = local.account.name == "production" ? "NOT_SET" : data.aws_rds_cluster.sirius.endpoint
+  sirius_db_password = local.account.name == "production" ? "NOT_SET" : data.aws_secretsmanager_secret.sirius_db.arn
 }
 
 variable "accounts" {
