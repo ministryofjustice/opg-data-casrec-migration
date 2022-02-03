@@ -62,10 +62,10 @@ def main():
     )
     log.info(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
-    if os.environ.get("ENVIRONMENT") in ["preproduction", "preqa"]:
+    if os.environ.get("ENVIRONMENT") in ["preproduction", "preqa", "qa"]:
         # Currently, it takes too long to run event deletions and no amount of indexing or using different joins helps.
         # It's just a huge amount of data in the events table, so we will take the practical approach
-        # of just truncating it for our most frequent deploys (preproduction and preqa)
+        # of just truncating it for our most frequent deploys
         log.info(f"Truncating the events table for speed")
         target_db_engine.execute("TRUNCATE TABLE events;")
 
