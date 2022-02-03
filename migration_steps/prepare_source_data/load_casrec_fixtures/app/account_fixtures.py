@@ -14,11 +14,18 @@ _end_date_thirty_working_days_ago = np.busday_offset(_now, -30).astype(datetime)
 _end_date_eighty_working_days_ago = np.busday_offset(_now, -80).astype(datetime)
 
 ACCOUNT_FIXTURES = {
-    # get the latest account for a case; note that the column names here are
+    # get the latest account for a case; note that the selected column names here are
     # used to construct the where clause for the update query, so should match actual
     # column names in the original table (even if you're doing an aggregation
     # of some kind)
-    "source_query": 'SELECT "Case", MAX("End Date") AS "End Date" FROM {schema}.account WHERE "Case" = \'{case}\' GROUP BY "Case"',
+    "source_query": """
+        SELECT matched_case AS "Case", MAX(end_date) AS "End Date" FROM (
+            SELECT "Case" AS matched_case, "End Date" AS end_date
+            FROM {schema}.account
+            WHERE "Case" = '{case}' AND "Rev Stat" = '{revstat}'
+        ) AS matches
+        GROUP BY matches.matched_case
+    """,
     # set an account's fields to fixture values
     "update_query": "UPDATE {schema}.account SET {set_clause} WHERE {where_clause}",
     "updates": [
@@ -28,7 +35,7 @@ ACCOUNT_FIXTURES = {
         # Sirius annual_report_log records with the status and reviewstatus shown
         {
             # status=PENDING, reviewstatus=NO_REVIEW
-            "source_criteria": {"case": "94055780"},
+            "source_criteria": {"case": "94055780", "revstat": "N"},
             "set": {
                 "End Date": _end_date_future.strftime("%Y-%m-%d"),
                 "Lodge Date": None,
@@ -38,7 +45,7 @@ ACCOUNT_FIXTURES = {
         },
         {
             # status=DUE, reviewstatus=NO_REVIEW
-            "source_criteria": {"case": "10005928"},
+            "source_criteria": {"case": "10005928", "revstat": "N"},
             "set": {
                 "End Date": _end_date_ten_working_days_ago.strftime("%Y-%m-%d"),
                 "Lodge Date": None,
@@ -48,7 +55,7 @@ ACCOUNT_FIXTURES = {
         },
         {
             # status=OVERDUE, reviewstatus=NO_REVIEW
-            "source_criteria": {"case": "10461469"},
+            "source_criteria": {"case": "10461469", "revstat": "N"},
             "set": {
                 "End Date": _end_date_thirty_working_days_ago.strftime("%Y-%m-%d"),
                 "Lodge Date": None,
@@ -58,11 +65,20 @@ ACCOUNT_FIXTURES = {
         },
         {
             # status=NON_COMPLIANT, reviewstatus=NO_REVIEW
-            "source_criteria": {"case": "97200058"},
+            "source_criteria": {"case": "97200058", "revstat": "N"},
             "set": {
                 "End Date": _end_date_eighty_working_days_ago.strftime("%Y-%m-%d"),
                 "Lodge Date": None,
                 "Rcvd Date": None,
+                "Review Date": None,
+            },
+        },
+        {
+            # rev stat 'S' -> status=DUE, reviewstatus=STAFF_REFERRED (IN-1136 rule 6)
+            "source_criteria": {"case": "12500332", "revstat": "S"},
+            "set": {
+                "Lodge Date": None,
+                "Rcvd Date": "2020-03-04",
                 "Review Date": None,
             },
         },
@@ -72,7 +88,7 @@ ACCOUNT_FIXTURES = {
         # Sirius annual_report_log records with the lodgedstatus shown
         {
             # arld rule 1.6: lodgedstatus=ACKNOWLEDGED
-            "source_criteria": {"case": "10016431"},
+            "source_criteria": {"case": "10016431", "revstat": "N"},
             "set": {
                 "Rev Stat": "N",
                 "Rcvd Date": "2022-01-05",
@@ -82,7 +98,7 @@ ACCOUNT_FIXTURES = {
         },
         {
             # arld rule 1.7: lodgedstatus=INCOMPLETE
-            "source_criteria": {"case": "10233264"},
+            "source_criteria": {"case": "10233264", "revstat": "N"},
             "set": {
                 "Rev Stat": "I",
                 "Rcvd Date": "2022-01-05",
@@ -92,7 +108,7 @@ ACCOUNT_FIXTURES = {
         },
         {
             # arld rule 1.8: rev stat="S", lodgedstatus=REFERRED_FOR_REVIEW
-            "source_criteria": {"case": "95000400"},
+            "source_criteria": {"case": "95000400", "revstat": "N"},
             "set": {
                 "Rev Stat": "S",
                 "Rcvd Date": "2022-01-05",
@@ -101,7 +117,7 @@ ACCOUNT_FIXTURES = {
         },
         {
             # arld rule 1.9: rev stat="R", lodgedstatus=REFERRED_FOR_REVIEW
-            "source_criteria": {"case": "10050512"},
+            "source_criteria": {"case": "10050512", "revstat": "N"},
             "set": {
                 "Rev Stat": "R",
                 "Rcvd Date": "2022-01-05",
@@ -111,7 +127,7 @@ ACCOUNT_FIXTURES = {
         },
         {
             # arld rule 1.9: rev stat="G", lodgedstatus=REFERRED_FOR_REVIEW
-            "source_criteria": {"case": "94040677"},
+            "source_criteria": {"case": "94040677", "revstat": "R"},
             "set": {
                 "Rev Stat": "G",
                 "Rcvd Date": "2022-01-05",
@@ -121,7 +137,7 @@ ACCOUNT_FIXTURES = {
         },
         {
             # arld rule 1.9: rev stat="M", lodgedstatus=REFERRED_FOR_REVIEW
-            "source_criteria": {"case": "1119959T"},
+            "source_criteria": {"case": "1119959T", "revstat": "N"},
             "set": {
                 "Rev Stat": "M",
                 "Rcvd Date": "2022-01-05",
@@ -131,7 +147,7 @@ ACCOUNT_FIXTURES = {
         },
         {
             # arld rule 2.1: lodgedstatus=INCOMPLETE
-            "source_criteria": {"case": "12022071"},
+            "source_criteria": {"case": "12022071", "revstat": "I"},
             "set": {
                 "Revise Date": "2022-01-05",
                 "Further Code": "2",
@@ -153,7 +169,7 @@ ACCOUNT_FIXTURES = {
         },
         {
             # arld rule 2.2: lodgedstatus=INCOMPLETE
-            "source_criteria": {"case": "11508154"},
+            "source_criteria": {"case": "11508154", "revstat": "S"},
             "set": {
                 "Revise Date": "2022-01-05",
                 "Further Code": "3",
@@ -169,7 +185,7 @@ ACCOUNT_FIXTURES = {
         },
         {
             # arld rule 2.3: lodgedstatus=REFERRED_FOR_REVIEW
-            "source_criteria": {"case": "10065868"},
+            "source_criteria": {"case": "10065868", "revstat": "I"},
             "set": {
                 "Revise Date": "2022-01-05",
                 "Further Code": "1",
@@ -186,7 +202,7 @@ ACCOUNT_FIXTURES = {
         },
         {
             # arld rule 2.4: lodgedstatus=REFERRED_FOR_REVIEW
-            "source_criteria": {"case": "10015094"},
+            "source_criteria": {"case": "10015094", "revstat": "I"},
             "set": {
                 "Revise Date": "2022-01-06",
                 "Further Code": "8",
@@ -197,7 +213,7 @@ ACCOUNT_FIXTURES = {
         },
         {
             # arld rule 2.5: lodgedstatus=REFERRED_FOR_REVIEW
-            "source_criteria": {"case": "10011951"},
+            "source_criteria": {"case": "10011951", "revstat": "I"},
             "set": {
                 "Revise Date": None,
                 "Further Code": None,

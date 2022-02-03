@@ -73,5 +73,14 @@
     },
     "J-00-2-55-70": {
         "sirius_mapping": "MINIMAL"
+    },
+    "60-VW510-115151-000-0000": {
+        "sirius_mapping": ""
+    },
+    "60-VW510-115152-000-0000": {
+        "sirius_mapping": "GENERAL"
+    },
+    "60-VW510-115157-000-0000": {
+        "sirius_mapping": "MINIMAL"
     }
 }

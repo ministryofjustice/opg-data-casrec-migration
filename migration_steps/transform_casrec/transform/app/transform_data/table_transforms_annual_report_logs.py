@@ -118,20 +118,102 @@ _mappings = [
         ],
         "output_cols": {"status": "LODGED", "reviewstatus": "NO_REVIEW"},
     },
+    # rule 5 from IN-1136
+    # 'N' rev stat with rcvd date, lodge date and review date set
+    # -> status="LODGED", reviewstatus=NULL
+    {
+        "criteria": [
+            'c_rev_stat == "N"',
+            {"any_set": _rcvd_date_cols},
+            {"any_set": ["c_lodge_date"]},
+            {"any_set": ["c_review_date"]},
+        ],
+        "output_cols": {"status": "LODGED", "reviewstatus": None},
+    },
     # table 1, row 7
     {
         "criteria": [
             'c_rev_stat == "I"',
             {"any_set": _rcvd_date_cols},
             {"any_set": ["c_lodge_date"]},
-            {"all_unset": ["c_review_date"]},
         ],
         "output_cols": {"status": "INCOMPLETE", "reviewstatus": "NO_REVIEW"},
+    },
+    # rule 3 from IN-1136
+    # 'R' rev stat with rcvd date and lodge date but no review date
+    # -> status="OVERDUE", reviewstatus=NULL
+    {
+        "criteria": [
+            'c_rev_stat == "R"',
+            {"any_set": _rcvd_date_cols},
+            {"any_set": ["c_lodge_date"]},
+            {"all_unset": ["c_review_date"]},
+        ],
+        "output_cols": {"status": "OVERDUE", "reviewstatus": None},
+    },
+    # rule 8 from IN-1136
+    # 'R' Rev Stat with Rcvd Date but no Lodge Date or Review Date
+    # -> status="DUE", reviewstatus="STAFF_REFERRED"
+    {
+        "criteria": [
+            'c_rev_stat == "R"',
+            {"any_set": _rcvd_date_cols},
+            {"all_unset": ["c_lodge_date"]},
+            {"all_unset": ["c_review_date"]},
+        ],
+        "output_cols": {"status": "DUE", "reviewstatus": "STAFF_REFERRED"},
+    },
+    # rule 2 from IN-1136
+    # 'R' rev stat with no rcvd date and no lodge date and no review date
+    # -> status="OVERDUE", reviewstatus=NULL
+    {
+        "criteria": [
+            'c_rev_stat == "R"',
+            {"all_unset": _rcvd_date_cols},
+            {"all_unset": ["c_lodge_date"]},
+            {"all_unset": ["c_review_date"]},
+        ],
+        "output_cols": {"status": "OVERDUE", "reviewstatus": None},
     },
     # table 1, row 8
     {
         "criteria": [
             'c_rev_stat == "S"',
+            {"any_set": _rcvd_date_cols},
+            {"any_set": ["c_lodge_date"]},
+            {"all_unset": ["c_review_date"]},
+        ],
+        "output_cols": {"status": "LODGED", "reviewstatus": "STAFF_REFERRED"},
+    },
+    # rule 4 from IN-1136
+    # 'S' rev stat with null rcvd date and null lodge date
+    # -> status="OVERDUE", reviewstatus=NULL
+    {
+        "criteria": [
+            'c_rev_stat == "S"',
+            {"all_unset": _rcvd_date_cols},
+            {"all_unset": ["c_lodge_date"]},
+        ],
+        "output_cols": {"status": "OVERDUE", "reviewstatus": None},
+    },
+    # rule 6 from IN-1136
+    # 'S' rev stat with a rcvd date and no lodge date and no review date
+    # -> status="DUE", reviewstatus="STAFF_REFERRED"
+    {
+        "criteria": [
+            'c_rev_stat == "S"',
+            {"any_set": _rcvd_date_cols},
+            {"all_unset": ["c_lodge_date"]},
+            {"all_unset": ["c_review_date"]},
+        ],
+        "output_cols": {"status": "DUE", "reviewstatus": "STAFF_REFERRED"},
+    },
+    # rule 7 from IN-1136
+    # 'G' rev stat with rcvd date and lodge date and no review date
+    # -> status="LODGED", reviewstatus="STAFF_REFERRED"
+    {
+        "criteria": [
+            'c_rev_stat == "G"',
             {"any_set": _rcvd_date_cols},
             {"any_set": ["c_lodge_date"]},
             {"all_unset": ["c_review_date"]},
@@ -148,9 +230,9 @@ _mappings = [
         ],
         "output_cols": {"status": "LODGED", "reviewstatus": "REVIEWED"},
     },
-    # table 1, row 11
+    # table 1, row 11 / rule 9 from IN-1136
     {
-        "criteria": ['c_rev_stat == "X"', {"all_unset": _all_unset_date_cols}],
+        "criteria": ['c_rev_stat == "X"'],
         "output_cols": {"status": "ABANDONED", "reviewstatus": "NO_REVIEW"},
     },
     # table 1, row 12
