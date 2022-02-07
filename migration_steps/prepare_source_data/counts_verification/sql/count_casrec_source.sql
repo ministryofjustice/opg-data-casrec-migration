@@ -96,7 +96,9 @@ UPDATE countverification.counts SET {working_column} =
 )+(
     -- deputy
    SELECT COUNT(*) FROM (
-        SELECT DISTINCT d."Email", d."Dep Surname", d."Dep Forename", add."Dep Postcode"
+        SELECT DISTINCT LOWER(TRIM(COALESCE(d."Email", ''))),
+        LOWER(TRIM(COALESCE(d."Dep Surname", ''))),
+        LOWER(TRIM(COALESCE(add."Dep Postcode", '')))
         FROM casrec_csv.deputy_address add
         INNER JOIN casrec_csv.deputyship ds
             ON ds."Dep Addr No" = add."Dep Addr No"
