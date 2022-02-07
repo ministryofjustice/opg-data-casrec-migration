@@ -2,8 +2,7 @@ CREATE TABLE IF NOT EXISTS countverification.cp1_clients (id int);
 INSERT INTO countverification.cp1_clients (id)
 SELECT id FROM persons p
 WHERE p.type = 'actor_client'
-  AND p.caseactorgroup = 'CLIENT-PILOT-ONE'
-  AND COALESCE(p.clientsource, '') != 'CASRECMIGRATION';
+  AND p.caseactorgroup = 'CLIENT-PILOT-ONE';
 CREATE UNIQUE INDEX cp1_clients_idx ON countverification.cp1_clients (id);
 
 CREATE TABLE IF NOT EXISTS countverification.cp1_cases (id int);
@@ -301,7 +300,7 @@ SET {working_column} = (
         ON fp.id = fo.finance_person_id
         INNER JOIN persons p
         ON p.id = fp.person_id
-    ) as a;
+    ) as a
 )
 WHERE supervision_table = 'finance_order';
 
