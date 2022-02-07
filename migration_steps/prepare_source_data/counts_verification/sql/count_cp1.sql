@@ -35,14 +35,6 @@ SET {working_column} = (
 )
 WHERE supervision_table = 'persons_deputies';
 
--- persons (both)
-UPDATE countverification.counts
-SET {working_column} =
-    (SELECT COUNT(*) FROM countverification.cp1_clients)
-    +
-    (SELECT COUNT(*) FROM countverification.cp1_deputies)
-WHERE supervision_table = 'persons';
-
 -- cases
 UPDATE countverification.counts
 SET {working_column} = (

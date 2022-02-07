@@ -1,13 +1,39 @@
-ALTER TABLE countverification.counts DROP COLUMN IF EXISTS result;
-ALTER TABLE countverification.counts ADD COLUMN result varchar(50);
+SELECT
+    supervision_table,
 
-UPDATE countverification.counts
-SET result =
-CASE WHEN cp1_post_delete != cp1_pre_delete THEN 'DELETE ERROR'
-    WHEN non_cp1_post_delete > 0 THEN 'DELETE ERROR'
-    WHEN lay_post_delete != lay_pre_delete THEN 'DELETE ERROR'
-    WHEN lay_post_migrate != lay_post_delete THEN 'MIGRATE ERROR'
-    WHEN cp1_post_migrate != (cp1_post_delete + casrec_pre_migrate) THEN 'MIGRATE ERROR'
-    -- WHEN (casrec_source = -1 OR final_count = -1) THEN 'INCOMPLETE'
-    ELSE 'OK'
-END;
+    -- lay
+    CASE WHEN lay_pre_delete IS NULL THEN 'n/a'
+    ELSE
+        CASE
+            WHEN (lay_post_delete != lay_pre_delete OR lay_post_delete IS NULL) THEN 'DELETE ERROR'
+            WHEN (lay_post_migrate != lay_post_delete OR lay_post_migrate IS NULL) THEN 'MIGRATE ERROR'
+            ELSE 'OK'
+        END
+    END AS  lay_status,
+
+    -- cp1
+    CASE WHEN cp1_pre_delete IS NULL THEN 'n/a'
+    ELSE
+        CASE
+            WHEN (cp1_post_delete != cp1_pre_delete OR cp1_post_delete IS NULL) THEN 'DELETE ERROR'
+            WHEN (
+                cp1_post_migrate != (cp1_post_delete + casrec_pre_migrate)
+                OR cp1_post_migrate IS NULL
+                OR casrec_pre_migrate IS NULL
+                ) THEN 'MIGRATE ERROR'
+            ELSE 'OK'
+        END
+    END AS  cp1_status,
+
+    -- non client-pilot-one
+    CASE WHEN non_cp1_pre_delete IS NULL THEN 'n/a'
+    ELSE
+        CASE
+            WHEN non_cp1_post_delete > 0 THEN 'DELETE ERROR'
+            ELSE 'OK'
+        END
+    END AS  non_cp1_status
+
+FROM countverification.counts
+ORDER BY supervision_table
+;

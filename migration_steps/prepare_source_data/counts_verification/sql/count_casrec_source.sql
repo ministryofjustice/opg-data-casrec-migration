@@ -43,7 +43,7 @@ SELECT CASE
 $$;
 
 ALTER TABLE countverification.counts DROP COLUMN IF EXISTS {working_column};
-ALTER TABLE countverification.counts ADD COLUMN {working_column} int default -1;
+ALTER TABLE countverification.counts ADD COLUMN {working_column} int;
 
 -- persons_clients
 UPDATE countverification.counts SET {working_column} =

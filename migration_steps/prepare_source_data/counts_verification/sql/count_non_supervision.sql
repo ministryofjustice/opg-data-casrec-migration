@@ -15,7 +15,7 @@ SELECT cases.id FROM cases WHERE type != 'order'; -- ~22s
 CREATE UNIQUE INDEX lay_cases_idx ON countverification.lay_cases (id);
 
 ALTER TABLE countverification.counts DROP COLUMN IF EXISTS {working_column};
-ALTER TABLE countverification.counts ADD COLUMN {working_column} int default -1;
+ALTER TABLE countverification.counts ADD COLUMN {working_column} int;
 
 -- persons (both)
 UPDATE countverification.counts

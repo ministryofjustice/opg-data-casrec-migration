@@ -1,6 +1,5 @@
--- dropping and recreating unexpected columns simplifies on local dev where tests may be run out of order
 ALTER TABLE countverification.counts DROP COLUMN IF EXISTS {working_column};
-ALTER TABLE countverification.counts ADD COLUMN {working_column} int NOT NULL DEFAULT -1;
+ALTER TABLE countverification.counts ADD COLUMN {working_column} int;
 
 DROP TABLE IF EXISTS countverification.non_cp1_clients;
 CREATE TABLE IF NOT EXISTS countverification.non_cp1_clients (id int);

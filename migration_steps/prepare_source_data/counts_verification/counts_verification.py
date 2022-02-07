@@ -2,6 +2,7 @@ import os
 import sys
 from pathlib import Path
 import pandas as pd
+import numpy as np
 from tabulate import tabulate
 import psycopg2
 import logging.config
@@ -174,27 +175,35 @@ class CountsVerification:
         self.add_report_column(col)
 
 
-    def calculate_result(self):
-        execute_sql_template(
-            conn=conn_target['connection'],
-            template_filename="calculate_result.sql",
-            replace_tags={}
-        )
-        self.add_report_column("result")
-
-
-    def output_report(self):
+    def output_counts(self):
         cols = ",".join(self.report_columns.keys())
-        df = pd.read_sql(
+
+        df_count_values = pd.read_sql(
             sql=f"SELECT {cols} FROM countverification.counts ORDER BY supervision_table;",
             con=conn_target['connection']
         )
-        report_table = tabulate(
-            df,
+        table = tabulate(
+            df_count_values,
             list(self.report_columns.values()),
             tablefmt="psql"
         )
-        print(report_table)
+        print(table)
+
+
+    def output_report(self):
+        query = open(sql_path / 'calculate_result.sql', 'r')
+        df_results = pd.read_sql_query(
+            query.read(),
+            conn_target['connection']
+        )
+        query.close()
+
+        table = tabulate(
+            df_results,
+            ['Supervision Table', 'LAY', 'Supervision CP1', 'Supervision Non-CP1'],
+            tablefmt="psql"
+        )
+        print(table)
 
 
     def do_pre_delete(self):
@@ -202,7 +211,7 @@ class CountsVerification:
         self.count_cp1_data('pre_delete')
         self.count_non_cp1_data('pre_delete')
         self.count_non_supervision('pre_delete')
-        self.output_report()
+        self.output_counts()
 
 
     def do_post_delete(self):
@@ -210,20 +219,20 @@ class CountsVerification:
         self.count_cp1_data('post_delete')
         self.count_non_cp1_data('post_delete')
         self.count_non_supervision('post_delete')
-        self.output_report()
+        self.output_counts()
 
 
     def do_pre_migration(self):
         self.check_schema()
         self.count_casrec_source('pre_migrate')
-        self.output_report()
+        self.output_counts()
 
 
     def do_post_migration(self):
         self.check_schema()
         self.count_cp1_data('post_migrate')
         self.count_non_supervision('post_migrate')
-        self.calculate_result()
+        self.output_counts()
         self.output_report()
 
 
