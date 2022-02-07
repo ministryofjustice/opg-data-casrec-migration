@@ -1,15 +1,15 @@
 SELECT
     supervision_table,
 
-    -- lay
-    CASE WHEN lay_pre_delete IS NULL THEN 'n/a'
+    -- lpa
+    CASE WHEN lpa_pre_delete IS NULL THEN 'n/a'
     ELSE
         CASE
-            WHEN (lay_post_delete != lay_pre_delete OR lay_post_delete IS NULL) THEN 'DELETE ERROR'
-            WHEN (lay_post_migrate != lay_post_delete OR lay_post_migrate IS NULL) THEN 'MIGRATE ERROR'
+            WHEN (lpa_post_delete != lpa_pre_delete OR lpa_post_delete IS NULL) THEN 'DELETE ERROR'
+            WHEN (lpa_post_migrate != lpa_post_delete OR lpa_post_migrate IS NULL) THEN 'MIGRATE ERROR'
             ELSE 'OK'
         END
-    END AS  lay_status,
+    END AS  lpa_status,
 
     -- cp1
     CASE WHEN cp1_pre_delete IS NULL THEN 'n/a'

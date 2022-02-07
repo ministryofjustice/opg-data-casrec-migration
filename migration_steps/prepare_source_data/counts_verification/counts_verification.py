@@ -133,7 +133,7 @@ class CountsVerification:
 
     def count_non_supervision(self, calling_stage):
         log.info(f"Count Non-Supervision data on {conn_target['name']} ({calling_stage})")
-        col = "lay_" + calling_stage
+        col = "lpa_" + calling_stage
         execute_sql_template(
             conn=conn_target['connection'],
             template_filename="count_non_supervision.sql",
@@ -200,7 +200,7 @@ class CountsVerification:
 
         table = tabulate(
             df_results,
-            ['Supervision Table', 'LAY', 'Supervision CP1', 'Supervision Non-CP1'],
+            ['Supervision Table', 'LPA', 'Supervision CP1', 'Supervision Non-CP1'],
             tablefmt="psql"
         )
         print(table)
