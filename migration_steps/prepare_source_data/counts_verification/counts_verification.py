@@ -32,84 +32,6 @@ conn_target = {
     'connection': psycopg2.connect(config.get_db_connection_string("target"))
 }
 
-def count_final():
-    if not schema_exists(
-        conn=conn_migration,
-        schema=config.schemas['count_verification']
-    ):
-        log.error(f"This step requires Counts Verification Step 2/3 - count Casrec data")
-        log.info(f"{config.schemas['count_verification']} schema not found in casrecmigration DB")
-        log.info(f"Aborting.")
-    else:
-
-        log.info(f"Copy {config.schemas['count_verification']} schema to target DB")
-        copy_schema(
-            log=log,
-            sql_path=current_path / "../../shared/sql",
-            config=config,
-            from_db="migration",
-            from_schema=config.schemas["count_verification"],
-            to_db="target",
-            to_schema=config.schemas["count_verification"],
-        )
-
-        execute_sql_file(sql_path, "count_final.sql", conn_target)
-        log.info(f"Updated count record with final counts form Sirius")
-
-        df = pd.read_sql(
-            sql = "SELECT * FROM countverification.counts ORDER BY supervision_table;",
-            con=conn_target
-        )
-        headers = ["Supervision Table", "CP1 Existing", "Non-CP1 Remaining", "Casrec", "Expected", "Final Count", "Result"]
-        report_table = tabulate(df, headers, tablefmt="psql")
-        print(report_table)
-
-
-def count_non_supervision():
-    log.info("Count Non-Supervision data on target")
-
-
-def count_casrec_source():
-    if not schema_exists(
-            conn=conn_target,
-            schema=config.schemas['count_verification']
-    ):
-        log.error(f"{config.schemas['count_verification']} schema not found in target DB")
-        log.info(f"Skipping remainder of counts verification.")
-    else:
-        log.info("Step 3/4: Count Casrec source data")
-        log.info(f"Copy {config.schemas['count_verification']} schema to casrecmigration DB")
-        copy_schema(
-            log=log,
-            sql_path=current_path / "../../shared/sql",
-            config=config,
-            from_db="target",
-            from_schema=config.schemas["count_verification"],
-            to_db="migration",
-            to_schema=config.schemas["count_verification"],
-        )
-
-        execute_sql_file(sql_path, "count_casrec_source.sql", conn_migration)
-        log.info(f"Updated count record with source data counts.")
-
-        df = pd.read_sql(
-            sql="SELECT * FROM countverification.counts ORDER BY supervision_table;",
-            con=conn_migration
-        )
-
-        headers = ["Supervision Table", "CP1 Existing", "Non-CP1 Remaining", "Casrec"]
-        report_table = tabulate(df, headers, tablefmt="psql")
-        print(report_table)
-
-
-def count_cp1_data(conn, working_column):
-    log.info(f"Count CP1 Supervision data on {conn['name']} ({working_column})")
-    execute_sql_template(
-        conn = conn['connection'],
-        template_filename = "count_cp1.sql",
-        replace_tags = {"working_column": "cp1_" + working_column}
-    )
-
 
 def execute_sql_template(conn, template_filename, replace_tags):
     template = open(sql_path / template_filename, "r")
@@ -138,37 +60,171 @@ def execute_sql_template(conn, template_filename, replace_tags):
     os.remove(sql_path / execution_filename)
 
 
-def count_non_cp1_data():
-    log.info("Count Non-CP1 Supervision data on target")
-    # execute_sql_file(sql_path, "count_non_cp1.sql", conn_target)
-
-
-def reset_schema(conn):
-    log.info(f"Resetting countverification schema on {conn['name']}")
-    execute_sql_file(sql_path, "reset_schema.sql", conn['connection'])
-
-
 class CountsVerification:
 
+    report_columns = {}
+
+    def __init__(self):
+        self.fetch_existing_report_columns()
+
+
+    def fetch_existing_report_columns(self):
+        conn = conn_target['connection']
+        try:
+            cursor = conn.cursor()
+            query = "SELECT column_name FROM information_schema.columns " \
+                    "WHERE table_schema = 'countverification' " \
+                    "AND table_name = 'counts';"
+            cursor.execute(query)
+            for col in cursor.fetchall():
+                self.add_report_column(col[0])
+        except (Exception, psycopg2.DatabaseError) as error:
+            log.error("Error: %s" % error)
+        finally:
+            cursor.close()
+
+
+    def add_report_column(self, col_name):
+        self.report_columns[col_name] = col_name.replace('_', ' ').title()
+
+
+    def reset_schema(self):
+        log.info(f"Resetting countverification schema on {conn_target['name']}")
+        execute_sql_file(sql_path, "schema_down.sql", conn_target['connection'])
+        self.create_schema()
+
+
+    def create_schema(self):
+        execute_sql_file(sql_path, "schema_up.sql", conn_target['connection'])
+        self.report_columns = {}
+        self.add_report_column("supervision_table")
+
+
+    def check_schema(self):
+        if not schema_exists(
+            conn=conn_target['connection'],
+            schema=config.schemas['count_verification']
+        ):
+            self.create_schema()
+
+
+    def count_cp1_data(self, calling_stage):
+        log.info(f"Count CP1 Supervision data on {conn_target['name']} ({calling_stage})")
+        col = "cp1_" + calling_stage
+        execute_sql_template(
+            conn=conn_target['connection'],
+            template_filename="count_cp1.sql",
+            replace_tags={"working_column": col}
+        )
+        self.add_report_column(col)
+
+
+    def count_non_cp1_data(self, calling_stage):
+        log.info(f"Count Non-CP1 Supervision data on {conn_target['name']} ({calling_stage})")
+        col = "non_cp1_" + calling_stage
+        execute_sql_template(
+            conn=conn_target['connection'],
+            template_filename="count_non_cp1.sql",
+            replace_tags={"working_column": col}
+        )
+        self.add_report_column(col)
+
+
+    def count_non_supervision(self, calling_stage):
+        log.info(f"Count Non-Supervision data on {conn_target['name']} ({calling_stage})")
+        col = "lay_" + calling_stage
+        execute_sql_template(
+            conn=conn_target['connection'],
+            template_filename="count_non_supervision.sql",
+            replace_tags={"working_column": col}
+        )
+        self.add_report_column(col)
+
+
+    def count_casrec_source(self, calling_stage):
+        log.info(f"Count Casrec data on {conn_migration['name']} ({calling_stage})")
+
+        copy_schema(
+            log=log,
+            sql_path=current_path / "../../shared/sql",
+            config=config,
+            from_db="target",
+            from_schema=config.schemas["count_verification"],
+            to_db="migration",
+            to_schema=config.schemas["count_verification"],
+        )
+
+        col = "casrec_" + calling_stage
+        execute_sql_template(
+            conn=conn_migration['connection'],
+            template_filename="count_casrec_source.sql",
+            replace_tags={"working_column": col}
+        )
+
+        copy_schema(
+            log=log,
+            sql_path=current_path / "../../shared/sql",
+            config=config,
+            from_db="migration",
+            from_schema=config.schemas["count_verification"],
+            to_db="target",
+            to_schema=config.schemas["count_verification"],
+        )
+
+        self.add_report_column(col)
+
+
+    def calculate_result(self):
+        execute_sql_template(
+            conn=conn_target['connection'],
+            template_filename="calculate_result.sql",
+            replace_tags={}
+        )
+        self.add_report_column("result")
+
+
+    def output_report(self):
+        cols = ",".join(self.report_columns.keys())
+        df = pd.read_sql(
+            sql=f"SELECT {cols} FROM countverification.counts ORDER BY supervision_table;",
+            con=conn_target['connection']
+        )
+        report_table = tabulate(
+            df,
+            list(self.report_columns.values()),
+            tablefmt="psql"
+        )
+        print(report_table)
+
+
     def do_pre_delete(self):
-        reset_schema(conn_migration)
-        reset_schema(conn_target)
-        count_cp1_data(conn_target, 'pre_delete')
-        # count_non_supervision()
+        self.reset_schema()
+        self.count_cp1_data('pre_delete')
+        self.count_non_cp1_data('pre_delete')
+        self.count_non_supervision('pre_delete')
+        self.output_report()
 
 
     def do_post_delete(self):
-        count_cp1_data(conn_target, 'post_delete')
-        # count_non_supervision()
-        # count_non_cp1_data()
+        self.check_schema()
+        self.count_cp1_data('post_delete')
+        self.count_non_cp1_data('post_delete')
+        self.count_non_supervision('post_delete')
+        self.output_report()
 
 
     def do_pre_migration(self):
-        count_casrec_source()
+        self.check_schema()
+        self.count_casrec_source('pre_migrate')
+        self.output_report()
 
 
     def do_post_migration(self):
-        count_final()
+        self.check_schema()
+        self.count_cp1_data('post_migrate')
+        self.count_non_supervision('post_migrate')
+        self.calculate_result()
+        self.output_report()
 
 
     def call_stage(self, stage: str):
