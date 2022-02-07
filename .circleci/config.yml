@@ -1029,7 +1029,7 @@ jobs:
       previous_tag:
         description: environment tag for where image can be used
         type: string
-        default: "development"
+        default: "main"
     environment:
       AWS_REGION: eu-west-1
       AWS_CONFIG_FILE: ~/project/aws_config
