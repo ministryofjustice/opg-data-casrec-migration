@@ -335,3 +335,24 @@ def capitalise_first_letter(
     df = df.drop(columns=[original_col])
 
     return df
+
+
+def coalesce(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Like the SQL COALESCE function, set value of result_col to
+    the first non-empty value from the columns original_cols.
+    """
+
+    def _transform(row):
+        result = None
+
+        for column in original_cols:
+            value = row[column]
+            if value is not None and value != "":
+                result = value
+                break
+
+        row[result_col] = result
+        return row
+
+    return df.apply(_transform, axis=1)

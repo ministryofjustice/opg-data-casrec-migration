@@ -178,6 +178,13 @@ def do_simple_transformations(
                 t["original_columns"], t["aggregate_col"], transformed_df
             )
 
+    if "coalesce" in transformations:
+        log.log(config.VERBOSE, "Applying transformation: coalesce")
+        for t in transformations["coalesce"]:
+            transformed_df = standard_transformations.coalesce(
+                t["original_columns"], t["aggregate_col"], transformed_df
+            )
+
     log.log(
         config.VERBOSE, f"Dataframe size after transformations: {len(transformed_df)}"
     )
