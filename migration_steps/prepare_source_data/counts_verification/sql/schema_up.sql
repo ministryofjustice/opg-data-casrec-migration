@@ -1,5 +1,4 @@
-DROP SCHEMA IF EXISTS countverification CASCADE;
-CREATE SCHEMA countverification;
+CREATE SCHEMA IF NOT EXISTS countverification;
 
 CREATE TABLE IF NOT EXISTS countverification.counts (
     supervision_table varchar(100)
