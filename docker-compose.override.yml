@@ -17,6 +17,7 @@ services:
   initialise:
     volumes:
       - ./migration_steps/initialise_environments:/initialise_environments
+      - ./migration_steps/prepare_source_data/counts_verification:/initialise_environments/counts_verification
       - ./migration_steps/prepare_source_data:/prepare_source_data
       - ./migration_steps/shared:/shared
 
@@ -56,7 +57,7 @@ services:
       - ./migration_steps/validation/post_migration_db_tasks:/validation/post_migration_db_tasks
       - ./migration_steps/validation/post_migration_tests:/validation/post_migration_tests
       - ./migration_steps/validation/validate_db:/validation/validate_db
-      - ./migration_steps/validation/counts_verification:/validation/counts_verification
+      - ./migration_steps/prepare_source_data/counts_verification:/validation/counts_verification
       - ./migration_steps/validation/validate.sh:/validation/validate.sh
       - ./migration_steps/validation/response_api_tests.sh:/validation/response_api_tests.sh
       - ./migration_steps/validation/functional_api_tests.sh:/validation/functional_api_tests.sh

@@ -14,8 +14,6 @@ from utilities.clear_database import clear_tables
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
 
-from quick_validation import check_row_counts
-
 import custom_logger
 import helpers
 from helpers import log_title
@@ -118,13 +116,6 @@ def main(clear, correfs):
 
     log.info(f"Reindex all foreign keys")
     update_fks(db_config=db_config, table_details=all_enabled_tables)
-
-    check_row_counts.count_rows(
-        connection_string=db_config["db_connection_string"],
-        destination_schema=db_config["target_schema"],
-        enabled_entities=allowed_entities,
-        correfs=filtered_correfs,
-    )
 
 
 if __name__ == "__main__":

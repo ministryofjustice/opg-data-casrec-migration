@@ -57,15 +57,3 @@ resource "aws_ssm_parameter" "match_existing_data" {
     ignore_changes = [value]
   }
 }
-
-resource "aws_ssm_parameter" "row_counts" {
-  name  = "${local.account.name}-row-counts"
-  type  = "String"
-  value = "False"
-
-  tags = local.default_tags
-
-  lifecycle {
-    ignore_changes = [value]
-  }
-}

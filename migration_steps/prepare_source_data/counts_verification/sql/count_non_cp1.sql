@@ -1,6 +1,5 @@
--- dropping and recreating unexpected columns simplifies on local dev where tests may be run out of order
-ALTER TABLE countverification.counts DROP COLUMN IF EXISTS non_cp1;
-ALTER TABLE countverification.counts ADD COLUMN non_cp1 int NOT NULL DEFAULT -1;
+ALTER TABLE countverification.counts DROP COLUMN IF EXISTS {working_column};
+ALTER TABLE countverification.counts ADD COLUMN {working_column} int;
 
 DROP TABLE IF EXISTS countverification.non_cp1_clients;
 CREATE TABLE IF NOT EXISTS countverification.non_cp1_clients (id int);
@@ -44,7 +43,7 @@ INSERT INTO countverification.non_cp1_deputies (id) (
 CREATE UNIQUE INDEX non_cp1_deputies_idx ON countverification.non_cp1_deputies (id);
 
 -- persons_clients
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM countverification.non_cp1_clients
@@ -52,7 +51,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'persons_clients';
 
 -- persons_deputies
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT (
         -- regular
@@ -74,7 +73,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'persons_deputies';
 
 -- cases
-UPDATE countverification.counts SET non_cp1 = (
+UPDATE countverification.counts SET {working_column} = (
     SELECT COUNT(*)
     FROM cases
     WHERE client_id IN (
@@ -84,7 +83,7 @@ UPDATE countverification.counts SET non_cp1 = (
 WHERE supervision_table = 'cases';
 
 -- phonenumbers
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     -- client
     SELECT COUNT(*)
@@ -99,7 +98,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'phonenumbers';
 
 -- addresses
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     -- client
     SELECT COUNT(*)
@@ -114,7 +113,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'addresses';
 
 -- supervision_notes
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     -- client
     SELECT COUNT(*)
@@ -129,7 +128,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'supervision_notes';
 
 -- tasks
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM tasks t
@@ -139,7 +138,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'tasks';
 
 -- death notifications
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     -- client
     SELECT COUNT(*)
@@ -154,7 +153,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'death_notifications';
 
 -- warnings
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     -- client
     SELECT COUNT(*)
@@ -171,7 +170,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'warnings';
 
 -- annual_report_logs
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM annual_report_logs arl
@@ -180,7 +179,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'annual_report_logs';
 
 -- annual_report_lodging_details
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM annual_report_lodging_details det
@@ -190,7 +189,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'annual_report_lodging_details';
 
 -- visits
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM visits v
@@ -199,7 +198,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'visits';
 
 -- bonds
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM bonds b
@@ -208,7 +207,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'bonds';
 
 -- feepayer_id
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM countverification.non_cp1_clients cli
@@ -219,7 +218,7 @@ WHERE supervision_table = 'feepayer_id';
 
 -- timeline_event
 -- might be slow because of data in timeline_event table
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM timeline_event
@@ -242,7 +241,7 @@ WHERE supervision_table = 'timeline_event';
 -- WHERE supervision_table = 'timeline_event';
 
 -- person_timeline
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM person_timeline pt
@@ -251,7 +250,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'person_timeline';
 
 -- supervision_level_log
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM supervision_level_log sll
@@ -260,7 +259,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'supervision_level_log';
 
 -- finance_invoice_ad
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM finance_invoice inv
@@ -270,7 +269,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'finance_invoice_ad';
 
 -- finance_invoice_non_ad
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM finance_invoice inv
@@ -280,7 +279,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'finance_invoice_non_ad';
 
 -- finance_remissions
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM finance_remission_exemption rem
@@ -291,7 +290,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'finance_remissions';
 
 -- finance_exemptions
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM finance_remission_exemption rem
@@ -302,7 +301,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'finance_exemptions';
 
 -- finance_ledger_credits
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM finance_ledger lgr
@@ -312,7 +311,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'finance_ledger_credits';
 
 -- finance_allocation_credits
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM finance_ledger_allocation fla
@@ -322,7 +321,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'finance_allocation_credits';
 
 -- finance_person
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM finance_person fp
@@ -331,7 +330,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'finance_person';
 
 -- finance_order
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM finance_order fo
@@ -340,7 +339,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'finance_order';
 
 -- order_deputy
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM order_deputy od
@@ -349,7 +348,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'order_deputy';
 
 -- person_caseitem
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM person_caseitem pci
@@ -358,7 +357,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'person_caseitem';
 
 -- person_warning
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     -- client
     SELECT COUNT(*)
@@ -373,7 +372,7 @@ UPDATE countverification.counts SET non_cp1 =
 WHERE supervision_table = 'person_warning';
 
 -- person_task
-UPDATE countverification.counts SET non_cp1 =
+UPDATE countverification.counts SET {working_column} =
 (
     -- client
     SELECT COUNT(*)

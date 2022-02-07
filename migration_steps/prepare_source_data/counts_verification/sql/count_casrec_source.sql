@@ -1,39 +1,34 @@
--- dropping and recreating unexpected columns simplifies on local dev where tests may be run out of order
-ALTER TABLE countverification.counts DROP COLUMN IF EXISTS expected;
-ALTER TABLE countverification.counts DROP COLUMN IF EXISTS final_count;
-ALTER TABLE countverification.counts DROP COLUMN IF EXISTS result;
-ALTER TABLE countverification.counts DROP COLUMN IF EXISTS casrec_source;
-ALTER TABLE countverification.counts ADD COLUMN casrec_source int NOT NULL DEFAULT -1;
-
-DROP INDEX IF EXISTS countverification.filteredorder_orderno_idx;
-DROP INDEX IF EXISTS countverification.filteredorder_case_idx;
-DROP INDEX IF EXISTS countverification.filtereddeps_deputynumber_idx;
-DROP TABLE IF EXISTS countverification.filtered_orders;
-DROP TABLE IF EXISTS countverification.filtered_deps;
-DROP FUNCTION IF EXISTS countverification.warning_violent_lookup;
-
 -- contains all orders != status of open
-CREATE TABLE IF NOT EXISTS countverification.filtered_orders (
+DROP TABLE IF EXISTS countverification.casrec_orders;
+CREATE TABLE IF NOT EXISTS countverification.casrec_orders (
     "Order No" text,
     "Case" text
 );
-INSERT INTO countverification.filtered_orders ("Order No", "Case")
+INSERT INTO countverification.casrec_orders ("Order No", "Case")
 SELECT "Order No", "Case" FROM casrec_csv.order WHERE "Ord Stat" != 'Open';
-CREATE UNIQUE INDEX filteredorder_orderno_idx ON countverification.filtered_orders ("Order No");
-CREATE INDEX filteredorder_case_idx ON countverification.filtered_orders ("Case");
+
+DROP INDEX IF EXISTS countverification.filteredorder_orderno_idx;
+CREATE UNIQUE INDEX filteredorder_orderno_idx ON countverification.casrec_orders ("Order No");
+
+DROP INDEX IF EXISTS countverification.filteredorder_case_idx;
+CREATE INDEX filteredorder_case_idx ON countverification.casrec_orders ("Case");
 
 -- We are only migrating deputies linked to cases
 -- so, this is all deputies linked to a deputyship on a case as above
-CREATE TABLE IF NOT EXISTS countverification.filtered_deps ("Deputy No" text);
-INSERT INTO countverification.filtered_deps ("Deputy No")
+DROP TABLE IF EXISTS countverification.casrec_deps;
+CREATE TABLE IF NOT EXISTS countverification.casrec_deps ("Deputy No" text);
+INSERT INTO countverification.casrec_deps ("Deputy No")
 SELECT DISTINCT dep."Deputy No"
 FROM casrec_csv.deputy dep
     INNER JOIN casrec_csv.deputyship ds
         ON ds."Deputy No" = dep."Deputy No"
-    INNER JOIN countverification.filtered_orders o
+    INNER JOIN countverification.casrec_orders o
         ON o."Order No" = ds."Order No";
-CREATE UNIQUE INDEX filtereddeps_deputynumber_idx ON countverification.filtered_deps ("Deputy No");
 
+DROP INDEX IF EXISTS countverification.filtereddeps_deputynumber_idx;
+CREATE UNIQUE INDEX filtereddeps_deputynumber_idx ON countverification.casrec_deps ("Deputy No");
+
+DROP FUNCTION IF EXISTS countverification.warning_violent_lookup;
 CREATE FUNCTION countverification.warning_violent_lookup(lookup_key character varying DEFAULT NULL::character varying) returns text
     language sql
 as
@@ -47,29 +42,32 @@ SELECT CASE
     END
 $$;
 
+ALTER TABLE countverification.counts DROP COLUMN IF EXISTS {working_column};
+ALTER TABLE countverification.counts ADD COLUMN {working_column} int;
+
 -- persons_clients
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*) FROM casrec_csv.pat
 )
 WHERE supervision_table = 'persons_clients';
 
 -- persons_deputies
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
-    SELECT COUNT(*) FROM countverification.filtered_deps
+    SELECT COUNT(*) FROM countverification.casrec_deps
 )
 WHERE supervision_table = 'persons_deputies';
 
 -- cases
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
-    SELECT COUNT(*) FROM countverification.filtered_orders
+    SELECT COUNT(*) FROM countverification.casrec_orders
 )
 WHERE supervision_table = 'cases';
 
 -- phonenumbers
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     -- client
     SELECT COUNT(*)
@@ -78,20 +76,20 @@ UPDATE countverification.counts SET casrec_source =
 )+(
     -- deputy daytime
     SELECT COUNT(*)
-    FROM countverification.filtered_deps fd
-    INNER JOIN casrec_csv.deputy dep ON dep."Deputy No" = fd."Deputy No"
+    FROM countverification.casrec_deps cd
+    INNER JOIN casrec_csv.deputy dep ON dep."Deputy No" = cd."Deputy No"
     WHERE dep."Contact Telephone" != ''
 )+(
     -- deputy evening
     SELECT COUNT(*)
-    FROM countverification.filtered_deps fd
-    INNER JOIN casrec_csv.deputy dep ON dep."Deputy No" = fd."Deputy No"
+    FROM countverification.casrec_deps cd
+    INNER JOIN casrec_csv.deputy dep ON dep."Deputy No" = cd."Deputy No"
     WHERE dep."Contact Tele2" != ''
 )
 WHERE supervision_table = 'phonenumbers';
 
 -- addresses
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     -- client
     SELECT COUNT(*) FROM casrec_csv.pat
@@ -102,7 +100,7 @@ UPDATE countverification.counts SET casrec_source =
         FROM casrec_csv.deputy_address add
         INNER JOIN casrec_csv.deputyship ds
             ON ds."Dep Addr No" = add."Dep Addr No"
-        INNER JOIN countverification.filtered_orders o
+        INNER JOIN countverification.casrec_orders o
             ON o."Order No" = ds."Order No"
         INNER JOIN casrec_csv.deputy d
         ON ds."Deputy No" = d."Deputy No"
@@ -111,7 +109,7 @@ UPDATE countverification.counts SET casrec_source =
 WHERE supervision_table = 'addresses';
 
 -- supervision_notes
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     -- client
     SELECT COUNT(*) FROM casrec_csv.Remarks
@@ -119,12 +117,12 @@ UPDATE countverification.counts SET casrec_source =
     -- deputy
     SELECT COUNT(*)
     FROM casrec_csv.deputy_remarks rem
-    INNER JOIN countverification.filtered_deps dep ON dep."Deputy No" = rem."Deputy No"
+    INNER JOIN countverification.casrec_deps dep ON dep."Deputy No" = rem."Deputy No"
 )
 WHERE supervision_table = 'supervision_notes';
 
 -- tasks
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM casrec_csv.SUP_ACTIVITY act
@@ -139,21 +137,21 @@ UPDATE countverification.counts SET casrec_source =
 WHERE supervision_table = 'tasks';
 
 -- death notifications
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     -- client
     SELECT COUNT(*) FROM casrec_csv.pat WHERE pat."Term Type" = 'D'
 )+(
     -- deputy
     SELECT COUNT(*)
-    FROM countverification.filtered_deps fd
-    INNER JOIN casrec_csv.deputy dep ON dep."Deputy No" = fd."Deputy No"
+    FROM countverification.casrec_deps cd
+    INNER JOIN casrec_csv.deputy dep ON dep."Deputy No" = cd."Deputy No"
     AND dep."Stat" = '99'
 )
 WHERE supervision_table = 'death_notifications';
 
 -- warnings
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     -- client_nodebtchase
     SELECT COUNT(*)
@@ -182,20 +180,20 @@ UPDATE countverification.counts SET casrec_source =
 )+(
     -- deputy_special
     SELECT COUNT(*)
-    FROM countverification.filtered_deps fd
-    INNER JOIN casrec_csv.deputy dep ON dep."Deputy No" = fd."Deputy No"
+    FROM countverification.casrec_deps cd
+    INNER JOIN casrec_csv.deputy dep ON dep."Deputy No" = cd."Deputy No"
     WHERE dep."SIM" = '3'
 )+(
     -- deputy_violent
     SELECT COUNT(*)
-    FROM countverification.filtered_deps fd
-    INNER JOIN casrec_csv.deputy dep ON dep."Deputy No" = fd."Deputy No"
+    FROM countverification.casrec_deps cd
+    INNER JOIN casrec_csv.deputy dep ON dep."Deputy No" = cd."Deputy No"
     WHERE dep."VWM" = '4'
 )
 WHERE supervision_table = 'warnings';
 
 -- annual_report_logs
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT SUM(table_count) FROM (
         SELECT COUNT(*) AS table_count FROM casrec_csv.account
@@ -227,14 +225,14 @@ UPDATE countverification.counts SET casrec_source =
 WHERE supervision_table = 'annual_report_logs';
 
 -- annual_report_lodging_details
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*) FROM casrec_csv.account
 )
 WHERE supervision_table = 'annual_report_lodging_details';
 
 -- visits
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*) FROM (
         SELECT DISTINCT vis."casrec_row_id"
@@ -244,28 +242,28 @@ UPDATE countverification.counts SET casrec_source =
 WHERE supervision_table = 'visits';
 
 -- bonds
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     -- active
     SELECT COUNT(*)
     FROM casrec_csv.order o
-    INNER JOIN countverification.filtered_orders fo ON fo."Order No" = o."Order No"
+    INNER JOIN countverification.casrec_orders co ON co."Order No" = o."Order No"
     WHERE o."Bond Rqd" = 'Y'
 )+(
     -- dispensed
     SELECT COUNT(*)
     FROM casrec_csv.order o
-    INNER JOIN countverification.filtered_orders fo ON fo."Order No" = o."Order No"
+    INNER JOIN countverification.casrec_orders co ON co."Order No" = o."Order No"
     WHERE o."Bond Rqd" = 'S'
 )
 WHERE supervision_table = 'bonds';
 
 -- feepayer_id (logic in transforms look like this should be here but it does not work):
 -- AND d."Disch Death" = ''
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
-    FROM countverification.filtered_orders o
+    FROM countverification.casrec_orders o
     LEFT JOIN casrec_csv.deputyship ds ON ds."Order No" = o."Order No"
     LEFT JOIN casrec_csv.deputy d ON ds."Deputy No" = d."Deputy No"
     WHERE ds."Fee Payer" = 'Y'
@@ -274,30 +272,30 @@ UPDATE countverification.counts SET casrec_source =
 WHERE supervision_table = 'feepayer_id';
 
 -- timeline_event
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*) FROM casrec_csv.pat
 )
 WHERE supervision_table = 'timeline_event';
 
 -- person_timeline
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*) FROM casrec_csv.pat
 )
 WHERE supervision_table = 'person_timeline';
 
 -- supervision_level_log
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
-    FROM countverification.filtered_orders
+    FROM countverification.casrec_orders
 )
 WHERE supervision_table = 'supervision_level_log';
 
 -- finance_invoice_ad
 SET datestyle = "ISO, DMY";
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*) FROM (
         SELECT DISTINCT "Invoice No"
@@ -313,7 +311,7 @@ WHERE supervision_table = 'finance_invoice_ad';
 
 -- finance_invoice_non_ad
 SET datestyle = "ISO, DMY";
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*) FROM (
         SELECT DISTINCT "Invoice No"
@@ -328,7 +326,7 @@ UPDATE countverification.counts SET casrec_source =
 WHERE supervision_table = 'finance_invoice_non_ad';
 
 -- finance_remissions
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*) FROM (
         SELECT DISTINCT
@@ -342,7 +340,7 @@ UPDATE countverification.counts SET casrec_source =
 WHERE supervision_table = 'finance_remissions';
 
 -- finance_exemptions
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*) FROM (
         SELECT DISTINCT
@@ -356,7 +354,7 @@ UPDATE countverification.counts SET casrec_source =
 WHERE supervision_table = 'finance_exemptions';
 
 -- finance_ledger_credits
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM casrec_csv.feeexport
@@ -375,7 +373,7 @@ UPDATE countverification.counts SET casrec_source =
 WHERE supervision_table = 'finance_ledger_credits';
 
 -- finance_allocation_credits
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM casrec_csv.feeexport
@@ -396,7 +394,7 @@ UPDATE countverification.counts SET casrec_source =
 WHERE supervision_table = 'finance_allocation_credits';
 
 -- finance_order
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*) FROM (
         SELECT DISTINCT
@@ -419,22 +417,22 @@ UPDATE countverification.counts SET casrec_source =
 WHERE supervision_table = 'finance_order';
 
 -- order_deputy
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*) FROM casrec_csv.deputyship ds
-    INNER JOIN countverification.filtered_orders fo ON fo."Order No" = ds."Order No"
+    INNER JOIN countverification.casrec_orders co ON co."Order No" = ds."Order No"
 )
 WHERE supervision_table = 'order_deputy';
 
 -- person_caseitem
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
-    SELECT COUNT(*) FROM countverification.filtered_orders
+    SELECT COUNT(*) FROM countverification.casrec_orders
 )
 WHERE supervision_table = 'person_caseitem';
 
 -- person_task
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM casrec_csv.SUP_ACTIVITY act
@@ -450,8 +448,17 @@ UPDATE countverification.counts SET casrec_source =
 WHERE supervision_table = 'person_task';
 
 -- person_warning
-UPDATE countverification.counts SET casrec_source =
+UPDATE countverification.counts SET {working_column} =
 (
-    SELECT counts.casrec_source FROM countverification.counts WHERE supervision_table = 'warnings'
+    SELECT counts.{working_column} FROM countverification.counts WHERE supervision_table = 'warnings'
 )
 WHERE supervision_table = 'person_warning';
+
+DROP INDEX IF EXISTS countverification.filteredorder_orderno_idx;
+DROP INDEX IF EXISTS countverification.filteredorder_case_idx;
+DROP INDEX IF EXISTS countverification.filtereddeps_deputynumber_idx;
+
+DROP TABLE IF EXISTS countverification.casrec_orders;
+DROP TABLE IF EXISTS countverification.casrec_deps;
+
+DROP FUNCTION IF EXISTS countverification.warning_violent_lookup;

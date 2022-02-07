@@ -16,7 +16,6 @@ from sqlalchemy import create_engine
 import custom_logger
 from helpers import log_title
 import helpers
-from quick_validation import check_row_counts
 from decorators import timer, mem_tracker
 
 from dotenv import load_dotenv
@@ -142,13 +141,6 @@ def main(clear, correfs, chunk_size):
     timeline.runner(target_db=target_db, db_config=db_config)
     finance_order.runner(target_db=target_db, db_config=db_config)
     scheduled_events.runner(target_db=target_db, db_config=db_config)
-
-    check_row_counts.count_rows(
-        connection_string=db_config["db_connection_string"],
-        destination_schema=db_config["target_schema"],
-        enabled_entities=allowed_entities,
-        correfs=filtered_correfs,
-    )
 
     update_progress(module_name="transform", completed_items=files_used)
 
