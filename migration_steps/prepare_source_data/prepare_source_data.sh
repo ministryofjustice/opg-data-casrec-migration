@@ -12,4 +12,4 @@ else
   echo "load_casrec_fixtures should not run on ${ENVIRONMENT}"
 fi
 
-python3 "${DIR}/counts_verification/pre_migration_counts.py" "$@"
+python3 "${DIR}/counts_verification/app.py" --stage=pre_migration
