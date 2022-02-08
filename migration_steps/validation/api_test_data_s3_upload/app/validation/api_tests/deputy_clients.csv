@@ -1,17 +1,17 @@
 endpoint,entity_ref,json_locator,test_purpose,api_response
-/api/v1/deputies/{id}/clients,11019897,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,relationshipToClient_other5,Other Relation
-/api/v1/deputies/{id}/clients,13323382,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,relationshipToClient_spouse,Spouse|Spouse|Spouse|Spouse|Spouse|Spouse|Spouse|Spouse|Spouse|Spouse|Spouse|Spouse|Spouse|Spouse|Spouse|Spouse|Spouse
-/api/v1/deputies/{id}/clients,10202386,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,relationshipToClient_child,Child of Client
-/api/v1/deputies/{id}/clients,11497854,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,relationshipToClient_parent,Parent of Client
-/api/v1/deputies/{id}/clients,10200748,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,relationshipToClient_civil,Civil Partner|Civil Partner|Civil Partner|Civil Partner|Civil Partner|Civil Partner
-/api/v1/deputies/{id}/clients,10084054,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,relationshipToClient_other19,Other Relation
-/api/v1/deputies/{id}/clients,10152488,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,relationshipToClient_bank,Bank Official
-/api/v1/deputies/{id}/clients,10020983,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,relationshipToClient_sol,Solicitor
-/api/v1/deputies/{id}/clients,13567497,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,relationshipToClient_acc,Accountant
-/api/v1/deputies/{id}/clients,1346927T,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,relationshipToClient_other_prof,Other Professional|Other Professional|Other Professional|Other Professional|Other Professional|Other Professional|Other Professional|Other Professional
-/api/v1/deputies/{id}/clients,10058508,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,relationshipToClient_friend,Friend|Friend|Friend|Friend|Friend|Friend|Friend|Friend|Friend|Friend|Friend|Friend
-/api/v1/deputies/{id}/clients,94026637,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,relationshipToClient_partner,Partner (Not Civil Partner)|Partner (Not Civil Partner)|Partner (Not Civil Partner)|Partner (Not Civil Partner)|Partner (Not Civil Partner)|Partner (Not Civil Partner)|Partner (Not Civil Partner)|Partner (Not Civil Partner)|Partner (Not Civil Partner)|Partner (Not Civil Partner)|Partner (Not Civil Partner)|Partner (Not Civil Partner)|Partner (Not Civil Partner)|Partner (Not Civil Partner)
-/api/v1/deputies/{id}/clients,1030841T,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,relationshipToClient_panel,Panel Deputy|Panel Deputy|Panel Deputy
-/api/v1/deputies/{id}/clients,13578754,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,relationshipToClient_sibling,Sibling|Sibling|Sibling|Sibling|Sibling|Sibling|Sibling|Sibling|Sibling|Sibling
-/api/v1/deputies/{id}/clients,10192899,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,relationshipToClient_unreg,Unregulated Pro Deputy|Unregulated Pro Deputy|Unregulated Pro Deputy|Unregulated Pro Deputy|Unregulated Pro Deputy|Unregulated Pro Deputy
-/api/v1/deputies/{id}/clients,13562090,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,relationshipToClient_legal,Legal Professional|Legal Professional
+/api/v1/deputies/{id}/clients,11019897,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,includes_relationshipToClient_other5,Other Relation
+/api/v1/deputies/{id}/clients,13323382,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,includes_relationshipToClient_spouse,Spouse
+/api/v1/deputies/{id}/clients,10202386,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,includes_relationshipToClient_child,Child of Client
+/api/v1/deputies/{id}/clients,11497854,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,includes_relationshipToClient_parent,Parent of Client
+/api/v1/deputies/{id}/clients,10200748,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,includes_relationshipToClient_civil,Civil Partner
+/api/v1/deputies/{id}/clients,10084054,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,includes_relationshipToClient_other19,Other Relation
+/api/v1/deputies/{id}/clients,10152488,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,includes_relationshipToClient_bank,Bank Official
+/api/v1/deputies/{id}/clients,10020983,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,includes_relationshipToClient_sol,Solicitor
+/api/v1/deputies/{id}/clients,13567497,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,includes_relationshipToClient_acc,Accountant
+/api/v1/deputies/{id}/clients,1346927T,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,includes_relationshipToClient_other_prof,Other Professional
+/api/v1/deputies/{id}/clients,10058508,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,includes_relationshipToClient_friend,Friend
+/api/v1/deputies/{id}/clients,94026637,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,includes_relationshipToClient_partner,Partner (Not Civil Partner)
+/api/v1/deputies/{id}/clients,1030841T,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,includes_relationshipToClient_panel,Panel Deputy
+/api/v1/deputies/{id}/clients,13578754,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,includes_relationshipToClient_sibling,Sibling
+/api/v1/deputies/{id}/clients,10192899,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,includes_relationshipToClient_unreg,Unregulated Pro Deputy
+/api/v1/deputies/{id}/clients,13562090,persons.[*].orders.[*].deputies.[*].relationshipToClient.label,includes_relationshipToClient_legal,Legal Professional
