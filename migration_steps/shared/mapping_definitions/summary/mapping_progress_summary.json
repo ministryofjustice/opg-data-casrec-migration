@@ -55,9 +55,9 @@
             "percentage_complete": 100
         },
         "deputy_death_notifications": {
-            "total_rows": 9,
+            "total_rows": 6,
             "total_unmapped": 0,
-            "total_mapped": 9,
+            "total_mapped": 6,
             "percentage_complete": 100
         },
         "deputy_persons": {
@@ -283,9 +283,9 @@
             "total_complete": 8
         },
         "fields": {
-            "total_fields": 425,
+            "total_fields": 422,
             "total_unmapped": 22,
-            "total_mapped": 403,
+            "total_mapped": 400,
             "percentage_complete": 95
         }
     }

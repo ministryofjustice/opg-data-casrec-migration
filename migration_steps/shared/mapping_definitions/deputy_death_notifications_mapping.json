@@ -74,81 +74,6 @@
             "sync": ""
         }
     },
-    "datelettersentout": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date",
-            "table_name": "death_notifications",
-            "entity": "death_notification"
-        },
-        "transform_casrec": {
-            "casrec_table": "Deputy",
-            "casrec_column_name": "Disch Death",
-            "alias": "Disch Death",
-            "requires_transformation": "",
-            "lookup_table": "",
-            "default_value": "",
-            "calculated": "",
-            "additional_columns": ""
-        },
-        "prepare": {
-            "sync": ""
-        }
-    },
-    "datedeathcertificatereceived": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date",
-            "table_name": "death_notifications",
-            "entity": "death_notification"
-        },
-        "transform_casrec": {
-            "casrec_table": "Deputy",
-            "casrec_column_name": "Disch Death",
-            "alias": "Disch Death 1",
-            "requires_transformation": "",
-            "lookup_table": "",
-            "default_value": "",
-            "calculated": "",
-            "additional_columns": ""
-        },
-        "prepare": {
-            "sync": ""
-        }
-    },
-    "datenotified": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "date",
-            "table_name": "death_notifications",
-            "entity": "death_notification"
-        },
-        "transform_casrec": {
-            "casrec_table": "Deputy",
-            "casrec_column_name": "Disch Death",
-            "alias": "Disch Death 2",
-            "requires_transformation": "",
-            "lookup_table": "",
-            "default_value": "",
-            "calculated": "",
-            "additional_columns": ""
-        },
-        "prepare": {
-            "sync": ""
-        }
-    },
     "notifiedby": {
         "mapping_status": {
             "is_complete": true
@@ -174,7 +99,7 @@
             "sync": ""
         }
     },
-    "notificationmethod": {
+    "notifiedbyother": {
         "mapping_status": {
             "is_complete": true
         },
@@ -191,7 +116,7 @@
             "alias": "",
             "requires_transformation": "",
             "lookup_table": "",
-            "default_value": "EMAIL",
+            "default_value": "Migration",
             "calculated": "",
             "additional_columns": ""
         },
