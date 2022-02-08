@@ -520,25 +520,30 @@ workflows:
 #          requires: [migration - load sirius production]
 #          tf_workspace: production
 #          runner_command: migration-validation
+#      - run_task:
+#          name: migration - response api tests production
+#          requires: [ migration - validation production ]
+#          tf_workspace: production
+#          runner_command: migration-response-api-tests
+#      - run_task:
+#          name: migration - light touch api tests production
+#          requires: [ migration - response api tests production ]
+#          tf_workspace: production
+#          runner_command: migration-light-touch-api-tests
 #      - scale-services:
 #          name: scale up poller service for migration production
-#          requires: [migration - validation production]
+#          requires: [migration - light touch api tests production]
 #          replicas: "1"
 #          profile: "migrations-ci-sirius-production"
 #          service: "notify-poller"
 #          cluster: "production"
-#      - tag_image_for_environment:
-#          name: tag image for production
-#          environment_tag: production
-#          previous_tag: production
-#          requires: [migration - validation production]
 #      - run_elasticsearch_reset:
 #          name: full reindex elasticsearch production
-#          requires: [migration - validation production]
+#          requires: [scale up poller service for migration production]
 #          tf_workspace: production
       - job_complete:
           name: job complete notification
-#          requires: [migration - validation production]
+#          requires: [full reindex elasticsearch production]
           requires: [build infra production]
           workspace: production
 
@@ -551,7 +556,7 @@ workflows:
       - persist_parameters:
           name: persist parameters rehearsal
           param_workspace: rehearsal
-          environment_title: Production-Manual
+          environment_title: Rehearsal-Manual
       - reset_sirius_full_restore:
           name: run and monitor jenkins restore job rehearsal
           requires: [persist parameters rehearsal]
@@ -616,25 +621,30 @@ workflows:
           requires: [migration - load sirius rehearsal]
           tf_workspace: rehearsal
           runner_command: migration-validation
+      - run_task:
+          name: migration - response api tests rehearsal
+          requires: [ migration - validation rehearsal ]
+          tf_workspace: rehearsal
+          runner_command: migration-response-api-tests
+      - run_task:
+          name: migration - light touch api tests rehearsal
+          requires: [ migration - response api tests rehearsal ]
+          tf_workspace: rehearsal
+          runner_command: migration-light-touch-api-tests
       - scale-services:
           name: scale up poller service for migration rehearsal
-          requires: [migration - validation rehearsal]
+          requires: [migration - light touch api tests rehearsal]
           replicas: "1"
           profile: "migrations-ci-sirius-rehearsal"
           service: "notify-poller"
           cluster: "rehearsal"
-      - tag_image_for_environment:
-          name: tag image for rehearsal
-          environment_tag: rehearsal
-          previous_tag: rehearsal
-          requires: [migration - validation rehearsal]
       - run_elasticsearch_reset:
           name: full reindex elasticsearch rehearsal
-          requires: [migration - validation rehearsal]
+          requires: [scale up poller service for migration rehearsal]
           tf_workspace: rehearsal
       - job_complete:
           name: job complete notification
-          requires: [migration - validation rehearsal]
+          requires: [full reindex elasticsearch rehearsall]
           workspace: rehearsal
 
   nightly_development_restore:
