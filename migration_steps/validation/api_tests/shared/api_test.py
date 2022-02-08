@@ -440,7 +440,7 @@ class ApiTests:
         log.debug(f"returning: {endpoint_final}")
         return endpoint_final
 
-    def assert_on_fields(self, formatted_api_response, row, entity_ref, json_locator):
+    def assert_on_fields(self, formatted_api_response, row, entity_ref, json_locator, exact_match):
         # Where we have multiple entity_ids we need rationalise the grouped responses
         col_restruct_text = self.restructure_text(formatted_api_response["api_result"])
         formatted_api_response["api_result"] = col_restruct_text
@@ -449,7 +449,10 @@ class ApiTests:
         expected = self.replace_nan(str(row["api_response"]).lower())
         actual = str(formatted_api_response["api_result"]).lower()
         try:
-            assert expected == actual
+            if exact_match:
+                assert expected == actual
+            else:
+                assert expected in actual.split("|")
         except AssertionError:
             self.api_log(
                 f"""
@@ -460,6 +463,7 @@ class ApiTests:
             )
             self.api_log(
                 f"""
+                Exact Match: {exact_match}
                 Expected: {expected}
                 Actual: {actual}
                 """,
@@ -536,6 +540,8 @@ class ApiTests:
             endpoint = row["endpoint"]
             entity_ref = row["entity_ref"]
             json_locator = row["json_locator"]
+            test_purpose = row["test_purpose"]
+            exact_match = False if test_purpose[:9] == 'includes_' else True
 
             if entity_ref not in self.filtered_cases:
                 # Get the ids to perform the search on based on the caserecnumber
@@ -553,10 +559,13 @@ class ApiTests:
                 if formatted_api_response:
                     # Loop through and check expected results against actual for each field
                     self.assert_on_fields(
-                        formatted_api_response, row, entity_ref, json_locator
+                        formatted_api_response, row, entity_ref, json_locator, exact_match
                     )
                 else:
                     self.api_log("empty dictionary returned!")
+            else:
+                self.api_log(f"{entity_ref} filtered out. Not checking")
+
         self.api_log(f"Ran happy path tests against {count} cases in {self.csv}")
 
     def functional_tests_by_method(self, method, entity_setup_objects):

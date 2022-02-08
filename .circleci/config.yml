@@ -455,10 +455,6 @@ workflows:
           name: persist parameters production
           param_workspace: production
           environment_title: Production-Manual
-      - reset_sirius_full_restore:
-          name: run and monitor jenkins restore job production
-          requires: [persist parameters production]
-          sirius_environment: production
       - get_latest_image:
           name: get latest tag production
           requires: [persist parameters production]
@@ -476,7 +472,7 @@ workflows:
 # LEAVE COMMENTED OUT FOR SAFETY PURPOSES BUT HAVE CREATED IDENTICAL TO REHEARSAL
 #      - scale-services:
 #          name: scale down poller service for migration production
-#          requires: [run and monitor jenkins restore job production]
+#          requires: [build infra production]
 #          replicas: "0"
 #          profile: "migrations-ci-sirius-production"
 #          service: "notify-poller"
@@ -485,7 +481,6 @@ workflows:
 #          name: migration - initialise environments production
 #          requires: [
 #            build infra production,
-#            run and monitor jenkins restore job production,
 #            scale down poller service for migration production
 #         ]
 #          runner_command: migration-initialise-environments
@@ -557,10 +552,6 @@ workflows:
           name: persist parameters rehearsal
           param_workspace: rehearsal
           environment_title: Rehearsal-Manual
-      - reset_sirius_full_restore:
-          name: run and monitor jenkins restore job rehearsal
-          requires: [persist parameters rehearsal]
-          sirius_environment: rehearsal
       - get_latest_image:
           name: get latest tag rehearsal
           requires: [persist parameters rehearsal]
@@ -577,7 +568,7 @@ workflows:
           tf_command: apply
       - scale-services:
           name: scale down poller service for migration rehearsal
-          requires: [run and monitor jenkins restore job rehearsal]
+          requires: [build infra rehearsal]
           replicas: "0"
           profile: "migrations-ci-sirius-rehearsal"
           service: "notify-poller"
@@ -586,7 +577,6 @@ workflows:
           name: migration - initialise environments rehearsal
           requires: [
             build infra rehearsal,
-            run and monitor jenkins restore job rehearsal,
             scale down poller service for migration rehearsal
          ]
           runner_command: migration-initialise-environments
