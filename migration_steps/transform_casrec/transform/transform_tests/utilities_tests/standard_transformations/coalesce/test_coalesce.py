@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from pandas.testing import assert_frame_equal
 
@@ -13,7 +14,8 @@ def test_coalesce():
             4,  # 1st source column None, 2nd has value
             5,  # both columns have a value (first should be used)
             6,  # 1st source column has a value, target column has a value and should be overridden
-            7,  # 2nd source column has a value, target column has a value and should be overridden
+            7,  # 2nd source column has a value, target column has a value and should be overridden,
+            8,  # 1st source column is NaT, 2nd has a value
         ],
         "Start Date": [
             "",
@@ -23,6 +25,7 @@ def test_coalesce():
             "2022-02-09",
             "2022-02-11",
             None,
+            pd.NaT,
         ],
         "Actdate": [
             None,
@@ -32,6 +35,7 @@ def test_coalesce():
             "2022-02-10",
             None,
             "2022-02-12",
+            "2022-02-15",
         ],
         "duedate": [
             None,
@@ -41,6 +45,7 @@ def test_coalesce():
             None,
             "2022-02-13",
             "2022-02-14",
+            None,
         ],
     }
     test_data_df = pd.DataFrame(test_data)
@@ -56,6 +61,7 @@ def test_coalesce():
         "2022-02-09",
         "2022-02-11",
         "2022-02-12",
+        "2022-02-15",
     ]
     expected_data_df = pd.DataFrame(expected_data)
 

@@ -279,7 +279,7 @@ def is_at_least_one_set(
 
         for column in original_cols:
             value = row[column]
-            if value is not None and value != "":
+            if value != "" and pd.notnull(value):
                 result = True
                 break
 
@@ -348,7 +348,7 @@ def coalesce(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.DataF
 
         for column in original_cols:
             value = row[column]
-            if value is not None and value != "":
+            if value != "" and pd.notnull(value):
                 result = value
                 break
 
