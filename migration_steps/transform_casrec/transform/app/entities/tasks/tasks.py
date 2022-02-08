@@ -2,6 +2,7 @@ import logging
 
 import pandas as pd
 from utilities.basic_data_table import get_basic_data_table
+from utilities.standard_transformations import coalesce
 
 from custom_errors import EmptyDataFrame
 from helpers import get_mapping_dict, get_table_def
@@ -47,6 +48,14 @@ def insert_tasks(db_config, target_db, mapping_file):
             tasks_df = tasks_df.merge(
                 cases_df, how="inner", left_on="c_case", right_on="caserecnumber"
             )
+
+            # Set duedate to casrec Target if set, or activedate if not (activedate
+            # is already set by the simple mapping to casrec Start Date).
+            # We do this here because activedate is derived from Start Date
+            # by do_simple_mapping(), but in the process the Start Date column
+            # is renamed, so we can't use it again in do_simple_transformations()
+            # and instead have to use the already-migrated activedate column...
+            tasks_df = coalesce(["c_target", "activedate"], "duedate", tasks_df)
 
             num_tasks = len(tasks_df)
 
