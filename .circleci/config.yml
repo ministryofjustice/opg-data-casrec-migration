@@ -640,8 +640,8 @@ orbs:
               password: $DOCKER_ACCESS_TOKEN
         resource_class: small
         environment:
-          TF_VERSION: 1.1.2
-          TF_SHA256SUM: 734efa82e2d0d3df8f239ce17f7370dabd38e535d21e64d35c73e45f35dfa95c # pragma: allowlist secret
+          TF_VERSION: 1.1.5
+          TF_SHA256SUM: 30942d5055c7151f051c8ea75481ff1dc95b2c4409dbb50196419c21168d6467 # pragma: allowlist secret
           TF_CLI_ARGS_plan: -input=false -lock=false
           TF_CLI_ARGS_apply: -input=false -auto-approve
           TF_CLI_ARGS_destroy: -input=false -auto-approve
