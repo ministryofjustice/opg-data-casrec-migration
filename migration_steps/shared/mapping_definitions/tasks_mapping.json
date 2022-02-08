@@ -112,9 +112,15 @@
         },
         "transform_casrec": {
             "casrec_table": "SUP_ACTIVITY",
-            "casrec_column_name": "Next Due",
-            "alias": "Next Due",
-            "requires_transformation": "",
+            "casrec_column_name": [
+                "Target",
+                "Start Date"
+            ],
+            "alias": [
+                "Target",
+                "Start Date"
+            ],
+            "requires_transformation": "coalesce",
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
