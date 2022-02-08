@@ -786,7 +786,8 @@
         "source_table_additional_columns": [
             "Case",
             "Status",
-            "Order No"
+            "Order No",
+            "Target"
         ],
         "source_table_name": "sup_activity",
         "table_transforms": {},

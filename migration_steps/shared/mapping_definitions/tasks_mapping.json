@@ -111,16 +111,10 @@
             "entity": "tasks"
         },
         "transform_casrec": {
-            "casrec_table": "SUP_ACTIVITY",
-            "casrec_column_name": [
-                "Target",
-                "Start Date"
-            ],
-            "alias": [
-                "Target",
-                "Start Date"
-            ],
-            "requires_transformation": "coalesce",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
