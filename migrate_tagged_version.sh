@@ -58,18 +58,21 @@ then
   RUN_PREPROD="true"
   RUN_PRE_QA="false"
   RUN_QA="false"
+  RUN_PROD="false"
 elif [ $ENVIRONMENT == "2" ]
 then
   ENV="PreQA"
   RUN_PREPROD="false"
   RUN_PRE_QA="true"
   RUN_QA="false"
+  RUN_PROD="false"
 elif [ $ENVIRONMENT == "3" ]
 then
   ENV="QA"
   RUN_PREPROD="false"
   RUN_PRE_QA="false"
   RUN_QA="true"
+  RUN_PROD="false"
 else
   echo "You need to choose a valid option from [1-4]. Exiting...."
   exit 1
@@ -84,7 +87,7 @@ then
               --url https://circleci.com/api/v2/project/github/ministryofjustice/opg-data-casrec-migration/pipeline \
               --header "Circle-Token: ${CIRCLE_TOKEN}" \
               --header 'content-type: application/json' \
-              --data "{\"branch\":\"main\", \"parameters\":{\"run_main\": false, \"run_preprod\": $RUN_PREPROD, \"run_qa\": $RUN_QA, \"run_preqa\": $RUN_PRE_QA, \"override_tag\": \"$TAG\"}}"
+              --data "{\"branch\":\"main\", \"parameters\":{\"run_main\": false, \"run_preprod\": $RUN_PREPROD, \"run_qa\": $RUN_QA, \"run_preqa\": $RUN_PRE_QA, \"run_production\": $RUN_PROD, \"override_tag\": \"$TAG\"}}"
 else
   echo "You chose not to deploy. Good bye!"
   exit 0

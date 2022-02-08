@@ -17,6 +17,9 @@ parameters:
   run_production:
     type: boolean
     default: false
+  run_rehearsal:
+    type: boolean
+    default: false
   override_tag:
     type: string
     default: ""
@@ -452,6 +455,10 @@ workflows:
           name: persist parameters production
           param_workspace: production
           environment_title: Production-Manual
+      - reset_sirius_full_restore:
+          name: run and monitor jenkins restore job production
+          requires: [persist parameters production]
+          sirius_environment: production
       - get_latest_image:
           name: get latest tag production
           requires: [persist parameters production]
@@ -466,6 +473,169 @@ workflows:
           requires: [plan infra production]
           tf_workspace: production
           tf_command: apply
+# LEAVE COMMENTED OUT FOR SAFETY PURPOSES BUT HAVE CREATED IDENTICAL TO REHEARSAL
+#      - scale-services:
+#          name: scale down poller service for migration production
+#          requires: [run and monitor jenkins restore job production]
+#          replicas: "0"
+#          profile: "migrations-ci-sirius-production"
+#          service: "notify-poller"
+#          cluster: "production"
+#      - run_task:
+#          name: migration - initialise environments production
+#          requires: [
+#            build infra production,
+#            run and monitor jenkins restore job production,
+#            scale down poller service for migration production
+#         ]
+#          runner_command: migration-initialise-environments
+#          tf_workspace: production
+#      - run_task:
+#          name: migration - load casrec production
+#          requires: [migration - initialise environments production]
+#          tf_workspace: production
+#          runner_command: migration-load-casrec
+#      - run_task:
+#          name: migration - filter data production
+#          requires: [migration - load casrec production]
+#          tf_workspace: production
+#          runner_command: migration-filter-data
+#      - run_task:
+#          name: migration - transform production
+#          requires: [migration - filter data production]
+#          tf_workspace: production
+#          runner_command: migration-transform
+#      - run_task:
+#          name: migration - integration production
+#          requires: [migration - transform production]
+#          tf_workspace: production
+#          runner_command: migration-integration
+#      - run_task:
+#          name: migration - load sirius production
+#          requires: [migration - integration production]
+#          tf_workspace: production
+#          runner_command: migration-load-sirius
+#      - run_task:
+#          name: migration - validation production
+#          requires: [migration - load sirius production]
+#          tf_workspace: production
+#          runner_command: migration-validation
+#      - scale-services:
+#          name: scale up poller service for migration production
+#          requires: [migration - validation production]
+#          replicas: "1"
+#          profile: "migrations-ci-sirius-production"
+#          service: "notify-poller"
+#          cluster: "production"
+#      - tag_image_for_environment:
+#          name: tag image for production
+#          environment_tag: production
+#          previous_tag: production
+#          requires: [migration - validation production]
+#      - run_elasticsearch_reset:
+#          name: full reindex elasticsearch production
+#          requires: [migration - validation production]
+#          tf_workspace: production
+      - job_complete:
+          name: job complete notification
+#          requires: [migration - validation production]
+          requires: [build infra production]
+          workspace: production
+
+  rehearsal:
+    when:
+      and:
+        - equal: [main, << pipeline.git.branch >>]
+        - << pipeline.parameters.run_rehearsal >>
+    jobs:
+      - persist_parameters:
+          name: persist parameters rehearsal
+          param_workspace: rehearsal
+          environment_title: Production-Manual
+      - reset_sirius_full_restore:
+          name: run and monitor jenkins restore job rehearsal
+          requires: [persist parameters rehearsal]
+          sirius_environment: rehearsal
+      - get_latest_image:
+          name: get latest tag rehearsal
+          requires: [persist parameters rehearsal]
+          image_tag: rehearsal
+      - infrastructure:
+          name: plan infra rehearsal
+          requires: [get latest tag rehearsal]
+          tf_workspace: rehearsal
+          tf_command: plan
+      - infrastructure:
+          name: build infra rehearsal
+          requires: [plan infra rehearsal]
+          tf_workspace: rehearsal
+          tf_command: apply
+      - scale-services:
+          name: scale down poller service for migration rehearsal
+          requires: [run and monitor jenkins restore job rehearsal]
+          replicas: "0"
+          profile: "migrations-ci-sirius-rehearsal"
+          service: "notify-poller"
+          cluster: "rehearsal"
+      - run_task:
+          name: migration - initialise environments rehearsal
+          requires: [
+            build infra rehearsal,
+            run and monitor jenkins restore job rehearsal,
+            scale down poller service for migration rehearsal
+         ]
+          runner_command: migration-initialise-environments
+          tf_workspace: rehearsal
+      - run_task:
+          name: migration - load casrec rehearsal
+          requires: [migration - initialise environments rehearsal]
+          tf_workspace: rehearsal
+          runner_command: migration-load-casrec
+      - run_task:
+          name: migration - filter data rehearsal
+          requires: [migration - load casrec rehearsal]
+          tf_workspace: rehearsal
+          runner_command: migration-filter-data
+      - run_task:
+          name: migration - transform rehearsal
+          requires: [migration - filter data rehearsal]
+          tf_workspace: rehearsal
+          runner_command: migration-transform
+      - run_task:
+          name: migration - integration rehearsal
+          requires: [migration - transform rehearsal]
+          tf_workspace: rehearsal
+          runner_command: migration-integration
+      - run_task:
+          name: migration - load sirius rehearsal
+          requires: [migration - integration rehearsal]
+          tf_workspace: rehearsal
+          runner_command: migration-load-sirius
+      - run_task:
+          name: migration - validation rehearsal
+          requires: [migration - load sirius rehearsal]
+          tf_workspace: rehearsal
+          runner_command: migration-validation
+      - scale-services:
+          name: scale up poller service for migration rehearsal
+          requires: [migration - validation rehearsal]
+          replicas: "1"
+          profile: "migrations-ci-sirius-rehearsal"
+          service: "notify-poller"
+          cluster: "rehearsal"
+      - tag_image_for_environment:
+          name: tag image for rehearsal
+          environment_tag: rehearsal
+          previous_tag: rehearsal
+          requires: [migration - validation rehearsal]
+      - run_elasticsearch_reset:
+          name: full reindex elasticsearch rehearsal
+          requires: [migration - validation rehearsal]
+          tf_workspace: rehearsal
+      - job_complete:
+          name: job complete notification
+          requires: [migration - validation rehearsal]
+          workspace: rehearsal
 
   nightly_development_restore:
     triggers:
