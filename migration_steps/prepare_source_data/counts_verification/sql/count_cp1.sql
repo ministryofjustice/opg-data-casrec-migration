@@ -71,11 +71,41 @@ SET {working_column} =
         SELECT COUNT(*)
         FROM
         (
-            SELECT DISTINCT p.email, p.surname, p.firstname, ad.postcode
+            SELECT DISTINCT LOWER(TRIM(COALESCE(p.email, ''))) AS email,
+            LOWER(TRIM(COALESCE(p.surname, p.organisationname, ''))) AS surname,
+            LOWER(TRIM(COALESCE(ad.postcode, ''))) AS postcode
             FROM addresses ad
             INNER JOIN countverification.cp1_deputies dep ON dep.id = ad.person_id
             INNER JOIN persons p ON p.id = dep.id
-        ) as a
+        ) AS a
+    )+( --addresses that already existed on cp1 cases that have been migrated
+        SELECT COUNT(*)
+        FROM
+        (
+            select DISTINCT LOWER(TRIM(COALESCE(dep.email, ''))),
+            LOWER(TRIM(COALESCE(dep.surname, dep.organisationname, ''))),
+            LOWER(TRIM(COALESCE(a.postcode, '')))
+            from persons p
+            INNER JOIN cases c ON c.client_id = p.id
+            INNER JOIN order_deputy od ON od.order_id = c.id
+            INNER JOIN persons dep ON dep.id = od.deputy_id
+            INNER join addresses a ON dep.id = a.person_id
+            WHERE p.type = 'actor_client'
+            AND p.caseactorgroup = 'CLIENT-PILOT-ONE'
+            AND COALESCE(p.clientsource, '') = 'CASRECMIGRATION'
+            INTERSECT
+            select DISTINCT LOWER(TRIM(COALESCE(dep.email, ''))),
+            LOWER(TRIM(COALESCE(dep.surname, dep.organisationname, ''))),
+            LOWER(TRIM(COALESCE(a.postcode, '')))
+            from persons p
+            INNER JOIN cases c ON c.client_id = p.id
+            INNER JOIN order_deputy od ON od.order_id = c.id
+            INNER JOIN persons dep ON dep.id = od.deputy_id
+            INNER join addresses a ON dep.id = a.person_id
+            WHERE p.type = 'actor_client'
+            AND p.caseactorgroup = 'CLIENT-PILOT-ONE'
+            AND COALESCE(p.clientsource, '') != 'CASRECMIGRATION'
+        ) AS inter
     )
 WHERE supervision_table = 'addresses';
 
@@ -99,7 +129,7 @@ SET {working_column} = (
     SELECT COUNT(*)
     FROM tasks t
     INNER JOIN person_task pt ON pt.task_id = t.id
-    INNER JOIN countverification.cp1_clients cli on cli.id = pt.person_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = pt.person_id
 )
 WHERE supervision_table = 'tasks';
 
@@ -110,12 +140,12 @@ SET {working_column} =
         -- client
         SELECT COUNT(*)
         FROM death_notifications dn
-        INNER JOIN countverification.cp1_clients cli on cli.id = dn.person_id
+        INNER JOIN countverification.cp1_clients cli ON cli.id = dn.person_id
     )+(
         -- dpeuty
         SELECT COUNT(*)
         FROM death_notifications dn
-        INNER JOIN countverification.cp1_deputies dep on dep.id = dn.person_id
+        INNER JOIN countverification.cp1_deputies dep ON dep.id = dn.person_id
     )
 WHERE supervision_table = 'death_notifications';
 
@@ -126,14 +156,14 @@ SET {working_column} =
         --client
         SELECT COUNT(*)
         FROM warnings w
-        INNER JOIN person_warning pw on pw.warning_id = w.id
-        INNER JOIN countverification.cp1_clients cli on cli.id = pw.person_id
+        INNER JOIN person_warning pw ON pw.warning_id = w.id
+        INNER JOIN countverification.cp1_clients cli ON cli.id = pw.person_id
     )+(
         -- deputy
         SELECT COUNT(*)
         FROM warnings w
-        INNER JOIN person_warning pw on pw.warning_id = w.id
-        INNER JOIN countverification.cp1_deputies dep on dep.id = pw.person_id
+        INNER JOIN person_warning pw ON pw.warning_id = w.id
+        INNER JOIN countverification.cp1_deputies dep ON dep.id = pw.person_id
     )
 WHERE supervision_table = 'warnings';
 
@@ -210,7 +240,7 @@ UPDATE countverification.counts
 SET {working_column} = (
     SELECT COUNT(*)
     FROM finance_invoice inv
-    INNER JOIN countverification.cp1_clients cli on cli.id = inv.person_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = inv.person_id
     WHERE inv.source = 'CASRECMIGRATION'
     AND inv.feetype = 'AD'
 )
@@ -221,7 +251,7 @@ UPDATE countverification.counts
 SET {working_column} = (
     SELECT COUNT(*)
     FROM finance_invoice inv
-    INNER JOIN countverification.cp1_clients cli on cli.id = inv.person_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = inv.person_id
     WHERE inv.source = 'CASRECMIGRATION'
     AND inv.feetype <> 'AD'
 )
@@ -233,7 +263,7 @@ SET {working_column} = (
     SELECT COUNT(*)
     FROM finance_remission_exemption rem
     LEFT JOIN finance_person fp ON fp.id = rem.finance_person_id
-    INNER JOIN countverification.cp1_clients cli on cli.id = fp.person_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = fp.person_id
     WHERE rem.discounttype = 'REMISSION'
 )
 WHERE supervision_table = 'finance_remissions';
@@ -244,7 +274,7 @@ SET {working_column} = (
     SELECT COUNT(*) AS cp1existing
     FROM finance_remission_exemption rem
     LEFT JOIN finance_person fp ON fp.id = rem.finance_person_id
-    INNER JOIN countverification.cp1_clients cli on cli.id = fp.person_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = fp.person_id
     WHERE rem.discounttype = 'EXEMPTION'
 )
 WHERE supervision_table = 'finance_exemptions';
@@ -255,7 +285,7 @@ SET {working_column} = (
     SELECT COUNT(*)
     FROM finance_ledger lgr
     LEFT JOIN finance_person fp ON fp.id = lgr.finance_person_id
-    INNER JOIN countverification.cp1_clients cli on cli.id = fp.person_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = fp.person_id
 )
 WHERE supervision_table = 'finance_ledger_credits';
 
@@ -265,7 +295,7 @@ SET {working_column} = (
     SELECT COUNT(*)
     FROM finance_ledger_allocation fla
     LEFT JOIN finance_invoice inv ON inv.id = fla.invoice_id
-    INNER JOIN countverification.cp1_clients cli on cli.id = inv.person_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = inv.person_id
 )
 WHERE supervision_table = 'finance_allocation_credits';
 
@@ -274,7 +304,7 @@ UPDATE countverification.counts
 SET {working_column} = (
     SELECT COUNT(*)
     FROM finance_person fp
-    INNER JOIN countverification.cp1_clients cli on cli.id = fp.person_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = fp.person_id
 )
 WHERE supervision_table = 'finance_person';
 
@@ -292,7 +322,7 @@ SET {working_column} = (
         ON fp.id = fo.finance_person_id
         INNER JOIN persons p
         ON p.id = fp.person_id
-    ) as a
+    ) AS a
 )
 WHERE supervision_table = 'finance_order';
 
@@ -310,7 +340,7 @@ UPDATE countverification.counts
 SET {working_column} = (
     SELECT COUNT(*)
     FROM person_caseitem pci
-    INNER JOIN countverification.cp1_clients cli on cli.id = pci.person_id
+    INNER JOIN countverification.cp1_clients cli ON cli.id = pci.person_id
 )
 WHERE supervision_table = 'person_caseitem';
 
@@ -320,11 +350,11 @@ SET {working_column} =
     (
         SELECT COUNT(*)
         FROM person_warning pw
-        INNER JOIN countverification.cp1_clients cli on cli.id = pw.person_id
+        INNER JOIN countverification.cp1_clients cli ON cli.id = pw.person_id
     )+(
         SELECT COUNT(*)
         FROM person_warning pw
-        INNER JOIN countverification.cp1_deputies dep on dep.id = pw.person_id
+        INNER JOIN countverification.cp1_deputies dep ON dep.id = pw.person_id
     )
 WHERE supervision_table = 'person_warning';
 
@@ -335,12 +365,12 @@ SET {working_column} =
         -- client
         SELECT COUNT(*)
         FROM person_task pt
-        INNER JOIN countverification.cp1_clients cli on cli.id = pt.person_id
+        INNER JOIN countverification.cp1_clients cli ON cli.id = pt.person_id
     )+(
         -- deputy
         SELECT COUNT(*)
         FROM person_task pt
-        INNER JOIN countverification.cp1_deputies dep on dep.id = pt.person_id
+        INNER JOIN countverification.cp1_deputies dep ON dep.id = pt.person_id
 )
 WHERE supervision_table = 'person_task';
 
@@ -350,11 +380,11 @@ SET {working_column} =
     (
         SELECT COUNT(*)
         FROM person_timeline pt
-        INNER JOIN countverification.cp1_clients cli on cli.id = pt.person_id
+        INNER JOIN countverification.cp1_clients cli ON cli.id = pt.person_id
     )+(
         SELECT COUNT(*)
         FROM person_timeline pt
-        INNER JOIN countverification.cp1_deputies dep on dep.id = pt.person_id
+        INNER JOIN countverification.cp1_deputies dep ON dep.id = pt.person_id
     )
 WHERE supervision_table = 'person_timeline';
 
