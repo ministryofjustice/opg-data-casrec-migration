@@ -1,1529 +1,1430 @@
 {
-    "R65": {
-        "sirius_mapping": 2
-    },
-    "V16": {
-        "sirius_mapping": 3
-    },
-    "L45": {
-        "sirius_mapping": 4
-    },
-    "B42": {
-        "sirius_mapping": 5
-    },
-    "P06": {
-        "sirius_mapping": 6
-    },
-    "L40": {
-        "sirius_mapping": 7
-    },
-    "L51": {
-        "sirius_mapping": 8
-    },
-    "S89": {
-        "sirius_mapping": 9
-    },
-    "L63": {
-        "sirius_mapping": 10
-    },
-    "C45": {
-        "sirius_mapping": 11
-    },
-    "R60": {
-        "sirius_mapping": 12
-    },
-    "O79": {
-        "sirius_mapping": 13
-    },
-    "P30": {
-        "sirius_mapping": 14
-    },
-    "P47": {
-        "sirius_mapping": 15
-    },
-    "O50": {
-        "sirius_mapping": 16
-    },
-    "B59": {
-        "sirius_mapping": 17
-    },
-    "O85": {
-        "sirius_mapping": 18
-    },
-    "P98": {
-        "sirius_mapping": 19
-    },
-    "O89": {
-        "sirius_mapping": 20
-    },
-    "S74": {
-        "sirius_mapping": 21
-    },
-    "V49": {
-        "sirius_mapping": 22
-    },
-    "S31": {
-        "sirius_mapping": 23
-    },
-    "L90": {
-        "sirius_mapping": 24
-    },
-    "C85": {
-        "sirius_mapping": 25
-    },
-    "S86": {
-        "sirius_mapping": 26
-    },
-    "S50": {
-        "sirius_mapping": 27
-    },
-    "R99": {
-        "sirius_mapping": 28
-    },
-    "S33": {
-        "sirius_mapping": 29
-    },
-    "R22": {
-        "sirius_mapping": 30
-    },
-    "L05": {
-        "sirius_mapping": 31
-    },
-    "L57": {
-        "sirius_mapping": 32
-    },
-    "V37": {
-        "sirius_mapping": 33
-    },
-    "C95": {
-        "sirius_mapping": 34
-    },
-    "C78": {
-        "sirius_mapping": 35
-    },
-    "R29": {
-        "sirius_mapping": 36
-    },
-    "C64": {
-        "sirius_mapping": 37
-    },
-    "O90": {
-        "sirius_mapping": 38
-    },
-    "P97": {
-        "sirius_mapping": 39
-    },
-    "B89": {
-        "sirius_mapping": 40
-    },
-    "V30": {
-        "sirius_mapping": 41
-    },
-    "P38": {
-        "sirius_mapping": 42
-    },
-    "S87": {
-        "sirius_mapping": 43
-    },
-    "L65": {
-        "sirius_mapping": 44
-    },
-    "L78": {
-        "sirius_mapping": 45
-    },
-    "V43": {
-        "sirius_mapping": 46
-    },
-    "C48": {
-        "sirius_mapping": 47
-    },
-    "B38": {
-        "sirius_mapping": 48
-    },
-    "V54": {
-        "sirius_mapping": 49
-    },
-    "V45": {
-        "sirius_mapping": 50
-    },
-    "L56": {
-        "sirius_mapping": 51
-    },
-    "V25": {
-        "sirius_mapping": 52
-    },
-    "S20": {
-        "sirius_mapping": 53
-    },
-    "L75": {
-        "sirius_mapping": 54
-    },
-    "P54": {
-        "sirius_mapping": 55
-    },
-    "O02": {
-        "sirius_mapping": 56
-    },
-    "B28": {
-        "sirius_mapping": 57
-    },
-    "S39": {
-        "sirius_mapping": 58
-    },
-    "B71": {
-        "sirius_mapping": 59
-    },
-    "S61": {
-        "sirius_mapping": 60
-    },
-    "V56": {
-        "sirius_mapping": 61
-    },
-    "O23": {
-        "sirius_mapping": 62
-    },
-    "P49": {
-        "sirius_mapping": 63
-    },
-    "S88": {
-        "sirius_mapping": 64
-    },
-    "B88": {
-        "sirius_mapping": 65
-    },
-    "C58": {
-        "sirius_mapping": 66
-    },
-    "P51": {
-        "sirius_mapping": 67
-    },
-    "L22": {
-        "sirius_mapping": 68
-    },
-    "V34": {
-        "sirius_mapping": 69
-    },
-    "R96": {
-        "sirius_mapping": 70
-    },
-    "O41": {
-        "sirius_mapping": 71
-    },
-    "S92": {
-        "sirius_mapping": 72
-    },
-    "S02": {
-        "sirius_mapping": 73
-    },
-    "P25": {
-        "sirius_mapping": 74
-    },
-    "S70": {
-        "sirius_mapping": 75
-    },
-    "V44": {
-        "sirius_mapping": 76
-    },
-    "R23": {
-        "sirius_mapping": 77
-    },
-    "V48": {
-        "sirius_mapping": 78
-    },
-    "L50": {
-        "sirius_mapping": 79
-    },
-    "B68": {
-        "sirius_mapping": 80
-    },
-    "S78": {
-        "sirius_mapping": 81
-    },
-    "R03": {
-        "sirius_mapping": 82
-    },
-    "L91": {
-        "sirius_mapping": 83
-    },
-    "B81": {
-        "sirius_mapping": 84
-    },
-    "R88": {
-        "sirius_mapping": 85
-    },
-    "P17": {
-        "sirius_mapping": 86
-    },
-    "P96": {
-        "sirius_mapping": 87
-    },
-    "C42": {
-        "sirius_mapping": 88
-    },
-    "O32": {
-        "sirius_mapping": 89
-    },
-    "C47": {
-        "sirius_mapping": 90
-    },
-    "L23": {
-        "sirius_mapping": 91
-    },
-    "B12": {
-        "sirius_mapping": 92
-    },
-    "C90": {
-        "sirius_mapping": 93
-    },
-    "P41": {
-        "sirius_mapping": 94
-    },
-    "P72": {
-        "sirius_mapping": 95
-    },
-    "C13": {
-        "sirius_mapping": 96
-    },
-    "P43": {
-        "sirius_mapping": 97
-    },
-    "B32": {
-        "sirius_mapping": 98
-    },
-    "R70": {
-        "sirius_mapping": 99
-    },
-    "C28": {
-        "sirius_mapping": 100
-    },
-    "P63": {
-        "sirius_mapping": 101
-    },
     "B01": {
-        "sirius_mapping": 102
-    },
-    "C31": {
-        "sirius_mapping": 103
-    },
-    "B36": {
-        "sirius_mapping": 104
-    },
-    "S42": {
-        "sirius_mapping": 105
-    },
-    "V55": {
-        "sirius_mapping": 106
-    },
-    "R54": {
-        "sirius_mapping": 107
-    },
-    "S17": {
-        "sirius_mapping": 108
-    },
-    "B70": {
-        "sirius_mapping": 109
-    },
-    "C18": {
-        "sirius_mapping": 110
-    },
-    "C46": {
-        "sirius_mapping": 111
-    },
-    "S76": {
-        "sirius_mapping": 112
-    },
-    "S72": {
-        "sirius_mapping": 113
-    },
-    "B03": {
-        "sirius_mapping": 114
-    },
-    "L01": {
-        "sirius_mapping": 115
-    },
-    "P76": {
-        "sirius_mapping": 116
-    },
-    "B27": {
-        "sirius_mapping": 117
-    },
-    "C10": {
-        "sirius_mapping": 118
-    },
-    "P35": {
-        "sirius_mapping": 119
-    },
-    "B13": {
-        "sirius_mapping": 120
-    },
-    "B67": {
-        "sirius_mapping": 121
-    },
-    "R57": {
-        "sirius_mapping": 122
-    },
-    "C96": {
-        "sirius_mapping": 123
-    },
-    "R05": {
-        "sirius_mapping": 124
-    },
-    "V14": {
-        "sirius_mapping": 125
-    },
-    "B93": {
-        "sirius_mapping": 126
-    },
-    "P45": {
-        "sirius_mapping": 127
-    },
-    "R59": {
-        "sirius_mapping": 128
-    },
-    "O14": {
-        "sirius_mapping": 129
-    },
-    "B87": {
-        "sirius_mapping": 130
-    },
-    "P61": {
-        "sirius_mapping": 131
-    },
-    "B14": {
-        "sirius_mapping": 132
-    },
-    "B76": {
-        "sirius_mapping": 133
-    },
-    "P08": {
-        "sirius_mapping": 134
-    },
-    "C98": {
-        "sirius_mapping": 135
-    },
-    "P91": {
-        "sirius_mapping": 136
-    },
-    "V07": {
-        "sirius_mapping": 137
-    },
-    "L62": {
-        "sirius_mapping": 138
-    },
-    "S53": {
-        "sirius_mapping": 139
-    },
-    "P86": {
-        "sirius_mapping": 140
-    },
-    "C51": {
-        "sirius_mapping": 141
-    },
-    "C99": {
-        "sirius_mapping": 142
-    },
-    "L60": {
-        "sirius_mapping": 143
-    },
-    "B06": {
-        "sirius_mapping": 144
-    },
-    "B65": {
-        "sirius_mapping": 145
-    },
-    "C24": {
-        "sirius_mapping": 146
-    },
-    "O87": {
-        "sirius_mapping": 147
-    },
-    "P67": {
-        "sirius_mapping": 148
-    },
-    "L73": {
-        "sirius_mapping": 149
-    },
-    "P09": {
-        "sirius_mapping": 150
-    },
-    "C19": {
-        "sirius_mapping": 151
-    },
-    "P24": {
-        "sirius_mapping": 152
-    },
-    "P56": {
-        "sirius_mapping": 153
-    },
-    "C43": {
-        "sirius_mapping": 154
-    },
-    "O59": {
-        "sirius_mapping": 155
-    },
-    "O57": {
-        "sirius_mapping": 156
-    },
-    "S69": {
-        "sirius_mapping": 157
-    },
-    "S12": {
-        "sirius_mapping": 158
-    },
-    "L61": {
-        "sirius_mapping": 159
-    },
-    "R35": {
-        "sirius_mapping": 160
-    },
-    "C53": {
-        "sirius_mapping": 161
-    },
-    "S98": {
-        "sirius_mapping": 162
-    },
-    "B16": {
-        "sirius_mapping": 163
-    },
-    "R20": {
-        "sirius_mapping": 164
-    },
-    "O24": {
-        "sirius_mapping": 165
-    },
-    "O36": {
-        "sirius_mapping": 166
-    },
-    "R61": {
-        "sirius_mapping": 167
-    },
-    "P44": {
-        "sirius_mapping": 168
-    },
-    "L96": {
-        "sirius_mapping": 169
-    },
-    "R38": {
-        "sirius_mapping": 170
-    },
-    "O37": {
-        "sirius_mapping": 171
-    },
-    "O40": {
-        "sirius_mapping": 172
-    },
-    "L48": {
-        "sirius_mapping": 173
-    },
-    "C77": {
-        "sirius_mapping": 174
-    },
-    "C29": {
-        "sirius_mapping": 175
-    },
-    "O30": {
-        "sirius_mapping": 176
-    },
-    "B90": {
-        "sirius_mapping": 177
-    },
-    "R71": {
-        "sirius_mapping": 178
-    },
-    "S68": {
-        "sirius_mapping": 179
-    },
-    "S83": {
-        "sirius_mapping": 180
-    },
-    "L17": {
-        "sirius_mapping": 181
-    },
-    "L35": {
-        "sirius_mapping": 182
-    },
-    "V51": {
-        "sirius_mapping": 183
-    },
-    "L25": {
-        "sirius_mapping": 184
-    },
-    "O03": {
-        "sirius_mapping": 185
-    },
-    "V19": {
-        "sirius_mapping": 186
-    },
-    "P28": {
-        "sirius_mapping": 187
-    },
-    "R79": {
-        "sirius_mapping": 188
-    },
-    "L71": {
-        "sirius_mapping": 189
-    },
-    "V03": {
-        "sirius_mapping": 190
-    },
-    "P19": {
-        "sirius_mapping": 191
-    },
-    "L54": {
-        "sirius_mapping": 192
-    },
-    "C92": {
-        "sirius_mapping": 193
-    },
-    "C94": {
-        "sirius_mapping": 194
-    },
-    "O51": {
-        "sirius_mapping": 195
-    },
-    "C44": {
-        "sirius_mapping": 196
-    },
-    "P73": {
-        "sirius_mapping": 197
-    },
-    "L03": {
-        "sirius_mapping": 198
-    },
-    "C93": {
-        "sirius_mapping": 199
-    },
-    "O58": {
-        "sirius_mapping": 200
-    },
-    "L68": {
-        "sirius_mapping": 201
-    },
-    "L04": {
-        "sirius_mapping": 202
-    },
-    "S10": {
-        "sirius_mapping": 203
-    },
-    "B47": {
-        "sirius_mapping": 204
-    },
-    "O09": {
-        "sirius_mapping": 205
-    },
-    "R64": {
-        "sirius_mapping": 206
-    },
-    "P90": {
-        "sirius_mapping": 207
-    },
-    "O10": {
-        "sirius_mapping": 208
-    },
-    "L32": {
-        "sirius_mapping": 209
-    },
-    "R16": {
-        "sirius_mapping": 210
-    },
-    "V35": {
-        "sirius_mapping": 211
-    },
-    "O33": {
-        "sirius_mapping": 212
-    },
-    "R39": {
-        "sirius_mapping": 213
-    },
-    "S26": {
-        "sirius_mapping": 214
-    },
-    "V47": {
-        "sirius_mapping": 215
-    },
-    "B51": {
-        "sirius_mapping": 216
-    },
-    "L55": {
-        "sirius_mapping": 217
-    },
-    "R52": {
-        "sirius_mapping": 218
-    },
-    "L44": {
-        "sirius_mapping": 219
-    },
-    "O78": {
-        "sirius_mapping": 220
-    },
-    "P32": {
-        "sirius_mapping": 221
-    },
-    "C23": {
-        "sirius_mapping": 222
-    },
-    "C88": {
-        "sirius_mapping": 223
-    },
-    "O63": {
-        "sirius_mapping": 224
-    },
-    "S41": {
-        "sirius_mapping": 225
-    },
-    "B56": {
-        "sirius_mapping": 226
-    },
-    "O20": {
-        "sirius_mapping": 227
-    },
-    "R85": {
-        "sirius_mapping": 228
-    },
-    "L83": {
-        "sirius_mapping": 229
-    },
-    "C66": {
-        "sirius_mapping": 230
-    },
-    "L33": {
-        "sirius_mapping": 231
-    },
-    "P74": {
-        "sirius_mapping": 232
-    },
-    "B94": {
-        "sirius_mapping": 233
-    },
-    "B80": {
-        "sirius_mapping": 234
-    },
-    "O34": {
-        "sirius_mapping": 235
-    },
-    "R17": {
-        "sirius_mapping": 236
-    },
-    "B96": {
-        "sirius_mapping": 237
-    },
-    "B97": {
-        "sirius_mapping": 238
-    },
-    "V39": {
-        "sirius_mapping": 239
-    },
-    "R33": {
-        "sirius_mapping": 240
-    },
-    "C65": {
-        "sirius_mapping": 241
-    },
-    "V46": {
-        "sirius_mapping": 242
-    },
-    "C63": {
-        "sirius_mapping": 243
-    },
-    "S19": {
-        "sirius_mapping": 244
-    },
-    "C54": {
-        "sirius_mapping": 245
-    },
-    "B33": {
-        "sirius_mapping": 246
-    },
-    "S52": {
-        "sirius_mapping": 247
-    },
-    "B86": {
-        "sirius_mapping": 248
-    },
-    "S60": {
-        "sirius_mapping": 249
-    },
-    "B49": {
-        "sirius_mapping": 250
-    },
-    "B31": {
-        "sirius_mapping": 251
-    },
-    "P66": {
-        "sirius_mapping": 252
-    },
-    "S65": {
-        "sirius_mapping": 253
-    },
-    "O05": {
-        "sirius_mapping": 254
-    },
-    "S54": {
-        "sirius_mapping": 255
-    },
-    "O71": {
-        "sirius_mapping": 256
-    },
-    "C49": {
-        "sirius_mapping": 257
-    },
-    "L99": {
-        "sirius_mapping": 258
-    },
-    "C32": {
-        "sirius_mapping": 259
-    },
-    "L46": {
-        "sirius_mapping": 260
-    },
-    "C69": {
-        "sirius_mapping": 261
-    },
-    "R13": {
-        "sirius_mapping": 262
-    },
-    "O44": {
-        "sirius_mapping": 263
-    },
-    "B39": {
-        "sirius_mapping": 264
-    },
-    "L21": {
-        "sirius_mapping": 265
-    },
-    "V53": {
-        "sirius_mapping": 266
-    },
-    "O01": {
-        "sirius_mapping": 267
-    },
-    "C61": {
-        "sirius_mapping": 268
-    },
-    "S08": {
-        "sirius_mapping": 269
-    },
-    "V52": {
-        "sirius_mapping": 270
-    },
-    "S64": {
-        "sirius_mapping": 271
-    },
-    "R26": {
-        "sirius_mapping": 272
-    },
-    "S91": {
-        "sirius_mapping": 273
-    },
-    "P95": {
-        "sirius_mapping": 274
-    },
-    "V50": {
-        "sirius_mapping": 275
-    },
-    "R31": {
-        "sirius_mapping": 276
-    },
-    "S81": {
-        "sirius_mapping": 277
-    },
-    "B84": {
-        "sirius_mapping": 278
-    },
-    "V05": {
-        "sirius_mapping": 279
-    },
-    "R09": {
-        "sirius_mapping": 280
-    },
-    "P50": {
-        "sirius_mapping": 281
-    },
-    "O75": {
-        "sirius_mapping": 282
-    },
-    "P82": {
-        "sirius_mapping": 283
-    },
-    "R32": {
-        "sirius_mapping": 284
-    },
-    "R72": {
-        "sirius_mapping": 285
-    },
-    "R80": {
-        "sirius_mapping": 286
-    },
-    "C03": {
-        "sirius_mapping": 287
-    },
-    "B61": {
-        "sirius_mapping": 288
-    },
-    "C70": {
-        "sirius_mapping": 289
-    },
-    "S79": {
-        "sirius_mapping": 290
-    },
-    "L29": {
-        "sirius_mapping": 291
-    },
-    "C57": {
-        "sirius_mapping": 292
-    },
-    "B09": {
-        "sirius_mapping": 293
-    },
-    "B63": {
-        "sirius_mapping": 294
-    },
-    "B22": {
-        "sirius_mapping": 295
-    },
-    "B79": {
-        "sirius_mapping": 296
-    },
-    "L31": {
-        "sirius_mapping": 297
-    },
-    "S38": {
-        "sirius_mapping": 298
-    },
-    "R84": {
-        "sirius_mapping": 299
-    },
-    "C97": {
-        "sirius_mapping": 300
-    },
-    "P34": {
-        "sirius_mapping": 301
-    },
-    "S90": {
-        "sirius_mapping": 302
-    },
-    "O68": {
-        "sirius_mapping": 303
-    },
-    "S40": {
-        "sirius_mapping": 304
-    },
-    "C12": {
-        "sirius_mapping": 305
-    },
-    "P11": {
-        "sirius_mapping": 306
-    },
-    "O11": {
-        "sirius_mapping": 307
-    },
-    "S97": {
-        "sirius_mapping": 308
-    },
-    "L16": {
-        "sirius_mapping": 309
-    },
-    "C02": {
-        "sirius_mapping": 310
-    },
-    "R86": {
-        "sirius_mapping": 311
-    },
-    "L70": {
-        "sirius_mapping": 312
-    },
-    "S59": {
-        "sirius_mapping": 313
-    },
-    "O12": {
-        "sirius_mapping": 314
-    },
-    "V08": {
-        "sirius_mapping": 315
-    },
-    "B82": {
-        "sirius_mapping": 316
+        "sirius_mapping": 2455
     },
     "B02": {
-        "sirius_mapping": 317
+        "sirius_mapping": 2511
     },
-    "L11": {
-        "sirius_mapping": 318
-    },
-    "B26": {
-        "sirius_mapping": 319
-    },
-    "B44": {
-        "sirius_mapping": 320
-    },
-    "O97": {
-        "sirius_mapping": 321
-    },
-    "R63": {
-        "sirius_mapping": 322
-    },
-    "B91": {
-        "sirius_mapping": 323
-    },
-    "L47": {
-        "sirius_mapping": 324
-    },
-    "O81": {
-        "sirius_mapping": 325
-    },
-    "R97": {
-        "sirius_mapping": 326
-    },
-    "L34": {
-        "sirius_mapping": 327
-    },
-    "R68": {
-        "sirius_mapping": 328
-    },
-    "S48": {
-        "sirius_mapping": 329
-    },
-    "S43": {
-        "sirius_mapping": 330
-    },
-    "B74": {
-        "sirius_mapping": 331
-    },
-    "L42": {
-        "sirius_mapping": 332
-    },
-    "B98": {
-        "sirius_mapping": 333
-    },
-    "S77": {
-        "sirius_mapping": 334
-    },
-    "L43": {
-        "sirius_mapping": 335
-    },
-    "S63": {
-        "sirius_mapping": 336
-    },
-    "V12": {
-        "sirius_mapping": 337
-    },
-    "S44": {
-        "sirius_mapping": 338
-    },
-    "R48": {
-        "sirius_mapping": 339
-    },
-    "L18": {
-        "sirius_mapping": 340
-    },
-    "B53": {
-        "sirius_mapping": 341
-    },
-    "C07": {
-        "sirius_mapping": 342
-    },
-    "B30": {
-        "sirius_mapping": 343
-    },
-    "S09": {
-        "sirius_mapping": 344
-    },
-    "P80": {
-        "sirius_mapping": 345
-    },
-    "O35": {
-        "sirius_mapping": 346
-    },
-    "V22": {
-        "sirius_mapping": 347
-    },
-    "R28": {
-        "sirius_mapping": 348
-    },
-    "O64": {
-        "sirius_mapping": 349
-    },
-    "O42": {
-        "sirius_mapping": 350
-    },
-    "P62": {
-        "sirius_mapping": 351
-    },
-    "L98": {
-        "sirius_mapping": 352
-    },
-    "L77": {
-        "sirius_mapping": 353
-    },
-    "L12": {
-        "sirius_mapping": 354
-    },
-    "O92": {
-        "sirius_mapping": 355
-    },
-    "S05": {
-        "sirius_mapping": 356
-    },
-    "B57": {
-        "sirius_mapping": 357
-    },
-    "L37": {
-        "sirius_mapping": 358
-    },
-    "R76": {
-        "sirius_mapping": 359
-    },
-    "P20": {
-        "sirius_mapping": 360
-    },
-    "O54": {
-        "sirius_mapping": 361
-    },
-    "S16": {
-        "sirius_mapping": 362
-    },
-    "S67": {
-        "sirius_mapping": 363
-    },
-    "L89": {
-        "sirius_mapping": 364
-    },
-    "L94": {
-        "sirius_mapping": 365
-    },
-    "B64": {
-        "sirius_mapping": 366
-    },
-    "L20": {
-        "sirius_mapping": 367
-    },
-    "S23": {
-        "sirius_mapping": 368
-    },
-    "B83": {
-        "sirius_mapping": 369
-    },
-    "R69": {
-        "sirius_mapping": 370
-    },
-    "B41": {
-        "sirius_mapping": 371
-    },
-    "S46": {
-        "sirius_mapping": 372
-    },
-    "C72": {
-        "sirius_mapping": 373
-    },
-    "C68": {
-        "sirius_mapping": 374
-    },
-    "L97": {
-        "sirius_mapping": 375
-    },
-    "V57": {
-        "sirius_mapping": 376
-    },
-    "O04": {
-        "sirius_mapping": 377
-    },
-    "P85": {
-        "sirius_mapping": 378
-    },
-    "B23": {
-        "sirius_mapping": 379
-    },
-    "P48": {
-        "sirius_mapping": 380
-    },
-    "S14": {
-        "sirius_mapping": 381
-    },
-    "V33": {
-        "sirius_mapping": 382
-    },
-    "S01": {
-        "sirius_mapping": 383
-    },
-    "O19": {
-        "sirius_mapping": 384
-    },
-    "C50": {
-        "sirius_mapping": 385
-    },
-    "R04": {
-        "sirius_mapping": 386
-    },
-    "P14": {
-        "sirius_mapping": 387
-    },
-    "V01": {
-        "sirius_mapping": 388
-    },
-    "P01": {
-        "sirius_mapping": 389
-    },
-    "S47": {
-        "sirius_mapping": 390
-    },
-    "C87": {
-        "sirius_mapping": 391
-    },
-    "C59": {
-        "sirius_mapping": 392
-    },
-    "O13": {
-        "sirius_mapping": 393
-    },
-    "P79": {
-        "sirius_mapping": 394
-    },
-    "B46": {
-        "sirius_mapping": 395
-    },
-    "C15": {
-        "sirius_mapping": 396
-    },
-    "P13": {
-        "sirius_mapping": 397
-    },
-    "C89": {
-        "sirius_mapping": 398
-    },
-    "L93": {
-        "sirius_mapping": 399
-    },
-    "P84": {
-        "sirius_mapping": 400
-    },
-    "C73": {
-        "sirius_mapping": 401
-    },
-    "O69": {
-        "sirius_mapping": 402
-    },
-    "L59": {
-        "sirius_mapping": 403
-    },
-    "O22": {
-        "sirius_mapping": 404
-    },
-    "P60": {
-        "sirius_mapping": 405
-    },
-    "C60": {
-        "sirius_mapping": 406
-    },
-    "P77": {
-        "sirius_mapping": 407
-    },
-    "V28": {
-        "sirius_mapping": 408
-    },
-    "O66": {
-        "sirius_mapping": 409
-    },
-    "L41": {
-        "sirius_mapping": 410
-    },
-    "P71": {
-        "sirius_mapping": 411
-    },
-    "R90": {
-        "sirius_mapping": 412
-    },
-    "O60": {
-        "sirius_mapping": 413
-    },
-    "R44": {
-        "sirius_mapping": 414
-    },
-    "C39": {
-        "sirius_mapping": 415
-    },
-    "C09": {
-        "sirius_mapping": 416
-    },
-    "V29": {
-        "sirius_mapping": 417
-    },
-    "O62": {
-        "sirius_mapping": 418
-    },
-    "S94": {
-        "sirius_mapping": 419
-    },
-    "C84": {
-        "sirius_mapping": 420
-    },
-    "P40": {
-        "sirius_mapping": 421
-    },
-    "S55": {
-        "sirius_mapping": 422
-    },
-    "O39": {
-        "sirius_mapping": 423
-    },
-    "R27": {
-        "sirius_mapping": 424
-    },
-    "R43": {
-        "sirius_mapping": 425
-    },
-    "O28": {
-        "sirius_mapping": 426
-    },
-    "C33": {
-        "sirius_mapping": 427
-    },
-    "R83": {
-        "sirius_mapping": 428
-    },
-    "B37": {
-        "sirius_mapping": 429
-    },
-    "C06": {
-        "sirius_mapping": 430
-    },
-    "S35": {
-        "sirius_mapping": 431
-    },
-    "R06": {
-        "sirius_mapping": 432
-    },
-    "S45": {
-        "sirius_mapping": 433
-    },
-    "O31": {
-        "sirius_mapping": 434
-    },
-    "L13": {
-        "sirius_mapping": 435
-    },
-    "P87": {
-        "sirius_mapping": 436
-    },
-    "S13": {
-        "sirius_mapping": 437
-    },
-    "B07": {
-        "sirius_mapping": 438
-    },
-    "S25": {
-        "sirius_mapping": 439
-    },
-    "S66": {
-        "sirius_mapping": 440
-    },
-    "P58": {
-        "sirius_mapping": 441
-    },
-    "C56": {
-        "sirius_mapping": 442
-    },
-    "O56": {
-        "sirius_mapping": 443
-    },
-    "B55": {
-        "sirius_mapping": 444
-    },
-    "C11": {
-        "sirius_mapping": 445
-    },
-    "P81": {
-        "sirius_mapping": 446
-    },
-    "C67": {
-        "sirius_mapping": 447
-    },
-    "L92": {
-        "sirius_mapping": 448
-    },
-    "C82": {
-        "sirius_mapping": 449
-    },
-    "V04": {
-        "sirius_mapping": 450
-    },
-    "P88": {
-        "sirius_mapping": 451
-    },
-    "L69": {
-        "sirius_mapping": 452
-    },
-    "O38": {
-        "sirius_mapping": 453
-    },
-    "P93": {
-        "sirius_mapping": 454
-    },
-    "L07": {
-        "sirius_mapping": 455
-    },
-    "L19": {
-        "sirius_mapping": 456
-    },
-    "R02": {
-        "sirius_mapping": 457
-    },
-    "V41": {
-        "sirius_mapping": 458
-    },
-    "V36": {
-        "sirius_mapping": 459
-    },
-    "C91": {
-        "sirius_mapping": 460
-    },
-    "C80": {
-        "sirius_mapping": 461
-    },
-    "V23": {
-        "sirius_mapping": 462
-    },
-    "O95": {
-        "sirius_mapping": 463
-    },
-    "O08": {
-        "sirius_mapping": 464
-    },
-    "R14": {
-        "sirius_mapping": 465
-    },
-    "S15": {
-        "sirius_mapping": 466
-    },
-    "P29": {
-        "sirius_mapping": 467
-    },
-    "R66": {
-        "sirius_mapping": 468
-    },
-    "S34": {
-        "sirius_mapping": 469
-    },
-    "L15": {
-        "sirius_mapping": 470
-    },
-    "R18": {
-        "sirius_mapping": 471
+    "B03": {
+        "sirius_mapping": 2410
     },
     "B05": {
-        "sirius_mapping": 472
+        "sirius_mapping": 2576
     },
-    "C38": {
-        "sirius_mapping": 473
+    "B06": {
+        "sirius_mapping": 2628
     },
-    "R25": {
-        "sirius_mapping": 474
+    "B07": {
+        "sirius_mapping": 2596
     },
-    "L36": {
-        "sirius_mapping": 475
-    },
-    "C04": {
-        "sirius_mapping": 476
-    },
-    "V06": {
-        "sirius_mapping": 477
-    },
-    "S51": {
-        "sirius_mapping": 478
-    },
-    "L28": {
-        "sirius_mapping": 479
-    },
-    "C83": {
-        "sirius_mapping": 480
-    },
-    "B40": {
-        "sirius_mapping": 481
-    },
-    "C20": {
-        "sirius_mapping": 482
-    },
-    "C36": {
-        "sirius_mapping": 483
-    },
-    "B50": {
-        "sirius_mapping": 484
-    },
-    "P33": {
-        "sirius_mapping": 485
-    },
-    "O45": {
-        "sirius_mapping": 486
-    },
-    "O94": {
-        "sirius_mapping": 487
-    },
-    "S27": {
-        "sirius_mapping": 488
-    },
-    "R91": {
-        "sirius_mapping": 489
-    },
-    "S21": {
-        "sirius_mapping": 490
-    },
-    "C55": {
-        "sirius_mapping": 491
-    },
-    "P23": {
-        "sirius_mapping": 492
-    },
-    "L52": {
-        "sirius_mapping": 493
-    },
-    "R10": {
-        "sirius_mapping": 494
-    },
-    "O99": {
-        "sirius_mapping": 495
-    },
-    "O21": {
-        "sirius_mapping": 496
-    },
-    "R87": {
-        "sirius_mapping": 497
-    },
-    "O18": {
-        "sirius_mapping": 498
-    },
-    "S28": {
-        "sirius_mapping": 499
-    },
-    "S62": {
-        "sirius_mapping": 500
-    },
-    "V42": {
-        "sirius_mapping": 501
-    },
-    "P92": {
-        "sirius_mapping": 502
-    },
-    "L39": {
-        "sirius_mapping": 503
-    },
-    "R94": {
-        "sirius_mapping": 504
-    },
-    "B24": {
-        "sirius_mapping": 505
-    },
-    "S80": {
-        "sirius_mapping": 506
-    },
-    "V11": {
-        "sirius_mapping": 507
+    "B09": {
+        "sirius_mapping": 2167
     },
     "B11": {
-        "sirius_mapping": 508
+        "sirius_mapping": 2403
+    },
+    "B12": {
+        "sirius_mapping": 1235
+    },
+    "B13": {
+        "sirius_mapping": 1306
+    },
+    "B14": {
+        "sirius_mapping": 3200
+    },
+    "B16": {
+        "sirius_mapping": 2097
+    },
+    "B22": {
+        "sirius_mapping": 2413
+    },
+    "B23": {
+        "sirius_mapping": 2412
+    },
+    "B24": {
+        "sirius_mapping": 2405
+    },
+    "B26": {
+        "sirius_mapping": 6041
+    },
+    "B27": {
+        "sirius_mapping": 1280
+    },
+    "B28": {
+        "sirius_mapping": 7674
+    },
+    "B30": {
+        "sirius_mapping": 2509
+    },
+    "B31": {
+        "sirius_mapping": 2533
+    },
+    "B33": {
+        "sirius_mapping": 2644
+    },
+    "B36": {
+        "sirius_mapping": 2750
+    },
+    "B37": {
+        "sirius_mapping": 3103
+    },
+    "B38": {
+        "sirius_mapping": 737
+    },
+    "B39": {
+        "sirius_mapping": 2544
+    },
+    "B40": {
+        "sirius_mapping": 2912
+    },
+    "B41": {
+        "sirius_mapping": 2474
+    },
+    "B42": {
+        "sirius_mapping": 7675
+    },
+    "B46": {
+        "sirius_mapping": 2424
+    },
+    "B47": {
+        "sirius_mapping": 1231
+    },
+    "B48": {
+        "sirius_mapping": 5695
+    },
+    "B49": {
+        "sirius_mapping": 2531
+    },
+    "B50": {
+        "sirius_mapping": 2472
+    },
+    "B51": {
+        "sirius_mapping": 1396
+    },
+    "B53": {
+        "sirius_mapping": 2520
+    },
+    "B55": {
+        "sirius_mapping": 2591
+    },
+    "B56": {
+        "sirius_mapping": 247
+    },
+    "B57": {
+        "sirius_mapping": 6027
+    },
+    "B58": {
+        "sirius_mapping": 3332
+    },
+    "B59": {
+        "sirius_mapping": 7676
+    },
+    "B61": {
+        "sirius_mapping": 2494
+    },
+    "B63": {
+        "sirius_mapping": 2839
+    },
+    "B64": {
+        "sirius_mapping": 2482
+    },
+    "B65": {
+        "sirius_mapping": 1861
+    },
+    "B67": {
+        "sirius_mapping": 2633
+    },
+    "B68": {
+        "sirius_mapping": 35
+    },
+    "B70": {
+        "sirius_mapping": 3882
+    },
+    "B71": {
+        "sirius_mapping": 1554
+    },
+    "B74": {
+        "sirius_mapping": 2460
+    },
+    "B79": {
+        "sirius_mapping": 2399
+    },
+    "B80": {
+        "sirius_mapping": 243
+    },
+    "B81": {
+        "sirius_mapping": 316
+    },
+    "B82": {
+        "sirius_mapping": 2499
+    },
+    "B83": {
+        "sirius_mapping": 2147
+    },
+    "B84": {
+        "sirius_mapping": 2548
+    },
+    "B88": {
+        "sirius_mapping": 283
+    },
+    "B89": {
+        "sirius_mapping": 2893
+    },
+    "B90": {
+        "sirius_mapping": 4906
+    },
+    "B93": {
+        "sirius_mapping": 2150
+    },
+    "B94": {
+        "sirius_mapping": 234
+    },
+    "B96": {
+        "sirius_mapping": 250
+    },
+    "B97": {
+        "sirius_mapping": 697
+    },
+    "B98": {
+        "sirius_mapping": 2534
+    },
+    "C03": {
+        "sirius_mapping": 2376
+    },
+    "C04": {
+        "sirius_mapping": 3120
+    },
+    "C06": {
+        "sirius_mapping": 2564
+    },
+    "C07": {
+        "sirius_mapping": 3118
+    },
+    "C09": {
+        "sirius_mapping": 2433
+    },
+    "C10": {
+        "sirius_mapping": 2290
+    },
+    "C11": {
+        "sirius_mapping": 3215
+    },
+    "C12": {
+        "sirius_mapping": 2497
+    },
+    "C13": {
+        "sirius_mapping": 3287
+    },
+    "C15": {
+        "sirius_mapping": 2503
+    },
+    "C18": {
+        "sirius_mapping": 518
+    },
+    "C19": {
+        "sirius_mapping": 2094
+    },
+    "C20": {
+        "sirius_mapping": 2394
+    },
+    "C23": {
+        "sirius_mapping": 6367
+    },
+    "C24": {
+        "sirius_mapping": 2357
+    },
+    "C28": {
+        "sirius_mapping": 2456
+    },
+    "C29": {
+        "sirius_mapping": 2770
+    },
+    "C31": {
+        "sirius_mapping": 2113
+    },
+    "C32": {
+        "sirius_mapping": 3124
+    },
+    "C33": {
+        "sirius_mapping": 3714
+    },
+    "C35": {
+        "sirius_mapping": 5598
+    },
+    "C36": {
+        "sirius_mapping": 2401
+    },
+    "C38": {
+        "sirius_mapping": 2566
+    },
+    "C39": {
+        "sirius_mapping": 2501
+    },
+    "C42": {
+        "sirius_mapping": 606
+    },
+    "C43": {
+        "sirius_mapping": 1685
+    },
+    "C44": {
+        "sirius_mapping": 2611
+    },
+    "C47": {
+        "sirius_mapping": 604
+    },
+    "C48": {
+        "sirius_mapping": 2179
+    },
+    "C49": {
+        "sirius_mapping": 2781
+    },
+    "C50": {
+        "sirius_mapping": 2521
+    },
+    "C51": {
+        "sirius_mapping": 2543
+    },
+    "C53": {
+        "sirius_mapping": 1302
+    },
+    "C54": {
+        "sirius_mapping": 3155
+    },
+    "C55": {
+        "sirius_mapping": 2616
+    },
+    "C56": {
+        "sirius_mapping": 2590
+    },
+    "C57": {
+        "sirius_mapping": 2419
+    },
+    "C58": {
+        "sirius_mapping": 2870
+    },
+    "C59": {
+        "sirius_mapping": 3197
+    },
+    "C60": {
+        "sirius_mapping": 2637
+    },
+    "C61": {
+        "sirius_mapping": 2536
+    },
+    "C64": {
+        "sirius_mapping": 2298
+    },
+    "C65": {
+        "sirius_mapping": 6816
+    },
+    "C66": {
+        "sirius_mapping": 2838
+    },
+    "C67": {
+        "sirius_mapping": 2592
+    },
+    "C68": {
+        "sirius_mapping": 2506
+    },
+    "C69": {
+        "sirius_mapping": 2551
+    },
+    "C70": {
+        "sirius_mapping": 2627
+    },
+    "C72": {
+        "sirius_mapping": 2478
+    },
+    "C73": {
+        "sirius_mapping": 2434
+    },
+    "C75": {
+        "sirius_mapping": 3039
+    },
+    "C77": {
+        "sirius_mapping": 1206
+    },
+    "C79": {
+        "sirius_mapping": 6091
+    },
+    "C80": {
+        "sirius_mapping": 2577
+    },
+    "C82": {
+        "sirius_mapping": 2598
+    },
+    "C83": {
+        "sirius_mapping": 3220
+    },
+    "C84": {
+        "sirius_mapping": 2782
+    },
+    "C85": {
+        "sirius_mapping": 790
+    },
+    "C87": {
+        "sirius_mapping": 2422
+    },
+    "C88": {
+        "sirius_mapping": 2608
+    },
+    "C89": {
+        "sirius_mapping": 2480
+    },
+    "C90": {
+        "sirius_mapping": 1369
+    },
+    "C91": {
+        "sirius_mapping": 2919
+    },
+    "C93": {
+        "sirius_mapping": 6956
+    },
+    "C96": {
+        "sirius_mapping": 2825
+    },
+    "C99": {
+        "sirius_mapping": 2631
+    },
+    "L03": {
+        "sirius_mapping": 259
+    },
+    "L04": {
+        "sirius_mapping": 4673
+    },
+    "L05": {
+        "sirius_mapping": 1488
+    },
+    "L06": {
+        "sirius_mapping": 5466
+    },
+    "L07": {
+        "sirius_mapping": 2585
+    },
+    "L11": {
+        "sirius_mapping": 2377
+    },
+    "L12": {
+        "sirius_mapping": 2491
+    },
+    "L13": {
+        "sirius_mapping": 2603
+    },
+    "L14": {
+        "sirius_mapping": 2967
+    },
+    "L15": {
+        "sirius_mapping": 2569
+    },
+    "L17": {
+        "sirius_mapping": 2776
+    },
+    "L19": {
+        "sirius_mapping": 2578
+    },
+    "L20": {
+        "sirius_mapping": 6361
+    },
+    "L21": {
+        "sirius_mapping": 2545
+    },
+    "L22": {
+        "sirius_mapping": 1016
+    },
+    "L23": {
+        "sirius_mapping": 1340
+    },
+    "L25": {
+        "sirius_mapping": 2961
+    },
+    "L28": {
+        "sirius_mapping": 2397
+    },
+    "L29": {
+        "sirius_mapping": 2438
+    },
+    "L31": {
+        "sirius_mapping": 3114
+    },
+    "L32": {
+        "sirius_mapping": 1204
+    },
+    "L33": {
+        "sirius_mapping": 3240
+    },
+    "L34": {
+        "sirius_mapping": 3298
+    },
+    "L35": {
+        "sirius_mapping": 4907
+    },
+    "L36": {
+        "sirius_mapping": 2537
+    },
+    "L37": {
+        "sirius_mapping": 5694
+    },
+    "L39": {
+        "sirius_mapping": 1046
+    },
+    "L40": {
+        "sirius_mapping": 2186
+    },
+    "L41": {
+        "sirius_mapping": 2462
+    },
+    "L43": {
+        "sirius_mapping": 2469
+    },
+    "L44": {
+        "sirius_mapping": 3239
+    },
+    "L45": {
+        "sirius_mapping": 2160
+    },
+    "L46": {
+        "sirius_mapping": 2188
+    },
+    "L47": {
+        "sirius_mapping": 2463
+    },
+    "L48": {
+        "sirius_mapping": 1795
+    },
+    "L50": {
+        "sirius_mapping": 682
+    },
+    "L51": {
+        "sirius_mapping": 680
+    },
+    "L54": {
+        "sirius_mapping": 1834
+    },
+    "L55": {
+        "sirius_mapping": 3265
+    },
+    "L57": {
+        "sirius_mapping": 6392
+    },
+    "L59": {
+        "sirius_mapping": 2522
+    },
+    "L60": {
+        "sirius_mapping": 2855
+    },
+    "L61": {
+        "sirius_mapping": 2856
+    },
+    "L62": {
+        "sirius_mapping": 1175
+    },
+    "L63": {
+        "sirius_mapping": 2283
+    },
+    "L65": {
+        "sirius_mapping": 2953
+    },
+    "L66": {
+        "sirius_mapping": 6062
+    },
+    "L68": {
+        "sirius_mapping": 6025
+    },
+    "L69": {
+        "sirius_mapping": 2790
+    },
+    "L70": {
+        "sirius_mapping": 2471
+    },
+    "L71": {
+        "sirius_mapping": 3237
+    },
+    "L75": {
+        "sirius_mapping": 676
+    },
+    "L77": {
+        "sirius_mapping": 2514
+    },
+    "L78": {
+        "sirius_mapping": 6887
+    },
+    "L79": {
+        "sirius_mapping": 5596
+    },
+    "L83": {
+        "sirius_mapping": 5004
+    },
+    "L85": {
+        "sirius_mapping": 5793
+    },
+    "L90": {
+        "sirius_mapping": 6390
+    },
+    "L92": {
+        "sirius_mapping": 3177
+    },
+    "L93": {
+        "sirius_mapping": 3043
+    },
+    "L94": {
+        "sirius_mapping": 2425
+    },
+    "L96": {
+        "sirius_mapping": 2962
+    },
+    "L97": {
+        "sirius_mapping": 2488
+    },
+    "L98": {
+        "sirius_mapping": 2398
+    },
+    "L99": {
+        "sirius_mapping": 2539
+    },
+    "O01": {
+        "sirius_mapping": 2510
+    },
+    "O02": {
+        "sirius_mapping": 487
+    },
+    "O03": {
+        "sirius_mapping": 2640
+    },
+    "O04": {
+        "sirius_mapping": 2390
+    },
+    "O05": {
+        "sirius_mapping": 2532
+    },
+    "O07": {
+        "sirius_mapping": 2447
+    },
+    "O08": {
+        "sirius_mapping": 2558
+    },
+    "O09": {
+        "sirius_mapping": 5270
+    },
+    "O10": {
+        "sirius_mapping": 61
+    },
+    "O11": {
+        "sirius_mapping": 2638
+    },
+    "O12": {
+        "sirius_mapping": 3211
+    },
+    "O13": {
+        "sirius_mapping": 3108
+    },
+    "O14": {
+        "sirius_mapping": 1169
+    },
+    "O17": {
+        "sirius_mapping": 6029
+    },
+    "O18": {
+        "sirius_mapping": 2989
+    },
+    "O19": {
+        "sirius_mapping": 2467
+    },
+    "O20": {
+        "sirius_mapping": 4671
+    },
+    "O21": {
+        "sirius_mapping": 2617
+    },
+    "O22": {
+        "sirius_mapping": 2479
+    },
+    "O23": {
+        "sirius_mapping": 34
+    },
+    "O27": {
+        "sirius_mapping": 6849
+    },
+    "O28": {
+        "sirius_mapping": 2570
+    },
+    "O29": {
+        "sirius_mapping": 6057
+    },
+    "O30": {
+        "sirius_mapping": 1827
+    },
+    "O31": {
+        "sirius_mapping": 2561
+    },
+    "O32": {
+        "sirius_mapping": 2863
+    },
+    "O33": {
+        "sirius_mapping": 7312
+    },
+    "O35": {
+        "sirius_mapping": 3212
+    },
+    "O36": {
+        "sirius_mapping": 4908
+    },
+    "O37": {
+        "sirius_mapping": 2772
+    },
+    "O38": {
+        "sirius_mapping": 2774
+    },
+    "O39": {
+        "sirius_mapping": 3715
+    },
+    "O41": {
+        "sirius_mapping": 2844
+    },
+    "O42": {
+        "sirius_mapping": 3117
+    },
+    "O43": {
+        "sirius_mapping": 5266
+    },
+    "O44": {
+        "sirius_mapping": 2553
+    },
+    "O45": {
+        "sirius_mapping": 2699
+    },
+    "O50": {
+        "sirius_mapping": 712
+    },
+    "O51": {
+        "sirius_mapping": 3264
+    },
+    "O53": {
+        "sirius_mapping": 7811
+    },
+    "O54": {
+        "sirius_mapping": 2513
+    },
+    "O56": {
+        "sirius_mapping": 3582
+    },
+    "O57": {
+        "sirius_mapping": 1394
+    },
+    "O58": {
+        "sirius_mapping": 1413
+    },
+    "O59": {
+        "sirius_mapping": 2110
+    },
+    "O60": {
+        "sirius_mapping": 3218
+    },
+    "O62": {
+        "sirius_mapping": 2142
+    },
+    "O63": {
+        "sirius_mapping": 2133
+    },
+    "O64": {
+        "sirius_mapping": 3164
+    },
+    "O66": {
+        "sirius_mapping": 3163
+    },
+    "O68": {
+        "sirius_mapping": 3188
+    },
+    "O69": {
+        "sirius_mapping": 3168
+    },
+    "O71": {
+        "sirius_mapping": 2550
+    },
+    "O73": {
+        "sirius_mapping": 5694
+    },
+    "O75": {
+        "sirius_mapping": 2353
+    },
+    "O76": {
+        "sirius_mapping": 5727
+    },
+    "O78": {
+        "sirius_mapping": 3263
+    },
+    "O81": {
+        "sirius_mapping": 2416
+    },
+    "O85": {
+        "sirius_mapping": 7122
+    },
+    "O87": {
+        "sirius_mapping": 2716
+    },
+    "O88": {
+        "sirius_mapping": 5595
+    },
+    "O90": {
+        "sirius_mapping": 2286
+    },
+    "O92": {
+        "sirius_mapping": 3297
+    },
+    "O94": {
+        "sirius_mapping": 2618
+    },
+    "O95": {
+        "sirius_mapping": 3176
+    },
+    "O96": {
+        "sirius_mapping": 1081
+    },
+    "O97": {
+        "sirius_mapping": 2987
+    },
+    "O99": {
+        "sirius_mapping": 2619
+    },
+    "P01": {
+        "sirius_mapping": 2420
     },
     "P02": {
-        "sirius_mapping": 509
+        "sirius_mapping": 2454
     },
-    "C52": {
-        "sirius_mapping": 509
+    "P04": {
+        "sirius_mapping": 2728
+    },
+    "P06": {
+        "sirius_mapping": 3031
+    },
+    "P08": {
+        "sirius_mapping": 1798
+    },
+    "P09": {
+        "sirius_mapping": 2714
+    },
+    "P11": {
+        "sirius_mapping": 2430
+    },
+    "P13": {
+        "sirius_mapping": 2473
+    },
+    "P14": {
+        "sirius_mapping": 2554
+    },
+    "P17": {
+        "sirius_mapping": 2307
+    },
+    "P19": {
+        "sirius_mapping": 454
+    },
+    "P20": {
+        "sirius_mapping": 2391
+    },
+    "P23": {
+        "sirius_mapping": 2096
+    },
+    "P24": {
+        "sirius_mapping": 1300
+    },
+    "P25": {
+        "sirius_mapping": 38
+    },
+    "P28": {
+        "sirius_mapping": 2960
+    },
+    "P29": {
+        "sirius_mapping": 2588
+    },
+    "P30": {
+        "sirius_mapping": 751
+    },
+    "P32": {
+        "sirius_mapping": 494
+    },
+    "P33": {
+        "sirius_mapping": 2396
+    },
+    "P34": {
+        "sirius_mapping": 2381
+    },
+    "P35": {
+        "sirius_mapping": 2715
+    },
+    "P38": {
+        "sirius_mapping": 2800
+    },
+    "P40": {
+        "sirius_mapping": 2606
+    },
+    "P43": {
+        "sirius_mapping": 965
+    },
+    "P44": {
+        "sirius_mapping": 2988
+    },
+    "P45": {
+        "sirius_mapping": 2609
+    },
+    "P46": {
+        "sirius_mapping": 5465
+    },
+    "P48": {
+        "sirius_mapping": 3115
+    },
+    "P49": {
+        "sirius_mapping": 808
+    },
+    "P50": {
+        "sirius_mapping": 3116
+    },
+    "P51": {
+        "sirius_mapping": 2037
+    },
+    "P52": {
+        "sirius_mapping": 3913
+    },
+    "P54": {
+        "sirius_mapping": 2374
+    },
+    "P56": {
+        "sirius_mapping": 2630
+    },
+    "P58": {
+        "sirius_mapping": 3252
+    },
+    "P59": {
+        "sirius_mapping": 6061
+    },
+    "P60": {
+        "sirius_mapping": 2378
+    },
+    "P61": {
+        "sirius_mapping": 4077
+    },
+    "P62": {
+        "sirius_mapping": 2903
+    },
+    "P63": {
+        "sirius_mapping": 839
+    },
+    "P66": {
+        "sirius_mapping": 2921
+    },
+    "P67": {
+        "sirius_mapping": 1171
+    },
+    "P71": {
+        "sirius_mapping": 2518
+    },
+    "P72": {
+        "sirius_mapping": 7410
+    },
+    "P73": {
+        "sirius_mapping": 2198
+    },
+    "P74": {
+        "sirius_mapping": 8037
+    },
+    "P76": {
+        "sirius_mapping": 2065
+    },
+    "P77": {
+        "sirius_mapping": 6058
+    },
+    "P79": {
+        "sirius_mapping": 2428
+    },
+    "P81": {
+        "sirius_mapping": 2571
+    },
+    "P82": {
+        "sirius_mapping": 2393
+    },
+    "P84": {
+        "sirius_mapping": 2380
+    },
+    "P85": {
+        "sirius_mapping": 2476
+    },
+    "P86": {
+        "sirius_mapping": 2015
+    },
+    "P87": {
+        "sirius_mapping": 2636
+    },
+    "P88": {
+        "sirius_mapping": 2562
+    },
+    "P91": {
+        "sirius_mapping": 6360
+    },
+    "P92": {
+        "sirius_mapping": 2626
+    },
+    "P93": {
+        "sirius_mapping": 2984
+    },
+    "P95": {
+        "sirius_mapping": 2555
+    },
+    "P96": {
+        "sirius_mapping": 417
+    },
+    "P97": {
+        "sirius_mapping": 6366
+    },
+    "R02": {
+        "sirius_mapping": 2579
+    },
+    "R03": {
+        "sirius_mapping": 2845
+    },
+    "R04": {
+        "sirius_mapping": 3104
+    },
+    "R06": {
+        "sirius_mapping": 2605
+    },
+    "R09": {
+        "sirius_mapping": 2937
+    },
+    "R13": {
+        "sirius_mapping": 3214
+    },
+    "R14": {
+        "sirius_mapping": 2563
+    },
+    "R16": {
+        "sirius_mapping": 238
+    },
+    "R17": {
+        "sirius_mapping": 2853
+    },
+    "R18": {
+        "sirius_mapping": 2587
+    },
+    "R20": {
+        "sirius_mapping": 1467
+    },
+    "R22": {
+        "sirius_mapping": 2457
+    },
+    "R26": {
+        "sirius_mapping": 3210
+    },
+    "R27": {
+        "sirius_mapping": 2729
+    },
+    "R28": {
+        "sirius_mapping": 2417
+    },
+    "R31": {
+        "sirius_mapping": 6783
+    },
+    "R32": {
+        "sirius_mapping": 2426
+    },
+    "R33": {
+        "sirius_mapping": 4937
+    },
+    "R35": {
+        "sirius_mapping": 252
+    },
+    "R38": {
+        "sirius_mapping": 2965
+    },
+    "R39": {
+        "sirius_mapping": 2841
+    },
+    "R43": {
+        "sirius_mapping": 6883
+    },
+    "R44": {
+        "sirius_mapping": 2466
+    },
+    "R48": {
+        "sirius_mapping": 2440
+    },
+    "R52": {
+        "sirius_mapping": 1011
+    },
+    "R54": {
+        "sirius_mapping": 3884
+    },
+    "R57": {
+        "sirius_mapping": 1799
+    },
+    "R59": {
+        "sirius_mapping": 4011
+    },
+    "R60": {
+        "sirius_mapping": 516
+    },
+    "R61": {
+        "sirius_mapping": 2773
+    },
+    "R63": {
+        "sirius_mapping": 2421
+    },
+    "R64": {
+        "sirius_mapping": 2126
+    },
+    "R65": {
+        "sirius_mapping": 3241
+    },
+    "R66": {
+        "sirius_mapping": 3242
+    },
+    "R68": {
+        "sirius_mapping": 2441
+    },
+    "R69": {
+        "sirius_mapping": 2437
+    },
+    "R70": {
+        "sirius_mapping": 519
+    },
+    "R71": {
+        "sirius_mapping": 2963
+    },
+    "R72": {
+        "sirius_mapping": 2498
+    },
+    "R75": {
+        "sirius_mapping": 5603
+    },
+    "R76": {
+        "sirius_mapping": 2593
+    },
+    "R79": {
+        "sirius_mapping": 2280
+    },
+    "R80": {
+        "sirius_mapping": 2322
+    },
+    "R83": {
+        "sirius_mapping": 2595
+    },
+    "R84": {
+        "sirius_mapping": 2634
+    },
+    "R85": {
+        "sirius_mapping": 2852
+    },
+    "R86": {
+        "sirius_mapping": 2465
+    },
+    "R87": {
+        "sirius_mapping": 2581
+    },
+    "R88": {
+        "sirius_mapping": 1475
+    },
+    "R90": {
+        "sirius_mapping": 2388
+    },
+    "R91": {
+        "sirius_mapping": 6886
+    },
+    "R94": {
+        "sirius_mapping": 3246
+    },
+    "R97": {
+        "sirius_mapping": 3245
+    },
+    "R99": {
+        "sirius_mapping": 2453
+    },
+    "S01": {
+        "sirius_mapping": 2384
+    },
+    "S05": {
+        "sirius_mapping": 3160
+    },
+    "S08": {
+        "sirius_mapping": 2541
+    },
+    "S09": {
+        "sirius_mapping": 2789
+    },
+    "S11": {
+        "sirius_mapping": 5479
+    },
+    "S12": {
+        "sirius_mapping": 6885
+    },
+    "S13": {
+        "sirius_mapping": 2597
+    },
+    "S14": {
+        "sirius_mapping": 3020
+    },
+    "S15": {
+        "sirius_mapping": 2584
+    },
+    "S16": {
+        "sirius_mapping": 6024
+    },
+    "S19": {
+        "sirius_mapping": 1897
+    },
+    "S21": {
+        "sirius_mapping": 6028
+    },
+    "S25": {
+        "sirius_mapping": 3102
+    },
+    "S26": {
+        "sirius_mapping": 2840
+    },
+    "S28": {
+        "sirius_mapping": 2582
+    },
+    "S31": {
+        "sirius_mapping": 2274
+    },
+    "S33": {
+        "sirius_mapping": 484
+    },
+    "S34": {
+        "sirius_mapping": 2601
+    },
+    "S35": {
+        "sirius_mapping": 2383
+    },
+    "S38": {
+        "sirius_mapping": 2492
+    },
+    "S41": {
+        "sirius_mapping": 4672
+    },
+    "S42": {
+        "sirius_mapping": 66
+    },
+    "S43": {
+        "sirius_mapping": 2512
+    },
+    "S44": {
+        "sirius_mapping": 8037
+    },
+    "S45": {
+        "sirius_mapping": 2575
+    },
+    "S46": {
+        "sirius_mapping": 2504
+    },
+    "S47": {
+        "sirius_mapping": 2389
+    },
+    "S48": {
+        "sirius_mapping": 2470
+    },
+    "S50": {
+        "sirius_mapping": 678
+    },
+    "S51": {
+        "sirius_mapping": 3243
+    },
+    "S53": {
+        "sirius_mapping": 2535
+    },
+    "S54": {
+        "sirius_mapping": 2546
+    },
+    "S55": {
+        "sirius_mapping": 2950
+    },
+    "S59": {
+        "sirius_mapping": 6365
+    },
+    "S61": {
+        "sirius_mapping": 799
+    },
+    "S62": {
+        "sirius_mapping": 2484
+    },
+    "S63": {
+        "sirius_mapping": 3348
+    },
+    "S64": {
+        "sirius_mapping": 2952
+    },
+    "S65": {
+        "sirius_mapping": 3249
+    },
+    "S66": {
+        "sirius_mapping": 3248
+    },
+    "S67": {
+        "sirius_mapping": 2986
+    },
+    "S68": {
+        "sirius_mapping": 1348
+    },
+    "S69": {
+        "sirius_mapping": 5480
+    },
+    "S70": {
+        "sirius_mapping": 2843
+    },
+    "S72": {
+        "sirius_mapping": 2979
+    },
+    "S73": {
+        "sirius_mapping": 7311
+    },
+    "S74": {
+        "sirius_mapping": 6884
+    },
+    "S77": {
+        "sirius_mapping": 3042
+    },
+    "S78": {
+        "sirius_mapping": 343
+    },
+    "S79": {
+        "sirius_mapping": 3162
+    },
+    "S80": {
+        "sirius_mapping": 3166
+    },
+    "S81": {
+        "sirius_mapping": 3337
+    },
+    "S83": {
+        "sirius_mapping": 4910
+    },
+    "S84": {
+        "sirius_mapping": 5599
+    },
+    "S86": {
+        "sirius_mapping": 6393
+    },
+    "S87": {
+        "sirius_mapping": 503
+    },
+    "S88": {
+        "sirius_mapping": 36
+    },
+    "S89": {
+        "sirius_mapping": 6391
+    },
+    "S90": {
+        "sirius_mapping": 2429
+    },
+    "S92": {
+        "sirius_mapping": 2846
+    },
+    "S94": {
+        "sirius_mapping": 3244
+    },
+    "S97": {
+        "sirius_mapping": 3121
+    },
+    "V01": {
+        "sirius_mapping": 2442
+    },
+    "V03": {
+        "sirius_mapping": 5265
+    },
+    "V04": {
+        "sirius_mapping": 2568
+    },
+    "V05": {
+        "sirius_mapping": 3219
+    },
+    "V06": {
+        "sirius_mapping": 2402
+    },
+    "V09": {
+        "sirius_mapping": 5464
+    },
+    "V11": {
+        "sirius_mapping": 2406
+    },
+    "V12": {
+        "sirius_mapping": 2489
+    },
+    "V14": {
+        "sirius_mapping": 852
+    },
+    "V15": {
+        "sirius_mapping": 5728
+    },
+    "V19": {
+        "sirius_mapping": 3216
+    },
+    "V20": {
+        "sirius_mapping": 5600
+    },
+    "V22": {
+        "sirius_mapping": 6882
+    },
+    "V23": {
+        "sirius_mapping": 2586
+    },
+    "V28": {
+        "sirius_mapping": 2432
+    },
+    "V29": {
+        "sirius_mapping": 2435
+    },
+    "V31": {
+        "sirius_mapping": 5597
+    },
+    "V32": {
+        "sirius_mapping": 5601
+    },
+    "V33": {
+        "sirius_mapping": 3217
+    },
+    "V36": {
+        "sirius_mapping": 2560
+    },
+    "V39": {
+        "sirius_mapping": 2439
+    },
+    "V41": {
+        "sirius_mapping": 2567
+    },
+    "V42": {
+        "sirius_mapping": 2407
+    },
+    "V43": {
+        "sirius_mapping": 806
+    },
+    "V44": {
+        "sirius_mapping": 1555
+    },
+    "V46": {
+        "sirius_mapping": 5133
+    },
+    "V47": {
+        "sirius_mapping": 1863
+    },
+    "V49": {
+        "sirius_mapping": 485
+    },
+    "V50": {
+        "sirius_mapping": 3125
+    },
+    "V51": {
+        "sirius_mapping": 2881
+    },
+    "V52": {
+        "sirius_mapping": 2549
+    },
+    "V53": {
+        "sirius_mapping": 2530
+    },
+    "V54": {
+        "sirius_mapping": 464
+    },
+    "V56": {
+        "sirius_mapping": 1388
+    },
+    "V57": {
+        "sirius_mapping": 2372
     }
 }
