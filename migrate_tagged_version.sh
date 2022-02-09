@@ -6,6 +6,8 @@ ENV_VARS=$(cat <<-END
     1. Preproduction\n
     2. PreQA\n
     3. QA\n
+    4. Rehearsal\n
+    5. Production\n
 END
 )
 
@@ -14,6 +16,7 @@ FILTER_VARS=$(cat <<-END
     1. all\n
     2. main\n
     3. qa\n
+    4. production\n
 END
 )
 
@@ -24,7 +27,7 @@ set_response () {
   eval "echo Variable $2 set to \$$2"
 }
 
-CIRCLE_TOKEN=$(aws-vault exec identity --  docker-compose -f docker-compose.commands.yml run --rm migrate_tagged_version python3 migrate_tagged_version/app.py --cmd get_secret_key)
+CIRCLE_TOKEN=$(aws-vault exec identity -- docker-compose -f docker-compose.commands.yml run --rm migrate_tagged_version python3 migrate_tagged_version/app.py --cmd get_secret_key)
 
 echo "===== RUN A MIGRATION INTO AN ENVIRONMENT ====="
 echo ""
@@ -39,6 +42,9 @@ then
 elif [ ${FILTER} == "3" ]
 then
   TAG_FILTER="qa"
+elif [ ${FILTER} == "4" ]
+then
+  TAG_FILTER="production"
 else
   echo "You need to choose a valid option from [1-4]. Exiting...."
   exit 1
@@ -51,27 +57,49 @@ echo ""
 read -rp "Copy and paste from the above tags, the tag you want to use for the migration (eg IN999-890d72): " TAG
 echo ""
 
-set_response "Environment to run migration to [1-4]: " ENVIRONMENT ENV_VARS
+set_response "Environment to run migration to [1-5]: " ENVIRONMENT ENV_VARS
 if [ $ENVIRONMENT == "1" ]
 then
   ENV="Preproduction"
   RUN_PREPROD="true"
   RUN_PRE_QA="false"
   RUN_QA="false"
+  RUN_REHEARSAL="false"
+  RUN_PROD="false"
 elif [ $ENVIRONMENT == "2" ]
 then
   ENV="PreQA"
   RUN_PREPROD="false"
   RUN_PRE_QA="true"
   RUN_QA="false"
+  RUN_REHEARSAL="false"
+  RUN_PROD="false"
 elif [ $ENVIRONMENT == "3" ]
 then
   ENV="QA"
   RUN_PREPROD="false"
   RUN_PRE_QA="false"
   RUN_QA="true"
+  RUN_REHEARSAL="false"
+  RUN_PROD="false"
+elif [ $ENVIRONMENT == "4" ]
+then
+  ENV="Rehearsal"
+  RUN_PREPROD="false"
+  RUN_PRE_QA="false"
+  RUN_QA="false"
+  RUN_REHEARSAL="true"
+  RUN_PROD="false"
+elif [ $ENVIRONMENT == "5" ]
+then
+  ENV="Production"
+  RUN_PREPROD="false"
+  RUN_PRE_QA="false"
+  RUN_QA="false"
+  RUN_REHEARSAL="false"
+  RUN_PROD="true"
 else
-  echo "You need to choose a valid option from [1-4]. Exiting...."
+  echo "You need to choose a valid option from [1-5]. Exiting...."
   exit 1
 fi
 
@@ -84,7 +112,7 @@ then
               --url https://circleci.com/api/v2/project/github/ministryofjustice/opg-data-casrec-migration/pipeline \
               --header "Circle-Token: ${CIRCLE_TOKEN}" \
               --header 'content-type: application/json' \
-              --data "{\"branch\":\"main\", \"parameters\":{\"run_main\": false, \"run_preprod\": $RUN_PREPROD, \"run_qa\": $RUN_QA, \"run_preqa\": $RUN_PRE_QA, \"override_tag\": \"$TAG\"}}"
+              --data "{\"branch\":\"main\", \"parameters\":{\"run_main\": false, \"run_preprod\": $RUN_PREPROD, \"run_qa\": $RUN_QA, \"run_preqa\": $RUN_PRE_QA, \"run_rehearsal\": $RUN_REHEARSAL, \"run_production\": $RUN_PROD, \"override_tag\": \"$TAG\"}}"
 else
   echo "You chose not to deploy. Good bye!"
   exit 0
