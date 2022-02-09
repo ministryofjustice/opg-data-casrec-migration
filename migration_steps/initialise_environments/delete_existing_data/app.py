@@ -53,6 +53,29 @@ sirius_deletion_check_tables = [
 ]
 
 
+def run_statements_from_file(statement_file):
+    sql_statements = []
+    sql_statement = ""
+
+    with open(f"{current_path}/sql/{statement_file}.sql", "r") as lines:
+
+        for line in lines:
+            if len(line) > 0:
+                if ";" not in line:
+                    sql_statement += f"{line.strip()}\n"
+                else:
+                    sql_statement += f"{line.strip()}\n"
+                    sql_statements.append(sql_statement)
+                    sql_statement = ""
+    log.info(f"Finished preparing delete statements to run")
+
+    for statement in sql_statements:
+        log.info(f"Running statement: \n{statement}")
+        with target_db_engine.begin() as connection:
+            response = connection.execute(statement)
+            log.info(f"{response.rowcount} rows updated\n")
+
+
 def main():
     log.info(helpers.log_title(message="Delete data adjoining sirius data"))
     log.info(
@@ -78,26 +101,7 @@ def main():
             "DELETE FROM finance_order WHERE id IN (1,2,3,4,5,6,7);"
         )
 
-    sql_statements = []
-    sql_statement = ""
-
-    with open(f"{current_path}/sql/delete_statements.sql", "r") as lines:
-
-        for line in lines:
-            if len(line) > 0:
-                if ";" not in line:
-                    sql_statement += f"{line.strip()}\n"
-                else:
-                    sql_statement += f"{line.strip()}\n"
-                    sql_statements.append(sql_statement)
-                    sql_statement = ""
-    log.info(f"Finished preparing delete statements to run")
-
-    for statement in sql_statements:
-        log.info(f"Running statement: \n{statement}")
-        with target_db_engine.begin() as connection:
-            response = connection.execute(statement)
-            log.info(f"{response.rowcount} rows updated\n")
+    run_statements_from_file("deletion_preparation_statements")
 
     log.info("Checking deletion table counts")
     stop_migration = False
@@ -121,6 +125,8 @@ def main():
             "Stopping migration due to unexpected deletion counts. Check log output above."
         )
         os._exit(1)
+
+    run_statements_from_file("delete_statements")
 
 
 if __name__ == "__main__":

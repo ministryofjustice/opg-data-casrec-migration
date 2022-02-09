@@ -29,7 +29,10 @@ SELECT
     CASE WHEN non_cp1_pre_delete IS NULL THEN 'n/a'
     ELSE
         CASE
-            WHEN non_cp1_post_delete > 0 THEN 'DELETE ERROR'
+            WHEN non_cp1_post_delete > 0 AND supervision_table NOT IN ('persons_clients', 'finance_person')
+            THEN 'DELETE ERROR'
+            WHEN non_cp1_post_delete != non_cp1_pre_delete AND supervision_table IN ('persons_clients', 'finance_person')
+            THEN 'DELETE ERROR'
             ELSE 'OK'
         END
     END AS  non_cp1_status

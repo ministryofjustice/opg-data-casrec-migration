@@ -138,6 +138,13 @@ UPDATE countverification.counts SET {working_column} =
 )
 WHERE supervision_table = 'tasks';
 
+-- finance_persons
+UPDATE countverification.counts SET {working_column} =
+(
+    SELECT COUNT(*) FROM casrec_csv.pat
+)
+WHERE supervision_table = 'finance_person';
+
 -- death notifications
 UPDATE countverification.counts SET {working_column} =
 (
