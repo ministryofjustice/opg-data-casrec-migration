@@ -2,6 +2,7 @@ import logging
 import os
 import sys
 from pathlib import Path
+from helpers import get_lookup_dict
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../shared")
@@ -13,7 +14,15 @@ log = logging.getLogger("root")
 
 def amend_dev_assignees(db_engine):
     assignee_ids = [2657]
-    assignee_ids.extend(range(2, 510))
+    lookup_dict = get_lookup_dict(
+        file_name="caseowner_lookup"
+    )
+    lookup_ids = list(lookup_dict.values())
+
+    # We have a couple of casrec users mapping to the same assignee. Remove duplicates
+    lookup_ids = list(dict.fromkeys(lookup_ids))
+
+    assignee_ids.extend(sorted(lookup_ids))
     team_ids = [
         90,
         91,
