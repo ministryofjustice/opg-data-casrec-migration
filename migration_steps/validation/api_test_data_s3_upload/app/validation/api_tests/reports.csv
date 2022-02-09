@@ -35,6 +35,7 @@ endpoint,entity_ref,json_locator,test_purpose,api_response
 /api/v1/clients/{id}/annual-reports,10072905,[0].numberOfChaseLetters,zero_chase_letters,0
 /api/v1/clients/{id}/annual-reports,10072905,[0].dueDate,due_date_exists,22/10/2018
 /api/v1/clients/{id}/annual-reports,10072905,[0].reportDueReminderDate,reminder_date_exists,09/09/2018
+/api/v1/clients/{id}/annual-reports,10072905,[2].reviewDate,review_date_exists,2007-07-03T00:00:00+00:00
 /api/v1/clients/{id}/annual-reports,10109006,[1].status.handle,overdue_status_IN1136_revstat_i_reviewdate_set,OVERDUE
 /api/v1/clients/{id}/annual-reports,98123544,[1].status.handle,overdue_status_IN1136_revstat_r_no_dates_set,OVERDUE
 /api/v1/clients/{id}/annual-reports,11447460,[0].status.handle,overdue_status_IN1136_revstat_r_reviewdate_not_set,OVERDUE
