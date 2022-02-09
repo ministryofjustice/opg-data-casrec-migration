@@ -50,8 +50,6 @@ log = logging.getLogger("root")
 custom_logger.setup_logging(env=environment, module_name="skeleton data")
 conn_target = None
 
-skeleton_sqlfile = "skeleton_fixtures.sql"
-
 
 def main():
 
