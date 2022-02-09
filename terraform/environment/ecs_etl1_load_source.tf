@@ -82,10 +82,6 @@ locals {
         value = local.account.account_name
       },
       {
-        name  = "S3_PATH",
-        value = local.account.s3_path
-      },
-      {
         name  = "SIRIUS_ACCOUNT",
         value = local.account.account_id
       }
