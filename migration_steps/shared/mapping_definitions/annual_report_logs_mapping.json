@@ -290,6 +290,31 @@
             "sync": ""
         }
     },
+    "reviewdate": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "date",
+            "table_name": "annual_report_logs",
+            "entity": "reporting"
+        },
+        "transform_casrec": {
+            "casrec_table": "Account",
+            "casrec_column_name": "Review Date",
+            "alias": "Review Date",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
     "order_id": {
         "mapping_status": {
             "is_complete": true
