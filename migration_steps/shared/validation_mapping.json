@@ -948,7 +948,9 @@
         "orderby": {},
         "casrec": {
             "from_table": "SUP_ACTIVITY",
-            "transform": {},
+            "transform": {
+                "duedate": "CAST(COALESCE(NULLIF(TRIM(casrec_csv.sup_activity.\"Target\"), ''), NULLIF(TRIM(casrec_csv.sup_activity.\"Start Date\"), '')) AS timestamp)"
+            },
             "joins": [
                 "INNER JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.sup_activity.\"Case\"",
                 "INNER JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.sup_activity.\"Order No\""
