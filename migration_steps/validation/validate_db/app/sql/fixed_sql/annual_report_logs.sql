@@ -25,7 +25,8 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
             CAST(nullif(revisedduedate, '') AS date) AS revisedduedate,
             numberofchaseletters,
             casrec_csv.report_element(full_status, 1) AS status,
-            NULLIF(casrec_csv.report_element(full_status, 3), '') AS reviewstatus
+            NULLIF(casrec_csv.report_element(full_status, 3), '') AS reviewstatus,
+            CAST(nullif(reviewdate, '') AS date) AS reviewdate
         FROM (
             SELECT
                 caserecnumber,
@@ -39,7 +40,8 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
                     casrec_csv.report_status_aggregate(
                         review_status, wd_count_end_date, receiveddate, lodged_date, reviewdate, next_yr_flag
                     )
-                ) full_status
+                ) full_status,
+                reviewdate
             FROM (
                 SELECT
                     "Case" AS caserecnumber,
@@ -79,7 +81,8 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
             NULL AS revisedduedate,
             0 AS numberofchaseletters,
             'PENDING' AS status,
-            NULL AS review_status
+            NULL AS review_status,
+            NULL AS reviewdate
         FROM
             casrec_csv.pat p
 
@@ -117,7 +120,8 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
         annual_report_logs.revisedduedate AS revisedduedate,
         annual_report_logs.numberofchaseletters AS numberofchaseletters,
         annual_report_logs.status,
-        annual_report_logs.reviewstatus
+        annual_report_logs.reviewstatus,
+        annual_report_logs.reviewdate
     FROM {target_schema}.annual_report_logs
     LEFT JOIN {target_schema}.persons
     ON persons.id = annual_report_logs.client_id

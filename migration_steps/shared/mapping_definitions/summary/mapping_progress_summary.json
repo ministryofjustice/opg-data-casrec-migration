@@ -157,9 +157,9 @@
             "percentage_complete": 88
         },
         "annual_report_logs": {
-            "total_rows": 13,
+            "total_rows": 14,
             "total_unmapped": 0,
-            "total_mapped": 13,
+            "total_mapped": 14,
             "percentage_complete": 100
         },
         "annual_report_lodging_details": {
@@ -283,9 +283,9 @@
             "total_complete": 8
         },
         "fields": {
-            "total_fields": 422,
+            "total_fields": 423,
             "total_unmapped": 22,
-            "total_mapped": 400,
+            "total_mapped": 401,
             "percentage_complete": 95
         }
     }
