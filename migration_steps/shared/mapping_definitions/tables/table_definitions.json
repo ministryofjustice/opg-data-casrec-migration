@@ -814,7 +814,8 @@
         "required_entities": "",
         "source_conditions": {},
         "source_table_additional_columns": [
-            "Case"
+            "Case",
+            "Report Type"
         ],
         "source_table_name": "repvis",
         "table_transforms": {},
