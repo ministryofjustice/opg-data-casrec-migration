@@ -990,7 +990,9 @@
         "orderby": {},
         "casrec": {
             "from_table": "REPVIS",
-            "transform": {},
+            "transform": {
+                "visitsubtype": "casrec_csv.visits_visitsubtype(casrec_csv.REPVIS.\"Req By\", casrec_csv.REPVIS.\"Report Type\")"
+            },
             "joins": [
                 "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.REPVIS.\"Case\""
             ],

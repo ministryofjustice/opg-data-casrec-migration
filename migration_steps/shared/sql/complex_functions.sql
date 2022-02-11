@@ -162,3 +162,32 @@ WHERE cast(string_date AS date) <= dd;
 RETURN weekday_count;
 end;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION casrec_csv.visits_visitsubtype(req_by varchar, report_type varchar)
+RETURNS
+	varchar AS $$
+DECLARE
+    visitsubtype varchar;
+BEGIN
+	visitsubtype = CASE
+	WHEN req_by IN ('1', '2', '4', '5', '6', '7')
+	THEN
+		CASE
+		WHEN report_type = '1' THEN 'VST-LAY'
+		WHEN report_type = '2' THEN 'VST-HW'
+		WHEN report_type = '3' THEN 'VST-MED'
+		END
+	WHEN req_by = '3'
+	THEN
+		CASE
+		WHEN report_type IN ('1', '2') THEN 'VST-DEP'
+		WHEN report_type = '3' THEN 'VST-MLPA'
+		END
+	WHEN req_by IN ('8', '9', '10', '11', '12', '13', '14') AND report_type IN ('1', '2', '3') THEN 'VST-PRO'
+	ELSE
+		NULL
+	END;
+
+	RETURN visitsubtype;
+END;
+$$ LANGUAGE plpgsql;
