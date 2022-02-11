@@ -65,7 +65,7 @@
             "casrec_column_name": "Req By",
             "alias": "Req By",
             "requires_transformation": "",
-            "lookup_table": "visit_subtype_lookup",
+            "lookup_table": "visit_type_lookup",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
@@ -361,11 +361,11 @@
             "entity": "visits"
         },
         "transform_casrec": {
-            "casrec_table": "REPVIS",
-            "casrec_column_name": "Req By",
-            "alias": "Req By 1",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
-            "lookup_table": "visit_type_lookup",
+            "lookup_table": "",
             "default_value": "",
             "calculated": "",
             "additional_columns": ""
