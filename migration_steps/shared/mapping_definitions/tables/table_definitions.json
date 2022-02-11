@@ -818,7 +818,17 @@
             "Report Type"
         ],
         "source_table_name": "repvis",
-        "table_transforms": {},
+        "table_transforms": {
+            "set_visits_visitsubtype": {
+                "source_cols": [
+                    "Req By",
+                    "Report Type"
+                ],
+                "target_cols": [
+                    "visitsubtype"
+                ]
+            }
+        },
         "table_type": "data"
     }
 }
