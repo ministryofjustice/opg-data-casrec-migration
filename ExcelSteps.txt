@@ -1,0 +1,12 @@
+Create blank workbook
+Data tab
+Get data from text
+Text import wizard
+Choose fixed width
+Click next
+Tries it's best so remove all the arrows by double clicking and add lines at beginning of each column
+where dashes appear
+Hit finish
+Select all cells
+Edit - search and replace - Quotes (") with nothing
+Save as CSV
