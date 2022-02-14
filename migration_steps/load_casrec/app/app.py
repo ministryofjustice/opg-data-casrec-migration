@@ -34,7 +34,6 @@ chunk_size = config.DEFAULT_CHUNK_SIZE
 schema = config.schemas["pre_transform"]
 
 # logging
-log = logging.getLogger("root")
 custom_logger.setup_logging(env=environment, module_name="load casrec schema")
 log = logging.getLogger("root")
 
@@ -58,7 +57,7 @@ bucket_name = f"casrec-migration-{account_name.lower()}"
 
 def get_list_of_files(bucket_name, s3, path, tables):
     log.info(f"Get files from {bucket_name}:")
-    resp = s3.list_objects_v2(Bucket=bucket_name)
+    resp = s3.list_objects_v2(Bucket=bucket_name, Prefix=f"{path}/")
     files_in_bucket = []
     files_to_process = []
 
