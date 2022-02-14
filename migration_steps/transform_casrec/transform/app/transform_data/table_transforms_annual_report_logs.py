@@ -128,7 +128,7 @@ _mappings = [
             {"any_set": ["c_lodge_date"]},
             {"any_set": ["c_review_date"]},
         ],
-        "output_cols": {"status": "LODGED", "reviewstatus": None},
+        "output_cols": {"status": "LODGED", "reviewstatus": "NO_REVIEW"},
     },
     # table 1, row 7
     {
@@ -149,7 +149,7 @@ _mappings = [
             {"any_set": ["c_lodge_date"]},
             {"all_unset": ["c_review_date"]},
         ],
-        "output_cols": {"status": "OVERDUE", "reviewstatus": None},
+        "output_cols": {"status": "OVERDUE", "reviewstatus": "NO_REVIEW"},
     },
     # rule 8 from IN-1136
     # 'R' Rev Stat with Rcvd Date but no Lodge Date or Review Date
@@ -173,7 +173,7 @@ _mappings = [
             {"all_unset": ["c_lodge_date"]},
             {"all_unset": ["c_review_date"]},
         ],
-        "output_cols": {"status": "OVERDUE", "reviewstatus": None},
+        "output_cols": {"status": "OVERDUE", "reviewstatus": "NO_REVIEW"},
     },
     # table 1, row 8
     {
@@ -194,7 +194,7 @@ _mappings = [
             {"all_unset": _rcvd_date_cols},
             {"all_unset": ["c_lodge_date"]},
         ],
-        "output_cols": {"status": "OVERDUE", "reviewstatus": None},
+        "output_cols": {"status": "OVERDUE", "reviewstatus": "NO_REVIEW"},
     },
     # rule 6 from IN-1136
     # 'S' rev stat with a rcvd date and no lodge date and no review date
