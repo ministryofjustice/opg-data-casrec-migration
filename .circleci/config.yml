@@ -613,12 +613,12 @@ workflows:
           runner_command: migration-validation
       - run_task:
           name: migration - response api tests rehearsal
-          requires: [ migration - validation rehearsal ]
+          requires: [migration - validation rehearsal]
           tf_workspace: rehearsal
           runner_command: migration-response-api-tests
       - run_task:
           name: migration - light touch api tests rehearsal
-          requires: [ migration - response api tests rehearsal ]
+          requires: [migration - response api tests rehearsal]
           tf_workspace: rehearsal
           runner_command: migration-light-touch-api-tests
       - scale-services:
@@ -1115,8 +1115,19 @@ jobs:
           name: set environment variables
           when: always
           command: |
-            python3 scripts/ci_scripts/get_environment_entities.py --environment << parameters.param_workspace >> --role migrations-ci > ENTITIES
+            python3 scripts/ci_scripts/get_environment_entities.py --environment << parameters.param_workspace >> --role migrations-ci --param allowed-entities > ENTITIES
             echo << parameters.environment_title >> > ENVIRONMENT_TITLE
+            python3 scripts/ci_scripts/get_environment_entities.py --environment << parameters.param_workspace >> --role migrations-ci --param ci-enabled > ENABLED
+      - run:
+          name: fail if environment not enabled
+          when: always
+          command: |
+            ENABLED=$(cat ENABLED)
+            echo "ci-enabled param is set to: ${ENABLED}"
+            if [ "${ENABLED}" = "0" ]
+            then
+              exit 1
+            fi
       - persist_to_workspace:
           root: .
           paths:

@@ -57,3 +57,15 @@ resource "aws_ssm_parameter" "match_existing_data" {
     ignore_changes = [value]
   }
 }
+
+resource "aws_ssm_parameter" "ci_enabled" {
+  name  = "${local.account.name}-ci-enabled"
+  type  = "String"
+  value = "1"
+
+  tags = local.default_tags
+
+  lifecycle {
+    ignore_changes = [value]
+  }
+}
