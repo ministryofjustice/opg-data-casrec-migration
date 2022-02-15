@@ -613,12 +613,12 @@ workflows:
           runner_command: migration-validation
       - run_task:
           name: migration - response api tests rehearsal
-          requires: [ migration - validation rehearsal ]
+          requires: [migration - validation rehearsal]
           tf_workspace: rehearsal
           runner_command: migration-response-api-tests
       - run_task:
           name: migration - light touch api tests rehearsal
-          requires: [ migration - response api tests rehearsal ]
+          requires: [migration - response api tests rehearsal]
           tf_workspace: rehearsal
           runner_command: migration-light-touch-api-tests
       - scale-services:
@@ -634,7 +634,7 @@ workflows:
           tf_workspace: rehearsal
       - job_complete:
           name: job complete notification
-          requires: [full reindex elasticsearch rehearsall]
+          requires: [full reindex elasticsearch rehearsal]
           workspace: rehearsal
 
   nightly_development_restore:
