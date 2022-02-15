@@ -31,11 +31,12 @@ def get_running_jobs(
                         and "qa" not in job["workflows"]["job_name"]
                         and "main" not in job["workflows"]["job_name"]
                     ):
-                        if current_job_committer_date > job["committer_date"]:
-                            print(
-                                f"Job: \"{job['workflows']['job_name']}\", Status: \"{job['status']}\""
-                            )
-                            running_jobs.append(job["workflows"]["job_name"])
+                        if job["committer_date"] is not None:
+                            if current_job_committer_date > job["committer_date"]:
+                                print(
+                                    f"Job: \"{job['workflows']['job_name']}\", Status: \"{job['status']}\""
+                                )
+                                running_jobs.append(job["workflows"]["job_name"])
         return running_jobs
     else:
         print(f"API call to circle failed with status code: {response.status_code}")
