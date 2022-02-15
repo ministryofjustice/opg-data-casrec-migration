@@ -814,10 +814,21 @@
         "required_entities": "",
         "source_conditions": {},
         "source_table_additional_columns": [
-            "Case"
+            "Case",
+            "Report Type"
         ],
         "source_table_name": "repvis",
-        "table_transforms": {},
+        "table_transforms": {
+            "set_visits_visitsubtype": {
+                "source_cols": [
+                    "Req By",
+                    "Report Type"
+                ],
+                "target_cols": [
+                    "visitsubtype"
+                ]
+            }
+        },
         "table_type": "data"
     }
 }
