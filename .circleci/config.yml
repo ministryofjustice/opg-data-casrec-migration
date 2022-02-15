@@ -634,7 +634,7 @@ workflows:
           tf_workspace: rehearsal
       - job_complete:
           name: job complete notification
-          requires: [full reindex elasticsearch rehearsall]
+          requires: [full reindex elasticsearch rehearsal]
           workspace: rehearsal
 
   nightly_development_restore:
