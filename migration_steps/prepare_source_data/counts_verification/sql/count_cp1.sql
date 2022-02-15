@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS countverification.cp1_clients;
 CREATE TABLE IF NOT EXISTS countverification.cp1_clients (id int, caserecnumber varchar);
 INSERT INTO countverification.cp1_clients (id, caserecnumber)
 SELECT id, caserecnumber FROM persons p
@@ -5,15 +6,18 @@ WHERE p.type = 'actor_client'
   AND p.caseactorgroup = 'CLIENT-PILOT-ONE';
 CREATE UNIQUE INDEX cp1_clients_idx ON countverification.cp1_clients (id);
 
+DROP TABLE IF EXISTS countverification.cp1_cases;
 CREATE TABLE IF NOT EXISTS countverification.cp1_cases (id int, caserecnumber varchar);
 INSERT INTO countverification.cp1_cases (id, caserecnumber)
 SELECT cases.id, cp1_clients.caserecnumber
 FROM countverification.cp1_clients INNER JOIN cases ON cases.client_id = cp1_clients.id;
 CREATE UNIQUE INDEX cp1_cases_idx ON countverification.cp1_cases (id);
 
-CREATE TABLE IF NOT EXISTS countverification.cp1_deputies (id int, caserecnumber varchar);
-INSERT INTO countverification.cp1_deputies (id, caserecnumber)
-SELECT DISTINCT dep.id, cp1_cases.caserecnumber
+-- Cant include caserecnumbers here as not 1 to 1 relation
+DROP TABLE IF EXISTS countverification.cp1_deputies;
+CREATE TABLE IF NOT EXISTS countverification.cp1_deputies (id int);
+INSERT INTO countverification.cp1_deputies (id)
+SELECT DISTINCT dep.id
 FROM countverification.cp1_cases
     INNER JOIN order_deputy od ON od.order_id = cp1_cases.id
     INNER JOIN persons dep ON dep.id = od.deputy_id;
@@ -24,7 +28,7 @@ ALTER TABLE countverification.counts ADD COLUMN {working_column} int;
 
 -- persons_clients
 DROP TABLE IF EXISTS countverificationaudit.{working_column}_persons_clients;
-SELECT id, caserecnumber INTO countverificationaudit.{working_column}_persons_clients FROM countverification.cp1_cases;
+SELECT id, caserecnumber INTO countverificationaudit.{working_column}_persons_clients FROM countverification.cp1_clients;
 UPDATE countverification.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM countverificationaudit.{working_column}_persons_clients
@@ -51,13 +55,13 @@ WHERE supervision_table = 'cases';
 
 -- phonenumbers
 DROP TABLE IF EXISTS countverificationaudit.{working_column}_phonenumbers;
-SELECT id, caserecnumber INTO countverificationaudit.{working_column}_phonenumbers
+SELECT id, caserecnumber, deputy_id INTO countverificationaudit.{working_column}_phonenumbers
 FROM (
-    SELECT pn.id, cli.caserecnumber
+    SELECT pn.id, cli.caserecnumber, null as deputy_id
     FROM phonenumbers pn
     INNER JOIN countverification.cp1_clients cli ON cli.id = pn.person_id
     UNION
-    SELECT pn.id, dep.caserecnumber
+    SELECT pn.id, null, cast(dep.id as varchar)
     FROM phonenumbers pn
     INNER JOIN countverification.cp1_deputies dep ON dep.id = pn.person_id
 ) as a;
@@ -120,14 +124,14 @@ WHERE supervision_table = 'addresses';
 
 -- supervision_notes
 DROP TABLE IF EXISTS countverificationaudit.{working_column}_supervision_notes;
-SELECT id, caserecnumber INTO countverificationaudit.{working_column}_supervision_notes
+SELECT id, caserecnumber, deputy_id INTO countverificationaudit.{working_column}_supervision_notes
 FROM
 (
-    SELECT sn.id, cli.caserecnumber
+    SELECT sn.id, cli.caserecnumber, null as deputy_id
     FROM supervision_notes sn
     INNER JOIN countverification.cp1_clients cli ON cli.id = sn.person_id
     UNION
-    SELECT sn.id, dep.caserecnumber
+    SELECT sn.id, null, cast(dep.id as varchar)
     FROM supervision_notes sn
     INNER JOIN countverification.cp1_deputies dep ON dep.id = sn.person_id
 ) as a;
@@ -151,16 +155,16 @@ WHERE supervision_table = 'tasks';
 
 -- death_notifications
 DROP TABLE IF EXISTS countverificationaudit.{working_column}_death_notifications;
-SELECT id, caserecnumber INTO countverificationaudit.{working_column}_death_notifications
+SELECT id, caserecnumber, deputy_id INTO countverificationaudit.{working_column}_death_notifications
 FROM
 (
     -- client
-    SELECT dn.id, cli.caserecnumber
+    SELECT dn.id, cli.caserecnumber, null as deputy_id
     FROM death_notifications dn
     INNER JOIN countverification.cp1_clients cli ON cli.id = dn.person_id
     UNION
     -- deputy
-    SELECT dn.id, dep.caserecnumber
+    SELECT dn.id, null, cast(dep.id as varchar)
     FROM death_notifications dn
     INNER JOIN countverification.cp1_deputies dep ON dep.id = dn.person_id
 ) as a;
@@ -172,17 +176,17 @@ WHERE supervision_table = 'death_notifications';
 
 -- warnings
 DROP TABLE IF EXISTS countverificationaudit.{working_column}_warnings;
-SELECT id, caserecnumber INTO countverificationaudit.{working_column}_warnings
+SELECT id, caserecnumber, deputy_id INTO countverificationaudit.{working_column}_warnings
 FROM
 (
     -- client
-    SELECT w.id, cli.caserecnumber
+    SELECT w.id, cli.caserecnumber, null as deputy_id
     FROM warnings w
     INNER JOIN person_warning pw ON pw.warning_id = w.id
     INNER JOIN countverification.cp1_clients cli ON cli.id = pw.person_id
     UNION
     -- deputy
-    SELECT w.id, dep.caserecnumber
+    SELECT w.id, null, cast(dep.id as varchar)
     FROM warnings w
     INNER JOIN person_warning pw ON pw.warning_id = w.id
     INNER JOIN countverification.cp1_deputies dep ON dep.id = pw.person_id
@@ -405,13 +409,13 @@ WHERE supervision_table = 'person_caseitem';
 
 -- person_warning
 DROP TABLE IF EXISTS countverificationaudit.{working_column}_person_warning;
-SELECT warning_id, caserecnumber INTO countverificationaudit.{working_column}_person_warning
+SELECT warning_id, caserecnumber, deputy_id INTO countverificationaudit.{working_column}_person_warning
 FROM (
-    SELECT pw.warning_id, cli.caserecnumber
+    SELECT pw.warning_id, cli.caserecnumber, null as deputy_id
     FROM person_warning pw
     INNER JOIN countverification.cp1_clients cli ON cli.id = pw.person_id
     UNION
-    SELECT pw.warning_id, dep.caserecnumber
+    SELECT pw.warning_id, null, cast(dep.id as varchar)
     FROM person_warning pw
     INNER JOIN countverification.cp1_deputies dep ON dep.id = pw.person_id
 ) as a;
@@ -423,13 +427,13 @@ WHERE supervision_table = 'person_warning';
 
 -- person_task
 DROP TABLE IF EXISTS countverificationaudit.{working_column}_person_task;
-SELECT task_id, caserecnumber INTO countverificationaudit.{working_column}_person_task
+SELECT task_id, caserecnumber, deputy_id INTO countverificationaudit.{working_column}_person_task
 FROM (
-    SELECT pt.task_id, cli.caserecnumber
+    SELECT pt.task_id, cli.caserecnumber, null as deputy_id
     FROM person_task pt
     INNER JOIN countverification.cp1_clients cli ON cli.id = pt.person_id
     UNION
-    SELECT pt.task_id, dep.caserecnumber
+    SELECT pt.task_id, null, cast(dep.id as varchar)
     FROM person_task pt
     INNER JOIN countverification.cp1_deputies dep ON dep.id = pt.person_id
 ) as a;
@@ -441,13 +445,13 @@ WHERE supervision_table = 'person_task';
 
 -- person_timeline
 DROP TABLE IF EXISTS countverificationaudit.{working_column}_person_timeline;
-SELECT id, caserecnumber INTO countverificationaudit.{working_column}_person_timeline
+SELECT id, caserecnumber, deputy_id INTO countverificationaudit.{working_column}_person_timeline
 FROM (
-    SELECT pt.id, cli.caserecnumber
+    SELECT pt.id, cli.caserecnumber, null as deputy_id
         FROM person_timeline pt
         INNER JOIN countverification.cp1_clients cli ON cli.id = pt.person_id
     UNION
-    SELECT pt.id, dep.caserecnumber
+    SELECT pt.id, null, cast(dep.id as varchar)
         FROM person_timeline pt
         INNER JOIN countverification.cp1_deputies dep ON dep.id = pt.person_id
 ) as a;
@@ -456,11 +460,3 @@ SET {working_column} =(
     SELECT COUNT(*) FROM countverificationaudit.{working_column}_person_timeline
 )
 WHERE supervision_table = 'person_timeline';
-
-DROP INDEX countverification.cp1_clients_idx;
-DROP INDEX countverification.cp1_cases_idx;
-DROP INDEX countverification.cp1_deputies_idx;
-
-DROP TABLE countverification.cp1_clients;
-DROP TABLE countverification.cp1_cases;
-DROP TABLE countverification.cp1_deputies;

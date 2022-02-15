@@ -25,18 +25,25 @@ def assume_aws_session(account, role):
 @click.command()
 @click.option("--role", default="operator")
 @click.option("--environment", default="development")
-def main(role, environment):
+@click.option("--param", default="allowed-entities")
+def main(role, environment, param):
     account = {
         "development": "288342028542",
         "preproduction": "492687888235",
         "preqa": "492687888235",
         "qa": "492687888235",
+        "rehearsal": "492687888235",
         "production": "649098267436",
     }
     session = assume_aws_session(account[environment], role)
     ssm = session.client("ssm", region_name="eu-west-1")
-    parameter = ssm.get_parameter(Name=f"{environment}-allowed-entities")
-    print(parameter["Parameter"]["Value"])
+
+    if param == "allowed-entities":
+        parameter = ssm.get_parameter(Name=f"{environment}-allowed-entities")
+        print(parameter["Parameter"]["Value"])
+    elif param == "ci-enabled":
+        parameter = ssm.get_parameter(Name=f"{environment}-ci-enabled")
+        print(parameter["Parameter"]["Value"])
 
 
 if __name__ == "__main__":
