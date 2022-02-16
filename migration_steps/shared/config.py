@@ -47,16 +47,6 @@ class BaseConfig:
         },
     }
 
-    env_users = {
-        "local": "case.manager@opgtest.com",
-        "development": "case.manager@opgtest.com",
-        "preproduction": "opg+siriussmoketest@digital.justice.gov.uk",
-        "preqa": "opg+siriussmoketest@digital.justice.gov.uk",
-        "qa": "opg+siriussmoketest@digital.justice.gov.uk",
-        "rehearsal": "opg+siriussmoketest@digital.justice.gov.uk",
-        "production": "opg+siriussmoketest@digital.justice.gov.uk",
-    }
-
     schemas = {
         "pre_transform": "casrec_csv",
         "post_transform": "transform",
@@ -130,39 +120,25 @@ class BaseConfig:
     }
 
     def enabled_feature_flags(self, env):
-        if env in [
-            "development",
-            "preproduction",
-            "qa",
-            "preqa",
-            "rehearsal",
-            "production",
-        ]:
+        if env is None or env == "local":
+            enabled_flags = [
+                k for k, v in self.LOCAL_FEATURE_FLAGS.items() if v is True
+            ]
+        else:
             all_flags = list(self.LOCAL_FEATURE_FLAGS.keys())
             enabled_flags = list(
                 flag
                 for flag in all_flags
                 if get_paramstore_value(f"{env}-{flag}") == "True"
             )
-        else:
-            enabled_flags = [
-                k for k, v in self.LOCAL_FEATURE_FLAGS.items() if v is True
-            ]
         return enabled_flags
 
     def allowed_entities(self, env):
-        if env in [
-            "development",
-            "preproduction",
-            "qa",
-            "preqa",
-            "rehearsal",
-            "production",
-        ]:
+        if env is None or env == "local":
+            allowed_entity_list = self.LOCAL_ENTITIES
+        else:
             entities = get_paramstore_value(f"{env}-allowed-entities")
             allowed_entity_list = entities.split(",")
-        else:
-            allowed_entity_list = self.LOCAL_ENTITIES
 
         if len(allowed_entity_list) > 0:
             return allowed_entity_list
@@ -173,14 +149,9 @@ class BaseConfig:
     def get_filtered_correfs(self, env, console_correfs):
         filter_correfs = ""
 
-        if env in [
-            "development",
-            "preproduction",
-            "preqa",
-            "qa",
-            "rehearsal",
-            "production",
-        ]:
+        if env is None or env == "local":
+            pass
+        else:
             param_correfs = get_paramstore_value(f"{env}-correfs")
             if param_correfs == "0":
                 log.info(f"No filtering requested, proceed with migrating all Correfs.")

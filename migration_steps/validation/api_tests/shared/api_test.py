@@ -42,10 +42,10 @@ class ApiTests:
         self.log_assert_to_screen = (
             True if os.environ.get("ENVIRONMENT") in ["local", "development"] else False
         )
-        self.user = self.config.env_users[self.environment]
+        self.user = os.environ.get("SIRIUS_FRONT_USER")
         self.account_name = (
             os.environ.get("ACCOUNT_NAME")
-            if os.environ.get("ACCOUNT_NAME") not in ["qa", "preqa", "rehearsal"]
+            if os.environ.get("ACCOUNT_NAME") not in ["qa", "preqa"]
             else "preproduction"
         )
         self.password = os.environ.get("API_TEST_PASSWORD")
@@ -69,6 +69,8 @@ class ApiTests:
         cookie = response.headers["Set-Cookie"]
         xsrf = response.headers["X-XSRF-TOKEN"]
         headers_dict = {"Cookie": cookie, "x-xsrf-token": xsrf}
+
+        self.api_log(f"TESTING: {self.user} - {self.password}")
         data = {"email": self.user, "password": self.password}
         with requests.Session() as s:
             p = s.post(f"{self.base_url}/auth/login", data=data, headers=headers_dict)

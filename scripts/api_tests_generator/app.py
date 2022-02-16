@@ -66,16 +66,7 @@ def get_session(base_url, user, password):
 
 
 def create_a_session(base_url, password):
-    env_users = {
-        "local": "case.manager@opgtest.com",
-        "development": "case.manager@opgtest.com",
-        "preqa": "opg+siriussmoketest@digital.justice.gov.uk",
-        "preproduction": "opg+siriussmoketest@digital.justice.gov.uk",
-        "rehearsal": "opg+siriussmoketest@digital.justice.gov.uk",
-        "qa": "opg+siriussmoketest@digital.justice.gov.uk",
-        "production": "opg+siriussmoketest@digital.justice.gov.uk",
-    }
-    user = env_users[environment]
+    user = os.environ.get("SIRIUS_FRONT_USER")
     sess, headers_dict, status_code = get_session(base_url, user, password)
     session = {
         "sess": sess,

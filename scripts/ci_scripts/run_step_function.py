@@ -186,6 +186,7 @@ def main(role, account, wait_for, workspace, sf_name_suffix):
         "preqa": "492687888235",
         "rehearsal": "492687888235",
         "qa": "492687888235",
+        "production": "649098267436",
     }
     account_id = account_map[account]
     sf_name = f"{sf_name_suffix}-{workspace}"

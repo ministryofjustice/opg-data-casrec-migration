@@ -119,6 +119,7 @@ services:
       LIGHT_TOUCH_COUNT: 200
       API_TEST_PASSWORD: "Password1" # pragma: allowlist secret
       SIRIUS_FRONT_URL: http://host.docker.internal:8080
+      SIRIUS_FRONT_USER: case.manager@opgtest.com
       S3_URL: http://localstack:4598
     depends_on: [casrec_db]
   wait-for-it:
