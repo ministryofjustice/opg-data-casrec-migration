@@ -14,10 +14,22 @@ parameters:
   run_qa:
     type: boolean
     default: false
-  run_production:
+  run_production_1:
     type: boolean
     default: false
-  run_rehearsal:
+  run_production_2:
+    type: boolean
+    default: false
+  run_production_3:
+    type: boolean
+    default: false
+  run_rehearsal_1:
+    type: boolean
+    default: false
+  run_rehearsal_2:
+    type: boolean
+    default: false
+  run_rehearsal_3:
     type: boolean
     default: false
   override_tag:
@@ -445,11 +457,11 @@ workflows:
           requires: [migration - validation qa]
           workspace: qa
 
-  production:
+  production_1:
     when:
       and:
         - equal: [main, << pipeline.git.branch >>]
-        - << pipeline.parameters.run_production >>
+        - << pipeline.parameters.run_production_1 >>
     jobs:
       - persist_parameters:
           name: persist parameters production
@@ -469,20 +481,9 @@ workflows:
           requires: [plan infra production]
           tf_workspace: production
           tf_command: apply
-# LEAVE COMMENTED OUT FOR SAFETY PURPOSES BUT HAVE CREATED IDENTICAL TO REHEARSAL
-#      - scale-services:
-#          name: scale down poller service for migration production
-#          requires: [build infra production]
-#          replicas: "0"
-#          profile: "migrations-ci-sirius-production"
-#          service: "notify-poller"
-#          cluster: "production"
 #      - run_task:
 #          name: migration - initialise environments production
-#          requires: [
-#            build infra production,
-#            scale down poller service for migration production
-#         ]
+#          requires: [build infra production]
 #          runner_command: migration-initialise-environments
 #          tf_workspace: production
 #      - run_task:
@@ -505,6 +506,26 @@ workflows:
 #          requires: [migration - transform production]
 #          tf_workspace: production
 #          runner_command: migration-integration
+      - job_complete:
+          name: job complete notification
+#          requires: [migration - integration production]
+          requires: [build infra production]
+          workspace: production
+
+#  production_2:
+#    when:
+#      and:
+#        - equal: [main, << pipeline.git.branch >>]
+#        - << pipeline.parameters.run_production_2 >>
+#    jobs:
+#      - persist_parameters:
+#          name: persist parameters production
+#          param_workspace: production
+#          environment_title: Rehearsal-Manual
+#      - get_latest_image:
+#          name: get latest tag production
+#          requires: [persist parameters production]
+#          image_tag: production
 #      - run_task:
 #          name: migration - load sirius production
 #          requires: [migration - integration production]
@@ -515,38 +536,50 @@ workflows:
 #          requires: [migration - load sirius production]
 #          tf_workspace: production
 #          runner_command: migration-validation
+#      - job_complete:
+#          name: job complete notification
+#          requires: [migration - validation production]
+#          workspace: production
+#
+#
+#  production_3:
+#    when:
+#      and:
+#        - equal: [main, << pipeline.git.branch >>]
+#        - << pipeline.parameters.run_production_3 >>
+#    jobs:
+#      - persist_parameters:
+#          name: persist parameters production
+#          param_workspace: production
+#          environment_title: Rehearsal-Manual
+#      - get_latest_image:
+#          name: get latest tag production
+#          requires: [persist parameters production]
+#          image_tag: production
 #      - run_task:
 #          name: migration - response api tests production
-#          requires: [ migration - validation production ]
+#          requires: [persist parameters production]
 #          tf_workspace: production
 #          runner_command: migration-response-api-tests
 #      - run_task:
 #          name: migration - light touch api tests production
-#          requires: [ migration - response api tests production ]
+#          requires: [migration - response api tests production]
 #          tf_workspace: production
 #          runner_command: migration-light-touch-api-tests
-#      - scale-services:
-#          name: scale up poller service for migration production
-#          requires: [migration - light touch api tests production]
-#          replicas: "1"
-#          profile: "migrations-ci-sirius-production"
-#          service: "notify-poller"
-#          cluster: "production"
 #      - run_elasticsearch_reset:
 #          name: full reindex elasticsearch production
 #          requires: [scale up poller service for migration production]
 #          tf_workspace: production
-      - job_complete:
-          name: job complete notification
+#      - job_complete:
+#          name: job complete notification
 #          requires: [full reindex elasticsearch production]
-          requires: [build infra production]
-          workspace: production
+#          workspace: production
 
-  rehearsal:
+  rehearsal_1:
     when:
       and:
         - equal: [main, << pipeline.git.branch >>]
-        - << pipeline.parameters.run_rehearsal >>
+        - << pipeline.parameters.run_rehearsal_1 >>
     jobs:
       - persist_parameters:
           name: persist parameters rehearsal
@@ -566,19 +599,9 @@ workflows:
           requires: [plan infra rehearsal]
           tf_workspace: rehearsal
           tf_command: apply
-      - scale-services:
-          name: scale down poller service for migration rehearsal
-          requires: [build infra rehearsal]
-          replicas: "0"
-          profile: "migrations-ci-sirius-rehearsal"
-          service: "notify-poller"
-          cluster: "rehearsal"
       - run_task:
           name: migration - initialise environments rehearsal
-          requires: [
-            build infra rehearsal,
-            scale down poller service for migration rehearsal
-         ]
+          requires: [build infra rehearsal]
           runner_command: migration-initialise-environments
           tf_workspace: rehearsal
       - run_task:
@@ -601,6 +624,25 @@ workflows:
           requires: [migration - transform rehearsal]
           tf_workspace: rehearsal
           runner_command: migration-integration
+      - job_complete:
+          name: job complete notification
+          requires: [migration - integration rehearsal]
+          workspace: rehearsal
+
+  rehearsal_2:
+    when:
+      and:
+        - equal: [main, << pipeline.git.branch >>]
+        - << pipeline.parameters.run_rehearsal_2 >>
+    jobs:
+      - persist_parameters:
+          name: persist parameters rehearsal
+          param_workspace: rehearsal
+          environment_title: Rehearsal-Manual
+      - get_latest_image:
+          name: get latest tag rehearsal
+          requires: [persist parameters rehearsal]
+          image_tag: rehearsal
       - run_task:
           name: migration - load sirius rehearsal
           requires: [migration - integration rehearsal]
@@ -611,9 +653,28 @@ workflows:
           requires: [migration - load sirius rehearsal]
           tf_workspace: rehearsal
           runner_command: migration-validation
+      - job_complete:
+          name: job complete notification
+          requires: [migration - validation rehearsal]
+          workspace: rehearsal
+
+  rehearsal_3:
+    when:
+      and:
+        - equal: [main, << pipeline.git.branch >>]
+        - << pipeline.parameters.run_rehearsal_3 >>
+    jobs:
+      - persist_parameters:
+          name: persist parameters rehearsal
+          param_workspace: rehearsal
+          environment_title: Rehearsal-Manual
+      - get_latest_image:
+          name: get latest tag rehearsal
+          requires: [persist parameters rehearsal]
+          image_tag: rehearsal
       - run_task:
           name: migration - response api tests rehearsal
-          requires: [migration - validation rehearsal]
+          requires: [persist parameters rehearsal]
           tf_workspace: rehearsal
           runner_command: migration-response-api-tests
       - run_task:
@@ -621,13 +682,6 @@ workflows:
           requires: [migration - response api tests rehearsal]
           tf_workspace: rehearsal
           runner_command: migration-light-touch-api-tests
-      - scale-services:
-          name: scale up poller service for migration rehearsal
-          requires: [migration - light touch api tests rehearsal]
-          replicas: "1"
-          profile: "migrations-ci-sirius-rehearsal"
-          service: "notify-poller"
-          cluster: "rehearsal"
       - run_elasticsearch_reset:
           name: full reindex elasticsearch rehearsal
           requires: [scale up poller service for migration rehearsal]
@@ -1390,16 +1444,9 @@ jobs:
       - run:
           name: Reset Elasticsearch
           command: ecs-runner -task reindex-elasticsearch-by-date -timeout 18000
-          background: true
-      - run:
-          name: elasticsearch
-          command: |
-            echo "We're running reindex in the background."
-            echo "We don't want to completely wait for it here."
-            echo "Sleeping for 5 mins so we can see that it has started properly. Check AWS logs for full results"
-            sleep 300
       - notififications/notify_env_vars
       - notififications/notify_if_fail
+
   reset_sirius:
     executor: terraform/terraform
     resource_class: small

@@ -39,6 +39,10 @@ locals {
         name      = "API_TEST_PASSWORD"
         valueFrom = aws_secretsmanager_secret.api_tests.arn
       },
+      {
+        name      = "SIRIUS_FRONT_USER"
+        valueFrom = aws_secretsmanager_secret.api_tests_user.arn
+      }
     ],
     environment = [
       {

@@ -42,7 +42,7 @@ class ApiTests:
         self.log_assert_to_screen = (
             True if os.environ.get("ENVIRONMENT") in ["local", "development"] else False
         )
-        self.user = self.config.env_users[self.environment]
+        self.user = os.environ.get("SIRIUS_FRONT_USER")
         self.account_name = (
             os.environ.get("ACCOUNT_NAME")
             if os.environ.get("ACCOUNT_NAME") not in ["qa", "preqa"]
@@ -69,6 +69,8 @@ class ApiTests:
         cookie = response.headers["Set-Cookie"]
         xsrf = response.headers["X-XSRF-TOKEN"]
         headers_dict = {"Cookie": cookie, "x-xsrf-token": xsrf}
+
+        self.api_log(f"TESTING: {self.user} - {self.password}")
         data = {"email": self.user, "password": self.password}
         with requests.Session() as s:
             p = s.post(f"{self.base_url}/auth/login", data=data, headers=headers_dict)
@@ -440,7 +442,9 @@ class ApiTests:
         log.debug(f"returning: {endpoint_final}")
         return endpoint_final
 
-    def assert_on_fields(self, formatted_api_response, row, entity_ref, json_locator, exact_match):
+    def assert_on_fields(
+        self, formatted_api_response, row, entity_ref, json_locator, exact_match
+    ):
         # Where we have multiple entity_ids we need rationalise the grouped responses
         col_restruct_text = self.restructure_text(formatted_api_response["api_result"])
         formatted_api_response["api_result"] = col_restruct_text
@@ -541,7 +545,7 @@ class ApiTests:
             entity_ref = row["entity_ref"]
             json_locator = row["json_locator"]
             test_purpose = row["test_purpose"]
-            exact_match = False if test_purpose[:9] == 'includes_' else True
+            exact_match = False if test_purpose[:9] == "includes_" else True
 
             if entity_ref not in self.filtered_cases:
                 # Get the ids to perform the search on based on the caserecnumber
@@ -559,7 +563,11 @@ class ApiTests:
                 if formatted_api_response:
                     # Loop through and check expected results against actual for each field
                     self.assert_on_fields(
-                        formatted_api_response, row, entity_ref, json_locator, exact_match
+                        formatted_api_response,
+                        row,
+                        entity_ref,
+                        json_locator,
+                        exact_match,
                     )
                 else:
                     self.api_log("empty dictionary returned!")
