@@ -5,11 +5,19 @@ data "aws_security_group" "sirius_ecs_api" {
   }
 }
 
+data "aws_security_group" "sirius_ecs_es" {
+  filter {
+    name   = "tag:Name"
+    values = ["search-ecs-${local.account.sirius_env}"]
+  }
+}
+
 resource "local_file" "output" {
   content = templatefile("${path.module}/tasks.toml",
     {
       cluster                                        = local.account.sirius_env,
-      sec-group                                      = data.aws_security_group.sirius_ecs_api.id,
+      sec-group-api                                  = data.aws_security_group.sirius_ecs_api.id,
+      sec-group-es                                   = data.aws_security_group.sirius_ecs_es.id,
       sec-group-membrane                             = data.aws_security_group.sirius_membrane.id,
       subnets                                        = join("\", \"", data.aws_subnet_ids.private.ids),
       account                                        = local.account.account_id,

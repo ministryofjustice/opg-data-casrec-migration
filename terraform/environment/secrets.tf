@@ -16,6 +16,15 @@ data "aws_secretsmanager_secret_version" "api_tests" {
   secret_id = aws_secretsmanager_secret.api_tests.id
 }
 
+resource "aws_secretsmanager_secret" "api_tests_user" {
+  name = "${local.account.name}/migration-api-test-user"
+  tags = local.default_tags
+}
+
+data "aws_secretsmanager_secret_version" "api_tests_user" {
+  secret_id = aws_secretsmanager_secret.api_tests.id
+}
+
 resource "aws_secretsmanager_secret" "circle_token" {
   count = local.account.name == "development" ? 1 : 0
   name  = "${local.account.name}/migration_circleci_token"

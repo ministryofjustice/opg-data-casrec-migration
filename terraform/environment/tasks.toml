@@ -13,7 +13,7 @@
         "NetworkConfiguration": {
           "AwsvpcConfiguration": {
             "SecurityGroups": [
-              "${sec-group}"
+              "${sec-group-api}"
             ],
             "Subnets": [
               "${subnets}"
@@ -28,7 +28,7 @@
         "NetworkConfiguration": {
           "AwsvpcConfiguration": {
             "SecurityGroups": [
-              "${sec-group}"
+              "${sec-group-api}"
             ],
             "Subnets": [
               "${subnets}"
@@ -43,7 +43,7 @@
         "NetworkConfiguration": {
           "AwsvpcConfiguration": {
             "SecurityGroups": [
-              "${sec-group}"
+              "${sec-group-api}"
             ],
             "Subnets": [
               "${subnets}"
@@ -58,7 +58,7 @@
         "NetworkConfiguration": {
           "AwsvpcConfiguration": {
             "SecurityGroups": [
-              "${sec-group}"
+              "${sec-group-api}"
             ],
             "Subnets": [
               "${subnets}"
@@ -118,7 +118,7 @@
         "NetworkConfiguration": {
         "AwsvpcConfiguration": {
           "SecurityGroups": [
-            "${sec-group}"
+            "${sec-group-api}"
           ],
           "Subnets": [
             "${subnets}"
@@ -343,7 +343,8 @@
         "NetworkConfiguration": {
           "AwsvpcConfiguration": {
             "SecurityGroups": [
-              "${sec-group}"
+              "${sec-group-api}",
+              "${sec-group-es}"
             ],
             "Subnets": [
               "${subnets}"
@@ -373,7 +374,8 @@
         "NetworkConfiguration": {
           "AwsvpcConfiguration": {
             "SecurityGroups": [
-              "${sec-group}"
+              "${sec-group-api}",
+              "${sec-group-es}"
             ],
             "Subnets": [
               "${subnets}"
@@ -388,7 +390,8 @@
         "NetworkConfiguration": {
           "AwsvpcConfiguration": {
             "SecurityGroups": [
-              "${sec-group}"
+              "${sec-group-api}",
+              "${sec-group-es}"
             ],
             "Subnets": [
               "${subnets}"

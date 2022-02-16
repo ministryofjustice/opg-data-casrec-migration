@@ -125,6 +125,7 @@ services:
       ENVIRONMENT: local
       SIRIUS_ACCOUNT: NA
       S3_URL: http://localstack:4572
+      SIRIUS_FRONT_USER: case.manager@opgtest.com
     depends_on: [casrec_db, postgres-sirius]
   wait-for-it:
     build: ./wait-for-it
