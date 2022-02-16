@@ -45,7 +45,7 @@ class ApiTests:
         self.user = self.config.env_users[self.environment]
         self.account_name = (
             os.environ.get("ACCOUNT_NAME")
-            if os.environ.get("ACCOUNT_NAME") not in ["qa", "preqa"]
+            if os.environ.get("ACCOUNT_NAME") not in ["qa", "preqa", "rehearsal"]
             else "preproduction"
         )
         self.password = os.environ.get("API_TEST_PASSWORD")
@@ -440,7 +440,9 @@ class ApiTests:
         log.debug(f"returning: {endpoint_final}")
         return endpoint_final
 
-    def assert_on_fields(self, formatted_api_response, row, entity_ref, json_locator, exact_match):
+    def assert_on_fields(
+        self, formatted_api_response, row, entity_ref, json_locator, exact_match
+    ):
         # Where we have multiple entity_ids we need rationalise the grouped responses
         col_restruct_text = self.restructure_text(formatted_api_response["api_result"])
         formatted_api_response["api_result"] = col_restruct_text
@@ -541,7 +543,7 @@ class ApiTests:
             entity_ref = row["entity_ref"]
             json_locator = row["json_locator"]
             test_purpose = row["test_purpose"]
-            exact_match = False if test_purpose[:9] == 'includes_' else True
+            exact_match = False if test_purpose[:9] == "includes_" else True
 
             if entity_ref not in self.filtered_cases:
                 # Get the ids to perform the search on based on the caserecnumber
@@ -559,7 +561,11 @@ class ApiTests:
                 if formatted_api_response:
                     # Loop through and check expected results against actual for each field
                     self.assert_on_fields(
-                        formatted_api_response, row, entity_ref, json_locator, exact_match
+                        formatted_api_response,
+                        row,
+                        entity_ref,
+                        json_locator,
+                        exact_match,
                     )
                 else:
                     self.api_log("empty dictionary returned!")

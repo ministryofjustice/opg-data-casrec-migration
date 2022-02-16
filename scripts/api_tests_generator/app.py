@@ -71,6 +71,7 @@ def create_a_session(base_url, password):
         "development": "case.manager@opgtest.com",
         "preqa": "opg+siriussmoketest@digital.justice.gov.uk",
         "preproduction": "opg+siriussmoketest@digital.justice.gov.uk",
+        "rehearsal": "opg+siriussmoketest@digital.justice.gov.uk",
         "qa": "opg+siriussmoketest@digital.justice.gov.uk",
         "production": "opg+siriussmoketest@digital.justice.gov.uk",
     }

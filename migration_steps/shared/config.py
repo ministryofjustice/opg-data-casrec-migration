@@ -53,6 +53,7 @@ class BaseConfig:
         "preproduction": "opg+siriussmoketest@digital.justice.gov.uk",
         "preqa": "opg+siriussmoketest@digital.justice.gov.uk",
         "qa": "opg+siriussmoketest@digital.justice.gov.uk",
+        "rehearsal": "opg+siriussmoketest@digital.justice.gov.uk",
         "production": "opg+siriussmoketest@digital.justice.gov.uk",
     }
 
@@ -91,7 +92,15 @@ class BaseConfig:
 
     DEFAULT_CHUNK_SIZE = int(os.environ.get("DEFAULT_CHUNK_SIZE", 20000))
 
-    ALL_ENVIRONMENTS = ["local", "development", "preproduction", "qa", "preqa"]
+    ALL_ENVIRONMENTS = [
+        "local",
+        "development",
+        "preproduction",
+        "qa",
+        "preqa",
+        "rehearsal",
+        "production",
+    ]
     LOCAL_ENTITIES = [
         "clients",
         "cases",
@@ -121,7 +130,14 @@ class BaseConfig:
     }
 
     def enabled_feature_flags(self, env):
-        if env in ["development", "preproduction", "qa", "preqa", "production"]:
+        if env in [
+            "development",
+            "preproduction",
+            "qa",
+            "preqa",
+            "rehearsal",
+            "production",
+        ]:
             all_flags = list(self.LOCAL_FEATURE_FLAGS.keys())
             enabled_flags = list(
                 flag
@@ -135,7 +151,14 @@ class BaseConfig:
         return enabled_flags
 
     def allowed_entities(self, env):
-        if env in ["development", "preproduction", "qa", "preqa", "production"]:
+        if env in [
+            "development",
+            "preproduction",
+            "qa",
+            "preqa",
+            "rehearsal",
+            "production",
+        ]:
             entities = get_paramstore_value(f"{env}-allowed-entities")
             allowed_entity_list = entities.split(",")
         else:
@@ -150,7 +173,14 @@ class BaseConfig:
     def get_filtered_correfs(self, env, console_correfs):
         filter_correfs = ""
 
-        if env in ["development", "preproduction", "preqa", "qa", "production"]:
+        if env in [
+            "development",
+            "preproduction",
+            "preqa",
+            "qa",
+            "rehearsal",
+            "production",
+        ]:
             param_correfs = get_paramstore_value(f"{env}-correfs")
             if param_correfs == "0":
                 log.info(f"No filtering requested, proceed with migrating all Correfs.")
