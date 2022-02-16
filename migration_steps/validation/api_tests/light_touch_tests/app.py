@@ -72,7 +72,11 @@ class AsyncResponse:
                     self.incorrect_status_count += +1
 
     def get_client_id_subset(self):
-        sql = f"SELECT id FROM public.persons WHERE clientsource = 'CASRECMIGRATION' LIMIT {self.total_records}"
+        sql = f"""
+            SELECT id FROM public.persons p
+            inner join casrec_csv.pat pat on p.caserecnumber = pat."Case"
+            WHERE clientsource = 'CASRECMIGRATION' and pat."Corref" like 'L%';
+        """
         conn_target = psycopg2.connect(self.config.get_db_connection_string("target"))
         cursor_target = conn_target.cursor()
         cursor_target.execute(sql)
@@ -80,6 +84,7 @@ class AsyncResponse:
         cursor_target.close()
         for id_row in id_rows:
             self.client_ids.append(int(id_row[0]))
+        log.info(f"Processing {len(self.client_ids)} rows")
 
     def run_async_requests(self):
         count = 0

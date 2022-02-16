@@ -401,6 +401,14 @@ INNER JOIN cases c  ON c.id = od.order_id
 INNER JOIN deletions.base_clients_persons bcp ON bcp.id = c.client_id
 WHERE dep.id NOT IN (SELECT id FROM deletions.pilot_one_deputies);
 
+--INSERT INTO deletions.deletions.deletions_deputy_person (id, caserecnumber)
+--SELECT DISTINCT dep.id, NULL
+--FROM persons dep
+--LEFT JOIN order_deputy od ON od.deputy_id = dep.id
+--LEFT JOIN cases c ON c.id = od.order_id
+--WHERE dep.type = 'actor_deputy'
+--AND c.id IS NULL
+
 -- Create finance invoice temp table to be used in count check (no delete statement for this)
 CREATE TABLE IF NOT EXISTS deletions.deletions_finance_invoice (id int, caserecnumber varchar);
 INSERT INTO deletions.deletions_finance_invoice (id, caserecnumber)
