@@ -105,6 +105,216 @@ SET {working_column} = (
 )
 WHERE supervision_table = 'person_timeline';
 
+-- assignee_teams
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM assignee_teams
+)
+WHERE supervision_table = 'assignee_teams';
+
+-- assignees
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM assignees
+)
+WHERE supervision_table = 'assignees';
+
+-- caseitem_document
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM caseitem_document cd
+    INNER JOIN countverification.lpa_cases c
+        ON cd.caseitem_id = c.id
+)
+WHERE supervision_table = 'caseitem_document';
+
+-- caseitem_note
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM caseitem_note cn
+    INNER JOIN countverification.lpa_cases c
+        ON cn.caseitem_id = c.id
+)
+WHERE supervision_table = 'caseitem_note';
+
+-- caseitem_paymenttype
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*)
+    FROM caseitem_paymenttype cpt
+    INNER JOIN countverification.lpa_cases c
+        ON cpt.caseitem_id = c.id
+)
+WHERE supervision_table = 'caseitem_paymenttype';
+
+-- caseitem_task
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*)
+    FROM caseitem_task ct
+    INNER JOIN countverification.lpa_cases c
+        ON ct.caseitem_id = c.id
+)
+WHERE supervision_table = 'caseitem_task';
+
+-- caseitem_warning
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*)
+    FROM caseitem_warning cw
+    INNER JOIN countverification.lpa_cases c
+    ON cw.caseitem_id = c.id
+)
+WHERE supervision_table = 'caseitem_warning';
+
+-- complaints
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM complaints
+)
+WHERE supervision_table = 'complaints';
+
+-- notes
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*)
+    FROM notes n
+    INNER JOIN person_note pn
+        ON pn.note_id = n.id
+    INNER JOIN countverification.lpa_persons lp
+        ON lp.id = pn.person_id
+)
+WHERE supervision_table = 'notes';
+
+-- pa_applicants
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM pa_applicants
+)
+WHERE supervision_table = 'pa_applicants';
+
+-- pa_certificate_provider
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM pa_certificate_provider
+)
+WHERE supervision_table = 'pa_certificate_provider';
+
+-- pa_notified_persons
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM pa_notified_persons
+)
+WHERE supervision_table = 'pa_notified_persons';
+
+-- person_note
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM person_note pn
+    INNER JOIN countverification.lpa_persons lp
+        ON lp.id = pn.person_id
+)
+WHERE supervision_table = 'person_note';
+
+-- powerofattorney_person
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM powerofattorney_person
+)
+WHERE supervision_table = 'powerofattorney_person';
+
+-- documents
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM documents d
+    INNER JOIN persons p
+        ON p.id = d.correspondent_id
+    WHERE p.type NOT IN (
+        'actor_client',
+        'actor_deputy',
+        'actor_contact',
+        'actor_non_case_contact'
+    )
+)
+WHERE supervision_table = 'documents';
+
+-- investigation
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*)
+    FROM investigation i
+    INNER JOIN persons p
+        ON p.id = i.person_id
+    WHERE p.type NOT IN (
+         'actor_client',
+         'actor_deputy',
+         'actor_contact',
+         'actor_non_case_contact'
+    )
+)
+WHERE supervision_table = 'investigation';
+
+-- validation_check
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM validation_check
+)
+WHERE supervision_table = 'validation_check';
+
+-- visitor
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM visitor
+)
+WHERE supervision_table = 'visitor';
+
+-- case_timeline
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*)
+    FROM case_timeline ct
+    INNER JOIN countverification.lpa_cases c
+        ON c.id = ct.case_id
+)
+WHERE supervision_table = 'case_timeline';
+
+-- hold_period
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM hold_period
+)
+WHERE supervision_table = 'hold_period';
+
+-- person_document
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM person_document
+)
+WHERE supervision_table = 'person_document';
+
+-- document_pages
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM document_pages
+)
+WHERE supervision_table = 'document_pages';
+
+-- document_secondaryrecipient
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM document_secondaryrecipient
+)
+WHERE supervision_table = 'document_secondaryrecipient';
+
+-- ingested_documents
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM ingested_documents
+)
+WHERE supervision_table = 'ingested_documents';
+
+
+
 -- The following have no connection to LPA (zero rows in Sirius) so have been skipped:
 -- supervision_notes
 -- tasks
