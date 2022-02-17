@@ -36,3 +36,5 @@ VALUES
 ('timeline_event'),
 ('visits'),
 ('warnings');
+
+CREATE SCHEMA IF NOT EXISTS countverificationaudit;
