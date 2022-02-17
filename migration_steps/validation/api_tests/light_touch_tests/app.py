@@ -83,7 +83,7 @@ class AsyncResponse:
 
     def run_async_requests(self):
         count = 0
-        expected_chunks = round(int(self.total_records) / self.chunk_size)
+        expected_chunks = round(int(len(self.client_ids)) / self.chunk_size)
         for chunk in self.chunks():
             count += 1
             log.info(f"Processing chunk {count} of {expected_chunks}")

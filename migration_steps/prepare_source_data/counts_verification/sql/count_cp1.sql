@@ -216,7 +216,7 @@ INNER JOIN annual_report_logs arl ON arl.id = det.annual_report_log_id
 INNER JOIN countverification.cp1_clients cli ON cli.id = arl.client_id;
 UPDATE countverification.counts
 SET {working_column} = (
-    SELECT COUNT(*) FROM annual_report_lodging_details
+    SELECT COUNT(*) FROM countverificationaudit.{working_column}_annual_report_lodging_details
 )
 WHERE supervision_table = 'annual_report_lodging_details';
 
@@ -256,12 +256,10 @@ WHERE supervision_table = 'feepayer_id';
 
 -- timeline_event
 DROP TABLE IF EXISTS countverificationaudit.{working_column}_timeline_event;
-SELECT id INTO countverificationaudit.{working_column}_timeline_event
-FROM timeline_event
-WHERE event->'payload'->>'courtReference' IN (
-    SELECT p.caserecnumber FROM persons p
-    INNER JOIN countverification.cp1_clients cli ON cli.id = p.id
-);
+SELECT e.id as event_id, pt.id as person_id INTO countverificationaudit.{working_column}_timeline_event
+FROM timeline_event e
+INNER JOIN person_timeline pt on e.id = pt.timelineevent_id
+INNER JOIN countverification.cp1_clients cli ON cli.id = pt.person_id;
 UPDATE countverification.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM countverificationaudit.{working_column}_timeline_event
@@ -363,7 +361,6 @@ INNER JOIN countverification.cp1_clients cli ON cli.id = fp.person_id;
 UPDATE countverification.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM countverificationaudit.{working_column}_finance_person
-
 )
 WHERE supervision_table = 'finance_person';
 
