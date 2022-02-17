@@ -6,14 +6,18 @@ import sys
 import os
 import psycopg2
 from pathlib import Path
+
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
 import custom_logger
 import logging
+
 log = logging.getLogger("root")
 environment = os.environ.get("ENVIRONMENT")
 # Update to DEBUG for extra logging whilst developing
-custom_logger.setup_logging(env=environment, level="INFO", module_name="API light-touch tests")
+custom_logger.setup_logging(
+    env=environment, level="INFO", module_name="API light-touch tests"
+)
 from helpers import get_config
 
 
@@ -22,7 +26,7 @@ class AsyncResponse:
         self.environment = os.environ.get("ENVIRONMENT")
         self.config = get_config(environment)
         self.base_url = os.environ.get("SIRIUS_FRONT_URL")
-        self.user = self.config.env_users[self.environment]
+        self.user = os.environ.get("SIRIUS_FRONT_USER")
         self.password = os.environ.get("API_TEST_PASSWORD")
         self.total_records = os.environ.get("LIGHT_TOUCH_COUNT")
         self.chunk_size = 50
@@ -39,7 +43,9 @@ class AsyncResponse:
         self.headers_dict = {"Cookie": cookie, "x-xsrf-token": xsrf}
         data = {"email": self.user, "password": self.password}
         with requests.Session() as s:
-            p = s.post(f"{self.base_url}/auth/login", data=data, headers=self.headers_dict)
+            p = s.post(
+                f"{self.base_url}/auth/login", data=data, headers=self.headers_dict
+            )
             log.info(f"Login to sirius returns: {p.status_code}")
 
     async def get_response_status(self, session, url):
@@ -53,15 +59,17 @@ class AsyncResponse:
 
             tasks = []
             for id in ids:
-                url = f'{self.base_url}/api/v1/clients/{id}'
-                tasks.append(asyncio.ensure_future(self.get_response_status(session, url)))
+                url = f"{self.base_url}/api/v1/clients/{id}"
+                tasks.append(
+                    asyncio.ensure_future(self.get_response_status(session, url))
+                )
 
             status_list = await asyncio.gather(*tasks)
             for status in status_list:
                 if status == 200:
-                    self.correct_status_count += + 1
+                    self.correct_status_count += +1
                 else:
-                    self.incorrect_status_count += + 1
+                    self.incorrect_status_count += +1
 
     def get_client_id_subset(self):
         sql = f"SELECT id FROM public.persons WHERE clientsource = 'CASRECMIGRATION' LIMIT {self.total_records}"
@@ -84,7 +92,7 @@ class AsyncResponse:
     def chunks(self):
         """Yield successive n-sized chunks from lst."""
         for i in range(0, len(self.client_ids), self.chunk_size):
-            yield self.client_ids[i:i + self.chunk_size]
+            yield self.client_ids[i : i + self.chunk_size]
 
 
 async_response = AsyncResponse()
@@ -93,7 +101,9 @@ async_response.get_client_id_subset()
 
 start_time = time.time()
 async_response.run_async_requests()
-log.info(f"Correct responses: {async_response.correct_status_count}, Incorrect responses: {async_response.incorrect_status_count}")
+log.info(
+    f"Correct responses: {async_response.correct_status_count}, Incorrect responses: {async_response.incorrect_status_count}"
+)
 for msg in async_response.incorrect_status_list:
     log.info(msg)
 log.info("--- %s seconds ---" % (time.time() - start_time))

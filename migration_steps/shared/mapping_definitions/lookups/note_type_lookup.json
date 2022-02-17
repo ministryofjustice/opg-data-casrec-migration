@@ -1,38 +1,38 @@
 {
     "R1": {
-        "sirius_mapping": "EVENT_CREATED"
+        "sirius_mapping": "IMPORTANT_COMMENTS"
     },
     "R2": {
-        "sirius_mapping": "EVENT_CREATED"
+        "sirius_mapping": "GENERAL_COMMENTS"
     },
     "R3": {
-        "sirius_mapping": "EVENT_CREATED"
+        "sirius_mapping": "MINOR_COMMENTS"
     },
     "R4": {
-        "sirius_mapping": "EVENT_CREATED"
+        "sirius_mapping": "OBSERVATION"
     },
     "R6": {
-        "sirius_mapping": "EVENT_CREATED"
+        "sirius_mapping": "VISITS"
     },
     "R7": {
-        "sirius_mapping": "EVENT_CREATED"
+        "sirius_mapping": "HW_SPECIAL_CASE"
     },
     "R8": {
-        "sirius_mapping": "EVENT_CREATED"
+        "sirius_mapping": "TELEPHONE_COMPLAINT"
     },
     "R9": {
-        "sirius_mapping": "EVENT_CREATED"
+        "sirius_mapping": "BOND_PROVIDER_CHANGE"
     },
     "RA": {
-        "sirius_mapping": "EVENT_CREATED"
+        "sirius_mapping": "ANNUAL_REPORTS"
     },
     "RB": {
-        "sirius_mapping": "EVENT_CREATED"
+        "sirius_mapping": "FINANCE_TRACKING"
     },
     "RD": {
-        "sirius_mapping": "EVENT_CREATED"
+        "sirius_mapping": "DEPUTY_DECEASED_DISCHARGED"
     },
     "R5": {
-        "sirius_mapping": "EVENT_CREATED"
+        "sirius_mapping": "PANEL"
     }
 }

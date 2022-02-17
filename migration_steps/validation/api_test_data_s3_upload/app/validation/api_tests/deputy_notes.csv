@@ -1,5 +1,5 @@
 endpoint,entity_ref,json_locator,test_purpose,api_response
-/api/v1/deputy/{id}/notes,10199092,[*].noteType,notetype_R1,EVENT_CREATED
-/api/v1/deputy/{id}/notes,13559860,[*].noteType,notetype_R8,EVENT_CREATED
+/api/v1/deputy/{id}/notes,10199092,[*].noteType,notetype_R1,IMPORTANT_COMMENTS
+/api/v1/deputy/{id}/notes,13559860,[*].noteType,notetype_R8,TELEPHONE_COMPLAINT
 /api/v1/deputy/{id}/notes,10199092,[*].direction,direction_R1,INTERNAL
 /api/v1/deputy/{id}/notes,13559860,[*].direction,direction_R8,INCOMING

@@ -6,8 +6,12 @@ ENV_VARS=$(cat <<-END
     1. Preproduction\n
     2. PreQA\n
     3. QA\n
-    4. Rehearsal\n
-    5. Production\n
+    4. Rehearsal_1\n
+    5. Rehearsal_2\n
+    6. Rehearsal_3\n
+    7. Production_1\n
+    8. Production_2\n
+    9. Production_3\n
 END
 )
 
@@ -64,40 +68,108 @@ then
   RUN_PREPROD="true"
   RUN_PRE_QA="false"
   RUN_QA="false"
-  RUN_REHEARSAL="false"
-  RUN_PROD="false"
+  RUN_REHEARSAL_1="false"
+  RUN_REHEARSAL_2="false"
+  RUN_REHEARSAL_3="false"
+  RUN_PROD_1="false"
+  RUN_PROD_2="false"
+  RUN_PROD_3="false"
 elif [ $ENVIRONMENT == "2" ]
 then
   ENV="PreQA"
   RUN_PREPROD="false"
   RUN_PRE_QA="true"
   RUN_QA="false"
-  RUN_REHEARSAL="false"
-  RUN_PROD="false"
+  RUN_REHEARSAL_1="false"
+  RUN_REHEARSAL_2="false"
+  RUN_REHEARSAL_3="false"
+  RUN_PROD_1="false"
+  RUN_PROD_2="false"
+  RUN_PROD_3="false"
 elif [ $ENVIRONMENT == "3" ]
 then
   ENV="QA"
   RUN_PREPROD="false"
   RUN_PRE_QA="false"
   RUN_QA="true"
-  RUN_REHEARSAL="false"
-  RUN_PROD="false"
+  RUN_REHEARSAL_1="false"
+  RUN_REHEARSAL_2="false"
+  RUN_REHEARSAL_3="false"
+  RUN_PROD_1="false"
+  RUN_PROD_2="false"
+  RUN_PROD_3="false"
 elif [ $ENVIRONMENT == "4" ]
 then
-  ENV="Rehearsal"
+  ENV="Rehearsal_1"
   RUN_PREPROD="false"
   RUN_PRE_QA="false"
   RUN_QA="false"
-  RUN_REHEARSAL="true"
-  RUN_PROD="false"
+  RUN_REHEARSAL_1="true"
+  RUN_REHEARSAL_2="false"
+  RUN_REHEARSAL_3="false"
+  RUN_PROD_1="false"
+  RUN_PROD_2="false"
+  RUN_PROD_3="false"
 elif [ $ENVIRONMENT == "5" ]
 then
-  ENV="Production"
+  ENV="Rehearsal_2"
   RUN_PREPROD="false"
   RUN_PRE_QA="false"
   RUN_QA="false"
-  RUN_REHEARSAL="false"
-  RUN_PROD="true"
+  RUN_REHEARSAL_1="false"
+  RUN_REHEARSAL_2="true"
+  RUN_REHEARSAL_3="false"
+  RUN_PROD_1="false"
+  RUN_PROD_2="false"
+  RUN_PROD_3="false"
+elif [ $ENVIRONMENT == "6" ]
+then
+  ENV="Rehearsal_3"
+  RUN_PREPROD="false"
+  RUN_PRE_QA="false"
+  RUN_QA="false"
+  RUN_REHEARSAL_1="false"
+  RUN_REHEARSAL_2="false"
+  RUN_REHEARSAL_3="true"
+  RUN_PROD_1="false"
+  RUN_PROD_2="false"
+  RUN_PROD_3="false"
+elif [ $ENVIRONMENT == "7" ]
+then
+  ENV="Production_1"
+  RUN_PREPROD="false"
+  RUN_PRE_QA="false"
+  RUN_QA="false"
+  RUN_REHEARSAL_1="false"
+  RUN_REHEARSAL_2="false"
+  RUN_REHEARSAL_3="false"
+  RUN_PROD_1="true"
+  RUN_PROD_2="false"
+  RUN_PROD_3="false"
+elif [ $ENVIRONMENT == "8" ]
+then
+  ENV="Production_2"
+  RUN_PREPROD="false"
+  RUN_PRE_QA="false"
+  RUN_QA="false"
+  RUN_REHEARSAL_1="false"
+  RUN_REHEARSAL_2="false"
+  RUN_REHEARSAL_3="false"
+  RUN_PROD_1="false"
+  RUN_PROD_2="true"
+  RUN_PROD_3="false"
+elif [ $ENVIRONMENT == "9" ]
+then
+  ENV="Production_3"
+  RUN_PREPROD="false"
+  RUN_PRE_QA="false"
+  RUN_QA="false"
+  RUN_REHEARSAL_1="false"
+  RUN_REHEARSAL_2="false"
+  RUN_REHEARSAL_3="false"
+  RUN_PROD_1="false"
+  RUN_PROD_2="false"
+  RUN_PROD_3="true"
 else
   echo "You need to choose a valid option from [1-5]. Exiting...."
   exit 1
@@ -112,7 +184,7 @@ then
               --url https://circleci.com/api/v2/project/github/ministryofjustice/opg-data-casrec-migration/pipeline \
               --header "Circle-Token: ${CIRCLE_TOKEN}" \
               --header 'content-type: application/json' \
-              --data "{\"branch\":\"main\", \"parameters\":{\"run_main\": false, \"run_preprod\": $RUN_PREPROD, \"run_qa\": $RUN_QA, \"run_preqa\": $RUN_PRE_QA, \"run_rehearsal\": $RUN_REHEARSAL, \"run_production\": $RUN_PROD, \"override_tag\": \"$TAG\"}}"
+              --data "{\"branch\":\"main\", \"parameters\":{\"run_main\": false, \"run_preprod\": $RUN_PREPROD, \"run_qa\": $RUN_QA, \"run_preqa\": $RUN_PRE_QA, \"run_rehearsal_1\": $RUN_REHEARSAL_1, \"run_rehearsal_2\": $RUN_REHEARSAL_2, \"run_rehearsal_3\": $RUN_REHEARSAL_3, \"run_production_1\": $RUN_PROD_1, \"run_production_2\": $RUN_PROD_2, \"run_production_3\": $RUN_PROD_3, \"override_tag\": \"$TAG\"}}"
 else
   echo "You chose not to deploy. Good bye!"
   exit 0

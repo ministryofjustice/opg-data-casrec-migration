@@ -15,7 +15,9 @@ the table transform configuration, as follows:
 
 Columns in the dataframe are cast to the specified datatypes before the mappings
 are applied. This dict maps from column name to {'data_type': <type>}; datatype is one of
-the strings recognised by apply_datatypes().
+the strings recognised by apply_datatypes(). Note that the column name is the
+name after normalisation (i.e. prefixed with "c", lowercased, underscores replaced
+with spaces).
 
 Example:
 
@@ -38,7 +40,7 @@ Each mapping dict in this list specifies either:
     '<column name>': <value or callable>
   }
 
-  If a primtive value, all rows in that column get that value, regardless of
+  If a primitive value, all rows in that column get that value, regardless of
   whether they already have a value.
 
   If a callable, should be a function with this signature:
@@ -91,6 +93,7 @@ from transform_data.table_transforms_annual_report_lodging_details import (
     TABLE_TRANSFORM_ANNUAL_REPORT_LODGING_DETAILS,
 )
 from transform_data.table_transforms_cases import TABLE_TRANSFORM_CASES
+from transform_data.table_transforms_visits import TABLE_TRANSFORM_VISITS
 
 log = logging.getLogger("root")
 
@@ -103,6 +106,7 @@ DEFAULT_TRANSFORMS = {
     "set_annual_report_logs_status": TABLE_TRANSFORM_ANNUAL_REPORT_LOGS,
     "set_annual_report_lodging_details_status": TABLE_TRANSFORM_ANNUAL_REPORT_LODGING_DETAILS,
     "set_cases_orderstatus": TABLE_TRANSFORM_CASES,
+    "set_visits_visitsubtype": TABLE_TRANSFORM_VISITS,
 }
 
 
