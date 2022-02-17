@@ -191,3 +191,67 @@ BEGIN
 	RETURN visitsubtype;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION casrec_csv.report_bankstatementdeadlinedate(latest_further_date date, further_code varchar)
+RETURNS
+    date AS $$
+DECLARE
+    bankstatementdeadlinedate date;
+BEGIN
+    bankstatementdeadlinedate = CASE
+        WHEN further_code IN ('1', '8') THEN latest_further_date
+        ELSE NULL
+    END;
+
+    RETURN bankstatementdeadlinedate;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION casrec_csv.report_deadlinedate(latest_further_date date, further_code varchar)
+RETURNS
+    date AS $$
+DECLARE
+    deadline date;
+BEGIN
+    deadline = CASE
+        WHEN further_code IN ('3', '4', '5', '6', '7', '99') THEN latest_further_date
+        ELSE NULL
+    END;
+
+    RETURN deadline;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION casrec_csv.report_resubmitteddate(further_codes text[], rcvd_dates date[])
+RETURNS
+    date AS $$
+DECLARE
+    counter int;
+    largest_rcvd_date_index int = -1;
+    latest_non_zero_further_code_index int = -1;
+    resubmitteddate date;
+BEGIN
+    FOR counter IN 1..6 LOOP
+        largest_rcvd_date_index = CASE
+        WHEN rcvd_dates[counter] IS NOT NULL AND (largest_rcvd_date_index = -1 OR rcvd_dates[counter] > rcvd_dates[largest_rcvd_date_index]) THEN counter
+        ELSE largest_rcvd_date_index
+        END;
+
+        latest_non_zero_further_code_index = CASE
+        WHEN further_codes[counter] != '0' THEN counter
+        ELSE latest_non_zero_further_code_index
+        END;
+    END LOOP;
+
+    resubmitteddate = CASE
+    WHEN
+        largest_rcvd_date_index > -1
+        AND latest_non_zero_further_code_index > -1
+        AND largest_rcvd_date_index = latest_non_zero_further_code_index
+    THEN rcvd_dates[largest_rcvd_date_index]
+    ELSE NULL
+    END;
+
+    RETURN resubmitteddate;
+END;
+$$ LANGUAGE plpgsql;
