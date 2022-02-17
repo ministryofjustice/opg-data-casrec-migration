@@ -26,7 +26,10 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
             numberofchaseletters,
             casrec_csv.report_element(full_status, 1) AS status,
             NULLIF(casrec_csv.report_element(full_status, 3), '') AS reviewstatus,
-            CAST(nullif(reviewdate, '') AS date) AS reviewdate
+            CAST(nullif(reviewdate, '') AS date) AS reviewdate,
+            bankstatementdeadlinedate,
+            deadlinedate,
+            resubmitteddate
         FROM (
             SELECT
                 caserecnumber,
@@ -41,7 +44,10 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
                         review_status, wd_count_end_date, receiveddate, lodged_date, reviewdate, next_yr_flag
                     )
                 ) full_status,
-                reviewdate
+                reviewdate,
+                casrec_csv.report_bankstatementdeadlinedate(latest_further_date, last_further_code) AS bankstatementdeadlinedate,
+                casrec_csv.report_deadlinedate(latest_further_date, last_further_code) AS deadlinedate,
+                casrec_csv.report_resubmitteddate(further_codes, rcvd_dates) AS resubmitteddate
             FROM (
                 SELECT
                     "Case" AS caserecnumber,
@@ -63,7 +69,58 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
                     "Rev Stat" AS review_status,
                     "Lodge Date" AS lodged_date,
                     "Review Date" AS reviewdate,
-                    "Next Yr" AS next_yr_flag
+                    "Next Yr" AS next_yr_flag,
+
+                    -- get latest date from "Further Date*" columns
+                    GREATEST(
+                        CAST(NULLIF("Further Date1", '') AS date),
+                        CAST(NULLIF("Further Date2", '') AS date),
+                        CAST(NULLIF("Further Date3", '') AS date),
+                        CAST(NULLIF("Further Date4", '') AS date),
+                        CAST(NULLIF("Further Date6", '') AS date),
+                        CAST(NULLIF("Further Date6.1", '') AS date)
+                    ) AS latest_further_date,
+
+                    -- in alphabetical order (Further1 is on left, Further6 on the right), get the last
+                    -- value which is not 0 or 2
+                    CAST(
+                        TO_JSON(
+                            ARRAY_REMOVE(
+                                ARRAY_REMOVE(
+                                    ARRAY[
+                                        CAST(NULLIF("Further1", '') AS text),
+                                        CAST(NULLIF("Further2", '') AS text),
+                                        CAST(NULLIF("Further3", '') AS text),
+                                        CAST(NULLIF("Further4", '') AS text),
+                                        CAST(NULLIF("Further5", '') AS text),
+                                        CAST(NULLIF("Further6", '') AS text)
+                                    ],
+                                    '0'
+                                ),
+                                '2'
+                            )
+                        )->>-1
+                    AS text) AS last_further_code,
+
+                    -- all "Further*" column values
+                    ARRAY[
+                        CAST(NULLIF("Further1", '') AS text),
+                        CAST(NULLIF("Further2", '') AS text),
+                        CAST(NULLIF("Further3", '') AS text),
+                        CAST(NULLIF("Further4", '') AS text),
+                        CAST(NULLIF("Further5", '') AS text),
+                        CAST(NULLIF("Further6", '') AS text)
+                    ] AS further_codes,
+
+                    -- all "Rcvd Date*" column values
+                    ARRAY[
+                        CAST(NULLIF("Rcvd Date1", '') AS date),
+                        CAST(NULLIF("Rcvd Date2", '') AS date),
+                        CAST(NULLIF("Rcvd Date3", '') AS date),
+                        CAST(NULLIF("Rcvd Date4", '') AS date),
+                        CAST(NULLIF("Rcvd Date5", '') AS date),
+                        CAST(NULLIF("Rcvd Date6", '') AS date)
+                    ] AS rcvd_dates
                 FROM
                     casrec_csv.account
             ) AS account_annual_report_logs
@@ -82,7 +139,10 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
             0 AS numberofchaseletters,
             'PENDING' AS status,
             NULL AS review_status,
-            NULL AS reviewdate
+            NULL AS reviewdate,
+            NULL AS bankstatementdeadlinedate,
+            NULL AS deadlinedate,
+            NULL AS resubmitteddate
         FROM
             casrec_csv.pat p
 
@@ -121,7 +181,10 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
         annual_report_logs.numberofchaseletters AS numberofchaseletters,
         annual_report_logs.status,
         annual_report_logs.reviewstatus,
-        annual_report_logs.reviewdate
+        annual_report_logs.reviewdate,
+        annual_report_logs.bankstatementdeadlinedate,
+        annual_report_logs.deadlinedate,
+        annual_report_logs.resubmitteddate
     FROM {target_schema}.annual_report_logs
     LEFT JOIN {target_schema}.persons
     ON persons.id = annual_report_logs.client_id
