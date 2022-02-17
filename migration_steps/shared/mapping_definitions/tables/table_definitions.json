@@ -6,7 +6,19 @@
         "source_conditions": {},
         "source_table_additional_columns": [
             "End Date",
-            "Case"
+            "Case",
+            "Further1",
+            "Further2",
+            "Further3",
+            "Further4",
+            "Further5",
+            "Further6",
+            "Further Date1",
+            "Further Date2",
+            "Further Date3",
+            "Further Date4",
+            "Further Date6",
+            "Further Date6.1"
         ],
         "source_table_name": "account",
         "table_transforms": {
@@ -45,19 +57,7 @@
         "required_entities": "",
         "source_conditions": {},
         "source_table_additional_columns": [
-            "Case",
-            "Further1",
-            "Further2",
-            "Further3",
-            "Further4",
-            "Further5",
-            "Further6",
-            "Further Date1",
-            "Further Date2",
-            "Further Date3",
-            "Further Date4",
-            "Further Date6",
-            "Further Date6.1"
+            "Case"
         ],
         "source_table_name": "account",
         "table_transforms": {
