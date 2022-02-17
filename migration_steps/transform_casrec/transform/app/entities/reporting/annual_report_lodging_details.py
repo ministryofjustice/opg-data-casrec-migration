@@ -5,9 +5,89 @@ import os
 import pandas as pd
 
 from helpers import get_mapping_dict, get_table_def
-from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
+from transform_data.apply_datatypes import apply_datatypes, reapply_datatypes_to_fk_cols
 
 log = logging.getLogger("root")
+
+
+# NB if two columns have the same value, the first one
+# occurring in the list cols is used and the later ignored
+# (this matches the implementation of GREATEST in SQL)
+def _max_date(row: pd.Series, cols: list):
+    max_col = None
+    max_val = None
+
+    for col in cols:
+        if not pd.isnull(row[col]) and (max_val is None or row[col] > max_val):
+            max_val = row[col]
+            max_col = col
+
+    return (
+        max_val,
+        max_col,
+    )
+
+
+# implements logic from IN-1152
+def _additional_dates(row: pd.Series) -> pd.Series:
+    row["resubmitteddate"] = None
+    row["bankstatementdeadlinedate"] = None
+    row["deadlinedate"] = None
+
+    max_further_date, _ = _max_date(
+        row,
+        [
+            "c_further_date1",
+            "c_further_date2",
+            "c_further_date3",
+            "c_further_date4",
+            "c_further_date6",
+            "c_further_date61",
+        ],
+    )
+
+    last_further_value = -1
+    last_non_zero_further_col = -1
+
+    for further_col_num in range(1, 7):
+        column = f"c_further{further_col_num}"
+        column_value = row[column]
+
+        if not pd.isnull(column_value):
+            if column_value != 0:
+                last_non_zero_further_col = further_col_num
+                if column_value != 2:
+                    last_further_value = column_value
+
+    if max_further_date is not None:
+        if last_further_value in [1, 8]:
+            row["bankstatementdeadlinedate"] = max_further_date
+        elif last_further_value in [3, 4, 5, 6, 7, 99]:
+            row["deadlinedate"] = max_further_date
+
+    max_rcvd_date, rcvd_col = _max_date(
+        row,
+        [
+            "c_rcvd_date1",
+            "c_rcvd_date2",
+            "c_rcvd_date3",
+            "c_rcvd_date4",
+            "c_rcvd_date5",
+            "c_rcvd_date6",
+        ],
+    )
+
+    # Check whether the c_rcvd_dateX column with latest date has the
+    # same suffix as the last non-zero c_furtherY column
+    # (i.e. is X == Y)
+    same_index = False
+    if rcvd_col is not None and max_rcvd_date is not None:
+        same_index = int(rcvd_col[-1]) == last_non_zero_further_col
+
+    if same_index:
+        row["resubmitteddate"] = max_rcvd_date
+
+    return row
 
 
 def insert_annual_report_lodging_details(db_config, target_db, mapping_file):
@@ -58,6 +138,43 @@ def insert_annual_report_lodging_details(db_config, target_db, mapping_file):
             )
             annual_report_lodging_details_joined_df = (
                 annual_report_lodging_details_joined_df.rename(columns={"id_x": "id"})
+            )
+
+            annual_report_lodging_details_joined_df = apply_datatypes(
+                {
+                    "c_further1": {"data_type": "int"},
+                    "c_further2": {"data_type": "int"},
+                    "c_further3": {"data_type": "int"},
+                    "c_further4": {"data_type": "int"},
+                    "c_further5": {"data_type": "int"},
+                    "c_further6": {"data_type": "int"},
+                    "c_further_date1": {"data_type": "date"},
+                    "c_further_date2": {"data_type": "date"},
+                    "c_further_date3": {"data_type": "date"},
+                    "c_further_date4": {"data_type": "date"},
+                    "c_further_date6": {"data_type": "date"},
+                    "c_further_date61": {"data_type": "date"},
+                    "c_rcvd_date1": {"data_type": "date"},
+                    "c_rcvd_date2": {"data_type": "date"},
+                    "c_rcvd_date3": {"data_type": "date"},
+                    "c_rcvd_date4": {"data_type": "date"},
+                    "c_rcvd_date5": {"data_type": "date"},
+                    "c_rcvd_date6": {"data_type": "date"},
+                },
+                annual_report_lodging_details_joined_df,
+            )
+
+            annual_report_lodging_details_joined_df = (
+                annual_report_lodging_details_joined_df.apply(_additional_dates, axis=1)
+            )
+
+            annual_report_lodging_details_joined_df = apply_datatypes(
+                {
+                    "resubmitteddate": {"data_type": "date"},
+                    "bankstatementdeadlinedate": {"data_type": "date"},
+                    "deadlinedate": {"data_type": "date"},
+                },
+                annual_report_lodging_details_joined_df,
             )
 
             annual_report_lodging_details_joined_df = reapply_datatypes_to_fk_cols(
