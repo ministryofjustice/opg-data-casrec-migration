@@ -61,9 +61,9 @@
             "entity": "reporting"
         },
         "transform_casrec": {
-            "casrec_table": "ACCOUNT",
-            "casrec_column_name": "Followup Date",
-            "alias": "Followup Date",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
             "requires_transformation": "",
             "lookup_table": "",
             "default_value": "",
@@ -165,6 +165,31 @@
             "sync": ""
         }
     },
+    "resubmitteddate": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "date",
+            "table_name": "annual_report_lodging_details",
+            "entity": "reporting"
+        },
+        "transform_casrec": {
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
     "bankstatementdeadlinedate": {
         "mapping_status": {
             "is_complete": true
@@ -177,24 +202,10 @@
             "entity": "reporting"
         },
         "transform_casrec": {
-            "casrec_table": "ACCOUNT",
-            "casrec_column_name": [
-                "Sent1",
-                "Sent2",
-                "Sent3",
-                "Sent4",
-                "Sent5",
-                "Sent6"
-            ],
-            "alias": [
-                "Sent1",
-                "Sent2",
-                "Sent3",
-                "Sent4",
-                "Sent5",
-                "Sent6"
-            ],
-            "requires_transformation": "get_max_col",
+            "casrec_table": "",
+            "casrec_column_name": "",
+            "alias": "",
+            "requires_transformation": "",
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
