@@ -84,6 +84,7 @@ def update_pks(db_config, table_details):
     try:
         cursor.execute(update_query)
     except Exception as e:
+        log.debug(f"Exception while updating pks in table '{table}'")
         log.debug(e)
         os._exit(1)
     finally:
