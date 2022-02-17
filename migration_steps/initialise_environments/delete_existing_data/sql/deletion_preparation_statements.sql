@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS deletions.base_clients_persons (id int, caserecnumber
 INSERT INTO deletions.base_clients_persons (id, caserecnumber)
 SELECT distinct p.id, p.caserecnumber
 FROM persons p
-WHERE p.type = 'actor_client' and (caseactorgroup <> 'CLIENT-PILOT-ONE' or caseactorgroup is null);
+WHERE p.type = 'actor_client' AND COALESCE(caseactorgroup, '') <> 'CLIENT-PILOT-ONE';
 
 CREATE UNIQUE INDEX stub_person_id_idx ON deletions.base_clients_persons (id);
 
@@ -305,10 +305,6 @@ FROM timeline_event e
 INNER JOIN person_timeline pt on e.id = pt.timelineevent_id
 INNER JOIN deletions.base_clients_persons bcp on bcp.id = pt.person_id;
 
-
-
-
-
 -- Create delete from client supervision notes linked to stub cases
 CREATE TABLE IF NOT EXISTS deletions.deletions_client_supervision_notes (id int, caserecnumber varchar);
 INSERT INTO deletions.deletions_client_supervision_notes (id, caserecnumber)
@@ -404,7 +400,14 @@ FROM persons dep
 INNER JOIN order_deputy od ON dep.id = od.deputy_id
 INNER JOIN cases c  ON c.id = od.order_id
 INNER JOIN deletions.base_clients_persons bcp ON bcp.id = c.client_id
-WHERE dep.id NOT IN (SELECT id FROM deletions.pilot_one_deputies);
+WHERE dep.id NOT IN (SELECT id FROM deletions.pilot_one_deputies)
+UNION
+SELECT DISTINCT dep.id, NULL as caserecnumber
+FROM persons dep
+LEFT JOIN order_deputy od ON od.deputy_id = dep.id
+LEFT JOIN cases c ON c.id = od.order_id
+WHERE dep.type = 'actor_deputy'
+AND c.id IS NULL;
 
 -- Create finance invoice temp table to be used in count check (no delete statement for this)
 CREATE TABLE IF NOT EXISTS deletions.deletions_finance_invoice (id int, caserecnumber varchar);

@@ -167,12 +167,12 @@
             "entity": "remarks"
         },
         "transform_casrec": {
-            "casrec_table": "",
-            "casrec_column_name": "",
-            "alias": "",
+            "casrec_table": "DEPUTY_REMARKS",
+            "casrec_column_name": "by",
+            "alias": "by",
             "requires_transformation": "",
-            "lookup_table": "",
-            "default_value": 2,
+            "lookup_table": "assignee_lookup",
+            "default_value": 2657,
             "calculated": "",
             "additional_columns": ""
         },
