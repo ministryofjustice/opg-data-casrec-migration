@@ -24,6 +24,19 @@ def insert_annual_report_logs(db_config, target_db, mapping_file):
 
     persons_df = pd.read_sql_query(persons_query, db_config["db_connection_string"])
 
+    orders_query = f"""
+        select order_id, caserecnumber from
+        (
+            select c.id as order_id, c.caserecnumber,
+            row_number() OVER (PARTITION BY caserecnumber ORDER BY orderdate DESC) as rownum
+            from {db_config["target_schema"]}.cases c
+            where c.orderstatus = 'ACTIVE' and c.type = 'order'
+        ) cases
+        WHERE rownum = 1
+    """
+
+    orders_df = pd.read_sql_query(orders_query, db_config["db_connection_string"])
+
     mapping_file_name = f"{mapping_file}_mapping"
     table_definition = get_table_def(mapping_name=mapping_file)
     sirius_details = get_mapping_dict(
@@ -53,13 +66,20 @@ def insert_annual_report_logs(db_config, target_db, mapping_file):
                 right_on="caserecnumber",
             )
 
+            # set order_id
+            annual_report_log_df = annual_report_log_df.merge(
+                orders_df,
+                how="left",
+                left_on="c_case",
+                right_on="caserecnumber",
+            )
+
             # FKs which are NULL for now
-            annual_report_log_df["order_id"] = None
             annual_report_log_df["reviewedby_id"] = None
             annual_report_log_df["lodgingchecklistdocument_id"] = None
 
             # as we've done a join, id may be duplicated within the dataframe,
-            # so adjust it
+            # so adjust it; also drop unnecessary columns
             annual_report_log_df = annual_report_log_df.drop(columns=["id"])
 
             annual_report_log_df = add_unique_id(

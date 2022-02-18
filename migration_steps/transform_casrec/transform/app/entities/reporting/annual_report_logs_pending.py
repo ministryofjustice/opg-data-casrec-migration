@@ -44,7 +44,7 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
     # reportingperiodstartdate is the End Date of the most recent
     # reporting period + 1 day; we only consider accounts associated
     # with 'Active' orders
-    case_end_dates_query = f"""
+    cases_query = f"""
         SELECT account_case, reportingperiodstartdate
         FROM {db_config["source_schema"]}.order o
         INNER JOIN (
@@ -63,9 +63,7 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
         AND o."Ord Stat" = 'Active';
     """
 
-    case_end_dates_df = pd.read_sql_query(
-        case_end_dates_query, db_config["db_connection_string"]
-    )
+    cases_df = pd.read_sql_query(cases_query, db_config["db_connection_string"])
 
     mapping_file_name = f"{mapping_file}_mapping"
     table_definition = get_table_def(mapping_name=mapping_file)
@@ -131,7 +129,7 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
         # join to set reportingperiodstartdate from the most-recent row in the
         # account table for each pending report
         annual_report_log_df = annual_report_log_df.merge(
-            case_end_dates_df,
+            cases_df,
             how="inner",
             left_on="c_case",
             right_on="account_case",
@@ -183,7 +181,9 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
         )
 
         # drop columns added when joining to other dataframes
-        annual_report_log_df = annual_report_log_df.drop(columns=["account_case"])
+        annual_report_log_df = annual_report_log_df.drop(
+            columns=["account_case", "caserecnumber"]
+        )
 
         target_db.insert_data(
             table_name=table_definition["destination_table_name"],
