@@ -69,9 +69,10 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
         select order_id, caserecnumber from
         (
             select c.id as order_id, c.caserecnumber,
-            row_number() OVER (PARTITION BY caserecnumber ORDER BY orderdate DESC) as rownum
+            row_number() OVER (PARTITION BY a."Case" ORDER BY a."End Date" DESC) as rownum
             from {db_config["target_schema"]}.cases c
-            where c.orderstatus = 'ACTIVE' and c.type = 'order'
+            inner join {db_config["source_schema"]}.account a
+            on c.caserecnumber = a."Case" and c.orderstatus = 'ACTIVE' and c.type = 'order'
         ) cases
         WHERE rownum = 1
     """
