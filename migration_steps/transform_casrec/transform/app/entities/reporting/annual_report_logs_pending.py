@@ -65,6 +65,19 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
 
     cases_df = pd.read_sql_query(cases_query, db_config["db_connection_string"])
 
+    orders_query = f"""
+        select order_id, caserecnumber from
+        (
+            select c.id as order_id, c.caserecnumber,
+            row_number() OVER (PARTITION BY caserecnumber ORDER BY orderdate DESC) as rownum
+            from {db_config["target_schema"]}.cases c
+            where c.orderstatus = 'ACTIVE' and c.type = 'order'
+        ) cases
+        WHERE rownum = 1
+    """
+
+    orders_df = pd.read_sql_query(orders_query, db_config["db_connection_string"])
+
     mapping_file_name = f"{mapping_file}_mapping"
     table_definition = get_table_def(mapping_name=mapping_file)
     sirius_details = get_mapping_dict(
@@ -106,6 +119,14 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
 
         log.debug(
             f"Found {num_rows} rows in pat table to potentially insert into annual_report_logs"
+        )
+
+        # set order_id
+        annual_report_log_df = annual_report_log_df.merge(
+            orders_df,
+            how="left",
+            left_on="c_case",
+            right_on="caserecnumber",
         )
 
         # set client_id; inner join used, so if a client doesn't exist
@@ -181,9 +202,7 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
         )
 
         # drop columns added when joining to other dataframes
-        annual_report_log_df = annual_report_log_df.drop(
-            columns=["account_case", "caserecnumber"]
-        )
+        annual_report_log_df = annual_report_log_df.drop(columns=["account_case"])
 
         target_db.insert_data(
             table_name=table_definition["destination_table_name"],
