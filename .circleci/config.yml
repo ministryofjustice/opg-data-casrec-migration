@@ -466,7 +466,7 @@ workflows:
       - persist_parameters:
           name: persist parameters production
           param_workspace: production
-          environment_title: Production-Manual
+          environment_title: Rehearsal-Manual
       - get_latest_image:
           name: get latest tag production
           requires: [persist parameters production]
@@ -528,7 +528,7 @@ workflows:
 #          image_tag: production
 #      - run_task:
 #          name: migration - load sirius production
-#          requires: [migration - integration production]
+#          requires: [get latest tag production]
 #          tf_workspace: production
 #          runner_command: migration-load-sirius
 #      - run_task:
@@ -540,8 +540,7 @@ workflows:
 #          name: job complete notification
 #          requires: [migration - validation production]
 #          workspace: production
-#
-#
+
 #  production_3:
 #    when:
 #      and:
@@ -568,7 +567,7 @@ workflows:
 #          runner_command: migration-light-touch-api-tests
 #      - run_elasticsearch_reset:
 #          name: full reindex elasticsearch production
-#          requires: [scale up poller service for migration production]
+#          requires: [migration - light touch api tests production]
 #          tf_workspace: production
 #      - job_complete:
 #          name: job complete notification
@@ -645,7 +644,7 @@ workflows:
           image_tag: rehearsal
       - run_task:
           name: migration - load sirius rehearsal
-          requires: [migration - integration rehearsal]
+          requires: [get latest tag rehearsal]
           tf_workspace: rehearsal
           runner_command: migration-load-sirius
       - run_task:
@@ -684,7 +683,7 @@ workflows:
           runner_command: migration-light-touch-api-tests
       - run_elasticsearch_reset:
           name: full reindex elasticsearch rehearsal
-          requires: [scale up poller service for migration rehearsal]
+          requires: [migration - light touch api tests rehearsal]
           tf_workspace: rehearsal
       - job_complete:
           name: job complete notification

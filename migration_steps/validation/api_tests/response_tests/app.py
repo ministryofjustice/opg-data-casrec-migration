@@ -95,7 +95,6 @@ def main():
 
     if api_tests.failed:
         print("Tests Failed")
-        exit(1)
     else:
         print("Tests Passed")
 
