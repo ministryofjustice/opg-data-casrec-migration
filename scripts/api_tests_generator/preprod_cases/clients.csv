@@ -1,11 +1,9 @@
 endpoint,entity_ref,json_locator,test_purpose
 /api/v1/clients/{id},10090226,clientAccommodation.handle,accommodation_lookups_no_accom
-/api/v1/clients/{id},13630132,clientAccommodation.handle,accommodation_lookups_council_rented
 /api/v1/clients/{id},13506456,clientAccommodation.handle,accommodation_lookups_supervised
 /api/v1/clients/{id},13304171,clientAccommodation.handle,accommodation_lookups_hostel
 /api/v1/clients/{id},12826514,clientAccommodation.handle,accommodation_lookups_hotel
 /api/v1/clients/{id},12953833,clientAccommodation.handle,accommodation_lookups_patient_nhs
-/api/v1/clients/{id},13712308,clientAccommodation.handle,accommodation_lookups_no_fixed
 /api/v1/clients/{id},13350748,clientAccommodation.handle,accommodation_lookups_care
 /api/v1/clients/{id},13360933,clientAccommodation.handle,accommodation_lookups_own_home
 /api/v1/clients/{id},13433162,clientAccommodation.handle,accommodation_lookups_other
