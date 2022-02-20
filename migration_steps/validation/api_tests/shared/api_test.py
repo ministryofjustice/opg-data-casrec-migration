@@ -69,8 +69,6 @@ class ApiTests:
         cookie = response.headers["Set-Cookie"]
         xsrf = response.headers["X-XSRF-TOKEN"]
         headers_dict = {"Cookie": cookie, "x-xsrf-token": xsrf}
-
-        self.api_log(f"TESTING: {self.user} - {self.password}")
         data = {"email": self.user, "password": self.password}
         with requests.Session() as s:
             p = s.post(f"{self.base_url}/auth/login", data=data, headers=headers_dict)
