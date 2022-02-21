@@ -81,7 +81,7 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
             NULL AS revisedduedate,
             0 AS numberofchaseletters,
             'PENDING' AS status,
-            NULL AS review_status,
+            'NO_REVIEW' AS review_status,
             NULL AS reviewdate
         FROM
             casrec_csv.pat p
