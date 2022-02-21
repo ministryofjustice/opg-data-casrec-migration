@@ -38,16 +38,12 @@ class ApiTests:
         self.s3_url = os.environ.get("S3_URL")
         self.ci = os.getenv("CI")
         self.base_url = os.environ.get("SIRIUS_FRONT_URL")
-        self.account = os.environ["SIRIUS_ACCOUNT"]
+        self.account = os.environ.get("SIRIUS_ACCOUNT")
         self.log_assert_to_screen = (
             True if os.environ.get("ENVIRONMENT") in ["local", "development"] else False
         )
         self.user = os.environ.get("SIRIUS_FRONT_USER")
-        self.account_name = (
-            os.environ.get("ACCOUNT_NAME")
-            if os.environ.get("ACCOUNT_NAME") not in ["qa", "preqa"]
-            else "preproduction"
-        )
+        self.account_name = os.environ.get("ACCOUNT_NAME")
         self.password = os.environ.get("API_TEST_PASSWORD")
         self.bucket_name = f"casrec-migration-{self.account_name.lower() if self.account_name else None}"
         self.failed = False
@@ -69,8 +65,6 @@ class ApiTests:
         cookie = response.headers["Set-Cookie"]
         xsrf = response.headers["X-XSRF-TOKEN"]
         headers_dict = {"Cookie": cookie, "x-xsrf-token": xsrf}
-
-        self.api_log(f"TESTING: {self.user} - {self.password}")
         data = {"email": self.user, "password": self.password}
         with requests.Session() as s:
             p = s.post(f"{self.base_url}/auth/login", data=data, headers=headers_dict)
