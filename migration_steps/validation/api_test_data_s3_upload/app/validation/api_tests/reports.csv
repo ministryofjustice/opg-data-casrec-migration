@@ -9,6 +9,8 @@ endpoint,entity_ref,json_locator,test_purpose,api_response
 /api/v1/clients/{id}/annual-reports,10303376,[0].status.handle,incomplete_status,INCOMPLETE
 /api/v1/clients/{id}/annual-reports,94055780,[0].status.handle,pending_status,PENDING
 /api/v1/clients/{id}/annual-reports,94055780,[0].reviewStatus.handle,no_review_status,NO_REVIEW
+/api/v1/clients/{id}/annual-reports,10016235,[0].status.handle,pending_status_from_pat_table,PENDING
+/api/v1/clients/{id}/annual-reports,10016235,[0].reviewStatus.handle,no_review_status_from_pat_table,NO_REVIEW
 /api/v1/clients/{id}/annual-reports,10005928,[0].status.handle,due_status,DUE
 /api/v1/clients/{id}/annual-reports,10005928,[0].reviewStatus.handle,no_review_status,NO_REVIEW
 /api/v1/clients/{id}/annual-reports,10461469,[0].status.handle,overdue_status,OVERDUE
