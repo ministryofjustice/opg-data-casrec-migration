@@ -9,6 +9,10 @@ CREATE TABLE casrec_csv.exceptions_scheduled_events_reporting(
     enddate text default NULL
 );
 
+CREATE INDEX ix_scheduled_events_json_payload ON {target_schema}.scheduled_events USING BTREE ((event->'payload'->>'reportingPeriodId'));
+CREATE INDEX ix_scheduled_events_json_clientid ON {target_schema}.scheduled_events USING BTREE ((event->'payload'->>'clientId'));
+CREATE INDEX ix_scheduled_events_json_class ON {target_schema}.scheduled_events USING BTREE ((event->>'class'));
+
 INSERT INTO casrec_csv.exceptions_scheduled_events_reporting(
 	SELECT * FROM (
         SELECT
@@ -48,3 +52,7 @@ INSERT INTO casrec_csv.exceptions_scheduled_events_reporting(
             AND annual_report_logs.status = 'PENDING'
     ) AS sirius_events_data
 );
+
+DROP INDEX IF EXISTS ix_scheduled_events_json_payload;
+DROP INDEX IF EXISTS ix_scheduled_events_json_clientid;
+DROP INDEX IF EXISTS ix_scheduled_events_json_class;
