@@ -243,7 +243,8 @@
             "middlenames",
             "uid",
             "feepayer_id",
-            "clientstatus"
+            "clientstatus",
+            "updateddate"
         ],
         "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
@@ -273,7 +274,8 @@
     },
     "client_phonenumbers": {
         "exclude": [
-            "person_id"
+            "person_id",
+            "updateddate"
         ],
         "casenumber_source": "client_persons.caserecnumber",
         "orderby": {},
@@ -495,7 +497,8 @@
     },
     "deputy_daytime_phonenumbers": {
         "exclude": [
-            "person_id"
+            "person_id",
+            "updateddate"
         ],
         "casenumber_source": "cases.caserecnumber",
         "orderby": {
@@ -543,7 +546,8 @@
     },
     "deputy_evening_phonenumbers": {
         "exclude": [
-            "person_id"
+            "person_id",
+            "updateddate"
         ],
         "casenumber_source": "cases.caserecnumber",
         "orderby": {
@@ -669,7 +673,8 @@
             "dateofdeath",
             "middlenames",
             "uid",
-            "deputycasrecid"
+            "deputycasrecid",
+            "updateddate"
         ],
         "casenumber_source": "cases.caserecnumber",
         "orderby": {

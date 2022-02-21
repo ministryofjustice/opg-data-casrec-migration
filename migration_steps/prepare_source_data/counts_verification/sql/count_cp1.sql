@@ -37,7 +37,7 @@ WHERE supervision_table = 'persons_clients';
 
 -- persons_deputies
 DROP TABLE IF EXISTS countverificationaudit.{working_column}_persons_deputies;
-SELECT id, caserecnumber INTO countverificationaudit.{working_column}_persons_deputies FROM countverification.cp1_cases;
+SELECT id INTO countverificationaudit.{working_column}_persons_deputies FROM countverification.cp1_deputies;
 UPDATE countverification.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM countverificationaudit.{working_column}_persons_deputies
