@@ -44,7 +44,7 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
     # reportingperiodstartdate is the End Date of the most recent
     # reporting period + 1 day; we only consider accounts associated
     # with 'Active' orders
-    case_end_dates_query = f"""
+    cases_query = f"""
         SELECT account_case, reportingperiodstartdate
         FROM {db_config["source_schema"]}.order o
         INNER JOIN (
@@ -63,9 +63,21 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
         AND o."Ord Stat" = 'Active';
     """
 
-    case_end_dates_df = pd.read_sql_query(
-        case_end_dates_query, db_config["db_connection_string"]
-    )
+    cases_df = pd.read_sql_query(cases_query, db_config["db_connection_string"])
+
+    orders_query = f"""
+        select order_id, caserecnumber from
+        (
+            select c.id as order_id, c.caserecnumber,
+            row_number() OVER (PARTITION BY a."Case" ORDER BY a."End Date" DESC) as rownum
+            from {db_config["target_schema"]}.cases c
+            inner join {db_config["source_schema"]}.account a
+            on c.caserecnumber = a."Case" and c.orderstatus = 'ACTIVE' and c.type = 'order'
+        ) cases
+        WHERE rownum = 1
+    """
+
+    orders_df = pd.read_sql_query(orders_query, db_config["db_connection_string"])
 
     mapping_file_name = f"{mapping_file}_mapping"
     table_definition = get_table_def(mapping_name=mapping_file)
@@ -110,6 +122,14 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
             f"Found {num_rows} rows in pat table to potentially insert into annual_report_logs"
         )
 
+        # set order_id
+        annual_report_log_df = annual_report_log_df.merge(
+            orders_df,
+            how="left",
+            left_on="c_case",
+            right_on="caserecnumber",
+        )
+
         # set client_id; inner join used, so if a client doesn't exist
         # for the case attached to the pat record, the report will be removed
         annual_report_log_df = annual_report_log_df.merge(
@@ -131,7 +151,7 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
         # join to set reportingperiodstartdate from the most-recent row in the
         # account table for each pending report
         annual_report_log_df = annual_report_log_df.merge(
-            case_end_dates_df,
+            cases_df,
             how="inner",
             left_on="c_case",
             right_on="account_case",
