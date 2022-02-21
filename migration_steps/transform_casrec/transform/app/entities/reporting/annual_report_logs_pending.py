@@ -95,6 +95,7 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
             SELECT
                 "Report Due" AS reportingperiodenddate,
                 'PENDING' AS status,
+                'NO_REVIEW' AS reviewstatus,
                 0 AS numberofchaseletters,
                 "Case" AS c_case
             FROM {db_config["source_schema"]}.pat
