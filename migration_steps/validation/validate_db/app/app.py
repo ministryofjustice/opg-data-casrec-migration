@@ -81,7 +81,11 @@ def get_mappings():
         "visits": ["visits"],
         "tasks": ["tasks"],
         "remarks": ["client_notes", "deputy_notes"],
-        "reporting": ["annual_report_logs", "annual_report_lodging_details"],
+        "reporting": [
+            "annual_report_logs",
+            "annual_report_lodging_details",
+            "annual_report_type_assignments",
+        ],
         "invoice": ["finance_invoice_ad", "finance_invoice_non_ad"],
         "fee_reductions": ["finance_remissions", "finance_exemptions"],
         "ledger": ["finance_ledger_credits"],
