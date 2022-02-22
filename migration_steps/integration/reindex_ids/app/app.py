@@ -9,6 +9,7 @@ from existing_data.match_existing_data import match_existing_data
 from reindex.move_by_table import move_all_tables, create_schema
 from reindex.reindex_foreign_keys import update_fks
 from reindex.reindex_primary_keys import update_pks
+from reindex.reindex_special_cases import reindex_special_cases
 from utilities.clear_database import clear_tables
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -66,7 +67,11 @@ def main(clear, correfs):
     log.info(
         log_title(message="Integration Step: Reindex migrated data based on Sirius ids")
     )
-    log.info(log_title(message=f"Correfs: {', '.join(filtered_correfs) if filtered_correfs else 'all'}"))
+    log.info(
+        log_title(
+            message=f"Correfs: {', '.join(filtered_correfs) if filtered_correfs else 'all'}"
+        )
+    )
     log.info(
         log_title(
             message=f"Source: {db_config['source_schema']}, Target: {db_config['target_schema']}, Chunk Size: {db_config['chunk_size']}"
@@ -116,6 +121,9 @@ def main(clear, correfs):
 
     log.info(f"Reindex all foreign keys")
     update_fks(db_config=db_config, table_details=all_enabled_tables)
+
+    log.info(f"Reindex special cases")
+    reindex_special_cases(db_config=db_config)
 
 
 if __name__ == "__main__":
