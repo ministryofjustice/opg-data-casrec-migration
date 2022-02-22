@@ -11,8 +11,8 @@ from transform_data.unique_id import add_unique_id
 log = logging.getLogger("root")
 
 
-# Until we work out what to do with the type column
-DEFAULT_REPORT_TYPE = "-"
+# as per IN-1164
+DEFAULT_REPORT_TYPE = "pfa"
 
 
 # :param row: single row with ord_stat and ord_risk_lvl columns;
