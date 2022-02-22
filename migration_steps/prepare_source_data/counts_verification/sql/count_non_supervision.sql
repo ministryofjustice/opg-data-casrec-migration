@@ -313,7 +313,103 @@ SET {working_column} = (
 )
 WHERE supervision_table = 'ingested_documents';
 
+-- annual_report_letter_status
+update countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM annual_report_letter_status
+)
+WHERE supervision_table = 'annual_report_letter_status';
 
+-- annual_report_type_assignments
+update countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM annual_report_type_assignments
+)
+WHERE supervision_table = 'annual_report_type_assignments';
+
+-- caseitem_queue
+update countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM caseitem_queue
+)
+WHERE supervision_table = 'caseitem_queue';
+
+-- events
+update countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM events
+)
+WHERE supervision_table = 'events';
+
+-- finance_invoice_email_status
+update countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM finance_invoice_email_status
+)
+WHERE supervision_table = 'finance_invoice_email_status';
+
+-- finance_invoice_fee_range
+update countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM finance_invoice_fee_range
+)
+WHERE supervision_table = 'finance_invoice_fee_range';
+
+-- finance_report
+update countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM finance_report
+)
+WHERE supervision_table = 'finance_report';
+
+-- opgcore_doctrine_migrations
+update countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM opgcore_doctrine_migrations
+)
+WHERE supervision_table = 'opgcore_doctrine_migrations';
+
+-- person_personreference
+update countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM person_personreference
+)
+WHERE supervision_table = 'person_personreference';
+
+-- person_references
+update countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM person_references
+)
+WHERE supervision_table = 'person_references';
+
+-- person_research_preferences
+update countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM person_research_preferences
+)
+WHERE supervision_table = 'person_research_preferences';
+
+-- queue_business_rules
+update countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM queue_business_rules
+)
+WHERE supervision_table = 'queue_business_rules';
+
+-- scheduled_events
+update countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM scheduled_events
+)
+WHERE supervision_table = 'scheduled_events';
+
+-- uploads
+update countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM uploads
+)
+WHERE supervision_table = 'uploads';
 
 -- The following have no connection to LPA (zero rows in Sirius) so have been skipped:
 -- supervision_notes
@@ -332,6 +428,20 @@ WHERE supervision_table = 'ingested_documents';
 -- order_deputy
 -- person_task
 
+-- The following are tables that don't seem to be used or are 0 count
+-- courtfund
+-- deputy_important_information
+-- finance_property
+-- deleted_cases
+-- order_courtfund
+-- payments
+-- finance_counter
+-- finance_fee
+-- epa_personnotifydonor
+-- lineitem
+-- bond_providers
+-- random_review_settings
+-- firm
 
 DROP INDEX countverification.lpa_persons_idx;
 DROP INDEX countverification.lpa_cases_idx;
