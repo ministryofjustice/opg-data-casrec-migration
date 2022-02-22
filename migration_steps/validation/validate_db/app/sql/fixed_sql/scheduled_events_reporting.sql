@@ -6,7 +6,9 @@ CREATE TABLE casrec_csv.exceptions_scheduled_events_reporting(
     version text default NULL,
     processed text default NULL,
     dueby text default NULL,
-    enddate text default NULL
+    enddate text default NULL,
+    client_id int default NULL,
+    reporting_period_id int default NULL
 );
 
 CREATE INDEX ix_scheduled_events_json_payload ON {target_schema}.scheduled_events USING BTREE ((event->'payload'->>'reportingPeriodId'));
@@ -23,7 +25,9 @@ INSERT INTO casrec_csv.exceptions_scheduled_events_reporting(
         to_char(
             annual_report_logs.reportingperiodenddate + INTERVAL '1 YEAR',
             'YYYY-MM-DD"T"HH24:MI:SS+00:00'
-        ) AS enddate
+        ) AS enddate,
+        annual_report_logs.client_id AS client_id,
+        annual_report_logs.id AS reporting_period_id
     FROM {target_schema}.annual_report_logs
     INNER JOIN {target_schema}.persons ON persons.id = annual_report_logs.client_id
     WHERE persons.clientsource = 'CASRECMIGRATION'
@@ -37,7 +41,9 @@ INSERT INTO casrec_csv.exceptions_scheduled_events_reporting(
         scheduled_events.version AS version,
         scheduled_events.processed AS processed,
         scheduled_events.dueby AS dueby,
-        scheduled_events.event->'payload'->>'endDate' AS enddate
+        scheduled_events.event->'payload'->>'endDate' AS enddate,
+        CAST(scheduled_events.event->'payload'->>'clientId' AS int) AS client_id,
+        CAST(scheduled_events.event->'payload'->>'reportingPeriodId' AS int) AS reporting_period_id
     FROM
         {target_schema}.annual_report_logs
     INNER JOIN {target_schema}.persons ON persons.id = annual_report_logs.client_id
