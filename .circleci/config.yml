@@ -557,7 +557,7 @@ workflows:
 #          image_tag: production
 #      - run_task:
 #          name: migration - response api tests production
-#          requires: [persist parameters production]
+#          requires: [get latest tag production]
 #          tf_workspace: production
 #          runner_command: migration-response-api-tests
 #      - run_task:
@@ -673,7 +673,7 @@ workflows:
           image_tag: rehearsal
       - run_task:
           name: migration - response api tests rehearsal
-          requires: [persist parameters rehearsal]
+          requires: [get latest tag rehearsal]
           tf_workspace: rehearsal
           runner_command: migration-response-api-tests
       - run_task:
