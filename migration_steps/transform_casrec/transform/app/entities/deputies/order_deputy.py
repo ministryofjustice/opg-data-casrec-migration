@@ -11,6 +11,18 @@ from utilities.generate_source_query import format_additional_col_alias
 log = logging.getLogger("root")
 
 
+def set_discharged_statusoncase(row):
+    if row["Joint"] == "5":
+        return "CLOSED"
+    return row["statusoncase"]
+
+
+def set_discharged_statusoncaseoverride(row):
+    if row["Joint"] == "5":
+        return "DISCHARGED"
+    return row["statusoncaseoverride"]
+
+
 def insert_order_deputies(db_config, target_db, mapping_file):
 
     mapping_file_name = f"{mapping_file}_mapping"
@@ -54,7 +66,7 @@ def insert_order_deputies(db_config, target_db, mapping_file):
         deputies_df = existing_deputies_merged_df.drop(columns=["id_x"])
 
         # deputyship
-        deputyship_query = f"""select "Deputy No", "Order No",
+        deputyship_query = f"""select "Deputy No", "Order No", "Joint",
             "Fee Payer" as {format_additional_col_alias(original_column_name='Fee Payer')}
             from {db_config["source_schema"]}.deputyship;"""
         deputyship_df = pd.read_sql_query(
@@ -75,6 +87,17 @@ def insert_order_deputies(db_config, target_db, mapping_file):
         ].astype("Int64")
         deputyship_persons_joined_df = deputyship_persons_joined_df.drop(columns=["id"])
 
+        deputyship_persons_joined_df[
+            "statusoncase"
+        ] = deputyship_persons_joined_df.apply(
+            lambda row: set_discharged_statusoncase(row), axis=1
+        )
+        deputyship_persons_joined_df[
+            "statusoncaseoverride"
+        ] = deputyship_persons_joined_df.apply(
+            lambda row: set_discharged_statusoncaseoverride(row), axis=1
+        )
+
         deputyship_persons_order_df = deputyship_persons_joined_df.merge(
             order_df, how="left", left_on="Order No", right_on="c_order_no"
         )
@@ -84,7 +107,7 @@ def insert_order_deputies(db_config, target_db, mapping_file):
             "order_id"
         ].astype("Int64")
         deputyship_persons_order_df = deputyship_persons_order_df.drop(
-            columns=["id", "Deputy No", "Order No"]
+            columns=["id", "Deputy No", "Order No", "Joint"]
         )
 
         remove_nulls = ["casrec_mapping_file_name", "order_id", "deputy_id"]
