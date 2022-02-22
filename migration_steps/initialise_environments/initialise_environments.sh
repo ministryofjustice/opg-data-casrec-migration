@@ -12,6 +12,7 @@ done
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+python3 "${DIR}/connectivity_check_environment/app/app.py"
 python3 "${DIR}/counts_verification/app.py" --stage=pre_delete
 python3 "${DIR}/delete_existing_data/app.py"
 python3 "${DIR}/counts_verification/app.py" --stage=post_delete
