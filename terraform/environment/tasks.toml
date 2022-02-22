@@ -337,6 +337,27 @@
         },
         "TaskDefinition":"${casrec-task-definition-validation}"
       },
+      "migration-connectivity-check":{
+        "Cluster":"${casrec-cluster}",
+        "LaunchType":"FARGATE",
+        "NetworkConfiguration":{
+            "AwsvpcConfiguration":{
+                "SecurityGroups":[
+                    "${casrec-sec-group}"
+                ],
+                "Subnets":[
+                    ${casrec-subnets}
+                ]
+            }
+        },
+        "Overrides": {
+            "ContainerOverrides": [{
+                "Name": "etl0",
+                "Command": ["initialise_environments/connectivity_check_environment.sh"]
+            }]
+        },
+        "TaskDefinition":"${casrec-task-definition-connectivity}"
+      },
       "reset-elasticsearch": {
         "Cluster": "${cluster}",
         "LaunchType": "FARGATE",

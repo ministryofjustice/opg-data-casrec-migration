@@ -645,3 +645,17 @@ Then run the following:
 ```
 aws-vault exec mig-s3 -- aws s3 cp ./my_file s3://casrec-migration-preproduction/folder/my_file --sse AES256
 ```
+
+#### Check environment configuration
+
+We have an ECS task that we can run to check all connectivity is correct.
+
+It is not run as part of the pipeline so you need to run it manually from the console.
+
+As per usual with ecs-runner tasks, make sure you have installed ecs-runner and have an up to date
+terraform output file for the environment you want to run it in and that you are in the folder with the output file,
+then run this:
+
+```
+ecs-runner -task migration-connectivity-check -timeout 1800
+```
