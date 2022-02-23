@@ -133,9 +133,9 @@
             "percentage_complete": 100
         },
         "cases": {
-            "total_rows": 57,
+            "total_rows": 58,
             "total_unmapped": 4,
-            "total_mapped": 53,
+            "total_mapped": 54,
             "percentage_complete": 93
         },
         "person_caseitem": {
@@ -283,9 +283,9 @@
             "total_complete": 8
         },
         "fields": {
-            "total_fields": 424,
+            "total_fields": 425,
             "total_unmapped": 22,
-            "total_mapped": 402,
+            "total_mapped": 403,
             "percentage_complete": 95
         }
     }
