@@ -21,12 +21,12 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
             reportingperiodenddate,
             reportingperiodstartdate,
             duedate,
-            CAST(nullif(receiveddate, '') AS date) AS receiveddate,
-            CAST(nullif(revisedduedate, '') AS date) AS revisedduedate,
+            CAST(receiveddate AS date) AS receiveddate,
+            CAST(NULLIF(revisedduedate, '') AS date) AS revisedduedate,
             numberofchaseletters,
             casrec_csv.report_element(full_status, 1) AS status,
             NULLIF(casrec_csv.report_element(full_status, 3), '') AS reviewstatus,
-            CAST(nullif(reviewdate, '') AS date) AS reviewdate
+            CAST(NULLIF(reviewdate, '') AS date) AS reviewdate
         FROM (
             SELECT
                 caserecnumber,
@@ -48,15 +48,7 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
                     CAST(account."End Date" AS date) AS reportingperiodenddate,
                     CAST(account."End Date" AS date) - INTERVAL '1 year' + INTERVAL '1 day' AS reportingperiodstartdate,
                     transf_calculate_duedate(account."End Date") AS duedate,
-                    GREATEST(
-                        NULLIF(account."Rcvd Date", ''),
-                        NULLIF(account."Rcvd Date1", ''),
-                        NULLIF(account."Rcvd Date2", ''),
-                        NULLIF(account."Rcvd Date3", ''),
-                        NULLIF(account."Rcvd Date4", ''),
-                        NULLIF(account."Rcvd Date5", ''),
-                        NULLIF(account."Rcvd Date6", '')
-                    ) AS receiveddate,
+                    NULLIF(account."Rcvd Date", '') AS receiveddate,
                     "Revise Date" AS revisedduedate,
                     0 AS numberofchaseletters,
                     casrec_csv.weekday_count(account."End Date") AS wd_count_end_date,
