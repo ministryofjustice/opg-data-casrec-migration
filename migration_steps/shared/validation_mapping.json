@@ -108,10 +108,12 @@
         "casrec": {
             "from_table": "order",
             "transform": {
-                "orderstatus": "CASE WHEN \"Ord Stat\" = 'Active' AND \"Ord Type\" IN ('26','43','45') THEN 'OPEN' ELSE UPPER(\"Ord Stat\") END"
+                "orderstatus": "CASE WHEN \"Ord Stat\" = 'Active' AND \"Ord Type\" IN ('26','43','45') THEN 'OPEN' ELSE UPPER(\"Ord Stat\") END",
+                "howdeputyappointed": "CASE WHEN deputyships.\"Joint\" = '1' THEN 'SOLE' WHEN deputyships.\"Joint\" = '2' THEN 'JOINT' WHEN deputyships.\"Joint\" IN ('3', '4') THEN 'JOINTANDSEVERALLY' ELSE NULL END"
             },
             "joins": [
-                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\""
+                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\"",
+                "LEFT JOIN (SELECT \"Case\", \"Joint\" FROM (SELECT \"Case\", \"Joint\", row_number() OVER (PARTITION BY \"Case\" ORDER BY \"Create\" DESC) AS rownum FROM (SELECT \"Case\", \"Joint\", \"Create\" FROM casrec_csv.deputyship WHERE \"Joint\" != '5') AS non_five_deputyships) AS numbered_deputyships WHERE rownum = 1) AS deputyships ON casrec_csv.order.\"Case\" = deputyships.\"Case\""
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_cases exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
