@@ -29,7 +29,8 @@ resource "local_file" "output" {
       casrec-task-definition-transform               = aws_ecs_task_definition.etl2.arn,
       casrec-task-definition-integration             = aws_ecs_task_definition.etl3.arn,
       casrec-task-definition-load-sirius             = aws_ecs_task_definition.etl4.arn,
-      casrec-task-definition-validation              = aws_ecs_task_definition.etl5.arn
+      casrec-task-definition-validation              = aws_ecs_task_definition.etl5.arn,
+      casrec-task-definition-connectivity            = aws_ecs_task_definition.etl_connectivity.arn
   })
   filename = "${path.module}/terraform.output.json"
 }

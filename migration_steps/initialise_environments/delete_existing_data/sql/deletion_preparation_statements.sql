@@ -267,15 +267,6 @@ INNER JOIN deletions.base_clients_persons bcp ON bcp.id = c.client_id;
 
 CREATE UNIQUE INDEX case_tasks_id_idx ON deletions.deletions_case_tasks (id);
 
--- Create delete from deputy documents linked to stub cases
-CREATE TABLE IF NOT EXISTS deletions.deletions_deputy_documents (id int, caserecnumber varchar);
-INSERT INTO deletions.deletions_deputy_documents (id, caserecnumber)
-SELECT d.id, bcp.caserecnumber
-FROM documents d
-INNER JOIN caseitem_document cd ON d.id = cd.document_id
-INNER JOIN cases c ON c.id = cd.caseitem_id
-INNER JOIN deletions.base_clients_persons bcp ON bcp.id = c.client_id;
-
 -- Create delete from client persons linked to stub cases
 CREATE TABLE IF NOT EXISTS deletions.deletions_client_persons (id int, caserecnumber varchar);
 INSERT INTO deletions.deletions_client_persons (id, caserecnumber)
@@ -297,13 +288,24 @@ SELECT v.id, bcp.caserecnumber
 FROM visits v
 INNER JOIN deletions.base_clients_persons bcp ON bcp.id = v.client_id;
 
--- Create delete from client timeline_events
+-- Create delete from client timeline_events (they can have events linked to cp1 deps and non cp1 client)
 CREATE TABLE IF NOT EXISTS deletions.deletions_client_timeline_events (id int, caserecnumber varchar);
 INSERT INTO deletions.deletions_client_timeline_events (id, caserecnumber)
 SELECT e.id, bcp.caserecnumber
 FROM timeline_event e
 INNER JOIN person_timeline pt on e.id = pt.timelineevent_id
-INNER JOIN deletions.base_clients_persons bcp on bcp.id = pt.person_id;
+INNER JOIN deletions.base_clients_persons bcp on bcp.id = pt.person_id
+LEFT JOIN
+(
+    SELECT timelineevent_id
+    FROM person_timeline pt
+    INNER JOIN (
+        SELECT id FROM deletions.pilot_one_deputies
+    ) as cp1_deps
+    ON cp1_deps.id = pt.person_id
+) AS cp1_deps_tl ON e.id = cp1_deps_tl.timelineevent_id
+WHERE cp1_deps_tl.timelineevent_id IS NULL;
+
 
 -- Create delete from client supervision notes linked to stub cases
 CREATE TABLE IF NOT EXISTS deletions.deletions_client_supervision_notes (id int, caserecnumber varchar);

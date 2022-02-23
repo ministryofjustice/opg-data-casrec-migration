@@ -52,7 +52,7 @@ def execute_sql_template(conn, template_filename, replace_tags):
     comment = "no comment"
     for line in execution_file:
         if "--" in line:
-            comment = line
+            comment = f"{template_filename}: {line}"
         if len(line) > 0:
             if ";" not in line:
                 sql_statement += f"{line.strip()}\n"
@@ -67,14 +67,13 @@ def execute_sql_template(conn, template_filename, replace_tags):
     cursor = conn.cursor()
 
     for statement in sql_statements:
-        log.info(f'Running statement with comment: \n{statement["comment"]}')
+        log.info(f'Running statement from file with comment: \n{statement["comment"]}')
         try:
             cursor.execute(statement["statement"])
             conn.commit()
         except (Exception, psycopg2.DatabaseError) as error:
             log.error("Error: %s" % error)
             conn.rollback()
-            cursor.close()
     cursor.close()
     os.remove(sql_path / execution_filename)
 
