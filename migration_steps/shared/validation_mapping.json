@@ -1079,7 +1079,7 @@
             "from_table": "feeexport",
             "transform": {
                 "finance_remission_exemption_id": "NULL::integer",
-                "confirmeddate": "NULLIF(sop_feecheck.\"GL Date\", 'NaT')::date"
+                "confirmeddate": "CASE WHEN NULLIF(sop_feecheck.\"GL Date\", 'NaT') IS NOT NULL THEN sop_feecheck.\"GL Date\"::date WHEN sop_aged_debt.\"Trx Number\" IS NOT NULL THEN NOW()::date ELSE NULL END"
             },
             "joins": [
                 "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.feeexport.\"Case\"",
@@ -1121,7 +1121,7 @@
             "from_table": "feeexport",
             "transform": {
                 "finance_remission_exemption_id": "NULL::integer",
-                "confirmeddate": "NULLIF(sop_feecheck.\"GL Date\", 'NaT')::date"
+                "confirmeddate": "CASE WHEN NULLIF(sop_feecheck.\"GL Date\", 'NaT') IS NOT NULL THEN sop_feecheck.\"GL Date\"::date WHEN sop_aged_debt.\"Trx Number\" IS NOT NULL THEN NOW()::date ELSE NULL END"
             },
             "joins": [
                 "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.feeexport.\"Case\"",
