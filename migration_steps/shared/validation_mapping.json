@@ -964,7 +964,7 @@
             ],
             "exception_table_join": "INNER JOIN casrec_csv.exceptions_tasks exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
-                "casrec_csv.sup_activity.\"Status\" IN ('INACTIVE','ACTIVE')",
+                "casrec_csv.sup_activity.\"Status\" IN ('ACTIVE')",
                 "casrec_csv.order.\"Ord Stat\" != 'Open'"
             ]
         },

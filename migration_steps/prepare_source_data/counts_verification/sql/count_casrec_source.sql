@@ -128,7 +128,7 @@ UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM casrec_csv.SUP_ACTIVITY act
-    WHERE act."Status" IN ('INACTIVE','ACTIVE')
+    WHERE act."Status" IN ('ACTIVE')
     AND EXISTS (
         SELECT "Case"
         FROM casrec_csv.order o
