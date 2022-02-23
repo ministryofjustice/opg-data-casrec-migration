@@ -239,23 +239,13 @@
             "casrec_table": "Account",
             "casrec_column_name": [
                 "Rcvd Date",
-                "Rcvd Date1",
-                "Rcvd Date2",
-                "Rcvd Date3",
-                "Rcvd Date4",
-                "Rcvd Date5",
-                "Rcvd Date6"
+                "Lodge Date"
             ],
             "alias": [
                 "Rcvd Date",
-                "Rcvd Date1",
-                "Rcvd Date2",
-                "Rcvd Date3",
-                "Rcvd Date4",
-                "Rcvd Date5",
-                "Rcvd Date6"
+                "Lodge Date"
             ],
-            "requires_transformation": "get_max_col",
+            "requires_transformation": "coalesce",
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
