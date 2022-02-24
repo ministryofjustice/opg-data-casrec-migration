@@ -457,3 +457,32 @@ SET {working_column} =(
     SELECT COUNT(*) FROM countverificationaudit.{working_column}_person_timeline
 )
 WHERE supervision_table = 'person_timeline';
+
+-- person_document
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*)
+    FROM person_document pt
+    INNER JOIN countverification.cp1_clients cp1
+    ON cp1.id = pt.person_id
+)
+WHERE supervision_table = 'person_document';
+
+-- deputy_person_document
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*)
+    FROM person_document pt
+    INNER JOIN countverification.cp1_deputies ncp1
+    ON ncp1.id = pt.person_id
+)
+WHERE supervision_table = 'deputy_person_document';
+
+-- caseitem_document
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM caseitem_document cd
+    INNER JOIN countverification.cp1_cases c
+        ON cd.caseitem_id = c.id
+)
+WHERE supervision_table = 'caseitem_document';

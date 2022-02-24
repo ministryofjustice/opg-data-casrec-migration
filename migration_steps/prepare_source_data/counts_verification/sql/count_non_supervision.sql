@@ -288,7 +288,10 @@ WHERE supervision_table = 'hold_period';
 -- person_document
 UPDATE countverification.counts
 SET {working_column} = (
-    SELECT COUNT(*) FROM person_document
+    SELECT COUNT(*)
+    FROM person_document pt
+    INNER JOIN countverification.lpa_persons lpa
+    ON lpa.id = pt.person_id
 )
 WHERE supervision_table = 'person_document';
 
@@ -320,26 +323,12 @@ SET {working_column} = (
 )
 WHERE supervision_table = 'annual_report_letter_status';
 
--- annual_report_type_assignments
-update countverification.counts
-SET {working_column} = (
-    SELECT COUNT(*) FROM annual_report_type_assignments
-)
-WHERE supervision_table = 'annual_report_type_assignments';
-
 -- caseitem_queue
 update countverification.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM caseitem_queue
 )
 WHERE supervision_table = 'caseitem_queue';
-
--- events
-update countverification.counts
-SET {working_column} = (
-    SELECT COUNT(*) FROM events
-)
-WHERE supervision_table = 'events';
 
 -- finance_invoice_email_status
 update countverification.counts
@@ -442,6 +431,14 @@ WHERE supervision_table = 'uploads';
 -- bond_providers
 -- random_review_settings
 -- firm
+
+
+-- total_documents (adding this here as just want to see count staying the same)
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM documents d
+)
+WHERE supervision_table = 'total_documents';
 
 DROP INDEX countverification.lpa_persons_idx;
 DROP INDEX countverification.lpa_cases_idx;
