@@ -1,7 +1,6 @@
 endpoint,entity_ref,json_locator,test_purpose
 /api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=2,11425510,tasks.[*].dueDate,tasks_duedate_exists
 /api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=2,10018057,tasks.[*].status,tasks_status_exists
-/api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=2,10018057,tasks.[*].activeDate,tasks_activedate_exists
 /api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=2,10018057,tasks.[*].createdTime,tasks_createdtime_exists
 /api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=2,10018057,tasks.[*].dueDate,tasks_due_date_null
 /api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=2,10182311,tasks.[*].description,tasks_description_null
