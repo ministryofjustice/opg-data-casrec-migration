@@ -790,8 +790,7 @@
             "include_values": {
                 "col": "Status",
                 "values": [
-                    "ACTIVE",
-                    "INACTIVE"
+                    "ACTIVE"
                 ]
             }
         },
