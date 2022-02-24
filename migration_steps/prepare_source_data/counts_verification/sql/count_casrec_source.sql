@@ -463,6 +463,21 @@ UPDATE countverification.counts SET {working_column} =
 )
 WHERE supervision_table = 'person_warning';
 
+-- deputy_person_document (not migrating)
+UPDATE countverification.counts
+SET {working_column} = 0
+WHERE supervision_table = 'deputy_person_document';
+
+-- deputy_person_document (not migrating)
+UPDATE countverification.counts
+SET {working_column} = 0
+WHERE supervision_table = 'person_document';
+
+-- caseitem_document (not migrating)
+UPDATE countverification.counts
+SET {working_column} = 0
+WHERE supervision_table = 'caseitem_document';
+
 DROP INDEX IF EXISTS countverification.filteredorder_orderno_idx;
 DROP INDEX IF EXISTS countverification.filteredorder_case_idx;
 DROP INDEX IF EXISTS countverification.filtereddeps_deputynumber_idx;

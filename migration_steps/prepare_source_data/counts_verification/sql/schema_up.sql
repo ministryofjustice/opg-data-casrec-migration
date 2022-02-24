@@ -27,7 +27,6 @@ VALUES
 ('document_pages'),
 ('document_secondaryrecipient'),
 ('documents'),
-('events'),
 ('feepayer_id'),
 ('finance_allocation_credits'),
 ('finance_exemptions'),
@@ -73,7 +72,9 @@ VALUES
 ('validation_check'),
 ('visitor'),
 ('visits'),
-('warnings')
+('warnings'),
+('total_documents'),
+('deputy_person_document')
 ;
 
 CREATE SCHEMA IF NOT EXISTS countverificationaudit;
