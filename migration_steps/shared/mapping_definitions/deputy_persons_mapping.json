@@ -124,31 +124,6 @@
             "sync": ""
         }
     },
-    "middlenames": {
-        "mapping_status": {
-            "is_complete": true
-        },
-        "sirius_details": {
-            "is_pk": "",
-            "fk_parents": "",
-            "data_type": "str",
-            "table_name": "persons",
-            "entity": "deputy"
-        },
-        "transform_casrec": {
-            "casrec_table": "DEPUTY",
-            "casrec_column_name": "Dep Forename",
-            "alias": "Dep Forename 1",
-            "requires_transformation": "last_words",
-            "lookup_table": "",
-            "default_value": "",
-            "calculated": "",
-            "additional_columns": ""
-        },
-        "prepare": {
-            "sync": ""
-        }
-    },
     "surname": {
         "mapping_status": {
             "is_complete": true
@@ -165,6 +140,31 @@
             "casrec_column_name": "Dep Surname",
             "alias": "Dep Surname",
             "requires_transformation": "capitalise_first_letter",
+            "lookup_table": "",
+            "default_value": "",
+            "calculated": "",
+            "additional_columns": ""
+        },
+        "prepare": {
+            "sync": ""
+        }
+    },
+    "othernames": {
+        "mapping_status": {
+            "is_complete": true
+        },
+        "sirius_details": {
+            "is_pk": "",
+            "fk_parents": "",
+            "data_type": "str",
+            "table_name": "persons",
+            "entity": "deputy"
+        },
+        "transform_casrec": {
+            "casrec_table": "DEPUTY",
+            "casrec_column_name": "Dep Forename",
+            "alias": "Dep Forename 1",
+            "requires_transformation": "last_words",
             "lookup_table": "",
             "default_value": "",
             "calculated": "",
