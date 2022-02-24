@@ -187,10 +187,10 @@
             "percentage_complete": 57
         },
         "tasks": {
-            "total_rows": 10,
+            "total_rows": 9,
             "total_unmapped": 1,
-            "total_mapped": 9,
-            "percentage_complete": 90
+            "total_mapped": 8,
+            "percentage_complete": 89
         },
         "person_task": {
             "total_rows": 2,
@@ -283,9 +283,9 @@
             "total_complete": 8
         },
         "fields": {
-            "total_fields": 425,
+            "total_fields": 424,
             "total_unmapped": 22,
-            "total_mapped": 403,
+            "total_mapped": 402,
             "percentage_complete": 95
         }
     }
