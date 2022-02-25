@@ -98,5 +98,10 @@ DEPUTY_CLIENTS_FIXTURES = {
             "source_criteria": {"case": "13562090"},
             "set": {"Dep Type": "25"},
         },
+        {
+            # Middle names
+            "source_criteria": {"case": "11317742"},
+            "set": {"Dep Forename": "Bill Frank Amelia Spoon"},
+        },
     ],
 }
