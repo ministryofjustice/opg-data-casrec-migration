@@ -38,7 +38,7 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
                 numberofchaseletters,
                 casrec_csv.report_status(
                     casrec_csv.report_status_aggregate(
-                        review_status, wd_count_end_date, receiveddate, lodged_date, reviewdate, next_yr_flag
+                        review_status, wd_count_end_date, any_received_date, lodged_date, reviewdate, next_yr_flag
                     )
                 ) full_status,
                 reviewdate
@@ -52,6 +52,15 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
                         NULLIF(account."Rcvd Date", ''),
                         NULLIF(account."Lodge Date", '')
                     ) AS receiveddate,
+                    COALESCE(
+                        NULLIF(account."Rcvd Date", ''),
+                        NULLIF(account."Rcvd Date1", ''),
+                        NULLIF(account."Rcvd Date2", ''),
+                        NULLIF(account."Rcvd Date3", ''),
+                        NULLIF(account."Rcvd Date4", ''),
+                        NULLIF(account."Rcvd Date5", ''),
+                        NULLIF(account."Rcvd Date6", '')
+                    ) AS any_received_date,
                     "Revise Date" AS revisedduedate,
                     0 AS numberofchaseletters,
                     casrec_csv.weekday_count(account."End Date") AS wd_count_end_date,
