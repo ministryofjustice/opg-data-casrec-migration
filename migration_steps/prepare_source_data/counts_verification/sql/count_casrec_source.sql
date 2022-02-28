@@ -128,7 +128,7 @@ UPDATE countverification.counts SET {working_column} =
 (
     SELECT COUNT(*)
     FROM casrec_csv.SUP_ACTIVITY act
-    WHERE act."Status" IN ('INACTIVE','ACTIVE')
+    WHERE act."Status" IN ('ACTIVE')
     AND EXISTS (
         SELECT "Case"
         FROM casrec_csv.order o
@@ -476,6 +476,20 @@ SET {working_column} =
 )
 WHERE supervision_table = 'annual_report_type_assignments';
 
+-- deputy_person_document (not migrating)
+UPDATE countverification.counts
+SET {working_column} = 0
+WHERE supervision_table = 'deputy_person_document';
+
+-- deputy_person_document (not migrating)
+UPDATE countverification.counts
+SET {working_column} = 0
+WHERE supervision_table = 'person_document';
+
+-- caseitem_document (not migrating)
+UPDATE countverification.counts
+SET {working_column} = 0
+WHERE supervision_table = 'caseitem_document';
 
 DROP INDEX IF EXISTS countverification.filteredorder_orderno_idx;
 DROP INDEX IF EXISTS countverification.filteredorder_case_idx;

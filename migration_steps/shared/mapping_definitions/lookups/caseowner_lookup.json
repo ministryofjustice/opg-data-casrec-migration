@@ -1426,5 +1426,29 @@
     },
     "V57": {
         "sirius_mapping": 2372
+    },
+    "LT1": {
+        "sirius_mapping": 2409
+    },
+    "LT2": {
+        "sirius_mapping": 2443
+    },
+    "LT3": {
+        "sirius_mapping": 2444
+    },
+    "LT4": {
+        "sirius_mapping": 2523
+    },
+    "LT5": {
+        "sirius_mapping": 2524
+    },
+    "LT6": {
+        "sirius_mapping": 2525
+    },
+    "LT7": {
+        "sirius_mapping": 2572
+    },
+    "LT8": {
+        "sirius_mapping": 3945
     }
 }

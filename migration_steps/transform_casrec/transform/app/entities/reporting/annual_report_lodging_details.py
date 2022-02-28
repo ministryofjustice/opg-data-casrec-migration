@@ -28,11 +28,12 @@ def _max_date(row: pd.Series, cols: list):
     )
 
 
-# implements logic from IN-1152
+# implements logic from IN-1152 and IN-1179
 def _additional_dates(row: pd.Series) -> pd.Series:
     row["resubmitteddate"] = None
     row["bankstatementdeadlinedate"] = None
     row["deadlinedate"] = None
+    row["bankstatementsreceived"] = None
 
     max_further_date, _ = _max_date(
         row,
@@ -46,23 +47,21 @@ def _additional_dates(row: pd.Series) -> pd.Series:
         ],
     )
 
-    last_further_value = -1
+    last_further_code = -1
     last_non_zero_further_col = -1
 
     for further_col_num in range(1, 7):
         column = f"c_further{further_col_num}"
         column_value = row[column]
 
-        if not pd.isnull(column_value):
-            if column_value != 0:
-                last_non_zero_further_col = further_col_num
-                if column_value != 2:
-                    last_further_value = column_value
+        if not pd.isnull(column_value) and column_value != 0:
+            last_non_zero_further_col = further_col_num
+            last_further_code = column_value
 
     if max_further_date is not None:
-        if last_further_value in [1, 8]:
+        if last_further_code in [1, 8]:
             row["bankstatementdeadlinedate"] = max_further_date
-        elif last_further_value in [3, 4, 5, 6, 7, 99]:
+        elif last_further_code in [2, 3, 4, 5, 6, 7, 99]:
             row["deadlinedate"] = max_further_date
 
     max_rcvd_date, rcvd_col = _max_date(
@@ -86,6 +85,13 @@ def _additional_dates(row: pd.Series) -> pd.Series:
 
     if same_index:
         row["resubmitteddate"] = max_rcvd_date
+
+    # IN-1179
+    if last_further_code in [1, 8]:
+        if same_index:
+            row["bankstatementsreceived"] = True
+        else:
+            row["bankstatementsreceived"] = False
 
     return row
 
@@ -162,6 +168,7 @@ def insert_annual_report_lodging_details(db_config, target_db, mapping_file):
                     "c_rcvd_date6": {"data_type": "date"},
                 },
                 annual_report_lodging_details_joined_df,
+                datetime_errors="coerce",
             )
 
             annual_report_lodging_details_joined_df = (
@@ -175,6 +182,7 @@ def insert_annual_report_lodging_details(db_config, target_db, mapping_file):
                     "deadlinedate": {"data_type": "date"},
                 },
                 annual_report_lodging_details_joined_df,
+                datetime_errors="coerce",
             )
 
             annual_report_lodging_details_joined_df = reapply_datatypes_to_fk_cols(

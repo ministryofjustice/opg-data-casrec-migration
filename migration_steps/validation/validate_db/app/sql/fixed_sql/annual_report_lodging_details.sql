@@ -17,20 +17,17 @@ INSERT INTO casrec_csv.exceptions_annual_report_lodging_details(
     SELECT
         caserecnumber as caserecnumber,
         CAST(NULLIF(datereportlodged, '') AS date) AS datereportlodged,
-        CASE
-        	WHEN bankstatementsreceived = 'Y' THEN TRUE
-        	ELSE FALSE
-        end AS bankstatementsreceived,
+        casrec_csv.report_bankstatementsreceived(further_codes, rcvd_dates) AS bankstatementsreceived,
         NULLIF(COALESCE(
 	        casrec_csv.report_lodged_status(
 	            casrec_csv.report_lodged_status_aggregate(
-	                revisedduedate, further_code, bankstatementsreceived, sent_date, follow_up_date
+	                revisedduedate, further_code, has_non_null_received_date, sent_date, follow_up_date
 	            )
 	        ),
         	casrec_csv.report_element(
 	            casrec_csv.report_status(
 	                casrec_csv.report_status_aggregate(
-	                    review_status, wd_count_end_date, bankstatementsreceived, lodged_date, reviewdate, next_yr_flag
+	                    review_status, wd_count_end_date, has_non_null_received_date, lodged_date, reviewdate, next_yr_flag
 	                )
 	            ), 2
 	        )
@@ -64,7 +61,7 @@ INSERT INTO casrec_csv.exceptions_annual_report_lodging_details(
                 )
                 THEN 'Y'
                 ELSE ''
-            END) AS bankstatementsreceived,
+            END) AS has_non_null_received_date,
             casrec_csv.weekday_count(account."End Date") AS wd_count_end_date,
             "Revise Date" AS revisedduedate,
             "Rev Stat" AS review_status,
@@ -84,22 +81,19 @@ INSERT INTO casrec_csv.exceptions_annual_report_lodging_details(
             ) AS latest_further_date,
 
             -- in alphabetical order (Further1 is on left, Further6 on the right), get the last
-            -- value which is not 0 or 2
+            -- value which is not 0
             CAST(
                 TO_JSON(
                     ARRAY_REMOVE(
-                        ARRAY_REMOVE(
-                            ARRAY[
-                                CAST(NULLIF("Further1", '') AS text),
-                                CAST(NULLIF("Further2", '') AS text),
-                                CAST(NULLIF("Further3", '') AS text),
-                                CAST(NULLIF("Further4", '') AS text),
-                                CAST(NULLIF("Further5", '') AS text),
-                                CAST(NULLIF("Further6", '') AS text)
-                            ],
-                            '0'
-                        ),
-                        '2'
+                        ARRAY[
+                            CAST(NULLIF("Further1", '') AS text),
+                            CAST(NULLIF("Further2", '') AS text),
+                            CAST(NULLIF("Further3", '') AS text),
+                            CAST(NULLIF("Further4", '') AS text),
+                            CAST(NULLIF("Further5", '') AS text),
+                            CAST(NULLIF("Further6", '') AS text)
+                        ],
+                        '0'
                     )
                 )->>-1
             AS text) AS last_further_code,

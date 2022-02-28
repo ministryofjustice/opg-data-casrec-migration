@@ -487,3 +487,36 @@ SET {working_column} = (
     SELECT COUNT(*) FROM countverificationaudit.{working_column}_annual_report_type_assignments
 )
 WHERE supervision_table = 'annual_report_type_assignments';
+
+-- person_document
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*)
+    FROM person_document pt
+    INNER JOIN countverification.non_cp1_clients ncp1
+    ON ncp1.id = pt.person_id
+)
+WHERE supervision_table = 'person_document';
+
+-- deputy_person_document
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*)
+    FROM person_document pt
+    INNER JOIN countverification.non_cp1_deputies ncp1
+    ON ncp1.id = pt.person_id
+)
+WHERE supervision_table = 'deputy_person_document';
+
+-- caseitem_document
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM caseitem_document cd
+    INNER JOIN countverification.non_cp1_cases c
+        ON cd.caseitem_id = c.id
+    INNER JOIN cases ca on ca.id = c.id
+    INNER JOIN documents d ON d.id = cd.document_id
+    LEFT JOIN person_document pd ON pd.document_id = d.id AND pd.person_id = ca.client_id
+    WHERE pd.document_id IS NULL
+)
+WHERE supervision_table = 'caseitem_document';

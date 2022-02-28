@@ -45,16 +45,16 @@ def insert_cases(db_config, target_db, mapping_file):
     # the same, still use the first. If there are no "Joint" values, set it to null.
     deputyships_query = f"""
         SELECT
-            "Case" AS casrec_deputyship_case,
+            "Order No" AS casrec_deputyship_order_no,
             "Joint" AS casrec_deputyship_joint
         FROM (
             SELECT
-                "Case",
+                "Order No",
                 "Joint",
-                row_number() OVER (PARTITION BY "Case" ORDER BY "Create" DESC) AS rownum
+                row_number() OVER (PARTITION BY "Order No" ORDER BY "Create" DESC) AS rownum
             FROM (
                 SELECT
-                    "Case",
+                    "Order No",
                     "Joint",
                     "Create"
                 FROM {db_config["source_schema"]}.deputyship
@@ -85,14 +85,14 @@ def insert_cases(db_config, target_db, mapping_file):
             cases_df = cases_df.merge(
                 deputyships_df,
                 how="left",
-                left_on="caserecnumber",
-                right_on="casrec_deputyship_case",
+                left_on="c_order_no",
+                right_on="casrec_deputyship_order_no",
             )
 
             cases_df = cases_df.apply(_set_sirius_howdeputyappointed_code, axis=1)
 
             cases_df = cases_df.drop(
-                columns=["casrec_deputyship_case", "casrec_deputyship_joint"]
+                columns=["casrec_deputyship_order_no", "casrec_deputyship_joint"]
             )
 
             if len(cases_df) > 0:
