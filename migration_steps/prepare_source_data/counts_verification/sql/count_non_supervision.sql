@@ -316,13 +316,6 @@ SET {working_column} = (
 )
 WHERE supervision_table = 'ingested_documents';
 
--- annual_report_letter_status
-update countverification.counts
-SET {working_column} = (
-    SELECT COUNT(*) FROM annual_report_letter_status
-)
-WHERE supervision_table = 'annual_report_letter_status';
-
 -- caseitem_queue
 update countverification.counts
 SET {working_column} = (

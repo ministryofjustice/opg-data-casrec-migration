@@ -697,7 +697,8 @@
                 "deputysubtype": "CASE WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'PA' THEN 'ORGANISATION' WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'LAY' THEN 'PERSON' ELSE NULL END",
                 "surname": "CASE WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'PA' THEN NULL ELSE transf_capitalise_first_letter(NULLIF(TRIM(casrec_csv.deputy.\"Dep Surname\"), '')) END",
                 "salutation": "CASE WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'PA' THEN NULL ELSE casrec_csv.title_codes_lookup(TRIM(casrec_csv.deputy.\"Title\")) END",
-                "firstname": "CASE WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'PA' THEN NULL ELSE transf_first_word(NULLIF(TRIM(casrec_csv.deputy.\"Dep Forename\"), '')) END"
+                "firstname": "CASE WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'PA' THEN NULL ELSE transf_first_word(NULLIF(TRIM(casrec_csv.deputy.\"Dep Forename\"), '')) END",
+                "othernames": "NULLIF(TRIM(transf_last_words(NULLIF(TRIM(casrec_csv.deputy.\"Dep Forename\"), ''))), '')"
             },
             "joins": [
                 "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\"",
