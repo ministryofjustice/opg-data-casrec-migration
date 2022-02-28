@@ -2,6 +2,8 @@ import sys
 import os
 from pathlib import Path
 
+from letters.sirius_letters import generate_letters
+
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../../shared")
 
@@ -82,7 +84,11 @@ def get_mappings():
         "visits": ["visits"],
         "tasks": ["tasks"],
         "remarks": ["client_notes", "deputy_notes"],
-        "reporting": ["annual_report_logs", "annual_report_lodging_details"],
+        "reporting": [
+            "annual_report_logs",
+            "annual_report_lodging_details",
+            "automated_letters",
+        ],
         "invoice": ["finance_invoice_ad", "finance_invoice_non_ad"],
         "fee_reductions": ["finance_remissions", "finance_exemptions"],
         "ledger": ["finance_ledger_credits"],
@@ -838,6 +844,9 @@ def main(correfs, staging):
     if not is_staging:
         log.info("RUN SELECTIVE VACCUUM AND ANALYSE ON SIRIUS")
         vacuum_and_analyse()
+
+    log.info("SIMULATE AUTOMATED LETTERS")
+    generate_letters(conn_target, str(target_schema))
 
     log.info("RUN PRE VALIDATION")
     pre_validation()
