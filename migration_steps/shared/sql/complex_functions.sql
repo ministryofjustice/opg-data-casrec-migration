@@ -214,7 +214,7 @@ DECLARE
     deadline date;
 BEGIN
     deadline = CASE
-        WHEN further_code IN ('3', '4', '5', '6', '7', '99') THEN latest_further_date
+        WHEN further_code IN ('2', '3', '4', '5', '6', '7', '99') THEN latest_further_date
         ELSE NULL
     END;
 
@@ -233,13 +233,13 @@ DECLARE
 BEGIN
     FOR counter IN 1..6 LOOP
         largest_rcvd_date_index = CASE
-        WHEN rcvd_dates[counter] IS NOT NULL AND (largest_rcvd_date_index = -1 OR rcvd_dates[counter] > rcvd_dates[largest_rcvd_date_index]) THEN counter
-        ELSE largest_rcvd_date_index
+	        WHEN rcvd_dates[counter] IS NOT NULL AND (largest_rcvd_date_index = -1 OR rcvd_dates[counter] > rcvd_dates[largest_rcvd_date_index]) THEN counter
+	        ELSE largest_rcvd_date_index
         END;
 
         latest_non_zero_further_code_index = CASE
-        WHEN further_codes[counter] != '0' THEN counter
-        ELSE latest_non_zero_further_code_index
+	        WHEN further_codes[counter] != '0' THEN counter
+	        ELSE latest_non_zero_further_code_index
         END;
     END LOOP;
 
@@ -253,5 +253,50 @@ BEGIN
     END;
 
     RETURN resubmitteddate;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION casrec_csv.report_bankstatementsreceived(further_codes text[], rcvd_dates date[])
+RETURNS
+    bool AS $$
+DECLARE
+    counter int;
+    largest_rcvd_date_index int = -1;
+    latest_non_zero_further_code_index int = -1;
+    last_non_zero_further_code text = NULL;
+    bankstatementsreceived bool;
+    resubmitteddate date;
+BEGIN
+    FOR counter IN 1..6 LOOP
+        largest_rcvd_date_index = CASE
+	        WHEN rcvd_dates[counter] IS NOT NULL AND (largest_rcvd_date_index = -1 OR rcvd_dates[counter] > rcvd_dates[largest_rcvd_date_index]) THEN counter
+	        ELSE largest_rcvd_date_index
+        END;
+
+        latest_non_zero_further_code_index = CASE
+	        WHEN further_codes[counter] != '0' THEN counter
+	        ELSE latest_non_zero_further_code_index
+        END;
+
+        last_non_zero_further_code = CASE
+	        WHEN further_codes[counter] != '0' THEN further_codes[counter]
+	        ELSE last_non_zero_further_code
+        END;
+    END LOOP;
+
+    bankstatementsreceived = CASE
+	    WHEN last_non_zero_further_code IN ('1', '8') THEN
+	    	CASE
+		        WHEN largest_rcvd_date_index > -1
+		        AND latest_non_zero_further_code_index > -1
+		        AND largest_rcvd_date_index = latest_non_zero_further_code_index
+	    		THEN TRUE
+	    		ELSE FALSE
+	    	END
+	    ELSE
+	    	NULL
+    END;
+
+    RETURN bankstatementsreceived;
 END;
 $$ LANGUAGE plpgsql;
