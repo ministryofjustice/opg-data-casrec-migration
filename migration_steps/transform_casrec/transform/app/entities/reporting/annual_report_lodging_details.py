@@ -56,8 +56,7 @@ def _additional_dates(row: pd.Series) -> pd.Series:
         if not pd.isnull(column_value):
             if column_value != 0:
                 last_non_zero_further_col = further_col_num
-                if column_value != 2:
-                    last_further_value = column_value
+                last_further_value = column_value
 
     if max_further_date is not None:
         if last_further_value in [1, 8]:
