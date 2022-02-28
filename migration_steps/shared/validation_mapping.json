@@ -113,7 +113,7 @@
             },
             "joins": [
                 "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\"",
-                "LEFT JOIN (SELECT \"Case\", \"Joint\" FROM (SELECT \"Case\", \"Joint\", row_number() OVER (PARTITION BY \"Case\" ORDER BY \"Create\" DESC) AS rownum FROM (SELECT \"Case\", \"Joint\", \"Create\" FROM casrec_csv.deputyship WHERE \"Joint\" != '5') AS non_five_deputyships) AS numbered_deputyships WHERE rownum = 1) AS deputyships ON casrec_csv.order.\"Case\" = deputyships.\"Case\""
+                "LEFT JOIN (SELECT \"Order No\", \"Joint\" FROM (SELECT \"Order No\", \"Joint\", row_number() OVER (PARTITION BY \"Order No\" ORDER BY \"Create\" DESC) AS rownum FROM (SELECT \"Order No\", \"Joint\", \"Create\" FROM casrec_csv.deputyship WHERE \"Joint\" != '5') AS non_five_deputyships) AS numbered_deputyships WHERE rownum = 1) AS deputyships ON casrec_csv.order.\"Order No\" = deputyships.\"Order No\""
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_cases exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
