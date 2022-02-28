@@ -168,6 +168,7 @@ def insert_annual_report_lodging_details(db_config, target_db, mapping_file):
                     "c_rcvd_date6": {"data_type": "date"},
                 },
                 annual_report_lodging_details_joined_df,
+                datetime_errors="coerce",
             )
 
             annual_report_lodging_details_joined_df = (
@@ -181,6 +182,7 @@ def insert_annual_report_lodging_details(db_config, target_db, mapping_file):
                     "deadlinedate": {"data_type": "date"},
                 },
                 annual_report_lodging_details_joined_df,
+                datetime_errors="coerce",
             )
 
             annual_report_lodging_details_joined_df = reapply_datatypes_to_fk_cols(
