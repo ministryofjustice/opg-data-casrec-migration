@@ -76,6 +76,12 @@ def _additional_dates(row: pd.Series) -> pd.Series:
         ],
     )
 
+    if max_further_date is not None:
+        if last_further_value in [1, 8]:
+            row["bankstatementdeadlinedate"] = max_further_date
+        elif last_further_value in [2, 3, 4, 5, 6, 7, 99]:
+            row["deadlinedate"] = max_further_date
+
     # Check whether the c_rcvd_dateX column with latest date has the
     # same suffix as the last non-zero c_furtherY column
     # (i.e. is X == Y)

@@ -84,22 +84,19 @@ INSERT INTO casrec_csv.exceptions_annual_report_lodging_details(
             ) AS latest_further_date,
 
             -- in alphabetical order (Further1 is on left, Further6 on the right), get the last
-            -- value which is not 0 or 2
+            -- value which is not 0
             CAST(
                 TO_JSON(
                     ARRAY_REMOVE(
-                        ARRAY_REMOVE(
-                            ARRAY[
-                                CAST(NULLIF("Further1", '') AS text),
-                                CAST(NULLIF("Further2", '') AS text),
-                                CAST(NULLIF("Further3", '') AS text),
-                                CAST(NULLIF("Further4", '') AS text),
-                                CAST(NULLIF("Further5", '') AS text),
-                                CAST(NULLIF("Further6", '') AS text)
-                            ],
-                            '0'
-                        ),
-                        '2'
+                        ARRAY[
+                            CAST(NULLIF("Further1", '') AS text),
+                            CAST(NULLIF("Further2", '') AS text),
+                            CAST(NULLIF("Further3", '') AS text),
+                            CAST(NULLIF("Further4", '') AS text),
+                            CAST(NULLIF("Further5", '') AS text),
+                            CAST(NULLIF("Further6", '') AS text)
+                        ],
+                        '0'
                     )
                 )->>-1
             AS text) AS last_further_code,
