@@ -463,6 +463,20 @@ UPDATE countverification.counts SET {working_column} =
 )
 WHERE supervision_table = 'person_warning';
 
+-- annual_report_letter_status
+UPDATE countverification.counts
+SET {working_column} = 0
+WHERE supervision_table = 'annual_report_letter_status';
+
+-- annual_report_type_assignments
+UPDATE countverification.counts
+SET {working_column} =
+(
+    SELECT COUNT(*) FROM casrec_csv.account
+)
+WHERE supervision_table = 'annual_report_type_assignments';
+
+
 DROP INDEX IF EXISTS countverification.filteredorder_orderno_idx;
 DROP INDEX IF EXISTS countverification.filteredorder_case_idx;
 DROP INDEX IF EXISTS countverification.filtereddeps_deputynumber_idx;

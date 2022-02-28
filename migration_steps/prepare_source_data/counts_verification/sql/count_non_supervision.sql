@@ -313,20 +313,6 @@ SET {working_column} = (
 )
 WHERE supervision_table = 'ingested_documents';
 
--- annual_report_letter_status
-update countverification.counts
-SET {working_column} = (
-    SELECT COUNT(*) FROM annual_report_letter_status
-)
-WHERE supervision_table = 'annual_report_letter_status';
-
--- annual_report_type_assignments
-update countverification.counts
-SET {working_column} = (
-    SELECT COUNT(*) FROM annual_report_type_assignments
-)
-WHERE supervision_table = 'annual_report_type_assignments';
-
 -- caseitem_queue
 update countverification.counts
 SET {working_column} = (
@@ -417,6 +403,8 @@ WHERE supervision_table = 'uploads';
 -- death_notifications
 -- annual_report_logs
 -- annual_report_lodging_details
+-- annual_report_letter_status
+-- annual_report_type_assignments
 -- visits
 -- bonds
 -- feepayer_id

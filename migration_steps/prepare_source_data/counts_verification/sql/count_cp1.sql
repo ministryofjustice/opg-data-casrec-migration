@@ -457,3 +457,27 @@ SET {working_column} =(
     SELECT COUNT(*) FROM countverificationaudit.{working_column}_person_timeline
 )
 WHERE supervision_table = 'person_timeline';
+
+-- annual_report_letter_status
+DROP TABLE IF EXISTS countverificationaudit.{working_column}_annual_report_letter_status;
+SELECT arls.id, cli.caserecnumber INTO countverificationaudit.{working_column}_annual_report_letter_status
+FROM annual_report_letter_status arls
+INNER JOIN annual_report_logs arl ON arl.id = arls.annualreport_id
+INNER JOIN countverification.cp1_clients cli ON cli.id = arl.client_id;
+update countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM countverificationaudit.{working_column}_annual_report_letter_status
+)
+WHERE supervision_table = 'annual_report_letter_status';
+
+-- annual_report_type_assignments
+DROP TABLE IF EXISTS countverificationaudit.{working_column}_annual_report_type_assignments;
+SELECT arta.id, cli.caserecnumber INTO countverificationaudit.{working_column}_annual_report_type_assignments
+FROM annual_report_type_assignments arta
+INNER JOIN annual_report_logs arl ON arl.id = arta.annualreport_id
+INNER JOIN countverification.cp1_clients cli ON cli.id = arl.client_id;
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM countverificationaudit.{working_column}_annual_report_type_assignments
+)
+WHERE supervision_table = 'annual_report_type_assignments';
