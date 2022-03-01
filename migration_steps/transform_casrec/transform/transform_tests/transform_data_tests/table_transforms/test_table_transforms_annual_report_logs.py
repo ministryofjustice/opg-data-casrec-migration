@@ -8,10 +8,10 @@ from transform_data.table_transforms import process_table_transformations
 
 
 NOW = np.datetime64(datetime.now().strftime("%Y-%m-%d"))
-SEVEN_DAYS_FROM_NOW = np.busday_offset(NOW, 7)
-FOURTEEN_WORKING_DAYS_AGO = np.busday_offset(NOW, -14)
-THIRTY_WORKING_DAYS_AGO = np.busday_offset(NOW, -30)
-SEVENTY_ONE_WORKING_DAYS_AGO = np.busday_offset(NOW, -71)
+SEVEN_DAYS_FROM_NOW = np.busday_offset(NOW, 7, roll="forward")
+FOURTEEN_WORKING_DAYS_AGO = np.busday_offset(NOW, -14, roll="forward")
+THIRTY_WORKING_DAYS_AGO = np.busday_offset(NOW, -30, roll="forward")
+SEVENTY_ONE_WORKING_DAYS_AGO = np.busday_offset(NOW, -71, roll="forward")
 
 # date columns we check for null values
 _all_date_cols = [

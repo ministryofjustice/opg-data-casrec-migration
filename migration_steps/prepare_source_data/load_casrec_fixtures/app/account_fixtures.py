@@ -7,11 +7,18 @@ from datetime import datetime
 
 # see https://opgtransform.atlassian.net/browse/IN-763 for criteria used
 # to map End Date to status and reviewstatus for annual_report_logs
+
 _now = np.datetime64(datetime.now().strftime("%Y-%m-%d"))
-_end_date_future = np.busday_offset(_now, 7).astype(datetime)
-_end_date_ten_working_days_ago = np.busday_offset(_now, -10).astype(datetime)
-_end_date_thirty_working_days_ago = np.busday_offset(_now, -30).astype(datetime)
-_end_date_eighty_working_days_ago = np.busday_offset(_now, -80).astype(datetime)
+_end_date_future = np.busday_offset(_now, 7, roll="forward").astype(datetime)
+_end_date_ten_working_days_ago = np.busday_offset(_now, -10, roll="forward").astype(
+    datetime
+)
+_end_date_thirty_working_days_ago = np.busday_offset(_now, -30, roll="forward").astype(
+    datetime
+)
+_end_date_eighty_working_days_ago = np.busday_offset(_now, -80, roll="forward").astype(
+    datetime
+)
 
 ACCOUNT_FIXTURES = {
     # get the latest account for a case; note that the selected column names here are
