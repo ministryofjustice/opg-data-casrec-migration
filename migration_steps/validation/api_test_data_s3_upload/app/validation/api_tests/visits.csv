@@ -43,8 +43,8 @@ endpoint,entity_ref,json_locator,test_purpose,api_response
 /api/v1/clients/{id}/visits,11084211,[*].visitReportMarkedAs.label,visitReportMarkedAs_blue,
 /api/v1/clients/{id}/visits,13611831,[*].visitReportMarkedAs.label,visitReportMarkedAs_red,Red
 /api/v1/clients/{id}/visits,10486336,[*].visitOutcome.label,visitOutcome_abort_0,Cancelled
-/api/v1/clients/{id}/visits,11203189,[*].visitOutcome.label,visitOutcome_cancelled_success_1,Successful
-/api/v1/clients/{id}/visits,11084211,[*].visitOutcome.label,visitOutcome_abort_2,Aborted
+/api/v1/clients/{id}/visits,11203189,[*].visitOutcome.label,visitOutcome_cancelled_1,Cancelled
+/api/v1/clients/{id}/visits,11084211,[*].visitOutcome.label,visitOutcome_successful_1,Successful
 /api/v1/clients/{id}/visits,13611831,[*].visitOutcome.label,visitOutcome_3,Aborted
 /api/v1/clients/{id}/visits,13263316,[*].visitOutcome.label,visitOutcome_cancelled_4,Cancelled
 /api/v1/clients/{id}/visits,10297913,[*].visitOutcome.label,visitOutcome_cancelled_5,Cancelled
