@@ -440,24 +440,6 @@ SET {working_column} = (
 )
 WHERE supervision_table = 'person_task';
 
-SELECT DISTINCT pat."Case"
-    FROM casrec_csv.SUP_ACTIVITY act
-    INNER JOIN casrec_csv.pat ON pat."Case" = act."Case"
-    WHERE act."Status" IN ('INACTIVE','ACTIVE')
-    AND EXISTS (
-        SELECT "Case"
-        FROM casrec_csv.order o
-        WHERE o."Case" = act."Case"
-        AND "Ord Stat" != 'Open'
-    )
-AND pat."Case" not in
-(select caserecnumber
-from countverificationaudit.cp1_post_migrate_person_task
-where task_id
-not in (select task_id from countverificationaudit.cp1_post_delete_person_task));
-
-
-
 -- person_timeline
 DROP TABLE IF EXISTS countverificationaudit.{working_column}_person_timeline;
 SELECT id, caserecnumber, deputy_id INTO countverificationaudit.{working_column}_person_timeline
@@ -475,6 +457,30 @@ SET {working_column} =(
     SELECT COUNT(*) FROM countverificationaudit.{working_column}_person_timeline
 )
 WHERE supervision_table = 'person_timeline';
+
+-- annual_report_letter_status
+DROP TABLE IF EXISTS countverificationaudit.{working_column}_annual_report_letter_status;
+SELECT arls.id, cli.caserecnumber INTO countverificationaudit.{working_column}_annual_report_letter_status
+FROM annual_report_letter_status arls
+INNER JOIN annual_report_logs arl ON arl.id = arls.annualreport_id
+INNER JOIN countverification.cp1_clients cli ON cli.id = arl.client_id;
+update countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM countverificationaudit.{working_column}_annual_report_letter_status
+)
+WHERE supervision_table = 'annual_report_letter_status';
+
+-- annual_report_type_assignments
+DROP TABLE IF EXISTS countverificationaudit.{working_column}_annual_report_type_assignments;
+SELECT arta.id, cli.caserecnumber INTO countverificationaudit.{working_column}_annual_report_type_assignments
+FROM annual_report_type_assignments arta
+INNER JOIN annual_report_logs arl ON arl.id = arta.annualreport_id
+INNER JOIN countverification.cp1_clients cli ON cli.id = arl.client_id;
+UPDATE countverification.counts
+SET {working_column} = (
+    SELECT COUNT(*) FROM countverificationaudit.{working_column}_annual_report_type_assignments
+)
+WHERE supervision_table = 'annual_report_type_assignments';
 
 -- person_document
 UPDATE countverification.counts
