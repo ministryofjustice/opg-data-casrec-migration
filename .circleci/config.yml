@@ -58,69 +58,94 @@ workflows:
         - << pipeline.parameters.run_main >>
     jobs:
       - persist_parameters:
-          name: persist parameters development
-          param_workspace: development
-          environment_title: Development-Branch
+          name: persist parameters preproduction
+          param_workspace: preproduction
+          environment_title: Preproduction-Branch
       - manage_workflow:
-          requires: [persist parameters development]
+          requires: [persist parameters preproduction]
           name: manage workflow
-      - reset_sirius:
-          name: reset the sirius fixtures development
-          requires: [manage workflow]
-          tf_workspace: development
       - build:
           name: build and unit tests
-          requires: [manage workflow, persist parameters development]
+          requires: [manage workflow, persist parameters preproduction]
       - infrastructure:
-          name: build shared infra development
+          name: build shared infra preproduction
           requires: [build and unit tests]
-          tf_workspace: development
+          tf_workspace: preproduction
           tf_command: apply
           folder: shared
-      - load_casrec_db:
-          name: load casrec db
-          requires: [build shared infra development]
       - infrastructure:
-          name: plan infra development
-          requires: [build shared infra development]
-          tf_workspace: development
+          name: plan infra preproduction
+          requires: [build shared infra preproduction]
+          tf_workspace: preproduction
           tf_command: plan
       - infrastructure:
-          name: build infra development
-          requires: [plan infra development]
-          tf_workspace: development
+          name: build infra preproduction
+          requires: [plan infra preproduction]
+          tf_workspace: preproduction
           tf_command: apply
       - scale-services:
-          name: scale down poller service for migration development
-          requires: [reset the sirius fixtures development]
+          name: scale down poller service for migration preproduction
+          requires: [build infra preproduction]
           replicas: "0"
-          profile: "migrations-ci-sirius-dev"
+          profile: "migrations-ci-sirius-pre"
           service: "notify-poller"
-          cluster: "casmigrate"
-      - run_tasks:
-          name: migration - run all tasks development
-          requires: [
-            build infra development,
-            load casrec db,
-            reset the sirius fixtures development,
-            scale down poller service for migration development
-          ]
-          tf_workspace: development
+          cluster: "casrecdmpp"
+      - run_task:
+          name: migration - initialise environments preproduction
+          requires: [scale down poller service for migration preproduction]
+          runner_command: migration-initialise-environments
+          tf_workspace: preproduction
+      - run_task:
+          name: migration - load casrec preproduction
+          requires: [migration - initialise environments preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-load-casrec
+      - run_task:
+          name: migration - filter data preproduction
+          requires: [migration - load casrec preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-filter-data
+      - run_task:
+          name: migration - transform preproduction
+          requires: [migration - filter data preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-transform
+      - run_task:
+          name: migration - integration preproduction
+          requires: [migration - transform preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-integration
+      - run_task:
+          name: migration - load sirius preproduction
+          requires: [migration - integration preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-load-sirius
+      - run_task:
+          name: migration - validation preproduction
+          requires: [migration - load sirius preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-validation
+      - run_task:
+          name: migration - response api tests preproduction
+          requires: [migration - validation preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-response-api-tests
+      - run_task:
+          name: migration - light touch api tests preproduction
+          requires: [migration - response api tests preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-light-touch-api-tests
       - scale-services:
-          name: scale up poller service for migration development
-          requires: [migration - run all tasks development]
+          name: scale up poller service for migration preproduction
+          requires: [migration - light touch api tests preproduction]
           replicas: "1"
-          profile: "migrations-ci-sirius-dev"
+          profile: "migrations-ci-sirius-pre"
           service: "notify-poller"
-          cluster: "casmigrate"
+          cluster: "casrecdmpp"
       - run_elasticsearch_reset:
-          name: full reindex elasticsearch development
-          requires: [migration - run all tasks development]
-          tf_workspace: development
-      - job_complete:
-          name: job complete notification
-          requires: [migration - run all tasks development]
-          workspace: development
+          name: full reindex elasticsearch preprod
+          requires: [migration - response api tests preproduction]
+          tf_workspace: preproduction
 
   main:
     when:
