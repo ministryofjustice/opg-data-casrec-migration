@@ -105,14 +105,14 @@ INNER JOIN caseitem_document cd ON doc.id = cd.document_id
 INNER JOIN cases c ON c.id = cd.caseitem_id
 INNER JOIN deletions.base_clients_persons bcp ON bcp.id = c.client_id;
 
--- Create delete from deputy document pages linked to stub cases
+-- Create delete from client annual report logs linked to stub cases
 CREATE TABLE IF NOT EXISTS deletions.deletions_client_annual_report_logs (id int, caserecnumber varchar);
 INSERT INTO deletions.deletions_client_annual_report_logs (id, caserecnumber)
 SELECT al.id, bcp.caserecnumber
 FROM annual_report_logs al
 INNER JOIN deletions.base_clients_persons bcp ON bcp.id = al.client_id;
 
--- Create delete from annual report logs linked to stub cases
+-- Create delete from deputy annual report logs linked to stub cases
 CREATE TABLE IF NOT EXISTS deletions.deletions_deputy_annual_report_logs (id int, caserecnumber varchar);
 INSERT INTO deletions.deletions_deputy_annual_report_logs (id, caserecnumber)
 SELECT al.id, bcp.caserecnumber
