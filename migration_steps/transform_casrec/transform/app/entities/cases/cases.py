@@ -51,12 +51,13 @@ def insert_cases(db_config, target_db, mapping_file):
             SELECT
                 "Order No",
                 "Joint",
-                row_number() OVER (PARTITION BY "Order No" ORDER BY "Create" DESC) AS rownum
+                row_number() OVER (PARTITION BY "Order No" ORDER BY "Create" DESC, "at" DESC) AS rownum
             FROM (
                 SELECT
                     "Order No",
                     "Joint",
-                    "Create"
+                    "Create",
+                    "at"
                 FROM {db_config["source_schema"]}.deputyship
                 WHERE "Joint" != '5'
             ) AS deputyships
