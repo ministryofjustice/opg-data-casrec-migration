@@ -440,6 +440,24 @@ SET {working_column} = (
 )
 WHERE supervision_table = 'person_task';
 
+SELECT DISTINCT pat."Case"
+    FROM casrec_csv.SUP_ACTIVITY act
+    INNER JOIN casrec_csv.pat ON pat."Case" = act."Case"
+    WHERE act."Status" IN ('INACTIVE','ACTIVE')
+    AND EXISTS (
+        SELECT "Case"
+        FROM casrec_csv.order o
+        WHERE o."Case" = act."Case"
+        AND "Ord Stat" != 'Open'
+    )
+AND pat."Case" not in
+(select caserecnumber
+from countverificationaudit.cp1_post_migrate_person_task
+where task_id
+not in (select task_id from countverificationaudit.cp1_post_delete_person_task));
+
+
+
 -- person_timeline
 DROP TABLE IF EXISTS countverificationaudit.{working_column}_person_timeline;
 SELECT id, caserecnumber, deputy_id INTO countverificationaudit.{working_column}_person_timeline
