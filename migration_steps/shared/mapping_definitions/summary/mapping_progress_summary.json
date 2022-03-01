@@ -217,9 +217,9 @@
             "percentage_complete": 100
         },
         "visits": {
-            "total_rows": 16,
+            "total_rows": 17,
             "total_unmapped": 0,
-            "total_mapped": 16,
+            "total_mapped": 17,
             "percentage_complete": 100
         },
         "visitor": {
@@ -283,9 +283,9 @@
             "total_complete": 8
         },
         "fields": {
-            "total_fields": 424,
+            "total_fields": 425,
             "total_unmapped": 22,
-            "total_mapped": 402,
+            "total_mapped": 403,
             "percentage_complete": 95
         }
     }
