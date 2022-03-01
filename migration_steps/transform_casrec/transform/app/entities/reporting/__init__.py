@@ -26,7 +26,7 @@ def runner(target_db, db_config):
     """
 
     entity_name = "reporting"
-    extra_entities = ["cases", "clients", "deputies"]
+    extra_entities = ["cases", "clients", "deputies", "supervision_level"]
     if not check_entity_enabled(entity_name=entity_name, extra_entities=extra_entities):
         return False
 
