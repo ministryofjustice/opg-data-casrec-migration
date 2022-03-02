@@ -88,6 +88,7 @@ def get_mappings():
             "annual_report_logs",
             "annual_report_lodging_details",
             "automated_letters",
+            "annual_report_type_assignments",
         ],
         "invoice": ["finance_invoice_ad", "finance_invoice_non_ad"],
         "fee_reductions": ["finance_remissions", "finance_exemptions"],

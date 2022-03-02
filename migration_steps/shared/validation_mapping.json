@@ -1069,6 +1069,29 @@
           "identifiers": []
         }
     },
+    "annual_report_type_assignments": {
+        "exclude": [],
+        "casenumber_source": "",
+        "orderby": {},
+        "casrec": {
+            "from_table": "Account",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "",
+            "where_clauses": []
+        },
+        "sirius": {
+            "from_table": "annual_report_type_assignments",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "",
+            "where_clauses": []
+        },
+        "manual_checks": {
+          "column": "",
+          "identifiers": []
+        }
+    },
     "finance_invoice_ad": {
         "exclude": [
             "person_id",
