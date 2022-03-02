@@ -36,26 +36,28 @@ def insert_annual_report_type_assignments(db_config, target_db, mapping_file):
     num_reports = int(report_logs_count_df.head(1)["num_reports"].values[0])
 
     while offset < num_reports:
+
         # Each "PENDING" annual report log gets a single report type assignment;
         # I originally did this in pandas then thought I'll do it in SQL, so I can
         # simultaneously wipe out the need for validation SQL
         report_logs_query = f"""
             SELECT
-                pending_reports.*,
+                annualreport_id,
+                reporttype,
                 (CASE
-                    WHEN pending_reports.reporttype IN ('OPG102', 'OPG103') THEN 'pfa'
+                    WHEN reporttype IN ('OPG102', 'OPG103') THEN 'pfa'
                     ELSE '-'
                 END) AS type
             FROM (
                 SELECT
-                    reports.annualreport_id,
+                    annualreport_id,
                     (CASE
                         WHEN
-                            reports.orderstatus = 'ACTIVE' AND sll.supervisionlevel = 'GENERAL'
+                            orderstatus = 'ACTIVE' AND supervisionlevel = 'GENERAL'
                         THEN
                             CASE
-                                WHEN sll.assetlevel IN ('HIGH', 'UNKNOWN') THEN 'OPG102'
-                                WHEN sll.assetlevel = 'LOW' THEN 'OPG103'
+                                WHEN assetlevel IN ('HIGH', 'UNKNOWN') THEN 'OPG102'
+                                WHEN assetlevel = 'LOW' THEN 'OPG103'
                                 ELSE NULL
                             END
                         ELSE
@@ -66,21 +68,24 @@ def insert_annual_report_type_assignments(db_config, target_db, mapping_file):
                     c.id AS order_id,
                     c.orderstatus AS orderstatus,
                     row_number() OVER (
-                        PARTITION BY arl.c_case
+                        PARTITION BY p.caserecnumber
                         ORDER BY arl.reportingperiodenddate DESC
-                    ) AS rownum
+                    ) AS rownum,
+                    sll.supervisionlevel AS supervisionlevel,
+                    sll.assetlevel AS assetlevel
                     FROM {target_schema}.annual_report_logs arl
                     INNER JOIN {target_schema}.persons p
                     ON arl.client_id = p.id
                     INNER JOIN {target_schema}.cases c
                     ON p.caserecnumber = c.caserecnumber
+                    LEFT JOIN {target_schema}.supervision_level_log sll
+                    ON c.id = sll.order_id
                     WHERE arl.status = 'PENDING'
                     AND c.type = 'order'
+                    AND p.clientsource = 'CASRECMIGRATION'
                     OFFSET {offset} LIMIT {chunk_size}
                 ) AS reports
-                INNER JOIN {target_schema}.supervision_level_log sll
-                ON reports.order_id = sll.order_id
-                WHERE reports.rownum = 1
+                WHERE rownum = 1
             ) AS pending_reports
         """
 
