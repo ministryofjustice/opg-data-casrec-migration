@@ -7,7 +7,8 @@ cd migration_steps/load_s3
 python3 load_s3_local.py
 cd ${DIR}
 
-./migration_steps/initialise_environments/initialise_environments.sh
+./migration_steps/initialise_environments/initialise_pre_delete.sh
+./migration_steps/initialise_environments/initialise_post_delete.sh
 cd migration_steps/initialise_environments
 ./initialise_environments.sh
 cd ${DIR}

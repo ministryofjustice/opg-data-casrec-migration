@@ -186,17 +186,22 @@ workflows:
           service: "notify-poller"
           cluster: "casrecdmpp"
       - run_task:
-          name: migration - initialise environments preproduction
+          name: migration - initialise environments 1 preproduction
           requires: [
             build infra preproduction,
             run and monitor jenkins restore job preproduction,
             scale down poller service for migration preproduction
          ]
-          runner_command: migration-initialise-environments
+          runner_command: migration-initialise-pre-delete
+          tf_workspace: preproduction
+      - run_task:
+          name: migration - initialise environments 2 preproduction
+          requires: [migration - initialise environments 1 preproduction]
+          runner_command: migration-initialise-post-delete
           tf_workspace: preproduction
       - run_task:
           name: migration - load casrec preproduction
-          requires: [migration - initialise environments preproduction]
+          requires: [migration - initialise environments 2 preproduction]
           tf_workspace: preproduction
           runner_command: migration-load-casrec
       - run_task:
@@ -309,17 +314,22 @@ workflows:
           service: "notify-poller"
           cluster: "casrecdmpq"
       - run_task:
-          name: migration - initialise environments preqa
+          name: migration - initialise environments 1 preqa
           requires: [
             build infra preqa,
             run and monitor jenkins restore job preqa,
             scale down poller service for migration preqa
          ]
-          runner_command: migration-initialise-environments
+          runner_command: migration-initialise-pre-delete
+          tf_workspace: preqa
+      - run_task:
+          name: migration - initialise environments 2 preqa
+          requires: [migration - initialise environments 1 preqa]
+          runner_command: migration-initialise-post-delete
           tf_workspace: preqa
       - run_task:
           name: migration - load casrec preqa
-          requires: [migration - initialise environments preqa]
+          requires: [migration - initialise environments 2 preqa]
           tf_workspace: preqa
           runner_command: migration-load-casrec
       - run_task:
@@ -398,17 +408,22 @@ workflows:
           service: "notify-poller"
           cluster: "casrecdmqa"
       - run_task:
-          name: migration - initialise environments qa
+          name: migration - initialise environments 1 qa
           requires: [
             build infra qa,
             run and monitor jenkins restore job qa,
             scale down poller service for migration qa
          ]
-          runner_command: migration-initialise-environments
+          runner_command: migration-initialise-pre-delete
+          tf_workspace: qa
+      - run_task:
+          name: migration - initialise environments 2 qa
+          requires: [migration - initialise environments 1 qa]
+          runner_command: migration-initialise-post-delete
           tf_workspace: qa
       - run_task:
           name: migration - load casrec qa
-          requires: [migration - initialise environments qa]
+          requires: [migration - initialise environments 2 qa]
           tf_workspace: qa
           runner_command: migration-load-casrec
       - run_task:
@@ -482,13 +497,18 @@ workflows:
           tf_workspace: production
           tf_command: apply
 #      - run_task:
-#          name: migration - initialise environments production
+#          name: migration - initialise environments 1 production
 #          requires: [build infra production]
-#          runner_command: migration-initialise-environments
+#          runner_command: migration-initialise-pre-delete
+#          tf_workspace: production
+#      - run_task:
+#          name: migration - initialise environments 2 production
+#          requires: [migration - initialise environments 1 production]
+#          runner_command: migration-initialise-post-delete
 #          tf_workspace: production
 #      - run_task:
 #          name: migration - load casrec production
-#          requires: [migration - initialise environments production]
+#          requires: [migration - initialise environments 2 production]
 #          tf_workspace: production
 #          runner_command: migration-load-casrec
 #      - run_task:
@@ -599,13 +619,18 @@ workflows:
           tf_workspace: rehearsal
           tf_command: apply
       - run_task:
-          name: migration - initialise environments rehearsal
+          name: migration - initialise environments 1 rehearsal
           requires: [build infra rehearsal]
-          runner_command: migration-initialise-environments
+          runner_command: migration-initialise-pre-delete
+          tf_workspace: rehearsal
+      - run_task:
+          name: migration - initialise environments 2 rehearsal
+          requires: [migration - initialise environments 1 rehearsal]
+          runner_command: migration-initialise-post-delete
           tf_workspace: rehearsal
       - run_task:
           name: migration - load casrec rehearsal
-          requires: [migration - initialise environments rehearsal]
+          requires: [migration - initialise environments 2 rehearsal]
           tf_workspace: rehearsal
           runner_command: migration-load-casrec
       - run_task:
@@ -750,21 +775,24 @@ workflows:
           cluster: "casrecdmpp"
           filters: {branches:{only:[main]}}
       - run_task:
-          name: migration - initialise environments preproduction
+          name: migration - initialise environments 1 preproduction
           requires: [
             build infra preproduction,
             run and monitor jenkins restore job preproduction,
             scale down poller service for migration preproduction
          ]
-          runner_command: migration-initialise-environments
+          runner_command: migration-initialise-pre-delete
           tf_workspace: preproduction
-          filters: {branches:{only:[main]}}
+      - run_task:
+          name: migration - initialise environments 2 preproduction
+          requires: [migration - initialise environments 1 preproduction]
+          runner_command: migration-initialise-post-delete
+          tf_workspace: preproduction
       - run_task:
           name: migration - load casrec preproduction
-          requires: [migration - initialise environments preproduction]
+          requires: [migration - initialise environments 2 preproduction]
           tf_workspace: preproduction
           runner_command: migration-load-casrec
-          filters: {branches:{only:[main]}}
       - run_task:
           name: migration - filter data preproduction
           requires: [migration - load casrec preproduction]
@@ -1391,8 +1419,11 @@ jobs:
       - terraform/install
       - terraform/setup_ecs_runner
       - run:
-          name: Run initialise environments task
-          command: ecs-runner -task migration-initialise-environments -timeout << parameters.timeout >>
+          name: Run initialise environments part 1 task
+          command: ecs-runner -task migration-initialise-pre-delete -timeout << parameters.timeout >>
+      - run:
+          name: Run initialise environments part 2 task
+          command: ecs-runner -task migration-initialise-post-delete -timeout << parameters.timeout >>
       - run:
           name: Run load casrec task
           command: ecs-runner -task migration-load-casrec -timeout << parameters.timeout >>

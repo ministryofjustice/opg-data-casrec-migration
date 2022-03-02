@@ -1,6 +1,7 @@
 FROM opg_casrec_migration_base_image:latest
 RUN apt-get install -y postgresql-client
-COPY initialise_environments/initialise_environments.sh /initialise_environments/initialise_environments.sh
+COPY initialise_environments/initialise_pre_delete.sh /initialise_environments/initialise_pre_delete.sh
+COPY initialise_environments/initialise_post_delete.sh /initialise_environments/initialise_post_delete.sh
 COPY initialise_environments/load_casrec_db.sh /initialise_environments/load_casrec_db.sh
 COPY initialise_environments/connectivity_check_environment.sh /initialise_environments/connectivity_check_environment.sh
 COPY initialise_environments/initialise_source /initialise_environments/initialise_source

@@ -513,7 +513,8 @@ Commands to run each step individually, still  via docker compose:
 
 ```bash
 docker-compose run --rm load_s3 python3 load_s3_local.py
-docker-compose run --rm initialise_environments initialise_environments/initialise_environments.sh
+docker-compose run --rm initialise_environments initialise_environments/initialise_pre_delete.sh
+docker-compose run --rm initialise_environments initialise_environments/initialise_post_delete.sh
 docker-compose run --rm load_casrec python3 app.py
 docker-compose run --rm transform_casrec python3 app.py --clear=True
 docker-compose run --rm integration integration/integration.sh
@@ -606,7 +607,8 @@ Several of the steps you can increase the log debugging level with -vv, -vvv etc
 
 ```bash
 python3 migration_steps/load_s3_local.py
-./migration_steps/initialise_environments/initialise_environments.sh -vv
+./migration_steps/initialise_environments/initialise_pre_delete.sh -vv
+./migration_steps/initialise_environments/initialise_post_delete.sh -vv
 python3 migration_steps/load_casrec/app/app.py
 python3 migration_steps/transform_casrec/app/app.py -vv
 ./migration_steps/integration/integration.sh -vv

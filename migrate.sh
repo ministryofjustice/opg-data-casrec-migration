@@ -87,7 +87,8 @@ then
   fi
 fi
 
-docker-compose ${COMPOSE_ARGS} run --rm initialise initialise_environments/initialise_environments.sh -i "${PRESERVE_SCHEMAS}"
+docker-compose ${COMPOSE_ARGS} run --rm initialise initialise_environments/initialise_pre_delete.sh -i "${PRESERVE_SCHEMAS}"
+docker-compose ${COMPOSE_ARGS} run --rm initialise initialise_environments/initialise_post_delete.sh -i "${PRESERVE_SCHEMAS}"
 
 if [ "${REBUILD_CASREC_CSV_SCHEMA}" == "y" ]
 then

@@ -127,7 +127,7 @@
         },
         "TaskDefinition": "arn:aws:ecs:eu-west-1:288342028542:task-definition/behat-migration-${cluster}"
       },
-      "migration-initialise-environments":{
+      "migration-initialise-pre-delete":{
         "Cluster":"${casrec-cluster}",
         "LaunchType":"FARGATE",
         "NetworkConfiguration":{
@@ -143,7 +143,28 @@
         "Overrides": {
             "ContainerOverrides": [{
                 "Name": "etl0",
-                "Command": ["initialise_environments/initialise_environments.sh"]
+                "Command": ["initialise_environments/initialise_pre_delete.sh"]
+            }]
+        },
+        "TaskDefinition":"${casrec-task-definition-initialise-environments}"
+      },
+      "migration-initialise-post-delete":{
+        "Cluster":"${casrec-cluster}",
+        "LaunchType":"FARGATE",
+        "NetworkConfiguration":{
+            "AwsvpcConfiguration":{
+                "SecurityGroups":[
+                    "${casrec-sec-group}"
+                ],
+                "Subnets":[
+                    ${casrec-subnets}
+                ]
+            }
+        },
+        "Overrides": {
+            "ContainerOverrides": [{
+                "Name": "etl0",
+                "Command": ["initialise_environments/initialise_post_delete.sh"]
             }]
         },
         "TaskDefinition":"${casrec-task-definition-initialise-environments}"
