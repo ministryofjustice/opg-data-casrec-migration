@@ -467,35 +467,9 @@ UPDATE countverification.counts
 SET {working_column} = 0
 WHERE supervision_table = 'annual_report_letter_status';
 
--- annual_report_type_assignments
+-- annual_report_type_assignments (too complex to verify on casrec side)
 UPDATE countverification.counts
-SET {working_column} =
-(
-    SELECT SUM(table_count) FROM (
-        SELECT COUNT(*) AS table_count FROM casrec_csv.account
-        UNION
-        SELECT COUNT(*) AS table_count FROM (
-            SELECT "Case" AS caserecnumber FROM casrec_csv.pat p
-            INNER JOIN(
-                SELECT account_case FROM casrec_csv.order o
-                INNER JOIN (
-                    SELECT
-                        a."Case" as account_case,
-                        row_number() OVER (
-                            PARTITION BY a."Case"
-                            ORDER BY a."End Date" DESC
-                        ) AS rownum
-                    FROM casrec_csv.account a
-                ) AS cases
-                ON o."Case" = cases.account_case
-                WHERE cases.rownum = 1
-                AND o."Ord Stat" = 'Active'
-            ) AS active_cases
-            ON p."Case" = active_cases.account_case
-            WHERE p."Report Due" != ''
-        ) pending_cases
-    ) sums
-)
+SET {working_column} = 0
 WHERE supervision_table = 'annual_report_type_assignments';
 
 -- deputy_person_document (not migrating)
