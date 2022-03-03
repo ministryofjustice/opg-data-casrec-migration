@@ -29,8 +29,8 @@ locals {
 
   default_tags = merge(local.mandatory_moj_tags, local.optional_tags)
 
-  sirius_db_endpoint = local.account.name == "production" ? "NOT_SET" : data.aws_rds_cluster.sirius.endpoint
-  sirius_db_password = local.account.name == "production" ? "NOT_SET" : data.aws_secretsmanager_secret.sirius_db.arn
+  sirius_db_endpoint = data.aws_rds_cluster.sirius.endpoint
+  sirius_db_password = data.aws_secretsmanager_secret.sirius_db.arn
   subnets_string     = join(",", [for s in data.aws_subnet_ids.private.ids : format("%q", s)])
 }
 

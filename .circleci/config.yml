@@ -496,103 +496,102 @@ workflows:
           requires: [plan infra production]
           tf_workspace: production
           tf_command: apply
-#      - run_task:
-#          name: migration - initialise environments 1 production
-#          requires: [build infra production]
-#          runner_command: migration-initialise-pre-delete
-#          tf_workspace: production
-#      - run_task:
-#          name: migration - initialise environments 2 production
-#          requires: [migration - initialise environments 1 production]
-#          runner_command: migration-initialise-post-delete
-#          tf_workspace: production
-#      - run_task:
-#          name: migration - load casrec production
-#          requires: [migration - initialise environments 2 production]
-#          tf_workspace: production
-#          runner_command: migration-load-casrec
-#      - run_task:
-#          name: migration - filter data production
-#          requires: [migration - load casrec production]
-#          tf_workspace: production
-#          runner_command: migration-filter-data
-#      - run_task:
-#          name: migration - transform production
-#          requires: [migration - filter data production]
-#          tf_workspace: production
-#          runner_command: migration-transform
-#      - run_task:
-#          name: migration - integration production
-#          requires: [migration - transform production]
-#          tf_workspace: production
-#          runner_command: migration-integration
+      - run_task:
+          name: migration - initialise environments 1 production
+          requires: [build infra production]
+          runner_command: migration-initialise-pre-delete
+          tf_workspace: production
+      - run_task:
+          name: migration - initialise environments 2 production
+          requires: [migration - initialise environments 1 production]
+          runner_command: migration-initialise-post-delete
+          tf_workspace: production
+      - run_task:
+          name: migration - load casrec production
+          requires: [migration - initialise environments 2 production]
+          tf_workspace: production
+          runner_command: migration-load-casrec
+      - run_task:
+          name: migration - filter data production
+          requires: [migration - load casrec production]
+          tf_workspace: production
+          runner_command: migration-filter-data
+      - run_task:
+          name: migration - transform production
+          requires: [migration - filter data production]
+          tf_workspace: production
+          runner_command: migration-transform
+      - run_task:
+          name: migration - integration production
+          requires: [migration - transform production]
+          tf_workspace: production
+          runner_command: migration-integration
       - job_complete:
           name: job complete notification
-#          requires: [migration - integration production]
-          requires: [build infra production]
+          requires: [migration - integration production]
           workspace: production
 
-#  production_2:
-#    when:
-#      and:
-#        - equal: [main, << pipeline.git.branch >>]
-#        - << pipeline.parameters.run_production_2 >>
-#    jobs:
-#      - persist_parameters:
-#          name: persist parameters production
-#          param_workspace: production
-#          environment_title: Rehearsal-Manual
-#      - get_latest_image:
-#          name: get latest tag production
-#          requires: [persist parameters production]
-#          image_tag: production
-#      - run_task:
-#          name: migration - load sirius production
-#          requires: [get latest tag production]
-#          tf_workspace: production
-#          runner_command: migration-load-sirius
-#      - run_task:
-#          name: migration - validation production
-#          requires: [migration - load sirius production]
-#          tf_workspace: production
-#          runner_command: migration-validation
-#      - job_complete:
-#          name: job complete notification
-#          requires: [migration - validation production]
-#          workspace: production
+  production_2:
+    when:
+      and:
+        - equal: [main, << pipeline.git.branch >>]
+        - << pipeline.parameters.run_production_2 >>
+    jobs:
+      - persist_parameters:
+          name: persist parameters production
+          param_workspace: production
+          environment_title: Rehearsal-Manual
+      - get_latest_image:
+          name: get latest tag production
+          requires: [persist parameters production]
+          image_tag: production
+      - run_task:
+          name: migration - load sirius production
+          requires: [get latest tag production]
+          tf_workspace: production
+          runner_command: migration-load-sirius
+      - run_task:
+          name: migration - validation production
+          requires: [migration - load sirius production]
+          tf_workspace: production
+          runner_command: migration-validation
+      - job_complete:
+          name: job complete notification
+          requires: [migration - validation production]
+          workspace: production
 
-#  production_3:
-#    when:
-#      and:
-#        - equal: [main, << pipeline.git.branch >>]
-#        - << pipeline.parameters.run_production_3 >>
-#    jobs:
-#      - persist_parameters:
-#          name: persist parameters production
-#          param_workspace: production
-#          environment_title: Rehearsal-Manual
-#      - get_latest_image:
-#          name: get latest tag production
-#          requires: [persist parameters production]
-#          image_tag: production
-#      - run_task:
-#          name: migration - response api tests production
-#          requires: [get latest tag production]
-#          tf_workspace: production
-#          runner_command: migration-response-api-tests
-#      - run_task:
-#          name: migration - light touch api tests production
-#          requires: [migration - response api tests production]
-#          tf_workspace: production
-#          runner_command: migration-light-touch-api-tests
-#      - run_elasticsearch_reset:
-#          name: full reindex elasticsearch production
-#          requires: [migration - light touch api tests production]
-#          tf_workspace: production
-#      - job_complete:
-#          name: job complete notification
-#          requires: [full reindex elasticsearch production]
-#          workspace: production
+  production_3:
+    when:
+      and:
+        - equal: [main, << pipeline.git.branch >>]
+        - << pipeline.parameters.run_production_3 >>
+    jobs:
+      - persist_parameters:
+          name: persist parameters production
+          param_workspace: production
+          environment_title: Rehearsal-Manual
+      - get_latest_image:
+          name: get latest tag production
+          requires: [persist parameters production]
+          image_tag: production
+      - run_task:
+          name: migration - response api tests production
+          requires: [get latest tag production]
+          tf_workspace: production
+          runner_command: migration-response-api-tests
+      - run_task:
+          name: migration - light touch api tests production
+          requires: [migration - response api tests production]
+          tf_workspace: production
+          runner_command: migration-light-touch-api-tests
+      - run_elasticsearch_reset:
+          name: full reindex elasticsearch production
+          requires: [migration - light touch api tests production]
+          tf_workspace: production
+      - job_complete:
+          name: job complete notification
+          requires: [full reindex elasticsearch production]
+          workspace: production
 
   rehearsal_1:
     when:
