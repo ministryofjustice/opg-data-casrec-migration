@@ -89,3 +89,8 @@ DELETE FROM casrec_csv.sup_activity WHERE "Case" IN (
 DELETE FROM casrec_csv.pat WHERE "Case" IN (
     SELECT caserecnumber FROM casrec_csv.cases_to_filter_out
 );
+
+-- Filters casrec_letters (only used for validation purposes)
+DELETE FROM casrec_csv.casrec_letters WHERE "caseno" IN (
+    SELECT caserecnumber FROM casrec_csv.cases_to_filter_out
+);
