@@ -33,7 +33,7 @@ locals {
       },
       {
         name      = "SIRIUS_DB_PASSWORD"
-        valueFrom = local.sirius_db_password
+        valueFrom = data.aws_secretsmanager_secret.sirius_db.arn
       },
       {
         name      = "CASREC_DB_PASSWORD",
@@ -75,7 +75,7 @@ locals {
       },
       {
         name  = "SIRIUS_DB_HOST",
-        value = local.sirius_db_endpoint
+        value = data.aws_rds_cluster.sirius.endpoint
       },
       {
         name  = "SIRIUS_DB_PORT",

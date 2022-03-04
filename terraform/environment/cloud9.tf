@@ -8,11 +8,11 @@ data "aws_subnet_ids" "public" {
 }
 
 locals {
-  cloud9_id = local.account.name == "preproduction" || local.account.name == "development" ? aws_cloud9_environment_ec2.shared[0].id : "1b01031b9fef4ac0ad89b6858fa4fd70"
+  cloud9_id = local.account.name == "production" || local.account.name == "preproduction" || local.account.name == "development" ? aws_cloud9_environment_ec2.shared[0].id : "1b01031b9fef4ac0ad89b6858fa4fd70"
 }
 
 resource "aws_cloud9_environment_ec2" "shared" {
-  count                       = local.account.name == "preproduction" || local.account.name == "development" ? 1 : 0
+  count                       = local.account.name == "production" || local.account.name == "preproduction" || local.account.name == "development" ? 1 : 0
   instance_type               = "t2.micro"
   name                        = "casrec-mig-cloud9-env"
   automatic_stop_time_minutes = 20
