@@ -1356,7 +1356,7 @@ jobs:
       timeout:
         description: runner timeout
         type: string
-        default: "10800"
+        default: "18000"
       notify_validation_fails:
         description: if we want to send validation failures
         type: boolean
@@ -1374,7 +1374,7 @@ jobs:
       - run:
           name: Run task
           command: ecs-runner -task << parameters.runner_command >> -timeout << parameters.timeout >>
-          no_output_timeout: 60m
+          no_output_timeout: 180m
       - when:
           condition: << parameters.notify_validation_fails >>
           steps:
@@ -1407,7 +1407,7 @@ jobs:
       timeout:
         description: runner timeout
         type: string
-        default: "1800"
+        default: "18000"
     environment:
       TF_WORKSPACE: << parameters.tf_workspace >>
     working_directory: ~/project/terraform/environment
