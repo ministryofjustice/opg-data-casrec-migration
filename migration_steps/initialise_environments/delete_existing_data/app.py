@@ -25,12 +25,12 @@ config = helpers.get_config(env=environment)
 db_config = {
     "source_db_connection_string": config.get_db_connection_string("migration"),
     "target_db_connection_string": config.get_db_connection_string("target"),
-    "source_schema": config.schemas["pre_migration"],
+    "source_schema": config.schemas["pre_transform"],
     "target_schema": config.schemas["public"],
     "chunk_size": config.DEFAULT_CHUNK_SIZE,
 }
 source_db_engine = create_engine(db_config["source_db_connection_string"])
-target_db_engine = create_engine(config.get_db_connection_string("target"))
+target_db_engine = create_engine(db_config["target_db_connection_string"])
 
 # logging
 log = logging.getLogger("root")
@@ -76,6 +76,41 @@ def run_statements_from_file(statement_file):
             log.info(f"{response.rowcount} rows updated\n")
 
 
+def pre_deletion_flag_alignment_check():
+    sql = f"""
+         SELECT caserecnumber
+         FROM {db_config["target_schema"]}.persons
+         WHERE clientsource = 'CLIENT-PILOT-ONE';
+    """
+    target_response = target_db_engine.execute(sql)
+    sirius_cases = [r._mapping["caserecnumber"] for r in target_response]
+
+    sql = f"""
+             SELECT "Case" as caserecnumber
+             FROM {db_config["source_schema"]}.pat
+             WHERE "Sirius" = 'Y';
+    """
+    source_response = source_db_engine.execute(sql)
+    casrec_cases = [r._mapping["caserecnumber"] for r in source_response]
+
+    extra_sirius_flagged_cases = list(set(casrec_cases).difference(sirius_cases))
+    extra_cp1_flagged_cases = list(set(sirius_cases).difference(casrec_cases))
+
+    if len(extra_sirius_flagged_cases) > 0 or len(extra_cp1_flagged_cases) > 0:
+        if len(extra_sirius_flagged_cases) > 0:
+            log.info(
+                f"The following cases are marked as migrated on source but aren't CP1 on target: {', '.join(extra_sirius_flagged_cases)}"
+            )
+        if len(extra_cp1_flagged_cases) > 0:
+            log.info(
+                f"The following cases are marked as CP1 on target but aren't marked migrated on source: {', '.join(extra_cp1_flagged_cases)}"
+            )
+        return False
+    else:
+        log.info("CP1 and Casrec flags align. Continuing...")
+        return True
+
+
 def main():
     log.info(helpers.log_title(message="Delete data adjoining sirius data"))
     log.info(
@@ -84,6 +119,12 @@ def main():
         )
     )
     log.info(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
+
+    if not pre_deletion_flag_alignment_check():
+        log.error(
+            "There are cases marked with Sirius flag that are not CLIENT-PILOT-ONE"
+        )
+        exit(1)
 
     if os.environ.get("ENVIRONMENT") in ["preqa", "qa"]:
         # Currently, it takes too long to run event deletions and no amount of indexing or using different joins helps.
