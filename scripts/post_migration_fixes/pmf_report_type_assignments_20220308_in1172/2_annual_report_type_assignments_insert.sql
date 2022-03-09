@@ -5,13 +5,14 @@ CREATE TABLE pmf_report_type_assignments_20220308_in1172.annual_report_type_assi
     annualreport_id int NOT NULL,
     reporttype varchar,
     type varchar
-)
+);
 
 -- Populate table with data we're going to add
 INSERT INTO pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_inserts (annualreport_id, reporttype, type)
 SELECT annualreport_id, reporttype, type FROM (
 
     SELECT
+        nextval('annual_report_type_assignments_id_seq') AS id,
         annualreport_id,
         (CASE
             WHEN
@@ -50,10 +51,6 @@ SELECT annualreport_id, reporttype, type FROM (
     WHERE rownum = 1
 
 ) insert_wrapper;
-
--- Update IDs
-UPDATE pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_inserts
-SET id = id + (SELECT COALESCE(MAX(id), 0) FROM annual_report_type_assignments);
 
 -- Populate audit table
 SELECT annualreport_id
