@@ -47,6 +47,9 @@ SELECT annualreport_id, reporttype, type FROM (
         WHERE arl.status = 'PENDING'
         AND c.type = 'order'
         AND p.clientsource IN ('CASRECMIGRATION')
+        AND arl.id NOT IN (
+            SELECT DISTINCT annualreport_id FROM annual_report_type_assignments
+        )
     ) AS reports
     WHERE rownum = 1
 
