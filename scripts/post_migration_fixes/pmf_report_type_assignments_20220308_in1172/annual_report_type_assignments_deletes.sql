@@ -50,7 +50,8 @@ BEGIN;
         arta_current_count + deleted_count AS "Current arta count + Deleted count",
         arta_original_count AS "Original arta count",
         arta_expected_count AS "Expected arta count",
-        arta_current_count AS "Current arta count"
+        arta_current_count AS "Current arta count",
+        arta_expected_count = arta_current_count AS "All good?"
     FROM (
         SELECT
             arta_expected_count,
