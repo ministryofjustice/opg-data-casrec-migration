@@ -34,7 +34,7 @@
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_bonds_active exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{clientsource}'",
                 "bonds.bondcompanyname != 'Security dispensed with'"
             ]
         },
@@ -78,7 +78,7 @@
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_bonds_dispensed exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{clientsource}'",
                 "bonds.bondcompanyname = 'Security dispensed with'"
             ]
         },
@@ -129,7 +129,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_cases exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{clientsource}'",
                 "cases.casetype = 'ORDER'"
             ]
         },
@@ -164,7 +164,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_addresses exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{clientsource}'"
             ]
         },
         "manual_checks": {
@@ -196,7 +196,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_death_notifications exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{clientsource}'"
             ]
         },
         "manual_checks": {
@@ -227,7 +227,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_nodebtchase_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{clientsource}'",
                 "warnings.warningtype = 'Other'",
                 "warnings.warningtext = 'Casrec Migration - No Debt to be chased'"
             ]
@@ -266,7 +266,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_persons exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{clientsource}'"
             ]
         },
         "manual_checks": {
@@ -299,7 +299,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_phonenumbers exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{clientsource}'"
             ]
         },
         "manual_checks": {
@@ -330,7 +330,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_saarcheck_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{clientsource}'",
                 "warnings.warningtype = 'Other'",
                 "warnings.warningtext = 'Casrec Migration - SAAR Check Warning'"
             ]
@@ -363,7 +363,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_special_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{clientsource}'",
                 "warnings.warningtype = 'REM - Special Interest Markers'",
                 "warnings.warningtext = 'Casrec Migration - Special Interest Warning'"
             ]
@@ -396,7 +396,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_violent_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{clientsource}'",
                 "warnings.warningtype = 'REM - Violence Warnings'",
                 "warnings.warningtext = 'Casrec Migration - Violent Warning'"
             ]
@@ -431,7 +431,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_p1_client_remarks_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{clientsource}'",
                 "warnings.warningtype = 'Other'",
                 "(warnings.warningtext NOT IN ('Casrec Migration - SAAR Check Warning', 'Casrec Migration - No Debt to be chased') OR warnings.warningtext IS NULL)"
             ]
@@ -461,7 +461,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_crec_persons exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{clientsource}'"
             ]
         },
         "manual_checks": {
@@ -489,7 +489,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_crec_persons exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{clientsource}'"
             ]
         },
         "manual_checks": {
@@ -537,7 +537,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_daytime_phonenumbers exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{clientsource}'",
                 "phonenumbers.type = 'Work'"
             ]
         },
@@ -586,7 +586,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_evening_phonenumbers exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{clientsource}'",
                 "phonenumbers.type = 'Home'"
             ]
         },
@@ -638,7 +638,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_death_notifications exc_table ON exc_table.caserecnumber = cases.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{clientsource}'"
             ]
         },
         "manual_checks": {
@@ -721,7 +721,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_persons exc_table\n    ON exc_table.caserecnumber = client.caserecnumber\n    AND exc_table.casesubtype = cases.casesubtype\n    AND CAST(exc_table.orderdate AS DATE) = cases.orderdate",
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{clientsource}'"
             ]
         },
         "manual_checks": {
@@ -779,7 +779,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_special_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{clientsource}'",
                 "warnings.warningtype = 'REM - Special Interest Markers'",
                 "warnings.warningtext = 'Casrec Migration - Special Interest Warning'"
             ]
@@ -827,7 +827,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_violent_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{clientsource}'",
                 "warnings.warningtype = 'REM - Violence Warnings'",
                 "warnings.warningtext = 'Casrec Migration - Violent Warning'"
             ]
@@ -866,7 +866,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_notes exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{clientsource}'"
             ]
         },
         "manual_checks": {
@@ -908,7 +908,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_notes exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{clientsource}'"
             ]
         },
         "manual_checks": {
@@ -1102,7 +1102,7 @@
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_invoice_ad exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
-                "finance_invoice.source = 'CASRECMIGRATION'",
+                "finance_invoice.source = '{clientsource}'",
                 "finance_invoice.feetype = 'AD'"
             ]
         },
@@ -1144,7 +1144,7 @@
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_invoice_non_ad exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
-                "finance_invoice.source = 'CASRECMIGRATION'",
+                "finance_invoice.source = '{clientsource}'",
                 "finance_invoice.feetype <> 'AD'"
             ]
         },
@@ -1250,7 +1250,7 @@
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_ledger_credits exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
-                "finance_ledger.source = 'CASRECMIGRATION'"
+                "finance_ledger.source = '{clientsource}'"
             ]
         },
         "manual_checks": {
@@ -1290,7 +1290,7 @@
             ],
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_allocation_credits exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
-                "finance_ledger_allocation.source = 'CASRECMIGRATION'"
+                "finance_ledger_allocation.source = '{clientsource}'"
             ]
         },
         "manual_checks": {
@@ -1388,7 +1388,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_addresses exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{clientsource}'"
             ]
         },
         "manual_checks": {
@@ -1452,7 +1452,7 @@
             "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_order exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{clientsource}'"
             ]
         },
         "manual_checks": {

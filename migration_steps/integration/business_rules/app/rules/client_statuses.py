@@ -1,8 +1,14 @@
 import logging
 import psycopg2
+import os
 
 log = logging.getLogger("root")
 client_status_lkp_table = "client_status_lookup"
+
+environment = os.environ.get("ENVIRONMENT")
+import helpers
+
+config = helpers.get_config(env=environment)
 
 
 def get_select_statuses_query(db_config):
@@ -79,7 +85,7 @@ def get_select_statuses_query(db_config):
     ) AS has_active_status on has_active_status.client_id = client.id
     WHERE
     client.type = 'actor_client'
-    AND client.clientsource = 'CASRECMIGRATION'
+    AND client.clientsource = '{config.migration_phase}'
     ORDER BY client.id"""
 
     log.info(full_sql)

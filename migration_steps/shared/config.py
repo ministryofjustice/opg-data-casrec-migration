@@ -23,6 +23,9 @@ def get_paramstore_value(param_name):
 
 class BaseConfig:
     load_env_vars()
+
+    migration_phase = "CASRECMIGRATION_P2"
+
     db_config = {
         "casrec": {
             "host": os.environ.get("CASREC_DB_HOST"),

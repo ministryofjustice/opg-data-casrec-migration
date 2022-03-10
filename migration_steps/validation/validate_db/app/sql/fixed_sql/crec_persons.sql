@@ -38,7 +38,7 @@ INSERT INTO casrec_csv.exceptions_crec_persons(
             persons.risk_score AS risk_score
         FROM {target_schema}.persons
         WHERE persons.type = 'actor_client'
-        AND persons.clientsource = 'CASRECMIGRATION'
+        AND persons.clientsource = '{clientsource}'
         ORDER BY caserecnumber ASC
     ) as sirius_data
 );

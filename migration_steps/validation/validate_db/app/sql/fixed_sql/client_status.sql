@@ -106,4 +106,4 @@ EXCEPT
 SELECT caserecnumber, clientstatus
 FROM {target_schema}.persons
 WHERE persons.type = 'actor_client'
-AND persons.clientsource = 'CASRECMIGRATION';
+AND persons.clientsource = '{clientsource}';

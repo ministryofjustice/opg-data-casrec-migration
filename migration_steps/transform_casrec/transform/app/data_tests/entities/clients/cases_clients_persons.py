@@ -62,7 +62,7 @@ def case_clients_2(test_config):
         "isorganisation": False,
         "casesmanagedashybrid": False,
         "supervisioncaseowner_id": 10,
-        "clientsource": "CASRECMIGRATION",
+        "clientsource": str(test_config.migration_phase),
     }
 
     config = test_config

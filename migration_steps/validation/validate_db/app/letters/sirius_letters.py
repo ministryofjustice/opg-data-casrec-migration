@@ -37,6 +37,7 @@ def generate_letters_for_date(cursor, date, params, target_schema):
 
     sql = sql.replace("{letter_date}", f"'{date}'")
     sql = sql.replace("{target_schema}", target_schema)
+    sql = sql.replace("{clientsource}", config.migration_phase)
 
     for param, value in params.items():
         sql = sql.replace("{" + param + "}", f"'{value}'")

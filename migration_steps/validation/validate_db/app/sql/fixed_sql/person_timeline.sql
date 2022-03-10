@@ -23,7 +23,7 @@ INSERT INTO casrec_csv.exceptions_person_timeline (
         INNER JOIN {target_schema}.persons p
         ON te.event->'payload'->>'courtReference' = p.caserecnumber
         WHERE
-            p.clientsource = 'CASRECMIGRATION'
+            p.clientsource = '{clientsource}'
             AND te.event->'payload'->>'subject' = 'Migration Notice'
 
         EXCEPT

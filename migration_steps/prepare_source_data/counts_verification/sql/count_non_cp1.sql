@@ -275,7 +275,7 @@ DROP TABLE IF EXISTS countverificationaudit.{working_column}_finance_invoice_ad;
 SELECT inv.id, cli.caserecnumber INTO countverificationaudit.{working_column}_finance_invoice_ad
 FROM finance_invoice inv
 INNER JOIN countverification.non_cp1_clients cli ON cli.id = inv.person_id
-WHERE inv.source = 'CASRECMIGRATION'
+WHERE inv.source = '{clientsource}'
 AND inv.feetype = 'AD';
 UPDATE countverification.counts
 SET {working_column} = (
@@ -288,7 +288,7 @@ DROP TABLE IF EXISTS countverificationaudit.{working_column}_finance_invoice_non
 SELECT inv.id, cli.caserecnumber INTO countverificationaudit.{working_column}_finance_invoice_non_ad
 FROM finance_invoice inv
 INNER JOIN countverification.non_cp1_clients cli ON cli.id = inv.person_id
-WHERE inv.source = 'CASRECMIGRATION'
+WHERE inv.source = '{clientsource}'
 AND inv.feetype <> 'AD';
 UPDATE countverification.counts
 SET {working_column} = (

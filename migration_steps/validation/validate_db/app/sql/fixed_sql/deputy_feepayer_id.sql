@@ -38,7 +38,7 @@ INSERT INTO casrec_csv.exceptions_deputy_feepayer_id(
         FROM {target_schema}.persons
         WHERE True
             AND persons.type = 'actor_client'
-            AND persons.clientsource = 'CASRECMIGRATION'
+            AND persons.clientsource = '{clientsource}'
             AND persons.caserecnumber NOT IN (
                     '11065340',
                     '13097967',

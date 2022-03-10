@@ -11,7 +11,7 @@ FROM {target_schema}.annual_report_logs a0_
     AND (a3_.templateId = 'BS1')
     INNER JOIN {target_schema}.persons p ON p.id = a0_.client_id
 WHERE c1_.orderStatus = 'ACTIVE'
-  AND p.clientsource = 'CASRECMIGRATION'
+  AND p.clientsource = '{clientsource}'
   AND a2_.bankStatementDeadlineDate >= {bs1_from}
   AND a2_.bankStatementDeadlineDate <= {bs1_to}
   AND a2_.lodgedStatus = 'REFERRED_FOR_REVIEW'
@@ -31,7 +31,7 @@ FROM {target_schema}.annual_report_logs a0_
     AND (a3_.templateId = 'BS2')
     INNER JOIN {target_schema}.persons p ON p.id = a0_.client_id
 WHERE c1_.orderStatus = 'ACTIVE'
-  AND p.clientsource = 'CASRECMIGRATION'
+  AND p.clientsource = '{clientsource}'
   AND a2_.bankStatementDeadlineDate >= {bs2_from}
   AND a2_.bankStatementDeadlineDate <= {bs2_to}
   AND a2_.lodgedStatus = 'REFERRED_FOR_REVIEW'
@@ -50,7 +50,7 @@ FROM {target_schema}.annual_report_logs a0_
     AND (a2_.templateId = 'RD1')
     INNER JOIN {target_schema}.persons p ON p.id = a0_.client_id
 WHERE c1_.orderStatus = 'ACTIVE'
-  AND p.clientsource = 'CASRECMIGRATION'
+  AND p.clientsource = '{clientsource}'
   AND a0_.reportingPeriodEndDate >= {rd1_from}
   AND a0_.reportingPeriodEndDate <= {rd1_to}
   AND (a2_.id IS NULL
@@ -67,7 +67,7 @@ FROM {target_schema}.annual_report_logs a0_
     AND (a2_.templateId = 'RD2')
     INNER JOIN {target_schema}.persons p ON p.id = a0_.client_id
 WHERE c1_.orderStatus = 'ACTIVE'
-  AND p.clientsource = 'CASRECMIGRATION'
+  AND p.clientsource = '{clientsource}'
   AND a0_.reportingPeriodEndDate >= {rd2_from}
   AND a0_.reportingPeriodEndDate <= {rd2_to}
   AND a0_.status = 'DUE'
@@ -86,7 +86,7 @@ FROM {target_schema}.annual_report_logs a0_
     AND (a3_.templateId = 'RI2')
     INNER JOIN {target_schema}.persons p ON p.id = a0_.client_id
 WHERE c1_.orderStatus = 'ACTIVE'
-  AND p.clientsource = 'CASRECMIGRATION'
+  AND p.clientsource = '{clientsource}'
   AND a2_.deadlineDate >= {ri2_from}
   AND a2_.deadlineDate <= {ri2_to}
   AND a2_.resubmittedDate IS NULL
@@ -105,7 +105,7 @@ FROM {target_schema}.annual_report_logs a0_
     AND (a3_.templateId = 'RI3')
     INNER JOIN {target_schema}.persons p ON p.id = a0_.client_id
 WHERE c1_.orderStatus = 'ACTIVE'
-  AND p.clientsource = 'CASRECMIGRATION'
+  AND p.clientsource = '{clientsource}'
   AND a2_.deadlineDate >= {ri3_from}
   AND a2_.deadlineDate <= {ri3_to}
   AND a2_.resubmittedDate IS NULL
@@ -123,7 +123,7 @@ FROM {target_schema}.annual_report_logs a0_
     AND (a2_.templateId = 'RR1')
     INNER JOIN {target_schema}.persons p ON p.id = a0_.client_id
 WHERE c1_.orderStatus = 'ACTIVE'
-  AND p.clientsource = 'CASRECMIGRATION'
+  AND p.clientsource = '{clientsource}'
   AND a0_.dueDate >= {rr1_from}
   AND a0_.dueDate <= {rr1_to}
   AND a0_.status = 'OVERDUE'
@@ -180,7 +180,7 @@ SELECT annual_report_logs.id, 'RR2', {letter_date}, p.caserecnumber
 FROM {target_schema}.annual_report_logs
 INNER JOIN {target_schema}.persons p ON p.id = annual_report_logs.client_id
 inner join schedule_date_check on annual_report_logs.id = schedule_date_check.annual_report_id
-WHERE p.clientsource = 'CASRECMIGRATION';
+WHERE p.clientsource = '{clientsource}';
 
 
 INSERT INTO automated_letters.sirius(report_log_id, letter_type, letter_date, caserecnumber)
@@ -192,7 +192,7 @@ FROM {target_schema}.annual_report_logs a0_
     AND (a2_.templateId = 'RR3')
     INNER JOIN {target_schema}.persons p ON p.id = a0_.client_id
 WHERE c1_.orderStatus = 'ACTIVE'
-  AND p.clientsource = 'CASRECMIGRATION'
+  AND p.clientsource = '{clientsource}'
   AND a0_.status = 'OVERDUE'
   AND a0_.revisedDueDate IS NOT NULL
   AND a0_.receiveddate IS NULL

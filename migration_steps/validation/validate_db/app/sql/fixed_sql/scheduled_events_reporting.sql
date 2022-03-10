@@ -27,7 +27,7 @@ INSERT INTO casrec_csv.exceptions_scheduled_events_reporting(
             ) AS enddate
         FROM {target_schema}.annual_report_logs
 	    LEFT JOIN {target_schema}.persons ON persons.id = annual_report_logs.client_id
-	    WHERE persons.clientsource = 'CASRECMIGRATION'
+	    WHERE persons.clientsource = '{clientsource}'
             AND annual_report_logs.status = 'PENDING'
     ) AS sirius_reports_data
 
@@ -48,7 +48,7 @@ INSERT INTO casrec_csv.exceptions_scheduled_events_reporting(
             ON scheduled_events.event->>'class' = 'Opg\Core\Model\Event\DeputyshipReporting\ScheduledReportingPeriodEndDate'
             AND scheduled_events.event->'payload'->>'clientId' = persons.id::text
             AND scheduled_events.event->'payload'->>'reportingPeriodId' = annual_report_logs.id::text
-        WHERE persons.clientsource = 'CASRECMIGRATION'
+        WHERE persons.clientsource = '{clientsource}'
             AND annual_report_logs.status = 'PENDING'
     ) AS sirius_events_data
 );

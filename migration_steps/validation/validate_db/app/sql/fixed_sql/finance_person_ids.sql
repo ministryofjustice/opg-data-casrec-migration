@@ -14,14 +14,14 @@ INSERT INTO casrec_csv.exceptions_finance_person_ids(
     FROM {target_schema}.finance_invoice
     LEFT JOIN {target_schema}.persons ON persons.id = finance_invoice.person_id
     WHERE finance_invoice.finance_person_id IS NULL
-    AND persons.clientsource = 'CASRECMIGRATION'
+    AND persons.clientsource = '{clientsource}'
 
     UNION ALL
 
     SELECT NULL AS caserecnumber, 'finance_ledger' AS sirius_table, finance_ledger.id AS sirius_id
     FROM {target_schema}.finance_ledger
     WHERE finance_ledger.finance_person_id IS NULL
-    AND finance_ledger.source = 'CASRECMIGRATION'
+    AND finance_ledger.source = '{clientsource}'
 
     UNION ALL
 
@@ -30,7 +30,7 @@ INSERT INTO casrec_csv.exceptions_finance_person_ids(
     LEFT JOIN {target_schema}.person_caseitem ON person_caseitem.caseitem_id = finance_order.order_id
     LEFT JOIN {target_schema}.persons ON persons.id = person_caseitem.person_id
     WHERE finance_order.finance_person_id IS NULL
-    AND persons.clientsource = 'CASRECMIGRATION'
+    AND persons.clientsource = '{clientsource}'
 
     UNION ALL
 

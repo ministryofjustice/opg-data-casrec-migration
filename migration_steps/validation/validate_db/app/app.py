@@ -471,6 +471,9 @@ def build_validation_statements(mapping_name):
     # WHERE
     sql_add("WHERE True", 2)
     for where_clause in validation_dict["sirius"]["where_clauses"]:
+        where_clause = where_clause.replace(
+            "{clientsource}", str(config.migration_phase)
+        )
         sql_add(f"AND {where_clause}", 2)
 
     # ORDER
@@ -568,6 +571,9 @@ def write_column_validation_sql(
     # WHERE
     sql_add("WHERE exc_table.caserecnumber IS NOT NULL", 3)
     for where_clause in validation_dict["sirius"]["where_clauses"]:
+        where_clause = where_clause.replace(
+            "{clientsource}", str(config.migration_phase)
+        )
         sql_add(f"AND {where_clause}", 4)
     sql_add(f"ORDER BY {order_by}", 3)
     sql_add(") as sirius_data", 2)
@@ -742,7 +748,9 @@ def pre_validation():
             log.debug(f"Static validation file found! {fixed_sql_path}")
             fixedfile = open(fixed_sql_path, "r")
             for line in fixedfile:
-                sql_add(line.replace("{target_schema}", str(target_schema)))
+                line = line.replace("{target_schema}", str(target_schema))
+                line = line.replace("{clientsource}", str(config.migrationphase))
+                sql_add(line)
             output_statement_to_file()
         else:
             mapping_dict = helpers.get_mapping_dict(

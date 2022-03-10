@@ -40,6 +40,7 @@ def execute_sql_template(conn, template_filename, replace_tags):
     execution_file = open(sql_path / execution_filename, "w+")
 
     for line in template:
+        line = line.replace("{clientsource}", config.migration_phase)
         for check, rep in replace_tags.items():
             line = line.replace("{" + check + "}", rep)
         execution_file.write(line)

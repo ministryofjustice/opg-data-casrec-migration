@@ -5,9 +5,12 @@ import logging
 import os
 import pandas as pd
 
-from helpers import get_mapping_dict, get_table_def
+from helpers import get_mapping_dict, get_table_def, get_config
 from transform_data.apply_datatypes import apply_datatypes
 from transform_data.unique_id import add_unique_id
+
+environment = os.environ.get("ENVIRONMENT")
+config = get_config(environment)
 
 log = logging.getLogger("root")
 
@@ -81,7 +84,7 @@ def insert_person_timeline(db_config, target_db, mapping_file):
             else:
                 # Filter so we only have persons imported during migration
                 persons_df = persons_df.loc[
-                    persons_df["clientsource"] == "CASRECMIGRATION"
+                    persons_df["clientsource"] == str(config.migration_phase)
                 ]
 
                 # Join to timeline_event on case no.

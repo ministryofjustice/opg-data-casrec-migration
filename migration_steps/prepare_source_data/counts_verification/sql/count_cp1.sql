@@ -105,7 +105,7 @@ SET {working_column} =
             INNER join addresses a ON dep.id = a.person_id
             WHERE p.type = 'actor_client'
             AND p.caseactorgroup = 'CLIENT-PILOT-ONE'
-            AND COALESCE(p.clientsource, '') = 'CASRECMIGRATION'
+            AND COALESCE(p.clientsource, '') = '{clientsource}'
             INTERSECT
             select DISTINCT LOWER(TRIM(COALESCE(dep.email, ''))),
             LOWER(TRIM(COALESCE(dep.surname, dep.organisationname, ''))),
@@ -117,7 +117,7 @@ SET {working_column} =
             INNER join addresses a ON dep.id = a.person_id
             WHERE p.type = 'actor_client'
             AND p.caseactorgroup = 'CLIENT-PILOT-ONE'
-            AND COALESCE(p.clientsource, '') != 'CASRECMIGRATION'
+            AND COALESCE(p.clientsource, '') != '{clientsource}'
         ) AS inter
     )
 WHERE supervision_table = 'addresses';
@@ -282,7 +282,7 @@ DROP TABLE IF EXISTS countverificationaudit.{working_column}_finance_invoice_ad;
 SELECT inv.id, cli.caserecnumber INTO countverificationaudit.{working_column}_finance_invoice_ad
 FROM finance_invoice inv
 INNER JOIN countverification.cp1_clients cli ON cli.id = inv.person_id
-WHERE inv.source = 'CASRECMIGRATION'
+WHERE inv.source = '{clientsource}'
 AND inv.feetype = 'AD';
 UPDATE countverification.counts
 SET {working_column} = (
@@ -295,7 +295,7 @@ DROP TABLE IF EXISTS countverificationaudit.{working_column}_finance_invoice_non
 SELECT inv.id, cli.caserecnumber INTO countverificationaudit.{working_column}_finance_invoice_non_ad
 FROM finance_invoice inv
 INNER JOIN countverification.cp1_clients cli ON cli.id = inv.person_id
-WHERE inv.source = 'CASRECMIGRATION'
+WHERE inv.source = '{clientsource}'
 AND inv.feetype <> 'AD';
 UPDATE countverification.counts
 SET {working_column} = (

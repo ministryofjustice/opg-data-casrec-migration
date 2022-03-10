@@ -680,7 +680,7 @@
 		"alias": "",
 		"requires_transformation": "",
 		"lookup_table": "",
-		"default_value": "CASRECMIGRATION",
+		"default_value": "CASRECMIGRATION_P2",
 		"calculated": ""
 	},
 	"memorablephrase": {
