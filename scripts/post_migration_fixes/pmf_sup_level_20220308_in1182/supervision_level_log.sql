@@ -38,7 +38,7 @@ FROM (
     WHERE numbered_logs.row_number <> 1
 ) logs;
 
-SELECT *
+SELECT audit.*
 INTO pmf_sup_level_20220308_in1182.supervision_level_log_deletes
 FROM pmf_sup_level_20220308_in1182.supervision_level_log_audit audit
 LEFT JOIN pmf_sup_level_20220308_in1182.supervision_level_log_keep keep ON audit.id = keep.id
@@ -97,6 +97,10 @@ WITH sirius_side AS (
 casrec_side AS (
     SELECT order_id, appliesfrom, createddate, supervisionlevel, notes, assetlevel
     FROM pmf_sup_level_20220308_in1182.supervision_level_log_inserts
+),
+not_deleted AS (
+    SELECT order_id, appliesfrom, createddate, supervisionlevel, notes, assetlevel
+    FROM pmf_sup_level_20220308_in1182.supervision_level_log_keep
 )
 SELECT 'not in Sirius' as validation, * FROM (
     SELECT * FROM casrec_side
@@ -108,10 +112,12 @@ SELECT 'not in Casrec' as validation, * FROM (
     SELECT * FROM sirius_side
     EXCEPT
     SELECT * FROM casrec_side
+    EXCEPT
+    SELECT * FROM not_deleted
 ) validation2
 UNION
 SELECT 'erroneously deleted' as validation, * FROM (
-    SELECT order_id, appliesfrom, createddate, supervisionlevel, notes, assetlevel FROM pmf_sup_level_20220308_in1182.supervision_level_log_keep
+    SELECT * FROM not_deleted
     EXCEPT
     SELECT * FROM sirius_side
 ) validation3;
