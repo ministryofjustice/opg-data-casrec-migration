@@ -13,29 +13,6 @@ FROM (
     INNER JOIN persons p
     ON arl.client_id = p.id
     WHERE p.clientsource IN ('CASRECMIGRATION')
-
-    EXCEPT
-
-    -- Records we're updating
-    SELECT annual_report_type_assignments_id FROM (
-        SELECT
-            arta.id AS annual_report_type_assignments_id,
-            row_number() OVER (
-                PARTITION BY p.caserecnumber
-                ORDER BY arl.reportingperiodenddate DESC
-            ) AS rownum
-        FROM annual_report_logs arl
-        INNER JOIN persons p
-        ON arl.client_id = p.id
-        INNER JOIN cases c
-        ON p.caserecnumber = c.caserecnumber
-        INNER JOIN annual_report_type_assignments arta
-        ON arl.id = arta.annualreport_id
-        WHERE arl.status = 'PENDING'
-        AND c.type = 'order'
-        AND p.clientsource IN ('CASRECMIGRATION')
-    ) latest_pending_reports
-    WHERE rownum = 1
 ) to_delete;
 
 -- Count current arta table and proposed deletes table
