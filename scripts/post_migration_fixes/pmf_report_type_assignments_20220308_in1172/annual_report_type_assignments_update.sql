@@ -33,7 +33,7 @@ FROM (
             c.orderstatus AS orderstatus,
             row_number() OVER (
                 PARTITION BY p.caserecnumber
-                ORDER BY arl.reportingperiodenddate DESC
+                ORDER BY arl.reportingperiodenddate DESC, sll.appliesfrom DESC
             ) AS rownum,
             sll.supervisionlevel AS supervisionlevel,
             sll.assetlevel AS assetlevel
@@ -41,7 +41,7 @@ FROM (
         INNER JOIN persons p
         ON arl.client_id = p.id
         INNER JOIN cases c
-        ON p.caserecnumber = c.caserecnumber
+        ON c.client_id = p.id
         INNER JOIN annual_report_type_assignments arta
         ON arl.id = arta.annualreport_id
         LEFT JOIN supervision_level_log sll
