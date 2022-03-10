@@ -86,10 +86,10 @@ then
     docker-compose up --no-deps -d postgres-sirius-restore
   fi
 fi
-
+echo "=== Step 0 - Pre Delete Initialise ==="
 docker-compose ${COMPOSE_ARGS} run --rm initialise initialise_environments/initialise_pre_delete.sh -i "${PRESERVE_SCHEMAS}"
-docker-compose ${COMPOSE_ARGS} run --rm initialise initialise_environments/initialise_post_delete.sh -i "${PRESERVE_SCHEMAS}"
 
+echo "=== Step 1 - Load casrec schema ==="
 if [ "${REBUILD_CASREC_CSV_SCHEMA}" == "y" ]
 then
   docker rm casrec_load_1 &>/dev/null || echo "casrec_load_1 does not exist. This is OK"
@@ -108,23 +108,25 @@ then
   cat docker_load.log
   rm docker_load.log
 fi
-echo "=== Step 0 - Filter data ==="
+echo "=== Step 2 - Deletions and post deletion initialise ==="
+docker-compose ${COMPOSE_ARGS} run --rm initialise initialise_environments/initialise_post_delete.sh -i "${PRESERVE_SCHEMAS}"
+echo "=== Step 3 - Filter data ==="
 docker-compose ${COMPOSE_ARGS} run --rm initialise prepare_source_data/prepare_source_data.sh --correfs="${CORREFS}"
-echo "=== Step 1 - Transform ==="
+echo "=== Step 4 - Transform ==="
 docker-compose ${COMPOSE_ARGS} run --rm transform_casrec transform_casrec/transform.sh --correfs="${CORREFS}"
-echo "=== Step 2 - Integrate with Sirius ==="
+echo "=== Step 5 - Integrate with Sirius ==="
 docker-compose ${COMPOSE_ARGS} run --rm integration integration/integration.sh --correfs="${CORREFS}"
-echo "=== Step 3 - Validate Staging ==="
+echo "=== Step 6 - Validate Staging ==="
 docker-compose ${COMPOSE_ARGS} run --rm validation python3 /validation/validate_db/app/app.py --correfs="${CORREFS}" --staging
-echo "=== Step 4 - Load to Sirius ==="
+echo "=== Step 7 - Load to Sirius ==="
 docker-compose ${COMPOSE_ARGS} run --rm load_to_target load_to_sirius/load_to_sirius.sh
-echo "=== Step 5 - Validate Sirius ==="
+echo "=== Step 8 - Validate Sirius ==="
 docker-compose ${COMPOSE_ARGS} run --rm validation validation/validate.sh --correfs="${CORREFS}"
-echo "=== Step 6 - API Tests ==="
+echo "=== Step 9 - API Tests ==="
 docker-compose ${COMPOSE_ARGS} run --rm validation validation/response_api_tests.sh
-echo "=== Step 7 - Light Touch API Tests ==="
+echo "=== Step 10 - Light Touch API Tests ==="
 docker-compose ${COMPOSE_ARGS} run --rm validation validation/light_touch_api_tests.sh
-echo "=== Step 8 - Functional API Tests ==="
+echo "=== Step 11 - Functional API Tests ==="
 docker-compose ${COMPOSE_ARGS} run --rm validation validation/functional_api_tests.sh
 
 if [ "${GENERATE_DOCS}" == "true" ]

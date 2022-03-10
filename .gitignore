@@ -49,6 +49,7 @@ data/
 *terraform.output_casrec_migration.json
 *etl*.sql
 *integration*.sql
+migration_steps/prepare_source_data/counts_verification/sql/execute_count*.sql
 migration_steps/shared/sql/temp/*.sql
 migration_steps/shared/sql/schemas/*.sql
 migration_steps/shared/progress/*_progress.json
