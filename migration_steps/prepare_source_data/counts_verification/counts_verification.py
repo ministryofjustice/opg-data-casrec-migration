@@ -27,8 +27,8 @@ log = logging.getLogger("root")
 default_replace_tags = {
     "client_source": config.migration_phase["migration_identifier"],
     "casrec_schema": config.schemas["pre_transform"],
-    "count_schema": config.migration_phase["countverification_schema"],
-    "count_audit_schema": config.migration_phase["countverificationaudit_schema"],
+    "count_schema": config.schemas["count_verification"],
+    "count_audit_schema": config.schemas["count_verification_audit"],
 }
 
 conn_migration = {
@@ -48,9 +48,6 @@ def execute_sql_template(conn, template_filename, replace_tags):
     all_tags = {**replace_tags, **default_replace_tags}
 
     for line in template:
-        # line = line.replace("{client_source}", config.migration_phase["migration_identifier"])
-        # line = line.replace("{count_schema}", config.migration_phase["countverification_schema"])
-        # line = line.replace("{count_audit_schema}", config.migration_phase["countverificationaudit_schema"])
         for check, rep in all_tags.items():
             line = line.replace("{" + check + "}", rep)
         execution_file.write(line)
