@@ -3,12 +3,12 @@ SQL equivalent:
 ```sql
 with addresses_df as (
     select *
-    from casrec_csv.deputy_address
+    from {config.schemas["pre_transform"]}.deputy_address
 ),
 
 deputyship_df as (
     select distinct "Dep Addr No", "Deputy No"
-    from casrec_csv.deputyship
+    from {config.schemas["pre_transform"]}.deputyship
 ),
 
 persons_df as (

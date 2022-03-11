@@ -1,1 +1,1 @@
-ALTER TABLE casrec_csv.deputy DROP COLUMN IF EXISTS sirius_id;
+ALTER TABLE {casrec_schema}.deputy DROP COLUMN IF EXISTS sirius_id;

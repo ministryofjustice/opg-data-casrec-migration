@@ -52,9 +52,9 @@ def test_deputy_address_joins(
                 "Dep Forename" as firstname,
                    "Dep Surname" as surname,
                    "Dep Postcode" as postcode
-            from casrec_csv.deputy
-            left outer join casrec_csv.deputyship on deputy."Deputy No" = deputyship."Deputy No"
-            left outer join casrec_csv.deputy_address on deputyship."Dep Addr No" = deputy_address."Dep Addr No"
+            from {config.schemas["pre_transform"]}.deputy
+            left outer join {config.schemas["pre_transform"]}.deputyship on deputy."Deputy No" = deputyship."Deputy No"
+            left outer join {config.schemas["pre_transform"]}.deputy_address on deputyship."Dep Addr No" = deputy_address."Dep Addr No"
             where deputy."Dep Surname" = '{single_case}'
             order by "Dep Forename", "Dep Surname", "Dep Postcode";
         """

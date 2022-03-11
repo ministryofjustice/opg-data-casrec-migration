@@ -85,7 +85,7 @@ def get_select_statuses_query(db_config):
     ) AS has_active_status on has_active_status.client_id = client.id
     WHERE
     client.type = 'actor_client'
-    AND client.clientsource = '{config.migration_phase}'
+    AND client.clientsource = '{config.migration_phase["migration_identifier"]}'
     ORDER BY client.id"""
 
     log.info(full_sql)

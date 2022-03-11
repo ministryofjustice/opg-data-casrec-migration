@@ -1,15 +1,15 @@
 -- automated_letters
 SET datestyle = "ISO, DMY";
 
-DROP TABLE IF EXISTS casrec_csv.exceptions_automated_letters;
+DROP TABLE IF EXISTS {casrec_schema}.exceptions_automated_letters;
 
-CREATE TABLE casrec_csv.exceptions_automated_letters(
+CREATE TABLE {casrec_schema}.exceptions_automated_letters(
     caserecnumber text default NULL,
     letter_date text default NULL,
     letter_type text default NULL
 );
 
-INSERT INTO casrec_csv.exceptions_automated_letters(
+INSERT INTO {casrec_schema}.exceptions_automated_letters(
     SELECT caseno as caserecnumber,
         "date"::date as letter_date,
         CASE
@@ -20,7 +20,7 @@ INSERT INTO casrec_csv.exceptions_automated_letters(
             WHEN "type" = 'lodge_chaser' THEN 'RR3'
             WHEN "type" = 'further_chase1' THEN 'RI2-RI3-BS1-BS2'
         END AS letter_type
-    FROM casrec_csv.casrec_letters
+    FROM {casrec_schema}.casrec_letters
 
     EXCEPT
 

@@ -24,6 +24,13 @@ environment = os.environ.get("ENVIRONMENT")
 config = helpers.get_config(env=environment)
 log = logging.getLogger("root")
 
+default_replace_tags = {
+    "client_source": config.migration_phase["migration_identifier"],
+    "casrec_schema": config.schemas["pre_transform"],
+    "count_schema": config.migration_phase["countverification_schema"],
+    "count_audit_schema": config.migration_phase["countverificationaudit_schema"],
+}
+
 conn_migration = {
     "name": "casrecmigration",
     "connection": psycopg2.connect(config.get_db_connection_string("migration")),
@@ -38,10 +45,13 @@ def execute_sql_template(conn, template_filename, replace_tags):
     template = open(sql_path / template_filename, "r")
     execution_filename = "execute_" + template_filename
     execution_file = open(sql_path / execution_filename, "w+")
+    all_tags = {**replace_tags, **default_replace_tags}
 
     for line in template:
-        line = line.replace("{clientsource}", config.migration_phase)
-        for check, rep in replace_tags.items():
+        # line = line.replace("{client_source}", config.migration_phase["migration_identifier"])
+        # line = line.replace("{count_schema}", config.migration_phase["countverification_schema"])
+        # line = line.replace("{count_audit_schema}", config.migration_phase["countverificationaudit_schema"])
+        for check, rep in all_tags.items():
             line = line.replace("{" + check + "}", rep)
         execution_file.write(line)
     template.close()
@@ -92,7 +102,7 @@ class CountsVerification:
             cursor = conn.cursor()
             query = (
                 "SELECT column_name FROM information_schema.columns "
-                "WHERE table_schema = 'countverification' "
+                f"""WHERE table_schema = '{config.schemas["count_verification"]}' """
                 "AND table_name = 'counts';"
             )
             cursor.execute(query)
@@ -108,11 +118,19 @@ class CountsVerification:
 
     def reset_schema(self):
         log.info(f"Resetting countverification schema on {conn_target['name']}")
-        execute_sql_file(sql_path, "schema_down.sql", conn_target["connection"])
+        execute_sql_template(
+            conn=conn_target["connection"],
+            template_filename="schema_down.sql",
+            replace_tags={},
+        )
         self.create_schema()
 
     def create_schema(self):
-        execute_sql_file(sql_path, "schema_up.sql", conn_target["connection"])
+        execute_sql_template(
+            conn=conn_target["connection"],
+            template_filename="schema_up.sql",
+            replace_tags={},
+        )
         self.report_columns = {}
         self.add_report_column("supervision_table")
 
@@ -194,7 +212,8 @@ class CountsVerification:
         cols = ",".join(self.report_columns.keys())
 
         df_count_values = pd.read_sql(
-            sql=f"SELECT {cols} FROM countverification.counts ORDER BY supervision_table;",
+            sql=f"""
+                SELECT {cols} FROM {config.schemas["count_verification"]}.counts ORDER BY supervision_table;""",
             con=conn_target["connection"],
         )
         table = tabulate(
@@ -204,7 +223,12 @@ class CountsVerification:
 
     def output_report(self):
         query = open(sql_path / "calculate_result.sql", "r")
-        df_results = pd.read_sql_query(query.read(), conn_target["connection"])
+        df_results = pd.read_sql_query(
+            query.read().replace(
+                "{count_schema}", config.schemas["count_verification"]
+            ),
+            conn_target["connection"],
+        )
         query.close()
 
         table = tabulate(

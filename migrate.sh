@@ -24,7 +24,7 @@ then
       SYNC_CASREC_CSVS=${SYNC_CASREC_CSVS:-n}
       echo "${SYNC_CASREC_CSVS}"
   else
-    PRESERVE_SCHEMAS="casrec_csv"
+    PRESERVE_SCHEMAS="casrec_csv,casrec_csv_p2"
     SKIP_LOAD="true"
   fi
 
@@ -65,7 +65,14 @@ if [ "${FULL_SIRIUS_APP}" == "n" ]
 then
   docker-compose ${COMPOSE_ARGS} up --no-deps -d postgres-sirius
   docker-compose ${COMPOSE_ARGS} run --rm wait-for-it -address postgres-sirius:5432 --timeout=30 -debug
-  docker-compose ${COMPOSE_ARGS} up --no-deps -d postgres-sirius-restore
+  if [ "${CORREFS}" == "" ]
+  then
+    echo "Restoring Pre Phase 1 Data Cut"
+    docker-compose up --no-deps -d postgres-sirius-restore
+  else
+    echo "Restoring Post Phase 1 Data Cut"
+    docker-compose up --no-deps -d postgres-sirius-post-lay-restore
+  fi
 fi
 docker-compose ${COMPOSE_ARGS} run --rm wait-for-it -address casrec_db:5432 --timeout=30 -debug
 docker-compose ${COMPOSE_ARGS} run --rm wait-for-it -address $S3_HOST_AND_PORT --timeout=30 -debug

@@ -226,6 +226,7 @@ def wrap_override_sql(col_name: str, side, sql):
     transform_cols = validation_dict[side]["transform"]
     if col_name in transform_cols.keys():
         sql = validation_dict[side]["transform"][col_name].replace("{col}", str(sql))
+        sql = sql.replace("{casrec_schema}", str(source_schema))
     return sql
 
 
@@ -420,11 +421,13 @@ def build_validation_statements(mapping_name):
         2,
     )
     for join in validation_dict["casrec"]["joins"]:
+        join = join.replace("{casrec_schema}", str(source_schema))
         sql_add(f"{join}", 2)
 
     # WHERE
     sql_add("WHERE True", 2)
     for where_clause in validation_dict["casrec"]["where_clauses"]:
+        where_clause = where_clause.replace("{casrec_schema}", str(source_schema))
         sql_add(f"AND {where_clause}", 2)
 
     # ORDER
@@ -472,7 +475,7 @@ def build_validation_statements(mapping_name):
     sql_add("WHERE True", 2)
     for where_clause in validation_dict["sirius"]["where_clauses"]:
         where_clause = where_clause.replace(
-            "{clientsource}", str(config.migration_phase)
+            "{client_source}", str(config.migration_phase["migration_identifier"])
         )
         sql_add(f"AND {where_clause}", 2)
 
@@ -572,7 +575,7 @@ def write_column_validation_sql(
     sql_add("WHERE exc_table.caserecnumber IS NOT NULL", 3)
     for where_clause in validation_dict["sirius"]["where_clauses"]:
         where_clause = where_clause.replace(
-            "{clientsource}", str(config.migration_phase)
+            "{client_source}", str(config.migration_phase["migration_identifier"])
         )
         sql_add(f"AND {where_clause}", 4)
     sql_add(f"ORDER BY {order_by}", 3)
@@ -697,7 +700,12 @@ def pre_validation():
 
     log.info(f"Merging integrated Sirius IDs with casrec csv source data")
     conn_migration = psycopg2.connect(config.get_db_connection_string("migration"))
-    execute_sql_file(current_path / "sql", "merge_ids_up.sql", conn_migration)
+    execute_sql_file(
+        current_path / "sql",
+        "merge_ids_up.sql",
+        conn_migration,
+        casrec_schema=config.schemas["pre_transform"],
+    )
 
     if is_staging is False:
         log.info(f"Validating with SIRIUS")
@@ -725,7 +733,7 @@ def pre_validation():
         sql_path,
         complex_functions_sqlfile,
         conn_target,
-        config.schemas["pre_transform"],
+        casrec_schema=config.schemas["pre_transform"],
     )
 
     log.info(f"GENERATE SQL")
@@ -749,7 +757,11 @@ def pre_validation():
             fixedfile = open(fixed_sql_path, "r")
             for line in fixedfile:
                 line = line.replace("{target_schema}", str(target_schema))
-                line = line.replace("{clientsource}", str(config.migrationphase))
+                line = line.replace("{casrec_schema}", str(source_schema))
+                line = line.replace(
+                    "{client_source}",
+                    str(config.migration_phase["migration_identifier"]),
+                )
                 sql_add(line)
             output_statement_to_file()
         else:
@@ -786,7 +798,12 @@ def post_validation():
 
     log.info(f"Un-Merge integrated Sirius IDs with casrec csv source data")
     conn_migration = psycopg2.connect(config.get_db_connection_string("migration"))
-    execute_sql_file(current_path / "sql", "merge_ids_down.sql", conn_migration)
+    execute_sql_file(
+        current_path / "sql",
+        "merge_ids_down.sql",
+        conn_migration,
+        casrec_schema=config.schemas["pre_transform"],
+    )
 
     log.info("REPORT")
     mapping_df = get_mapping_report_df()

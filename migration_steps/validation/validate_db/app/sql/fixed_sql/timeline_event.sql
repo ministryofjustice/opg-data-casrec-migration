@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS casrec_csv.exceptions_timeline_event;
+DROP TABLE IF EXISTS {casrec_schema}.exceptions_timeline_event;
 
-CREATE TABLE casrec_csv.exceptions_timeline_event(
+CREATE TABLE {casrec_schema}.exceptions_timeline_event(
     source text default NULL,
     target text default NULL,
     case_no text default NULL,
@@ -9,7 +9,7 @@ CREATE TABLE casrec_csv.exceptions_timeline_event(
 
 -- when Title = 99, we expect title lookup to fail,
 -- so timeline_event.event.payload.personName should not include a title
-INSERT INTO casrec_csv.exceptions_timeline_event (
+INSERT INTO {casrec_schema}.exceptions_timeline_event (
     SELECT
         'pat' AS source,
         'timeline_event' AS target,
@@ -19,7 +19,7 @@ INSERT INTO casrec_csv.exceptions_timeline_event (
         SELECT
             "Case" AS case_no,
             INITCAP(SPLIT_PART(TRIM("Forename"), ' ', 1)) || ' ' || INITCAP(TRIM("Surname")) AS person_name
-        FROM casrec_csv.pat where CAST("Title" AS int) = 99
+        FROM {casrec_schema}.pat where CAST("Title" AS int) = 99
 
         EXCEPT
 
@@ -34,7 +34,7 @@ INSERT INTO casrec_csv.exceptions_timeline_event (
 );
 
 -- when Title != 99, we expect title to be in timeline_event.event.payload.personName
-INSERT INTO casrec_csv.exceptions_timeline_event (
+INSERT INTO {casrec_schema}.exceptions_timeline_event (
     SELECT
         'pat' AS source,
         'timeline_event' AS target,
@@ -43,8 +43,8 @@ INSERT INTO casrec_csv.exceptions_timeline_event (
     FROM (
         SELECT
             "Case" AS case_no,
-            casrec_csv.title_codes_lookup("Title") || ' ' || INITCAP(SPLIT_PART(TRIM("Forename"), ' ', 1)) || ' ' || INITCAP(TRIM("Surname")) AS person_name
-        FROM casrec_csv.pat where CAST("Title" AS int) != 99
+            {casrec_schema}.title_codes_lookup("Title") || ' ' || INITCAP(SPLIT_PART(TRIM("Forename"), ' ', 1)) || ' ' || INITCAP(TRIM("Surname")) AS person_name
+        FROM {casrec_schema}.pat where CAST("Title" AS int) != 99
 
         EXCEPT
 
@@ -59,7 +59,7 @@ INSERT INTO casrec_csv.exceptions_timeline_event (
 );
 
 -- expect case ref to be put into the payload in two places
-INSERT INTO casrec_csv.exceptions_timeline_event (
+INSERT INTO {casrec_schema}.exceptions_timeline_event (
     SELECT
         'pat' AS source,
         'timeline_event' AS target,
@@ -69,7 +69,7 @@ INSERT INTO casrec_csv.exceptions_timeline_event (
         SELECT
             "Case" AS case_no,
             "Case" AS person_court_ref
-        FROM casrec_csv.pat
+        FROM {casrec_schema}.pat
 
         EXCEPT
 
@@ -84,7 +84,7 @@ INSERT INTO casrec_csv.exceptions_timeline_event (
 );
 
 -- check format of event.payload.eventDate is correct (YYYY-MM-DD)
-INSERT INTO casrec_csv.exceptions_timeline_event (
+INSERT INTO {casrec_schema}.exceptions_timeline_event (
     SELECT
         'pat' AS source,
         'timeline_event' AS target,

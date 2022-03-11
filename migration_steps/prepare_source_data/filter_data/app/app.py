@@ -103,6 +103,7 @@ def main(verbose, correfs, clear):
             sql_path,
             "delete_filtered_source_data.sql",
             conn_source,
+            casrec_schema=config.migration_phase["casrec_schema"],
         )
     else:
         log.info("Nothing to delete from source data")

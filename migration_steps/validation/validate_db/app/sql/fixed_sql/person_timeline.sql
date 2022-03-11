@@ -1,13 +1,13 @@
-DROP TABLE IF EXISTS casrec_csv.exceptions_person_timeline;
+DROP TABLE IF EXISTS {casrec_schema}.exceptions_person_timeline;
 
-CREATE TABLE casrec_csv.exceptions_person_timeline(
+CREATE TABLE {casrec_schema}.exceptions_person_timeline(
     source text default NULL,
     target text default NULL,
     case_no text default NULL,
     validation_failure_reason text default NULL
 );
 
-INSERT INTO casrec_csv.exceptions_person_timeline (
+INSERT INTO {casrec_schema}.exceptions_person_timeline (
     SELECT
         'persons/timeline_event' AS source,
         'person_timeline' AS target,
@@ -23,7 +23,7 @@ INSERT INTO casrec_csv.exceptions_person_timeline (
         INNER JOIN {target_schema}.persons p
         ON te.event->'payload'->>'courtReference' = p.caserecnumber
         WHERE
-            p.clientsource = '{clientsource}'
+            p.clientsource = '{client_source}'
             AND te.event->'payload'->>'subject' = 'Migration Notice'
 
         EXCEPT

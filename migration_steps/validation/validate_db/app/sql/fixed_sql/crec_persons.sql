@@ -1,13 +1,13 @@
 -- crec_persons
-DROP TABLE IF EXISTS casrec_csv.exceptions_crec_persons;
+DROP TABLE IF EXISTS {casrec_schema}.exceptions_crec_persons;
 
-CREATE TABLE casrec_csv.exceptions_crec_persons(
+CREATE TABLE {casrec_schema}.exceptions_crec_persons(
     caserecnumber text default NULL,
     risk_score text default NULL
 );
 
 -- List of cases that have NaT for all entries in Modify for risk score (manual update based on casrec needed on these)
-INSERT INTO casrec_csv.exceptions_crec_persons(
+INSERT INTO {casrec_schema}.exceptions_crec_persons(
     SELECT
     caserecnumber,
     CAST(risk_score as INT)
@@ -17,11 +17,11 @@ INSERT INTO casrec_csv.exceptions_crec_persons(
       risk_score
       FROM (
         SELECT
-        casrec_csv.pat."Case" AS caserecnumber,
-        casrec_csv.crec."Score" AS risk_score,
+        {casrec_schema}.pat."Case" AS caserecnumber,
+        {casrec_schema}.crec."Score" AS risk_score,
         to_timestamp(CONCAT(CASE WHEN crec."Modify" = '' THEN '1900-01-01' WHEN crec."Modify" = 'NaT' THEN '1900-01-01' ELSE LEFT(crec."Modify", 10) END, ' ', crec."at"), 'YYYY-MM-DD HH24:MI:SS.US') AS sortdate
-        FROM casrec_csv.crec
-        LEFT JOIN casrec_csv.pat
+        FROM {casrec_schema}.crec
+        LEFT JOIN {casrec_schema}.pat
         ON pat."Case" = crec."Case"
     ) as crec_with_rowns) as crec_all
     WHERE rown = 1
@@ -38,7 +38,7 @@ INSERT INTO casrec_csv.exceptions_crec_persons(
             persons.risk_score AS risk_score
         FROM {target_schema}.persons
         WHERE persons.type = 'actor_client'
-        AND persons.clientsource = '{clientsource}'
+        AND persons.clientsource = '{client_source}'
         ORDER BY caserecnumber ASC
     ) as sirius_data
 );

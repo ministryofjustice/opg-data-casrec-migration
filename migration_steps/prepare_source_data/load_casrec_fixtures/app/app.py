@@ -57,9 +57,9 @@ LOG = logging.getLogger("root")
 LOG.setLevel("INFO")
 LOG.addHandler(custom_logger.MyHandler())
 
-CONFIG = get_config(os.environ.get("ENVIRONMENT"))
+config = get_config(os.environ.get("ENVIRONMENT"))
 
-SCHEMA = CONFIG.schemas["pre_transform"]
+SCHEMA = config.schemas["pre_transform"]
 
 ALL_FIXTURES = [
     ACCOUNT_FIXTURES,
@@ -96,9 +96,9 @@ def _format_sub_clause(field_and_value):
 
 
 def initialise_used_cases_tbl(e):
-    sql = "DROP TABLE IF EXISTS casrec_csv.fixture_used_cases;"
+    sql = f'DROP TABLE IF EXISTS {config.schemas["pre_transform"]}.fixture_used_cases;'
     e.execute(sql)
-    sql = "CREATE TABLE casrec_csv.fixture_used_cases (caserecnumber text);"
+    sql = f'CREATE TABLE {config.schemas["pre_transform"]}.fixture_used_cases (caserecnumber text);'
     e.execute(sql)
 
 
@@ -108,7 +108,7 @@ def insert_fixture_used_cases(e, cases):
     unique_cases = list(set(cases))
     values = "'),\n('".join(unique_cases)
     sql = f"""
-        INSERT INTO casrec_csv.fixture_used_cases
+        INSERT INTO {config.schemas["pre_transform"]}.fixture_used_cases
         VALUES ('{values}');
         """
     e.execute(sql)
@@ -119,7 +119,7 @@ if __name__ == "__main__":
     LOG.info(log_title(message="DYNAMIC FIXTURES"))
     LOG.info(f"Loading dynamic fixtures into schema {SCHEMA}")
     # set up db conn
-    db_conn_string = CONFIG.get_db_connection_string("migration")
+    db_conn_string = config.get_db_connection_string("migration")
     engine = create_engine(db_conn_string)
     initialise_used_cases_tbl(engine)
     used_cases = []

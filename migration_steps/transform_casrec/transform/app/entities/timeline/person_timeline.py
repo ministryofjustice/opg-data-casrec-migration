@@ -84,7 +84,8 @@ def insert_person_timeline(db_config, target_db, mapping_file):
             else:
                 # Filter so we only have persons imported during migration
                 persons_df = persons_df.loc[
-                    persons_df["clientsource"] == str(config.migration_phase)
+                    persons_df["clientsource"]
+                    == str(config.migration_phase["migration_identifier"])
                 ]
 
                 # Join to timeline_event on case no.

@@ -53,7 +53,7 @@ def case_deputies_2(test_config):
         "isorganisation": False,
         "casesmanagedashybrid": False,
         "supervisioncaseowner_id": 10,
-        "clientsource": test_config.migration_phase,
+        "clientsource": test_config.migration_phase["migration_identifier"],
     }
 
     config = test_config
