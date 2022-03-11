@@ -3,12 +3,15 @@ Apply post-migration fixes in order to a local Sirius db.
 This should be run after bringing Sirius up and performing
 a full successful migrate.sh run against it.
 """
+import io
 import os
 import re
 from glob import glob
 
 import sqlalchemy
 
+
+CASREC_MAPPING_SCHEMA = "casrec_mapping"
 
 user = os.environ.get("DB_USER", "api")
 password = os.environ.get("DB_PASSWORD", "api")
@@ -19,6 +22,64 @@ dbname = os.environ.get("DB_NAME", "api")
 
 conn_str = f"postgresql://{user}:{password}@{host}:{port}/{dbname}"
 engine = sqlalchemy.create_engine(conn_str, echo=True)
+
+
+casrec_user = os.environ.get("DB_USER", "casrec")
+casrec_password = os.environ.get("DB_PASSWORD", "casrec")
+casrec_host = os.environ.get("DB_HOST", "localhost")
+casrec_port = os.environ.get("DB_PORT", 6666)
+casrec_dbname = os.environ.get("DB_NAME", "casrecmigration")
+
+casrec_conn_str = f"postgresql://{casrec_user}:{casrec_password}@{casrec_host}:{casrec_port}/{casrec_dbname}"
+casrec_engine = sqlalchemy.create_engine(casrec_conn_str, echo=True)
+
+
+# cribbed from
+# https://www.pythonsheets.com/notes/python-sqlalchemy.html#fastest-bulk-insert-in-postgresql-via-copy-statement
+# create_sql: SQL to create destination table in the casrec_mapping schema (include schema name in CREATE)
+# from_sql: SQL to select records to be inserted into destination table (usually from integration schema)
+# to_table: destination table in casrec_mapping schema (fully qualified name)
+def _copy(create_sql, from_sql, to_table):
+    # Export the data from casrec table(s)
+    datafile = io.StringIO()
+
+    casrec_raw_conn = casrec_engine.raw_connection()
+    with casrec_raw_conn.cursor() as cur:
+        cur.copy_expert(
+            f"COPY ({sqlalchemy.text(from_sql)}) TO STDOUT WITH CSV HEADER", datafile
+        )
+
+    datafile.seek(0)
+
+    # Set up destination table
+    with engine.connect() as conn:
+        conn.execute(sqlalchemy.text(create_sql))
+        conn.execute(f"TRUNCATE {to_table}")
+
+    # Import data into casrec_mapping table
+    raw_conn = engine.raw_connection()
+    with raw_conn.cursor() as cur:
+        cur.copy_expert(f"COPY {to_table} FROM STDIN CSV HEADER", datafile)
+    raw_conn.commit()
+
+
+"""
+Mapping tables.
+"""
+with engine.begin() as conn:
+    conn.execute(f"CREATE SCHEMA IF NOT EXISTS {CASREC_MAPPING_SCHEMA};")
+
+# Mapping from Sirius case ID to casrec Order No
+_copy(
+    f"""
+    CREATE TABLE IF NOT EXISTS {CASREC_MAPPING_SCHEMA}.cases (
+        sirius_id int,
+        "Order No" varchar
+    )
+    """,
+    'SELECT id AS sirius_id, c_order_no AS "Order No" FROM integration.cases',
+    f"{CASREC_MAPPING_SCHEMA}.cases",
+)
 
 
 """
