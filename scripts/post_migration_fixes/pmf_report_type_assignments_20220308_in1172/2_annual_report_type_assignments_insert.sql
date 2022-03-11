@@ -1,14 +1,13 @@
 CREATE SCHEMA IF NOT EXISTS pmf_report_type_assignments_20220308_in1172;
 
--- Populate table with data we're going to change
+-- Populate table with data we're going to add
 SELECT *
 INTO pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_updates
 FROM (
 
     SELECT
-        annual_report_type_assignments_id,
+        nextval(),
         annualreport_id,
-        reporttype AS original_reporttype,
         (CASE
             WHEN
                 orderstatus = 'ACTIVE' AND supervisionlevel = 'GENERAL'
@@ -25,12 +24,11 @@ FROM (
         'pfa' AS expected_type
     FROM (
         SELECT
-            arta.id AS annual_report_type_assignments_id,
             arl.id AS annualreport_id,
-            arta.reporttype,
-            arta.type,
             c.id AS order_id,
             c.orderstatus AS orderstatus,
+            arl.reportingperiodenddate,
+            sll.appliesfrom,
             row_number() OVER (
                 PARTITION BY p.caserecnumber
                 ORDER BY arl.reportingperiodenddate DESC, sll.appliesfrom DESC
@@ -42,10 +40,8 @@ FROM (
         ON arl.client_id = p.id
         INNER JOIN cases c
         ON c.client_id = p.id
-        INNER JOIN annual_report_type_assignments arta
-        ON arl.id = arta.annualreport_id
         LEFT JOIN supervision_level_log sll
-        ON c.id = sll.order_id
+        ON sll.order_id = c.id
         WHERE arl.status = 'PENDING'
         AND c.type = 'order'
         AND p.clientsource IN ('CASRECMIGRATION')
