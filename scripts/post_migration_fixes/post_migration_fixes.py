@@ -109,6 +109,7 @@ _copy(
     f"{CASREC_MAPPING_SCHEMA}.annual_report_type_assignments",
 )
 
+
 # Mapping from Sirius annual_report_logs ID to migrated status
 _copy(
     f"""
