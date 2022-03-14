@@ -1,3 +1,10 @@
+-- casrec_mapping.annual_report_logs is populated from:
+-- SELECT
+-- id AS sirius_id,
+-- casrec_details->0->>'casrec_row_id' AS casrec_row_id
+-- FROM integration.annual_report_logs
+-- WHERE casrec_details != '{}'
+
 -- 1. New schema per update pmf_[table]_[field]_[date]_[Jira]
 CREATE SCHEMA if not exists pmf_annual_report_logs_reviewstatus_20220310_in1198;
 
@@ -11,33 +18,25 @@ FROM (
         'STAFF_PRESELECTED' AS expected_reviewstatus
     FROM (
         WITH
-        -- most-recent reporting period rows with Rev Stat = 'S'
-        casrec_latest_s_accounts AS (
-            -- most-recent reporting period rows (via casrec account table)
+        -- casrec reporting periods with Rev Stat = 'S'
+        casrec_s_accounts AS (
             SELECT
+                casrec_row_id,
                 "Case" AS casrec_case,
                 "Rev Stat" AS casrec_rev_stat
-            FROM (
-                SELECT "Case", "Rev Stat",
-                row_number() OVER (PARTITION BY "Case" ORDER BY "End Date" DESC) as rownum
-                FROM casrec_csv.account
-            ) s_cases
-            WHERE rownum = 1
-            -- only keep the most-recent account rows with Rev Stat = 'S'
-            AND "Rev Stat" = 'S'
+            FROM casrec_csv.account
+            WHERE "Rev Stat" = 'S'
         )
-        -- inner join above to the most-recent reporting period rows to get the arls we're interested in;
-        -- note that as we're starting from the annual_report_logs table, we know we're only
-        -- getting reports associated with an active order in casrec, so we don't need to do
-        -- any additional filtering here
         SELECT
             arl.id AS sirius_arl_id,
             arl.reviewstatus AS original_reviewstatus
         FROM annual_report_logs arl
         INNER JOIN persons p
         ON arl.client_id = p.id
-        INNER JOIN casrec_latest_s_accounts a
-        ON p.caserecnumber = a.casrec_case
+        INNER JOIN casrec_mapping.annual_report_logs cma
+        ON cma.sirius_id = arl.id
+        INNER JOIN casrec_s_accounts a
+        ON cma.casrec_row_id = a.casrec_row_id
         WHERE p.clientsource IN ('CASRECMIGRATION')
         AND arl.status = 'PENDING'
     ) arls
@@ -74,6 +73,3 @@ ROLLBACK;
 -- OR
 -- affected row count correct: commit
 COMMIT;
-
-
-
