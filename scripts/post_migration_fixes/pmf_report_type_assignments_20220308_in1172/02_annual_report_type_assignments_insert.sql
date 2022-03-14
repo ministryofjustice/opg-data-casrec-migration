@@ -2,78 +2,49 @@ CREATE SCHEMA IF NOT EXISTS pmf_report_type_assignments_20220308_in1172;
 
 -- Populate table with data we're going to add
 SELECT *
-INTO pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_updates
+INTO pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_inserts
 FROM (
 
     SELECT
-        nextval(),
+        nextval('annual_report_type_assignments_id_seq') AS id,
         annualreport_id,
         (CASE
-            WHEN
-                orderstatus = 'ACTIVE' AND supervisionlevel = 'GENERAL'
-            THEN
-                CASE
-                    WHEN assetlevel IN ('HIGH', 'UNKNOWN') THEN 'OPG102'
-                    WHEN assetlevel = 'LOW' THEN 'OPG103'
-                    ELSE NULL
-                END
-            ELSE
-                NULL
-        END) AS expected_reporttype,
-        type AS original_type,
-        'pfa' AS expected_type
+            WHEN supervisionlevel = 'GENERAL' THEN 'OPG102'
+            WHEN supervisionlevel = 'MINIMAL' THEN 'OPG103'
+            ELSE NULL
+        END) AS reporttype,
+        'pfa' AS type
     FROM (
         SELECT
             arl.id AS annualreport_id,
-            c.id AS order_id,
-            c.orderstatus AS orderstatus,
-            arl.reportingperiodenddate,
-            sll.appliesfrom,
-            row_number() OVER (
-                PARTITION BY p.caserecnumber
-                ORDER BY arl.reportingperiodenddate DESC, sll.appliesfrom DESC
-            ) AS rownum,
-            sll.supervisionlevel AS supervisionlevel,
-            sll.assetlevel AS assetlevel
+            arl.casesupervisionlevel AS supervisionlevel
         FROM annual_report_logs arl
         INNER JOIN persons p
         ON arl.client_id = p.id
         INNER JOIN cases c
         ON c.client_id = p.id
-        LEFT JOIN supervision_level_log sll
-        ON sll.order_id = c.id
         WHERE arl.status = 'PENDING'
         AND c.type = 'order'
+        AND c.orderstatus = 'ACTIVE'
         AND p.clientsource IN ('CASRECMIGRATION')
     ) AS reports
-    WHERE rownum = 1
 
 ) to_update;
 
--- Populate audit table
-SELECT arta.*
-INTO pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_updates_audit
-FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_updates up
-INNER JOIN annual_report_type_assignments arta
-ON up.annual_report_type_assignments_id = arta.id;
-
 BEGIN;
-    UPDATE annual_report_type_assignments
-    SET reporttype = up.expected_reporttype, type = up.expected_type
-    FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_updates up
-    WHERE id = up.annual_report_type_assignments_id;
+    INSERT INTO annual_report_type_assignments (id, annualreport_id, reporttype, type)
+    SELECT id, annualreport_id, reporttype, type
+    FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_inserts;
 
-    -- Validation script (should be 0 rows returned after update is done)
-    SELECT annual_report_type_assignments_id, expected_reporttype, expected_type
-    FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_updates up
+    -- Validation
+    SELECT annualreport_id, reporttype, type
+    FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_inserts
     EXCEPT
-    SELECT arta.id, arta.reporttype, arta.type
-    FROM annual_report_type_assignments arta
-    INNER JOIN pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_updates_audit au
-    ON arta.id = au.id;
+    SELECT annualreport_id, reporttype, type
+    FROM annual_report_type_assignments;
 
--- Manually run if counts incorrect
+-- Manually run if validation incorrect
 ROLLBACK;
 
--- Manually run if counts correct
+-- Manually run if validation correct
 COMMIT;
