@@ -235,6 +235,38 @@ class CountsVerification:
         )
         print(table)
 
+    def deletion_counts(self):
+        log.info(f"=== Deletions Schema Counts ===")
+        sql = f"""
+            WITH tbl AS
+            (SELECT table_schema,
+            TABLE_NAME
+            FROM information_schema.tables
+            WHERE TABLE_NAME not like 'pg_%'
+            AND table_schema = '{config.schemas["deletions"]}')
+            SELECT * FROM
+            (
+                SELECT
+                table_schema as deletion_schema,
+                TABLE_NAME as deletion_table,
+                (
+                    xpath('/row/c/text()', query_to_xml(format('select count(*) as c from %I.%I',
+                    table_schema, TABLE_NAME), FALSE, TRUE, ''))
+                )[1]::text::int AS row_count
+                FROM tbl
+                WHERE TABLE_NAME NOT IN ('client_persons', 'base_clients_persons', 'pilot_one_deputies', 'pilot_one_clients')
+            ) as subselect
+            WHERE row_count > 0
+            ORDER BY row_count DESC;
+        """
+        df_deletion_values = pd.read_sql(sql=sql, con=conn_target["connection"])
+        table = tabulate(
+            df_deletion_values,
+            ["deletion_schema", "deletion_table", "row_count"],
+            tablefmt="psql",
+        )
+        print(table)
+
     def do_pre_delete(self):
         self.reset_schema()
         self.count_cp1_data("pre_delete")
@@ -255,6 +287,7 @@ class CountsVerification:
         self.output_counts()
 
     def do_post_migration(self):
+        self.deletion_counts()
         self.check_schema()
         self.count_cp1_data("post_migrate")
         self.count_non_supervision("post_migrate")

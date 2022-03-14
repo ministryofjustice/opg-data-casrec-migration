@@ -31,9 +31,15 @@ then
   read -rp "Migrate specific Correfs? (comma-separated list) [All]: " CORREFS
   if [ "${CORREFS}" == "" ]
   then
-      echo "Migrating ALL Correfs"
+    DEFAULT_P2_CORREFS="ODP,ORS,ORV,PGA,PGC,PGH,PGR,RGY,S1A,S1N,NA,NEW,A1,A2,A2A,A3,A3G,ADC,ARD,C1,DCS,DOD,FOE,HW"
+    CORREFS=${DEFAULT_P2_CORREFS}
+    echo "Migrating preset phase 2 correfs and data cut (${DEFAULT_P2_CORREFS})"
+  elif [ "${CORREFS}" == "ALL" ]
+  then
+    CORREFS=""
+    echo "Migrating ALL Correfs on Premigrated data source"
   else
-      echo "Migrating Correfs ${CORREFS} only"
+    echo "Migrating Correfs ${CORREFS} only"
   fi
 
   read -rp "Migrate to full sirius app? (y/n) [n]: " FULL_SIRIUS_APP

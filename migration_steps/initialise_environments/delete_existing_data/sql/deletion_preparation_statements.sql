@@ -35,7 +35,9 @@ WHERE p.type = 'actor_client' and p.caseactorgroup = 'CLIENT-PILOT-ONE'
 UNION
 SELECT distinct p.feepayer_id
 FROM persons p
-WHERE p.type = 'actor_client' and p.caseactorgroup = 'CLIENT-PILOT-ONE';
+WHERE p.type = 'actor_client'
+AND p.caseactorgroup = 'CLIENT-PILOT-ONE'
+AND p.feepayer_id IS NOT NULL;
 
 CREATE UNIQUE INDEX stub_pilot_one_deputies_idx ON {deletions_schema}.pilot_one_deputies (id);
 
