@@ -1,10 +1,10 @@
-CREATE SCHEMA IF NOT EXISTS countverification;
+CREATE SCHEMA IF NOT EXISTS {count_schema};
 
-CREATE TABLE IF NOT EXISTS countverification.counts (
+CREATE TABLE IF NOT EXISTS {count_schema}.counts (
     supervision_table varchar(100)
 );
 
-INSERT INTO countverification.counts (supervision_table)
+INSERT INTO {count_schema}.counts (supervision_table)
 VALUES
 ('addresses'),
 ('annual_report_letter_status'),
@@ -77,4 +77,4 @@ VALUES
 ('deputy_person_document')
 ;
 
-CREATE SCHEMA IF NOT EXISTS countverificationaudit;
+CREATE SCHEMA IF NOT EXISTS {count_audit_schema};

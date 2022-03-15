@@ -4,6 +4,11 @@ import psycopg2
 
 from table_helpers import check_enabled_by_table_name
 
+environment = os.environ.get("ENVIRONMENT")
+import helpers
+
+config = helpers.get_config(env=environment)
+
 log = logging.getLogger("root")
 
 
@@ -87,7 +92,7 @@ def set_finance_order_finance_person_ids(db_config, cursor):
             INNER JOIN {db_config['target_schema']}.finance_person ON cases.client_id = finance_person.person_id
             INNER JOIN {db_config['target_schema']}.persons ON cases.client_id = persons.id
             WHERE persons.type = 'actor_client'
-            AND persons.clientsource = 'CASRECMIGRATION'
+            AND persons.clientsource = '{config.migration_phase["migration_identifier"]}'
             AND cases.casetype = 'ORDER'
         )
 

@@ -4,13 +4,13 @@
 -- Add to this file as we implement each entity and understand link to client caseref.
 
 -- Filters Crec
-DELETE FROM casrec_csv.crec WHERE "Case" IN (
-    SELECT caserecnumber FROM casrec_csv.cases_to_filter_out
+DELETE FROM {casrec_schema}.crec WHERE "Case" IN (
+    SELECT caserecnumber FROM {casrec_schema}.cases_to_filter_out
 );
 
 -- Filters deputyships
-DELETE FROM casrec_csv.deputyship WHERE "Case" IN (
-    SELECT caserecnumber FROM casrec_csv.cases_to_filter_out
+DELETE FROM {casrec_schema}.deputyship WHERE "Case" IN (
+    SELECT caserecnumber FROM {casrec_schema}.cases_to_filter_out
 );
 
 -- Filters:
@@ -21,57 +21,57 @@ DELETE FROM casrec_csv.deputyship WHERE "Case" IN (
 -- "deputy_violent_warnings",
 -- "deputy_daytime_phonenumbers",
 -- "deputy_evening_phonenumbers",
-DELETE FROM casrec_csv.deputy WHERE NOT EXISTS (
-    SELECT 1 FROM casrec_csv.deputyship WHERE deputyship."Deputy No" = deputy."Deputy No"
+DELETE FROM {casrec_schema}.deputy WHERE NOT EXISTS (
+    SELECT 1 FROM {casrec_schema}.deputyship WHERE deputyship."Deputy No" = deputy."Deputy No"
 );
 
 -- Filters deputy_addresses
-DELETE FROM casrec_csv.deputy_address WHERE NOT EXISTS (
-    SELECT 1 FROM casrec_csv.deputyship WHERE deputyship."Dep Addr No" = deputy_address."Dep Addr No"
+DELETE FROM {casrec_schema}.deputy_address WHERE NOT EXISTS (
+    SELECT 1 FROM {casrec_schema}.deputyship WHERE deputyship."Dep Addr No" = deputy_address."Dep Addr No"
 );
 
 -- Filters deputy_notes
-DELETE FROM casrec_csv.deputy_remarks WHERE NOT EXISTS (
-    SELECT 1 FROM casrec_csv.deputyship WHERE deputyship."Deputy No" = deputy_remarks."Deputy No"
+DELETE FROM {casrec_schema}.deputy_remarks WHERE NOT EXISTS (
+    SELECT 1 FROM {casrec_schema}.deputyship WHERE deputyship."Deputy No" = deputy_remarks."Deputy No"
 );
 
 -- Filters:
 -- "cases",
 -- "supervision_level_log"
-DELETE FROM casrec_csv.order WHERE "Case" IN (
-    SELECT caserecnumber FROM casrec_csv.cases_to_filter_out
+DELETE FROM {casrec_schema}.order WHERE "Case" IN (
+    SELECT caserecnumber FROM {casrec_schema}.cases_to_filter_out
 );
 
 -- Filters:
 -- "supervision_notes"
 -- "warnings" (P1 client remarks)
-DELETE FROM casrec_csv.remarks WHERE "Case" IN (
-    SELECT caserecnumber FROM casrec_csv.cases_to_filter_out
+DELETE FROM {casrec_schema}.remarks WHERE "Case" IN (
+    SELECT caserecnumber FROM {casrec_schema}.cases_to_filter_out
 );
 
 -- Filters visits
-DELETE FROM casrec_csv.repvis WHERE "Case" IN (
-    SELECT caserecnumber FROM casrec_csv.cases_to_filter_out
+DELETE FROM {casrec_schema}.repvis WHERE "Case" IN (
+    SELECT caserecnumber FROM {casrec_schema}.cases_to_filter_out
 );
 
 -- Filters:
 -- "annual_report_logs"
 -- "annual_report_lodging_details"
-DELETE FROM casrec_csv.account WHERE "Case" IN (
-    SELECT caserecnumber FROM casrec_csv.cases_to_filter_out
+DELETE FROM {casrec_schema}.account WHERE "Case" IN (
+    SELECT caserecnumber FROM {casrec_schema}.cases_to_filter_out
 );
 
 -- Filters:
 -- "finance_invoice"
 -- "finance_ledger"
 -- "finance_ledger_allocation"
-DELETE FROM casrec_csv.feeexport WHERE "Case" IN (
-    SELECT caserecnumber FROM casrec_csv.cases_to_filter_out
+DELETE FROM {casrec_schema}.feeexport WHERE "Case" IN (
+    SELECT caserecnumber FROM {casrec_schema}.cases_to_filter_out
 );
 
 -- Filters tasks
-DELETE FROM casrec_csv.sup_activity WHERE "Case" IN (
-    SELECT caserecnumber FROM casrec_csv.cases_to_filter_out
+DELETE FROM {casrec_schema}.sup_activity WHERE "Case" IN (
+    SELECT caserecnumber FROM {casrec_schema}.cases_to_filter_out
 );
 
 -- Filters:
@@ -86,11 +86,11 @@ DELETE FROM casrec_csv.sup_activity WHERE "Case" IN (
 -- "client_violent_warnings",
 -- "finance_remissions",
 -- "finance_exemptions",
-DELETE FROM casrec_csv.pat WHERE "Case" IN (
-    SELECT caserecnumber FROM casrec_csv.cases_to_filter_out
+DELETE FROM {casrec_schema}.pat WHERE "Case" IN (
+    SELECT caserecnumber FROM {casrec_schema}.cases_to_filter_out
 );
 
 -- Filters casrec_letters (only used for validation purposes)
-DELETE FROM casrec_csv.casrec_letters WHERE "caseno" IN (
-    SELECT caserecnumber FROM casrec_csv.cases_to_filter_out
+DELETE FROM {casrec_schema}.casrec_letters WHERE "caseno" IN (
+    SELECT caserecnumber FROM {casrec_schema}.cases_to_filter_out
 );

@@ -17,12 +17,12 @@
             "from_table": "order",
             "transform": {},
             "joins": [
-                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\""
+                "LEFT JOIN {casrec_schema}.pat ON {casrec_schema}.pat.\"Case\" = {casrec_schema}.order.\"Case\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_bonds_active exc_table ON exc_table.caserecnumber = pat.\"Case\"\n",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_bonds_active exc_table ON exc_table.caserecnumber = pat.\"Case\"\n",
             "where_clauses": [
-                "casrec_csv.order.\"Bond Rqd\" = 'Y'",
-                "casrec_csv.order.\"Ord Stat\" != 'Open'"
+                "{casrec_schema}.order.\"Bond Rqd\" = 'Y'",
+                "{casrec_schema}.order.\"Ord Stat\" != 'Open'"
             ]
         },
         "sirius": {
@@ -32,9 +32,9 @@
                 "LEFT JOIN {target_schema}.cases ON cases.id = bonds.order_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = cases.client_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_bonds_active exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_bonds_active exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{client_source}'",
                 "bonds.bondcompanyname != 'Security dispensed with'"
             ]
         },
@@ -61,12 +61,12 @@
             "from_table": "order",
             "transform": {},
             "joins": [
-                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\""
+                "LEFT JOIN {casrec_schema}.pat ON {casrec_schema}.pat.\"Case\" = {casrec_schema}.order.\"Case\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_bonds_dispensed exc_table ON exc_table.caserecnumber = pat.\"Case\"\n",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_bonds_dispensed exc_table ON exc_table.caserecnumber = pat.\"Case\"\n",
             "where_clauses": [
-                "casrec_csv.order.\"Bond Rqd\" = 'S'",
-                "casrec_csv.order.\"Ord Stat\" != 'Open'"
+                "{casrec_schema}.order.\"Bond Rqd\" = 'S'",
+                "{casrec_schema}.order.\"Ord Stat\" != 'Open'"
             ]
         },
         "sirius": {
@@ -76,9 +76,9 @@
                 "LEFT JOIN {target_schema}.cases ON cases.id = bonds.order_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = cases.client_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_bonds_dispensed exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_bonds_dispensed exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{client_source}'",
                 "bonds.bondcompanyname = 'Security dispensed with'"
             ]
         },
@@ -112,12 +112,12 @@
                 "howdeputyappointed": "CASE WHEN deputyships.\"Joint\" = '1' THEN 'SOLE' WHEN deputyships.\"Joint\" = '2' THEN 'JOINT' WHEN deputyships.\"Joint\" IN ('3', '4') THEN 'JOINTANDSEVERALLY' ELSE NULL END"
             },
             "joins": [
-                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\"",
-                "LEFT JOIN (SELECT \"Order No\", \"Joint\" FROM (SELECT \"Order No\", \"Joint\", row_number() OVER (PARTITION BY \"Order No\" ORDER BY \"Create\" DESC, \"at\" DESC) AS rownum FROM (SELECT \"Order No\", \"Joint\", \"Create\", \"at\" FROM casrec_csv.deputyship WHERE \"Joint\" != '5') AS non_five_deputyships) AS numbered_deputyships WHERE rownum = 1) AS deputyships ON casrec_csv.order.\"Order No\" = deputyships.\"Order No\""
+                "LEFT JOIN {casrec_schema}.pat ON {casrec_schema}.pat.\"Case\" = {casrec_schema}.order.\"Case\"",
+                "LEFT JOIN (SELECT \"Order No\", \"Joint\" FROM (SELECT \"Order No\", \"Joint\", row_number() OVER (PARTITION BY \"Order No\" ORDER BY \"Create\" DESC, \"at\" DESC) AS rownum FROM (SELECT \"Order No\", \"Joint\", \"Create\", \"at\" FROM {casrec_schema}.deputyship WHERE \"Joint\" != '5') AS non_five_deputyships) AS numbered_deputyships WHERE rownum = 1) AS deputyships ON {casrec_schema}.order.\"Order No\" = deputyships.\"Order No\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_cases exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_cases exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
-                "casrec_csv.order.\"Ord Stat\" != 'Open'"
+                "{casrec_schema}.order.\"Ord Stat\" != 'Open'"
             ]
         },
         "sirius": {
@@ -126,10 +126,10 @@
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = cases.client_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_cases exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_cases exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{client_source}'",
                 "cases.casetype = 'ORDER'"
             ]
         },
@@ -150,7 +150,7 @@
                 "address_lines": "CONCAT(\"Adrs1\", ',', \"Adrs2\")"
             },
             "joins": [],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_addresses exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_client_addresses exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": []
         },
         "sirius": {
@@ -161,10 +161,10 @@
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = addresses.person_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_addresses exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_client_addresses exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{client_source}'"
             ]
         },
         "manual_checks": {
@@ -182,9 +182,9 @@
             "from_table": "pat",
             "transform": {},
             "joins": [],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_death_notifications exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_client_death_notifications exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
-                "casrec_csv.pat.\"Term Type\" = 'D'"
+                "{casrec_schema}.pat.\"Term Type\" = 'D'"
             ]
         },
         "sirius": {
@@ -193,10 +193,10 @@
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = death_notifications.person_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_death_notifications exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_client_death_notifications exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{client_source}'"
             ]
         },
         "manual_checks": {
@@ -212,9 +212,9 @@
             "from_table": "pat",
             "transform": {},
             "joins": [],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_nodebtchase_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_client_nodebtchase_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
-                "casrec_csv.pat.\"Debt chase\" = '1'"
+                "{casrec_schema}.pat.\"Debt chase\" = '1'"
             ]
         },
         "sirius": {
@@ -224,10 +224,10 @@
                 "LEFT JOIN {target_schema}.persons ON persons.id = person_warning.person_id",
                 "LEFT JOIN {target_schema}.warnings ON warnings.id = person_warning.warning_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_nodebtchase_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_client_nodebtchase_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{client_source}'",
                 "warnings.warningtype = 'Other'",
                 "warnings.warningtext = 'Casrec Migration - No Debt to be chased'"
             ]
@@ -254,7 +254,7 @@
             "from_table": "pat",
             "transform": {},
             "joins": [],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_persons exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_client_persons exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": []
         },
         "sirius": {
@@ -263,10 +263,10 @@
                 "updateddate": "cast({col} as date)"
             },
             "joins": [],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_persons exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_client_persons exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{client_source}'"
             ]
         },
         "manual_checks": {
@@ -285,9 +285,9 @@
             "from_table": "pat",
             "transform": {},
             "joins": [],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_phonenumbers exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_client_phonenumbers exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
-                "casrec_csv.pat.\"Client Phone\" != ''"
+                "{casrec_schema}.pat.\"Client Phone\" != ''"
             ]
         },
         "sirius": {
@@ -296,10 +296,10 @@
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = phonenumbers.person_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_phonenumbers exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_client_phonenumbers exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{client_source}'"
             ]
         },
         "manual_checks": {
@@ -315,9 +315,9 @@
             "from_table": "pat",
             "transform": {},
             "joins": [],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_saarcheck_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_client_saarcheck_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
-                "casrec_csv.pat.\"SAAR Check\" = 'Y'"
+                "{casrec_schema}.pat.\"SAAR Check\" = 'Y'"
             ]
         },
         "sirius": {
@@ -327,10 +327,10 @@
                 "LEFT JOIN {target_schema}.persons ON persons.id = person_warning.person_id",
                 "LEFT JOIN {target_schema}.warnings ON warnings.id = person_warning.warning_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_saarcheck_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_client_saarcheck_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{client_source}'",
                 "warnings.warningtype = 'Other'",
                 "warnings.warningtext = 'Casrec Migration - SAAR Check Warning'"
             ]
@@ -348,9 +348,9 @@
             "from_table": "pat",
             "transform": {},
             "joins": [],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_special_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_client_special_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
-                "casrec_csv.pat.\"SIM\" = '3'"
+                "{casrec_schema}.pat.\"SIM\" = '3'"
             ]
         },
         "sirius": {
@@ -360,10 +360,10 @@
                 "LEFT JOIN {target_schema}.persons ON persons.id = person_warning.person_id",
                 "LEFT JOIN {target_schema}.warnings ON warnings.id = person_warning.warning_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_special_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_client_special_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{client_source}'",
                 "warnings.warningtype = 'REM - Special Interest Markers'",
                 "warnings.warningtext = 'Casrec Migration - Special Interest Warning'"
             ]
@@ -381,9 +381,9 @@
             "from_table": "pat",
             "transform": {},
             "joins": [],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_violent_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_client_violent_warnings exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
-                "casrec_csv.pat.\"VWM\" = '4'"
+                "{casrec_schema}.pat.\"VWM\" = '4'"
             ]
         },
         "sirius": {
@@ -393,10 +393,10 @@
                 "LEFT JOIN {target_schema}.persons ON persons.id = person_warning.person_id",
                 "LEFT JOIN {target_schema}.warnings ON warnings.id = person_warning.warning_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_violent_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_client_violent_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{client_source}'",
                 "warnings.warningtype = 'REM - Violence Warnings'",
                 "warnings.warningtext = 'Casrec Migration - Violent Warning'"
             ]
@@ -414,11 +414,11 @@
             "from_table": "remarks",
             "transform": {},
             "joins": [
-                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.remarks.\"Case\""
+                "LEFT JOIN {casrec_schema}.pat ON {casrec_schema}.pat.\"Case\" = {casrec_schema}.remarks.\"Case\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_p1_client_remarks_warnings exc_table ON exc_table.caserecnumber = remarks.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_p1_client_remarks_warnings exc_table ON exc_table.caserecnumber = remarks.\"Case\"",
             "where_clauses": [
-                "casrec_csv.remarks.\"Pri\" = '1'"
+                "{casrec_schema}.remarks.\"Pri\" = '1'"
             ]
         },
         "sirius": {
@@ -428,10 +428,10 @@
                 "LEFT JOIN {target_schema}.persons ON persons.id = person_warning.person_id",
                 "LEFT JOIN {target_schema}.warnings ON warnings.id = person_warning.warning_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_p1_client_remarks_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_p1_client_remarks_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{client_source}'",
                 "warnings.warningtype = 'Other'",
                 "(warnings.warningtext NOT IN ('Casrec Migration - SAAR Check Warning', 'Casrec Migration - No Debt to be chased') OR warnings.warningtext IS NULL)"
             ]
@@ -451,17 +451,17 @@
             "from_table": "crec",
             "transform": {},
             "joins": [],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_crec_persons exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_crec_persons exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": []
         },
         "sirius": {
             "from_table": "persons",
             "transform": {},
             "joins": [],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_crec_persons exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_crec_persons exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{client_source}'"
             ]
         },
         "manual_checks": {
@@ -479,17 +479,17 @@
             "from_table": "order",
             "transform": {},
             "joins": [],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_client_status exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_client_status exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": []
         },
         "sirius": {
             "from_table": "persons",
             "transform": {},
             "joins": [],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_crec_persons exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_crec_persons exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{client_source}'"
             ]
         },
         "manual_checks": {
@@ -517,13 +517,13 @@
             "from_table": "deputyship",
             "transform": {},
             "joins": [
-                "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\"",
-                "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\""
+                "LEFT JOIN {casrec_schema}.order ON {casrec_schema}.order.\"Order No\" = {casrec_schema}.deputyship.\"Order No\"",
+                "LEFT JOIN {casrec_schema}.deputy ON {casrec_schema}.deputyship.\"Deputy No\" = {casrec_schema}.deputy.\"Deputy No\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_daytime_phonenumbers exc_table ON exc_table.caserecnumber = casrec_csv.order.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_deputy_daytime_phonenumbers exc_table ON exc_table.caserecnumber = {casrec_schema}.order.\"Case\"",
             "where_clauses": [
-                "casrec_csv.deputy.\"Contact Telephone\" != ''",
-                "casrec_csv.order.\"Ord Stat\" != 'Open'"
+                "{casrec_schema}.deputy.\"Contact Telephone\" != ''",
+                "{casrec_schema}.order.\"Ord Stat\" != 'Open'"
             ]
         },
         "sirius": {
@@ -534,10 +534,10 @@
                 "LEFT JOIN {target_schema}.persons ON persons.id = order_deputy.deputy_id",
                 "LEFT JOIN {target_schema}.phonenumbers ON phonenumbers.person_id = persons.id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_daytime_phonenumbers exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_deputy_daytime_phonenumbers exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{client_source}'",
                 "phonenumbers.type = 'Work'"
             ]
         },
@@ -566,13 +566,13 @@
             "from_table": "deputyship",
             "transform": {},
             "joins": [
-                "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\"",
-                "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\""
+                "LEFT JOIN {casrec_schema}.order ON {casrec_schema}.order.\"Order No\" = {casrec_schema}.deputyship.\"Order No\"",
+                "LEFT JOIN {casrec_schema}.deputy ON {casrec_schema}.deputyship.\"Deputy No\" = {casrec_schema}.deputy.\"Deputy No\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_evening_phonenumbers exc_table ON exc_table.caserecnumber = casrec_csv.order.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_deputy_evening_phonenumbers exc_table ON exc_table.caserecnumber = {casrec_schema}.order.\"Case\"",
             "where_clauses": [
-                "casrec_csv.deputy.\"Contact Tele2\" != ''",
-                "casrec_csv.order.\"Ord Stat\" != 'Open'"
+                "{casrec_schema}.deputy.\"Contact Tele2\" != ''",
+                "{casrec_schema}.order.\"Ord Stat\" != 'Open'"
             ]
         },
         "sirius": {
@@ -583,10 +583,10 @@
                 "LEFT JOIN {target_schema}.persons ON persons.id = order_deputy.deputy_id",
                 "LEFT JOIN {target_schema}.phonenumbers ON phonenumbers.person_id = persons.id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_evening_phonenumbers exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_deputy_evening_phonenumbers exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{client_source}'",
                 "phonenumbers.type = 'Home'"
             ]
         },
@@ -618,13 +618,13 @@
             "from_table": "deputy",
             "transform": {},
             "joins": [
-                "LEFT JOIN casrec_csv.deputyship ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\"",
-                "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\""
+                "LEFT JOIN {casrec_schema}.deputyship ON {casrec_schema}.deputyship.\"Deputy No\" = {casrec_schema}.deputy.\"Deputy No\"",
+                "LEFT JOIN {casrec_schema}.order ON {casrec_schema}.order.\"Order No\" = {casrec_schema}.deputyship.\"Order No\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_death_notifications exc_table\n    ON exc_table.caserecnumber = deputyship.\"Case\"\n    AND exc_table.casesubtype = casrec_csv.order_type_lookup(casrec_csv.order.\"Ord Type\")\n    AND exc_table.orderdate = casrec_csv.order.\"Made Date\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_deputy_death_notifications exc_table\n    ON exc_table.caserecnumber = deputyship.\"Case\"\n    AND exc_table.casesubtype = {casrec_schema}.order_type_lookup({casrec_schema}.order.\"Ord Type\")\n    AND exc_table.orderdate = {casrec_schema}.order.\"Made Date\"",
             "where_clauses": [
-                "casrec_csv.deputy.\"Stat\" = '99'",
-                "casrec_csv.order.\"Ord Stat\" != 'Open'"
+                "{casrec_schema}.deputy.\"Stat\" = '99'",
+                "{casrec_schema}.order.\"Ord Stat\" != 'Open'"
             ]
         },
         "sirius": {
@@ -635,10 +635,10 @@
                 "LEFT JOIN {target_schema}.order_deputy ON order_deputy.deputy_id = death_notifications.person_id",
                 "LEFT JOIN {target_schema}.cases ON cases.id = order_deputy.order_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_death_notifications exc_table ON exc_table.caserecnumber = cases.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_deputy_death_notifications exc_table ON exc_table.caserecnumber = cases.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{client_source}'"
             ]
         },
         "manual_checks": {
@@ -692,22 +692,22 @@
         "casrec": {
             "from_table": "deputyship",
             "transform": {
-                "deputynumber": "CAST(NULLIF(TRIM(casrec_csv.deputy.\"Deputy No\"), '') AS integer)",
-                "organisationname": "CASE WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'PA' THEN transf_capitalise_first_letter(TRIM(casrec_csv.deputy.\"Dep Surname\")) ELSE NULL END",
-                "deputysubtype": "CASE WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'PA' THEN 'ORGANISATION' WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'LAY' THEN 'PERSON' ELSE NULL END",
-                "surname": "CASE WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'PA' THEN NULL ELSE transf_capitalise_first_letter(NULLIF(TRIM(casrec_csv.deputy.\"Dep Surname\"), '')) END",
-                "salutation": "CASE WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'PA' THEN NULL ELSE casrec_csv.title_codes_lookup(TRIM(casrec_csv.deputy.\"Title\")) END",
-                "firstname": "CASE WHEN casrec_csv.deputy_type_lookup(TRIM(casrec_csv.deputy.\"Dep Type\")) = 'PA' THEN NULL ELSE transf_first_word(NULLIF(TRIM(casrec_csv.deputy.\"Dep Forename\"), '')) END",
-                "othernames": "NULLIF(TRIM(transf_last_words(NULLIF(TRIM(casrec_csv.deputy.\"Dep Forename\"), ''))), '')"
+                "deputynumber": "CAST(NULLIF(TRIM({casrec_schema}.deputy.\"Deputy No\"), '') AS integer)",
+                "organisationname": "CASE WHEN {casrec_schema}.deputy_type_lookup(TRIM({casrec_schema}.deputy.\"Dep Type\")) = 'PA' THEN transf_capitalise_first_letter(TRIM({casrec_schema}.deputy.\"Dep Surname\")) ELSE NULL END",
+                "deputysubtype": "CASE WHEN {casrec_schema}.deputy_type_lookup(TRIM({casrec_schema}.deputy.\"Dep Type\")) = 'PA' THEN 'ORGANISATION' WHEN {casrec_schema}.deputy_type_lookup(TRIM({casrec_schema}.deputy.\"Dep Type\")) = 'LAY' THEN 'PERSON' ELSE NULL END",
+                "surname": "CASE WHEN {casrec_schema}.deputy_type_lookup(TRIM({casrec_schema}.deputy.\"Dep Type\")) = 'PA' THEN NULL ELSE transf_capitalise_first_letter(NULLIF(TRIM({casrec_schema}.deputy.\"Dep Surname\"), '')) END",
+                "salutation": "CASE WHEN {casrec_schema}.deputy_type_lookup(TRIM({casrec_schema}.deputy.\"Dep Type\")) = 'PA' THEN NULL ELSE {casrec_schema}.title_codes_lookup(TRIM({casrec_schema}.deputy.\"Title\")) END",
+                "firstname": "CASE WHEN {casrec_schema}.deputy_type_lookup(TRIM({casrec_schema}.deputy.\"Dep Type\")) = 'PA' THEN NULL ELSE transf_first_word(NULLIF(TRIM({casrec_schema}.deputy.\"Dep Forename\"), '')) END",
+                "othernames": "NULLIF(TRIM(transf_last_words(NULLIF(TRIM({casrec_schema}.deputy.\"Dep Forename\"), ''))), '')"
             },
             "joins": [
-                "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\"",
-                "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\"",
-                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\""
+                "LEFT JOIN {casrec_schema}.order ON {casrec_schema}.order.\"Order No\" = {casrec_schema}.deputyship.\"Order No\"",
+                "LEFT JOIN {casrec_schema}.deputy ON {casrec_schema}.deputyship.\"Deputy No\" = {casrec_schema}.deputy.\"Deputy No\"",
+                "LEFT JOIN {casrec_schema}.pat ON {casrec_schema}.pat.\"Case\" = {casrec_schema}.order.\"Case\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_persons exc_table\n    ON exc_table.caserecnumber = pat.\"Case\"\n    AND exc_table.casesubtype = casrec_csv.order_type_lookup(casrec_csv.order.\"Ord Type\")\n    AND exc_table.orderdate = casrec_csv.order.\"Made Date\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_deputy_persons exc_table\n    ON exc_table.caserecnumber = pat.\"Case\"\n    AND exc_table.casesubtype = {casrec_schema}.order_type_lookup({casrec_schema}.order.\"Ord Type\")\n    AND exc_table.orderdate = {casrec_schema}.order.\"Made Date\"",
             "where_clauses": [
-                "casrec_csv.order.\"Ord Stat\" != 'Open'"
+                "{casrec_schema}.order.\"Ord Stat\" != 'Open'"
             ]
         },
         "sirius": {
@@ -718,10 +718,10 @@
                 "LEFT JOIN {target_schema}.persons ON persons.id = order_deputy.deputy_id",
                 "LEFT JOIN {target_schema}.persons AS client ON client.id = cases.client_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_persons exc_table\n    ON exc_table.caserecnumber = client.caserecnumber\n    AND exc_table.casesubtype = cases.casesubtype\n    AND CAST(exc_table.orderdate AS DATE) = cases.orderdate",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_deputy_persons exc_table\n    ON exc_table.caserecnumber = client.caserecnumber\n    AND exc_table.casesubtype = cases.casesubtype\n    AND CAST(exc_table.orderdate AS DATE) = cases.orderdate",
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{client_source}'"
             ]
         },
         "manual_checks": {
@@ -758,13 +758,13 @@
             "from_table": "deputyship",
             "transform": {},
             "joins": [
-                "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\"",
-                "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\""
+                "LEFT JOIN {casrec_schema}.order ON {casrec_schema}.order.\"Order No\" = {casrec_schema}.deputyship.\"Order No\"",
+                "LEFT JOIN {casrec_schema}.deputy ON {casrec_schema}.deputyship.\"Deputy No\" = {casrec_schema}.deputy.\"Deputy No\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_special_warnings exc_table ON exc_table.caserecnumber = casrec_csv.order.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_deputy_special_warnings exc_table ON exc_table.caserecnumber = {casrec_schema}.order.\"Case\"",
             "where_clauses": [
-                "casrec_csv.deputy.\"SIM\" = '3'",
-                "casrec_csv.order.\"Ord Stat\" != 'Open'"
+                "{casrec_schema}.deputy.\"SIM\" = '3'",
+                "{casrec_schema}.order.\"Ord Stat\" != 'Open'"
             ]
         },
         "sirius": {
@@ -776,10 +776,10 @@
                 "LEFT JOIN {target_schema}.person_warning ON person_warning.person_id = order_deputy.deputy_id",
                 "LEFT JOIN {target_schema}.warnings ON person_warning.warning_id = warnings.id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_special_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_deputy_special_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{client_source}'",
                 "warnings.warningtype = 'REM - Special Interest Markers'",
                 "warnings.warningtext = 'Casrec Migration - Special Interest Warning'"
             ]
@@ -806,13 +806,13 @@
             "from_table": "deputyship",
             "transform": {},
             "joins": [
-                "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\"",
-                "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\""
+                "LEFT JOIN {casrec_schema}.order ON {casrec_schema}.order.\"Order No\" = {casrec_schema}.deputyship.\"Order No\"",
+                "LEFT JOIN {casrec_schema}.deputy ON {casrec_schema}.deputyship.\"Deputy No\" = {casrec_schema}.deputy.\"Deputy No\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_violent_warnings exc_table ON exc_table.caserecnumber = casrec_csv.order.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_deputy_violent_warnings exc_table ON exc_table.caserecnumber = {casrec_schema}.order.\"Case\"",
             "where_clauses": [
-                "casrec_csv.deputy.\"VWM\" = '4'",
-                "casrec_csv.order.\"Ord Stat\" != 'Open'"
+                "{casrec_schema}.deputy.\"VWM\" = '4'",
+                "{casrec_schema}.order.\"Ord Stat\" != 'Open'"
             ]
         },
         "sirius": {
@@ -824,10 +824,10 @@
                 "LEFT JOIN {target_schema}.person_warning ON person_warning.person_id = order_deputy.deputy_id",
                 "LEFT JOIN {target_schema}.warnings ON person_warning.warning_id = warnings.id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_violent_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_deputy_violent_warnings exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
-                "persons.clientsource = 'CASRECMIGRATION'",
+                "persons.clientsource = '{client_source}'",
                 "warnings.warningtype = 'REM - Violence Warnings'",
                 "warnings.warningtext = 'Casrec Migration - Violent Warning'"
             ]
@@ -852,9 +852,9 @@
                 "createdtime": "transf_convert_to_timestamp(\"Logdate\", \"Logtime\", NULL)::timestamp(0)"
             },
             "joins": [
-                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.remarks.\"Case\""
+                "LEFT JOIN {casrec_schema}.pat ON {casrec_schema}.pat.\"Case\" = {casrec_schema}.remarks.\"Case\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_notes exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_notes exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": []
         },
         "sirius": {
@@ -863,10 +863,10 @@
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = notes.person_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_notes exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_notes exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{client_source}'"
             ]
         },
         "manual_checks": {
@@ -889,12 +889,12 @@
                 "description": "NULLIF(TRIM(CASE WHEN {col} = '' THEN '-' ELSE {col} END), '')"
             },
             "joins": [
-                "LEFT JOIN casrec_csv.deputyship ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy_remarks.\"Deputy No\"",
-                "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\""
+                "LEFT JOIN {casrec_schema}.deputyship ON {casrec_schema}.deputyship.\"Deputy No\" = {casrec_schema}.deputy_remarks.\"Deputy No\"",
+                "LEFT JOIN {casrec_schema}.order ON {casrec_schema}.order.\"Order No\" = {casrec_schema}.deputyship.\"Order No\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_notes exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_deputy_notes exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
-                "casrec_csv.order.\"Ord Stat\" != 'Open'"
+                "{casrec_schema}.order.\"Ord Stat\" != 'Open'"
             ]
         },
         "sirius": {
@@ -905,10 +905,10 @@
                 "LEFT JOIN {target_schema}.order_deputy ON order_deputy.deputy_id = notes.person_id",
                 "LEFT JOIN {target_schema}.cases ON cases.id = order_deputy.order_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_notes exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_notes exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{client_source}'"
             ]
         },
         "manual_checks": {
@@ -926,11 +926,11 @@
             "from_table": "order",
             "transform": {},
             "joins": [
-                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.order.\"Case\""
+                "LEFT JOIN {casrec_schema}.pat ON {casrec_schema}.pat.\"Case\" = {casrec_schema}.order.\"Case\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_supervision_level_log exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_supervision_level_log exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
-                "casrec_csv.order.\"Ord Stat\" != 'Open'"
+                "{casrec_schema}.order.\"Ord Stat\" != 'Open'"
             ]
         },
         "sirius": {
@@ -940,7 +940,7 @@
                 "LEFT JOIN {target_schema}.cases ON cases.id = supervision_level_log.order_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = cases.client_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_supervision_level_log exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_supervision_level_log exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": []
         },
         "manual_checks": {
@@ -957,16 +957,16 @@
         "casrec": {
             "from_table": "SUP_ACTIVITY",
             "transform": {
-                "duedate": "CAST(COALESCE(NULLIF(TRIM(casrec_csv.sup_activity.\"Target\"), ''), NULLIF(TRIM(casrec_csv.sup_activity.\"Start Date\"), '')) AS timestamp)"
+                "duedate": "CAST(COALESCE(NULLIF(TRIM({casrec_schema}.sup_activity.\"Target\"), ''), NULLIF(TRIM({casrec_schema}.sup_activity.\"Start Date\"), '')) AS timestamp)"
             },
             "joins": [
-                "INNER JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.sup_activity.\"Case\"",
-                "INNER JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.sup_activity.\"Order No\""
+                "INNER JOIN {casrec_schema}.pat ON {casrec_schema}.pat.\"Case\" = {casrec_schema}.sup_activity.\"Case\"",
+                "INNER JOIN {casrec_schema}.order ON {casrec_schema}.order.\"Order No\" = {casrec_schema}.sup_activity.\"Order No\""
             ],
-            "exception_table_join": "INNER JOIN casrec_csv.exceptions_tasks exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "exception_table_join": "INNER JOIN {casrec_schema}.exceptions_tasks exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
-                "casrec_csv.sup_activity.\"Status\" IN ('ACTIVE')",
-                "casrec_csv.order.\"Ord Stat\" != 'Open'"
+                "{casrec_schema}.sup_activity.\"Status\" IN ('ACTIVE')",
+                "{casrec_schema}.order.\"Ord Stat\" != 'Open'"
             ]
         },
         "sirius": {
@@ -978,7 +978,7 @@
                 "LEFT JOIN {target_schema}.caseitem_task ON caseitem_task.task_id = tasks.id",
                 "LEFT JOIN {target_schema}.cases ON cases.id = caseitem_task.caseitem_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_tasks exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_tasks exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "tasks.status = 'Not started'",
                 "persons.type = 'actor_client'",
@@ -999,12 +999,12 @@
         "casrec": {
             "from_table": "REPVIS",
             "transform": {
-                "visitsubtype": "casrec_csv.visits_visitsubtype(casrec_csv.REPVIS.\"Req By\", casrec_csv.REPVIS.\"Report Type\")"
+                "visitsubtype": "{casrec_schema}.visits_visitsubtype({casrec_schema}.REPVIS.\"Req By\", {casrec_schema}.REPVIS.\"Report Type\")"
             },
             "joins": [
-                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.REPVIS.\"Case\""
+                "LEFT JOIN {casrec_schema}.pat ON {casrec_schema}.pat.\"Case\" = {casrec_schema}.REPVIS.\"Case\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_visits exc_table ON exc_table.caserecnumber = REPVIS.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_visits exc_table ON exc_table.caserecnumber = REPVIS.\"Case\"",
             "where_clauses": []
         },
         "sirius": {
@@ -1013,7 +1013,7 @@
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = visits.client_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_visits exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_visits exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": []
         },
         "manual_checks": {
@@ -1083,11 +1083,11 @@
                 "confirmeddate": "CASE WHEN NULLIF(sop_feecheck.\"GL Date\", 'NaT') IS NOT NULL THEN sop_feecheck.\"GL Date\"::date WHEN sop_aged_debt.\"Trx Number\" IS NOT NULL THEN NOW()::date ELSE NULL END"
             },
             "joins": [
-                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.feeexport.\"Case\"",
-                "LEFT JOIN casrec_csv.sop_aged_debt ON casrec_csv.sop_aged_debt.\"Trx Number\" = casrec_csv.feeexport.\"Invoice No\"",
-                "LEFT JOIN casrec_csv.sop_feecheck ON casrec_csv.sop_feecheck.\"Invoice Number\" = casrec_csv.feeexport.\"Invoice No\""
+                "LEFT JOIN {casrec_schema}.pat ON {casrec_schema}.pat.\"Case\" = {casrec_schema}.feeexport.\"Case\"",
+                "LEFT JOIN {casrec_schema}.sop_aged_debt ON {casrec_schema}.sop_aged_debt.\"Trx Number\" = {casrec_schema}.feeexport.\"Invoice No\"",
+                "LEFT JOIN {casrec_schema}.sop_feecheck ON {casrec_schema}.sop_feecheck.\"Invoice Number\" = {casrec_schema}.feeexport.\"Invoice No\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_invoice_ad exc_table ON exc_table.caserecnumber = feeexport.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_finance_invoice_ad exc_table ON exc_table.caserecnumber = feeexport.\"Case\"",
             "where_clauses": [
                 "LEFT(feeexport.\"Invoice No\", 2) = 'AD'",
                 "CAST(feeexport.\"Amount\" AS DOUBLE PRECISION) > 0",
@@ -1100,9 +1100,9 @@
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = finance_invoice.person_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_invoice_ad exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_finance_invoice_ad exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
-                "finance_invoice.source = 'CASRECMIGRATION'",
+                "finance_invoice.source = '{client_source}'",
                 "finance_invoice.feetype = 'AD'"
             ]
         },
@@ -1125,11 +1125,11 @@
                 "confirmeddate": "CASE WHEN NULLIF(sop_feecheck.\"GL Date\", 'NaT') IS NOT NULL THEN sop_feecheck.\"GL Date\"::date WHEN sop_aged_debt.\"Trx Number\" IS NOT NULL THEN NOW()::date ELSE NULL END"
             },
             "joins": [
-                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.feeexport.\"Case\"",
-                "LEFT JOIN casrec_csv.sop_aged_debt ON casrec_csv.sop_aged_debt.\"Trx Number\" = casrec_csv.feeexport.\"Invoice No\"",
-                "LEFT JOIN casrec_csv.sop_feecheck ON casrec_csv.sop_feecheck.\"Invoice Number\" = casrec_csv.feeexport.\"Invoice No\""
+                "LEFT JOIN {casrec_schema}.pat ON {casrec_schema}.pat.\"Case\" = {casrec_schema}.feeexport.\"Case\"",
+                "LEFT JOIN {casrec_schema}.sop_aged_debt ON {casrec_schema}.sop_aged_debt.\"Trx Number\" = {casrec_schema}.feeexport.\"Invoice No\"",
+                "LEFT JOIN {casrec_schema}.sop_feecheck ON {casrec_schema}.sop_feecheck.\"Invoice Number\" = {casrec_schema}.feeexport.\"Invoice No\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_invoice_non_ad exc_table ON exc_table.caserecnumber = feeexport.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_finance_invoice_non_ad exc_table ON exc_table.caserecnumber = feeexport.\"Case\"",
             "where_clauses": [
                 "LEFT(feeexport.\"Invoice No\", 2) <> 'AD'",
                 "CAST(feeexport.\"Amount\" AS DOUBLE PRECISION) > 0",
@@ -1142,9 +1142,9 @@
             "joins": [
                 "LEFT JOIN {target_schema}.persons ON persons.id = finance_invoice.person_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_invoice_non_ad exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_finance_invoice_non_ad exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
-                "finance_invoice.source = 'CASRECMIGRATION'",
+                "finance_invoice.source = '{client_source}'",
                 "finance_invoice.feetype <> 'AD'"
             ]
         },
@@ -1163,7 +1163,7 @@
             "from_table": "pat",
             "transform": {},
             "joins": [],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_remissions exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_finance_remissions exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
                 "pat.\"Remis\" <> '0'",
                 "pat.\"Award Date\"::timestamp >= '2021-04-02'::timestamp"
@@ -1176,7 +1176,7 @@
                 "LEFT JOIN {target_schema}.finance_person ON finance_person.id = finance_remission_exemption.finance_person_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = finance_person.person_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_remissions exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_finance_remissions exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "finance_remission_exemption.discounttype = 'REMISSION'"
             ]
@@ -1196,7 +1196,7 @@
             "from_table": "pat",
             "transform": {},
             "joins": [],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_exemptions exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_finance_exemptions exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
                 "pat.\"Exempt\" <> '0'",
                 "pat.\"Award Date\"::timestamp >= '2021-04-02'::timestamp"
@@ -1209,7 +1209,7 @@
                 "LEFT JOIN {target_schema}.finance_person ON finance_person.id = finance_remission_exemption.finance_person_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = finance_person.person_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_exemptions exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_finance_exemptions exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "finance_remission_exemption.discounttype = 'EXEMPTION'"
             ]
@@ -1233,12 +1233,12 @@
                 "confirmeddate": "NULL::date"
             },
             "joins": [
-                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.feeexport.\"Case\""
+                "LEFT JOIN {casrec_schema}.pat ON {casrec_schema}.pat.\"Case\" = {casrec_schema}.feeexport.\"Case\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_ledger_credits exc_table ON exc_table.caserecnumber = feeexport.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_finance_ledger_credits exc_table ON exc_table.caserecnumber = feeexport.\"Case\"",
             "where_clauses": [
                 "CAST(feeexport.\"Amount\" AS DOUBLE PRECISION) < 0",
-                "EXISTS (SELECT 1 FROM casrec_csv.feeexport fe LEFT JOIN casrec_csv.sop_aged_debt sad ON sad.\"Trx Number\" = fe.\"Invoice No\" WHERE fe.\"Invoice No\" = casrec_csv.feeexport.\"Orig Invoice\" AND CAST(fe.\"Amount\" AS DOUBLE PRECISION) > 0 AND (NULLIF(fe.\"Create\", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0) OR CAST(sad.\"Outstanding Amount\" AS DOUBLE PRECISION) != 0))"
+                "EXISTS (SELECT 1 FROM {casrec_schema}.feeexport fe LEFT JOIN {casrec_schema}.sop_aged_debt sad ON sad.\"Trx Number\" = fe.\"Invoice No\" WHERE fe.\"Invoice No\" = {casrec_schema}.feeexport.\"Orig Invoice\" AND CAST(fe.\"Amount\" AS DOUBLE PRECISION) > 0 AND (NULLIF(fe.\"Create\", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0) OR CAST(sad.\"Outstanding Amount\" AS DOUBLE PRECISION) != 0))"
             ]
         },
         "sirius": {
@@ -1248,9 +1248,9 @@
                 "LEFT JOIN {target_schema}.finance_person ON finance_person.id = finance_ledger.finance_person_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = finance_person.person_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_ledger_credits exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_finance_ledger_credits exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
-                "finance_ledger.source = 'CASRECMIGRATION'"
+                "finance_ledger.source = '{client_source}'"
             ]
         },
         "manual_checks": {
@@ -1272,13 +1272,13 @@
                 "allocateddate": "NULLIF(sop_feecheckcredits.\"GL Date\", 'NaT')::date"
             },
             "joins": [
-                "LEFT JOIN casrec_csv.pat ON casrec_csv.pat.\"Case\" = casrec_csv.feeexport.\"Case\"",
-                "LEFT JOIN casrec_csv.sop_feecheckcredits ON casrec_csv.sop_feecheckcredits.\"Invoice Number\" = casrec_csv.feeexport.\"Invoice No\""
+                "LEFT JOIN {casrec_schema}.pat ON {casrec_schema}.pat.\"Case\" = {casrec_schema}.feeexport.\"Case\"",
+                "LEFT JOIN {casrec_schema}.sop_feecheckcredits ON {casrec_schema}.sop_feecheckcredits.\"Invoice Number\" = {casrec_schema}.feeexport.\"Invoice No\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_allocation_credits exc_table ON exc_table.caserecnumber = feeexport.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_finance_allocation_credits exc_table ON exc_table.caserecnumber = feeexport.\"Case\"",
             "where_clauses": [
                 "CAST(feeexport.\"Amount\" AS DOUBLE PRECISION) < 0",
-                "EXISTS (SELECT 1 FROM casrec_csv.feeexport fe LEFT JOIN casrec_csv.sop_aged_debt sad ON sad.\"Trx Number\" = fe.\"Invoice No\" WHERE fe.\"Invoice No\" = casrec_csv.feeexport.\"Orig Invoice\" AND CAST(fe.\"Amount\" AS DOUBLE PRECISION) > 0 AND (NULLIF(fe.\"Create\", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0) OR CAST(sad.\"Outstanding Amount\" AS DOUBLE PRECISION) != 0))"
+                "EXISTS (SELECT 1 FROM {casrec_schema}.feeexport fe LEFT JOIN {casrec_schema}.sop_aged_debt sad ON sad.\"Trx Number\" = fe.\"Invoice No\" WHERE fe.\"Invoice No\" = {casrec_schema}.feeexport.\"Orig Invoice\" AND CAST(fe.\"Amount\" AS DOUBLE PRECISION) > 0 AND (NULLIF(fe.\"Create\", 'NaT')::timestamp(0) > '2019-03-31 23:59:59'::timestamp(0) OR CAST(sad.\"Outstanding Amount\" AS DOUBLE PRECISION) != 0))"
             ]
         },
         "sirius": {
@@ -1288,9 +1288,9 @@
                 "LEFT JOIN {target_schema}.finance_invoice ON finance_invoice.id = finance_ledger_allocation.invoice_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = finance_invoice.person_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_allocation_credits exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_finance_allocation_credits exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
-                "finance_ledger_allocation.source = 'CASRECMIGRATION'"
+                "finance_ledger_allocation.source = '{client_source}'"
             ]
         },
         "manual_checks": {
@@ -1366,13 +1366,13 @@
                 "type": "CASE WHEN deputy_address.\"Dep Addr No\" IS NULL THEN NULL ELSE 'Primary' END"
             },
             "joins": [
-                "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\"",
-                "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\"",
-                "INNER JOIN casrec_csv.deputy_address ON casrec_csv.deputy_address.\"Dep Addr No\" = casrec_csv.deputyship.\"Dep Addr No\""
+                "LEFT JOIN {casrec_schema}.order ON {casrec_schema}.order.\"Order No\" = {casrec_schema}.deputyship.\"Order No\"",
+                "LEFT JOIN {casrec_schema}.deputy ON {casrec_schema}.deputyship.\"Deputy No\" = {casrec_schema}.deputy.\"Deputy No\"",
+                "INNER JOIN {casrec_schema}.deputy_address ON {casrec_schema}.deputy_address.\"Dep Addr No\" = {casrec_schema}.deputyship.\"Dep Addr No\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_addresses exc_table ON exc_table.caserecnumber = casrec_csv.order.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_deputy_addresses exc_table ON exc_table.caserecnumber = {casrec_schema}.order.\"Case\"",
             "where_clauses": [
-                "casrec_csv.order.\"Ord Stat\" != 'Open'"
+                "{casrec_schema}.order.\"Ord Stat\" != 'Open'"
             ]
         },
         "sirius": {
@@ -1385,10 +1385,10 @@
                 "LEFT JOIN {target_schema}.persons ON persons.id = order_deputy.deputy_id",
                 "LEFT JOIN {target_schema}.addresses ON addresses.person_id = persons.id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_deputy_addresses exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_deputy_addresses exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_deputy'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{client_source}'"
             ]
         },
         "manual_checks": {
@@ -1432,14 +1432,14 @@
                 "billing_start_date": "ra.start_date"
             },
             "joins": [
-                "LEFT JOIN (SELECT MIN(NULLIF(\"Start Date\", '')::date) AS start_date, \"Order No\" FROM casrec_csv.risk_assessment GROUP BY \"Order No\") ra ON ra.\"Order No\" = casrec_csv.order.\"Order No\"",
-                "LEFT JOIN casrec_csv.pat ON pat.\"Case\" = casrec_csv.order.\"Case\""
+                "LEFT JOIN (SELECT MIN(NULLIF(\"Start Date\", '')::date) AS start_date, \"Order No\" FROM {casrec_schema}.risk_assessment GROUP BY \"Order No\") ra ON ra.\"Order No\" = {casrec_schema}.order.\"Order No\"",
+                "LEFT JOIN {casrec_schema}.pat ON pat.\"Case\" = {casrec_schema}.order.\"Case\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_order exc_table ON exc_table.caserecnumber = pat.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_finance_order exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
-                "casrec_csv.order.\"Ord Type\" IN ('1','2','40','41')",
-                "casrec_csv.order.\"Ord Stat\" <> 'Open'",
-                "casrec_csv.order.\"Ord Risk Lvl\" <> ''"
+                "{casrec_schema}.order.\"Ord Type\" IN ('1','2','40','41')",
+                "{casrec_schema}.order.\"Ord Stat\" <> 'Open'",
+                "{casrec_schema}.order.\"Ord Risk Lvl\" <> ''"
             ]
         },
         "sirius": {
@@ -1449,10 +1449,10 @@
                 "LEFT JOIN {target_schema}.cases ON cases.id = finance_order.order_id",
                 "LEFT JOIN {target_schema}.persons ON persons.id = cases.client_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_finance_order exc_table ON exc_table.caserecnumber = persons.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_finance_order exc_table ON exc_table.caserecnumber = persons.caserecnumber",
             "where_clauses": [
                 "persons.type = 'actor_client'",
-                "persons.clientsource = 'CASRECMIGRATION'"
+                "persons.clientsource = '{client_source}'"
             ]
         },
         "manual_checks": {
@@ -1494,16 +1494,16 @@
         "casrec": {
             "from_table": "deputyship",
             "transform": {
-                "statusoncase": "CASE WHEN casrec_csv.deputyship.\"Joint\" = '5' THEN 'CLOSED' ELSE NULLIF(TRIM(casrec_csv.deputy_status_lookup(casrec_csv.deputy.\"Stat\")), '') END",
-                "statusoncaseoverride": "CASE WHEN casrec_csv.deputyship.\"Joint\" = '5' THEN 'DISCHARGED' ELSE NULLIF(TRIM(casrec_csv.deputy_override_lookup(casrec_csv.deputy.\"Stat\")), '') END"
+                "statusoncase": "CASE WHEN {casrec_schema}.deputyship.\"Joint\" = '5' THEN 'CLOSED' ELSE NULLIF(TRIM({casrec_schema}.deputy_status_lookup({casrec_schema}.deputy.\"Stat\")), '') END",
+                "statusoncaseoverride": "CASE WHEN {casrec_schema}.deputyship.\"Joint\" = '5' THEN 'DISCHARGED' ELSE NULLIF(TRIM({casrec_schema}.deputy_override_lookup({casrec_schema}.deputy.\"Stat\")), '') END"
             },
             "joins": [
-                "LEFT JOIN casrec_csv.order ON casrec_csv.order.\"Order No\" = casrec_csv.deputyship.\"Order No\"",
-                "LEFT JOIN casrec_csv.deputy ON casrec_csv.deputyship.\"Deputy No\" = casrec_csv.deputy.\"Deputy No\""
+                "LEFT JOIN {casrec_schema}.order ON {casrec_schema}.order.\"Order No\" = {casrec_schema}.deputyship.\"Order No\"",
+                "LEFT JOIN {casrec_schema}.deputy ON {casrec_schema}.deputyship.\"Deputy No\" = {casrec_schema}.deputy.\"Deputy No\""
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_order_deputy exc_table ON exc_table.caserecnumber = casrec_csv.order.\"Case\"",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_order_deputy exc_table ON exc_table.caserecnumber = {casrec_schema}.order.\"Case\"",
             "where_clauses": [
-                "casrec_csv.order.\"Ord Stat\" != 'Open'"
+                "{casrec_schema}.order.\"Ord Stat\" != 'Open'"
             ]
         },
         "sirius": {
@@ -1512,7 +1512,7 @@
             "joins": [
                 "LEFT JOIN {target_schema}.cases ON cases.id = order_deputy.order_id"
             ],
-            "exception_table_join": "LEFT JOIN casrec_csv.exceptions_order_deputy exc_table ON exc_table.caserecnumber = cases.caserecnumber",
+            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_order_deputy exc_table ON exc_table.caserecnumber = cases.caserecnumber",
             "where_clauses": []
         },
         "manual_checks": {

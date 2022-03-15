@@ -24,6 +24,13 @@ environment = os.environ.get("ENVIRONMENT")
 config = helpers.get_config(env=environment)
 log = logging.getLogger("root")
 
+default_replace_tags = {
+    "client_source": config.migration_phase["migration_identifier"],
+    "casrec_schema": config.schemas["pre_transform"],
+    "count_schema": config.schemas["count_verification"],
+    "count_audit_schema": config.schemas["count_verification_audit"],
+}
+
 conn_migration = {
     "name": "casrecmigration",
     "connection": psycopg2.connect(config.get_db_connection_string("migration")),
@@ -38,9 +45,10 @@ def execute_sql_template(conn, template_filename, replace_tags):
     template = open(sql_path / template_filename, "r")
     execution_filename = "execute_" + template_filename
     execution_file = open(sql_path / execution_filename, "w+")
+    all_tags = {**replace_tags, **default_replace_tags}
 
     for line in template:
-        for check, rep in replace_tags.items():
+        for check, rep in all_tags.items():
             line = line.replace("{" + check + "}", rep)
         execution_file.write(line)
     template.close()
@@ -91,7 +99,7 @@ class CountsVerification:
             cursor = conn.cursor()
             query = (
                 "SELECT column_name FROM information_schema.columns "
-                "WHERE table_schema = 'countverification' "
+                f"""WHERE table_schema = '{config.schemas["count_verification"]}' """
                 "AND table_name = 'counts';"
             )
             cursor.execute(query)
@@ -107,11 +115,19 @@ class CountsVerification:
 
     def reset_schema(self):
         log.info(f"Resetting countverification schema on {conn_target['name']}")
-        execute_sql_file(sql_path, "schema_down.sql", conn_target["connection"])
+        execute_sql_template(
+            conn=conn_target["connection"],
+            template_filename="schema_down.sql",
+            replace_tags={},
+        )
         self.create_schema()
 
     def create_schema(self):
-        execute_sql_file(sql_path, "schema_up.sql", conn_target["connection"])
+        execute_sql_template(
+            conn=conn_target["connection"],
+            template_filename="schema_up.sql",
+            replace_tags={},
+        )
         self.report_columns = {}
         self.add_report_column("supervision_table")
 
@@ -193,7 +209,8 @@ class CountsVerification:
         cols = ",".join(self.report_columns.keys())
 
         df_count_values = pd.read_sql(
-            sql=f"SELECT {cols} FROM countverification.counts ORDER BY supervision_table;",
+            sql=f"""
+                SELECT {cols} FROM {config.schemas["count_verification"]}.counts ORDER BY supervision_table;""",
             con=conn_target["connection"],
         )
         table = tabulate(
@@ -203,12 +220,49 @@ class CountsVerification:
 
     def output_report(self):
         query = open(sql_path / "calculate_result.sql", "r")
-        df_results = pd.read_sql_query(query.read(), conn_target["connection"])
+        df_results = pd.read_sql_query(
+            query.read().replace(
+                "{count_schema}", config.schemas["count_verification"]
+            ),
+            conn_target["connection"],
+        )
         query.close()
 
         table = tabulate(
             df_results,
             ["Supervision Table", "LPA", "Supervision CP1", "Supervision Non-CP1"],
+            tablefmt="psql",
+        )
+        print(table)
+
+    def deletion_counts(self):
+        log.info(f"=== Deletions Schema Counts ===")
+        sql = f"""
+            WITH tbl AS
+            (SELECT table_schema,
+            TABLE_NAME
+            FROM information_schema.tables
+            WHERE TABLE_NAME not like 'pg_%'
+            AND table_schema = '{config.schemas["deletions"]}')
+            SELECT * FROM
+            (
+                SELECT
+                table_schema as deletion_schema,
+                TABLE_NAME as deletion_table,
+                (
+                    xpath('/row/c/text()', query_to_xml(format('select count(*) as c from %I.%I',
+                    table_schema, TABLE_NAME), FALSE, TRUE, ''))
+                )[1]::text::int AS row_count
+                FROM tbl
+                WHERE TABLE_NAME NOT IN ('client_persons', 'base_clients_persons', 'pilot_one_deputies', 'pilot_one_clients')
+            ) as subselect
+            WHERE row_count > 0
+            ORDER BY row_count DESC;
+        """
+        df_deletion_values = pd.read_sql(sql=sql, con=conn_target["connection"])
+        table = tabulate(
+            df_deletion_values,
+            ["deletion_schema", "deletion_table", "row_count"],
             tablefmt="psql",
         )
         print(table)
@@ -233,6 +287,7 @@ class CountsVerification:
         self.output_counts()
 
     def do_post_migration(self):
+        self.deletion_counts()
         self.check_schema()
         self.count_cp1_data("post_migrate")
         self.count_non_supervision("post_migrate")

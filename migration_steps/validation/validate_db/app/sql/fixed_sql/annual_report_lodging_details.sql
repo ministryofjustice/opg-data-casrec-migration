@@ -1,8 +1,8 @@
 -- annual_report_lodging_details
 
-DROP TABLE IF EXISTS casrec_csv.exceptions_annual_report_lodging_details;
+DROP TABLE IF EXISTS {casrec_schema}.exceptions_annual_report_lodging_details;
 
-CREATE TABLE casrec_csv.exceptions_annual_report_lodging_details(
+CREATE TABLE {casrec_schema}.exceptions_annual_report_lodging_details(
     caserecnumber text default NULL,
     datereportlodged text default NULL,
     bankstatementsreceived text default NULL,
@@ -13,29 +13,29 @@ CREATE TABLE casrec_csv.exceptions_annual_report_lodging_details(
     resubmitteddate date default NULL
 );
 
-INSERT INTO casrec_csv.exceptions_annual_report_lodging_details(
+INSERT INTO {casrec_schema}.exceptions_annual_report_lodging_details(
     SELECT
         caserecnumber as caserecnumber,
         CAST(NULLIF(datereportlodged, '') AS date) AS datereportlodged,
-        casrec_csv.report_bankstatementsreceived(further_codes, rcvd_dates) AS bankstatementsreceived,
+        {casrec_schema}.report_bankstatementsreceived(further_codes, rcvd_dates) AS bankstatementsreceived,
         NULLIF(COALESCE(
-	        casrec_csv.report_lodged_status(
-	            casrec_csv.report_lodged_status_aggregate(
+	        {casrec_schema}.report_lodged_status(
+	            {casrec_schema}.report_lodged_status_aggregate(
 	                revisedduedate, further_code, has_non_null_received_date, sent_date, follow_up_date
 	            )
 	        ),
-        	casrec_csv.report_element(
-	            casrec_csv.report_status(
-	                casrec_csv.report_status_aggregate(
+        	{casrec_schema}.report_element(
+	            {casrec_schema}.report_status(
+	                {casrec_schema}.report_status_aggregate(
 	                    review_status, wd_count_end_date, has_non_null_received_date, lodged_date, reviewdate, next_yr_flag
 	                )
 	            ), 2
 	        )
         ), '') AS lodgedstatus,
         2657 as lodgedby_id,
-        casrec_csv.report_bankstatementdeadlinedate(latest_further_date, last_further_code) AS bankstatementdeadlinedate,
-        casrec_csv.report_deadlinedate(latest_further_date, last_further_code) AS deadlinedate,
-        casrec_csv.report_resubmitteddate(further_codes, rcvd_dates) AS resubmitteddate
+        {casrec_schema}.report_bankstatementdeadlinedate(latest_further_date, last_further_code) AS bankstatementdeadlinedate,
+        {casrec_schema}.report_deadlinedate(latest_further_date, last_further_code) AS deadlinedate,
+        {casrec_schema}.report_resubmitteddate(further_codes, rcvd_dates) AS resubmitteddate
     FROM (
         SELECT
             "Case" AS caserecnumber,
@@ -62,7 +62,7 @@ INSERT INTO casrec_csv.exceptions_annual_report_lodging_details(
                 THEN 'Y'
                 ELSE ''
             END) AS has_non_null_received_date,
-            casrec_csv.weekday_count(account."End Date") AS wd_count_end_date,
+            {casrec_schema}.weekday_count(account."End Date") AS wd_count_end_date,
             "Revise Date" AS revisedduedate,
             "Rev Stat" AS review_status,
             "Lodge Date" AS lodged_date,
@@ -117,7 +117,7 @@ INSERT INTO casrec_csv.exceptions_annual_report_lodging_details(
                 CAST(NULLIF("Rcvd Date5", '') AS date),
                 CAST(NULLIF("Rcvd Date6", '') AS date)
             ] AS rcvd_dates
-        FROM casrec_csv.account
+        FROM {casrec_schema}.account
     ) AS lodge_details
 
     EXCEPT

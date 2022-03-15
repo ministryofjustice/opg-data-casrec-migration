@@ -1,7 +1,7 @@
 -- client_status
-DROP TABLE IF EXISTS casrec_csv.exceptions_client_status;
+DROP TABLE IF EXISTS {casrec_schema}.exceptions_client_status;
 
-CREATE TABLE casrec_csv.exceptions_client_status(
+CREATE TABLE {casrec_schema}.exceptions_client_status(
     caserecnumber text default NULL,
     clientstatus text default NULL
 );
@@ -13,8 +13,8 @@ WITH pat_order AS (
     p."Case" as caserecnumber,
     "Ord Type" AS ordersubtype,
     "Made Date" as orderdate
-    FROM casrec_csv."order" o
-    inner join casrec_csv."pat" p
+    FROM {casrec_schema}."order" o
+    inner join {casrec_schema}."pat" p
     on p."Case" = o."Case"
     where "Ord Stat" != 'Open'
 ),
@@ -30,14 +30,14 @@ death_status.death_proof_status AS death_proof_status,
 latest_status.closure_reason AS closure_reason,
 latest_status.order_sub_type AS order_sub_type
 FROM
-casrec_csv.pat AS client
+{casrec_schema}.pat AS client
 left join (
     SELECT
     "Case" as caserecnumber,
-    CASE WHEN casrec_csv.pat."Notified" != '' then 'DEATH_NOTIFIED' end AS death_notified_status,
-    CASE WHEN casrec_csv.pat."Proof" != '' then 'DEATH_CONFIRMED' end AS death_proof_status
-    FROM casrec_csv.pat
-    WHERE casrec_csv.pat."Term Type" = 'D'
+    CASE WHEN {casrec_schema}.pat."Notified" != '' then 'DEATH_NOTIFIED' end AS death_notified_status,
+    CASE WHEN {casrec_schema}.pat."Proof" != '' then 'DEATH_CONFIRMED' end AS death_proof_status
+    FROM {casrec_schema}.pat
+    WHERE {casrec_schema}.pat."Term Type" = 'D'
 ) AS death_status on client."Case" = death_status.caserecnumber
 left join (
     SELECT caserecnumber, orderstatus AS status_latest,
@@ -106,4 +106,4 @@ EXCEPT
 SELECT caserecnumber, clientstatus
 FROM {target_schema}.persons
 WHERE persons.type = 'actor_client'
-AND persons.clientsource = 'CASRECMIGRATION';
+AND persons.clientsource = '{client_source}';

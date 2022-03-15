@@ -20,9 +20,9 @@ def delete_all_schemas(log, conn, preserve_schemas):
         preserve_schemas = "'" + "', '".join(schemas_list) + "', "
         for preserve_schema in schemas_list:
             log.info(f"Schema: {preserve_schema} not dropped")
-            if preserve_schema == "casrec_csv":
-                drop_statement = """
-                    DROP TABLE IF EXISTS "casrec_csv"."migration_progress";
+            if preserve_schema in ("casrec_csv", "casrec_csv_p2"):
+                drop_statement = f"""
+                    DROP TABLE IF EXISTS "{preserve_schema}"."migration_progress";
                 """
                 cursor.execute(drop_statement)
                 conn.commit()
@@ -227,12 +227,18 @@ def copy_schema(
     )
 
 
-def execute_sql_file(sql_path, filename, conn, schema="public"):
+def execute_sql_file(
+    sql_path, filename, conn, schema="public", casrec_schema="casrec_csv"
+):
     cursor = conn.cursor()
     sql_file = open(sql_path / filename, "r")
 
     try:
-        cursor.execute(sql_file.read().replace("{schema}", str(schema)))
+        cursor.execute(
+            sql_file.read()
+            .replace("{schema}", str(schema))
+            .replace("{casrec_schema}", str(casrec_schema))
+        )
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print("Error: %s" % error)

@@ -1,12 +1,12 @@
-DROP TABLE IF EXISTS casrec_csv.working_day_calendar;
+DROP TABLE IF EXISTS {casrec_schema}.working_day_calendar;
 
-SELECT dd INTO casrec_csv.working_day_calendar
+SELECT dd INTO {casrec_schema}.working_day_calendar
 FROM
 (SELECT dd, extract(DOW FROM dd) dw
 FROM generate_series((now() - INTERVAL '1 YEAR')::date, now()::date, '1 day'::interval) dd) d
 WHERE dw not in (6,0);
 
-CREATE OR REPLACE FUNCTION casrec_csv.report_status_aggregate(rev_stat varchar, weekdays_since int, rcvd_date varchar, lodge_date varchar, review_date varchar, next_year varchar)
+CREATE OR REPLACE FUNCTION {casrec_schema}.report_status_aggregate(rev_stat varchar, weekdays_since int, rcvd_date varchar, lodge_date varchar, review_date varchar, next_year varchar)
 RETURNS
 	varchar AS $$
 DECLARE
@@ -45,7 +45,7 @@ RETURN report_status_code;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION casrec_csv.report_lodged_status_aggregate(revise_date varchar, further_code varchar, rcvd_date varchar, sent date, followup_date varchar)
+CREATE OR REPLACE FUNCTION {casrec_schema}.report_lodged_status_aggregate(revise_date varchar, further_code varchar, rcvd_date varchar, sent date, followup_date varchar)
 RETURNS
 	varchar AS $$
 DECLARE
@@ -86,7 +86,7 @@ RETURN report_lodged_status_code;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION casrec_csv.report_status(report_aggr_code varchar)
+CREATE OR REPLACE FUNCTION {casrec_schema}.report_status(report_aggr_code varchar)
 RETURNS
 	varchar AS $$
 DECLARE
@@ -121,7 +121,7 @@ RETURN report_status;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION casrec_csv.report_lodged_status(report_lodged_aggr_code varchar)
+CREATE OR REPLACE FUNCTION {casrec_schema}.report_lodged_status(report_lodged_aggr_code varchar)
 RETURNS
 	varchar AS $$
 DECLARE
@@ -139,7 +139,7 @@ RETURN report_lodged_status;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION casrec_csv.report_element(full_string varchar, element_no int)
+CREATE OR REPLACE FUNCTION {casrec_schema}.report_element(full_string varchar, element_no int)
 RETURNS
 	varchar AS $$
 DECLARE
@@ -150,20 +150,20 @@ RETURN code_part;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION casrec_csv.weekday_count(string_date varchar)
+CREATE OR REPLACE FUNCTION {casrec_schema}.weekday_count(string_date varchar)
 RETURNS
 	int AS $$
 DECLARE
 	weekday_count int;
 BEGIN
 weekday_count = count(*)
-FROM casrec_csv.working_day_calendar
+FROM {casrec_schema}.working_day_calendar
 WHERE cast(string_date AS date) <= dd;
 RETURN weekday_count;
 end;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION casrec_csv.visits_visitsubtype(req_by varchar, report_type varchar)
+CREATE OR REPLACE FUNCTION {casrec_schema}.visits_visitsubtype(req_by varchar, report_type varchar)
 RETURNS
 	varchar AS $$
 DECLARE
@@ -192,7 +192,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION casrec_csv.report_bankstatementdeadlinedate(latest_further_date date, further_code varchar)
+CREATE OR REPLACE FUNCTION {casrec_schema}.report_bankstatementdeadlinedate(latest_further_date date, further_code varchar)
 RETURNS
     date AS $$
 DECLARE
@@ -207,7 +207,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION casrec_csv.report_deadlinedate(latest_further_date date, further_code varchar)
+CREATE OR REPLACE FUNCTION {casrec_schema}.report_deadlinedate(latest_further_date date, further_code varchar)
 RETURNS
     date AS $$
 DECLARE
@@ -222,7 +222,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION casrec_csv.report_resubmitteddate(further_codes text[], rcvd_dates date[])
+CREATE OR REPLACE FUNCTION {casrec_schema}.report_resubmitteddate(further_codes text[], rcvd_dates date[])
 RETURNS
     date AS $$
 DECLARE
@@ -256,7 +256,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION casrec_csv.report_bankstatementsreceived(further_codes text[], rcvd_dates date[])
+CREATE OR REPLACE FUNCTION {casrec_schema}.report_bankstatementsreceived(further_codes text[], rcvd_dates date[])
 RETURNS
     bool AS $$
 DECLARE

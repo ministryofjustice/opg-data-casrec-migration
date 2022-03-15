@@ -301,12 +301,12 @@ def get_primary_keys(case_ref):
     d."Deputy No"::numeric::integer as deputy_no,
     ds."Dep Addr No"::numeric::integer as dep_addr_no,
     ds."CoP Case" as cop_case
-    FROM casrec_csv.pat as p
-    LEFT JOIN casrec_csv.order as o ON p."Case" = o."Case"
-    LEFT JOIN casrec_csv.remarks r ON p."Case" = r."Case"
-    LEFT JOIN casrec_csv.deputyship  as ds ON o."Order No" = ds."Order No"
-    LEFT JOIN casrec_csv.deputy as d ON ds."Deputy No"::numeric::integer = d."Deputy No"::numeric::integer
-    LEFT JOIN casrec_csv.deputy_address as da ON da."Dep Addr No"::numeric::integer = ds."Dep Addr No"::numeric::integer
+    FROM {config.schemas["pre_transform"]}.pat as p
+    LEFT JOIN {config.schemas["pre_transform"]}.order as o ON p."Case" = o."Case"
+    LEFT JOIN {config.schemas["pre_transform"]}.remarks r ON p."Case" = r."Case"
+    LEFT JOIN {config.schemas["pre_transform"]}.deputyship  as ds ON o."Order No" = ds."Order No"
+    LEFT JOIN {config.schemas["pre_transform"]}.deputy as d ON ds."Deputy No"::numeric::integer = d."Deputy No"::numeric::integer
+    LEFT JOIN {config.schemas["pre_transform"]}.deputy_address as da ON da."Dep Addr No"::numeric::integer = ds."Dep Addr No"::numeric::integer
     WHERE p."Case" = '{case_ref}'
     """
 
@@ -341,7 +341,7 @@ def get_list_of_tables(pks, tables):
         )
         sql = f"""
         SELECT *
-        FROM casrec_csv.{table_pair['table']}
+        FROM {config.schemas["pre_transform"]}.{table_pair['table']}
         WHERE "{table_pair['pk']}" in ('{pks_fmt}')
         """
         log.info(sql)

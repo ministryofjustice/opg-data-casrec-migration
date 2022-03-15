@@ -2,7 +2,6 @@ import pandas as pd
 import pytest
 from pytest_cases import case
 
-
 module_name = "deputy_persons_mapping"
 source_table = "deputy"
 destination_table = "persons"
@@ -54,7 +53,7 @@ def case_deputies_2(test_config):
         "isorganisation": False,
         "casesmanagedashybrid": False,
         "supervisioncaseowner_id": 10,
-        "clientsource": "CASRECMIGRATION",
+        "clientsource": test_config.migration_phase["migration_identifier"],
     }
 
     config = test_config

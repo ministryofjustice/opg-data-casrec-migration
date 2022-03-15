@@ -72,7 +72,7 @@ class AsyncResponse:
                     self.incorrect_status_count += +1
 
     def get_client_id_subset(self):
-        sql = f"SELECT id FROM public.persons WHERE clientsource = 'CASRECMIGRATION' LIMIT {self.total_records}"
+        sql = f"SELECT id FROM public.persons WHERE clientsource like 'CASRECMIGRATION%' LIMIT {self.total_records}"
         conn_target = psycopg2.connect(self.config.get_db_connection_string("target"))
         cursor_target = conn_target.cursor()
         cursor_target.execute(sql)

@@ -1,5 +1,5 @@
-CREATE TABLE IF NOT EXISTS countverification.lpa_persons (id int);
-INSERT INTO countverification.lpa_persons (id)
+CREATE TABLE IF NOT EXISTS {count_schema}.lpa_persons (id int);
+INSERT INTO {count_schema}.lpa_persons (id)
 SELECT id FROM persons p
 WHERE p.type NOT IN (
     'actor_client',
@@ -7,224 +7,224 @@ WHERE p.type NOT IN (
     'actor_contact',
     'actor_non_case_contact'
 ); -- ~2m
-CREATE UNIQUE INDEX lpa_persons_idx ON countverification.lpa_persons (id); -- ~1m
+CREATE UNIQUE INDEX lpa_persons_idx ON {count_schema}.lpa_persons (id); -- ~1m
 
-CREATE TABLE IF NOT EXISTS countverification.lpa_cases (id int);
-INSERT INTO countverification.lpa_cases (id)
+CREATE TABLE IF NOT EXISTS {count_schema}.lpa_cases (id int);
+INSERT INTO {count_schema}.lpa_cases (id)
 SELECT cases.id FROM cases WHERE type != 'order'; -- ~22s
-CREATE UNIQUE INDEX lpa_cases_idx ON countverification.lpa_cases (id);
+CREATE UNIQUE INDEX lpa_cases_idx ON {count_schema}.lpa_cases (id);
 
-ALTER TABLE countverification.counts DROP COLUMN IF EXISTS {working_column};
-ALTER TABLE countverification.counts ADD COLUMN {working_column} int;
+ALTER TABLE {count_schema}.counts DROP COLUMN IF EXISTS {working_column};
+ALTER TABLE {count_schema}.counts ADD COLUMN {working_column} int;
 
 -- persons (both)
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
-    SELECT COUNT(*) FROM countverification.lpa_persons
+    SELECT COUNT(*) FROM {count_schema}.lpa_persons
 )
 WHERE supervision_table = 'persons';
 
 -- cases
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
-    SELECT COUNT(*) FROM countverification.lpa_cases
+    SELECT COUNT(*) FROM {count_schema}.lpa_cases
 )
 WHERE supervision_table = 'cases';
 
 -- phonenumbers
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*)
     FROM phonenumbers pn
-    INNER JOIN countverification.lpa_persons lp
+    INNER JOIN {count_schema}.lpa_persons lp
         ON lp.id = pn.person_id
 )
 WHERE supervision_table = 'phonenumbers';
 
 -- addresses
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*)
     FROM addresses ad
-    INNER JOIN countverification.lpa_persons lp
+    INNER JOIN {count_schema}.lpa_persons lp
         ON lp.id = ad.person_id
 )
 WHERE supervision_table = 'addresses';
 
 -- warnings
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} =
     (
         SELECT COUNT(*)
         FROM warnings w
         INNER JOIN person_warning pw on pw.warning_id = w.id
-        INNER JOIN countverification.lpa_persons lp
+        INNER JOIN {count_schema}.lpa_persons lp
             ON lp.id = pw.person_id
     )
 WHERE supervision_table = 'warnings';
 
 -- timeline_event
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*)
     FROM timeline_event te
     INNER JOIN person_timeline pt
         ON pt.timelineevent_id = te.id
-    INNER JOIN countverification.lpa_persons lp
+    INNER JOIN {count_schema}.lpa_persons lp
         ON lp.id = pt.person_id
 )
 WHERE supervision_table = 'timeline_event';
 
 -- person_caseitem
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*)
     FROM person_caseitem pci
-    INNER JOIN countverification.lpa_persons lp
+    INNER JOIN {count_schema}.lpa_persons lp
         ON lp.id = pci.person_id
 )
 WHERE supervision_table = 'person_caseitem';
 
 -- person_warning
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*)
     FROM person_warning pw
-    INNER JOIN countverification.lpa_persons lp
+    INNER JOIN {count_schema}.lpa_persons lp
         ON lp.id = pw.person_id
 )
 WHERE supervision_table = 'person_warning';
 
 -- person_timeline
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*)
     FROM person_timeline pt
-    INNER JOIN countverification.lpa_persons lp
+    INNER JOIN {count_schema}.lpa_persons lp
         ON lp.id = pt.person_id
 )
 WHERE supervision_table = 'person_timeline';
 
 -- assignee_teams
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM assignee_teams
 )
 WHERE supervision_table = 'assignee_teams';
 
 -- assignees
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM assignees
 )
 WHERE supervision_table = 'assignees';
 
 -- caseitem_document
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM caseitem_document cd
-    INNER JOIN countverification.lpa_cases c
+    INNER JOIN {count_schema}.lpa_cases c
         ON cd.caseitem_id = c.id
 )
 WHERE supervision_table = 'caseitem_document';
 
 -- caseitem_note
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM caseitem_note cn
-    INNER JOIN countverification.lpa_cases c
+    INNER JOIN {count_schema}.lpa_cases c
         ON cn.caseitem_id = c.id
 )
 WHERE supervision_table = 'caseitem_note';
 
 -- caseitem_paymenttype
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*)
     FROM caseitem_paymenttype cpt
-    INNER JOIN countverification.lpa_cases c
+    INNER JOIN {count_schema}.lpa_cases c
         ON cpt.caseitem_id = c.id
 )
 WHERE supervision_table = 'caseitem_paymenttype';
 
 -- caseitem_task
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*)
     FROM caseitem_task ct
-    INNER JOIN countverification.lpa_cases c
+    INNER JOIN {count_schema}.lpa_cases c
         ON ct.caseitem_id = c.id
 )
 WHERE supervision_table = 'caseitem_task';
 
 -- caseitem_warning
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*)
     FROM caseitem_warning cw
-    INNER JOIN countverification.lpa_cases c
+    INNER JOIN {count_schema}.lpa_cases c
     ON cw.caseitem_id = c.id
 )
 WHERE supervision_table = 'caseitem_warning';
 
 -- complaints
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM complaints
 )
 WHERE supervision_table = 'complaints';
 
 -- notes
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*)
     FROM notes n
     INNER JOIN person_note pn
         ON pn.note_id = n.id
-    INNER JOIN countverification.lpa_persons lp
+    INNER JOIN {count_schema}.lpa_persons lp
         ON lp.id = pn.person_id
 )
 WHERE supervision_table = 'notes';
 
 -- pa_applicants
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM pa_applicants
 )
 WHERE supervision_table = 'pa_applicants';
 
 -- pa_certificate_provider
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM pa_certificate_provider
 )
 WHERE supervision_table = 'pa_certificate_provider';
 
 -- pa_notified_persons
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM pa_notified_persons
 )
 WHERE supervision_table = 'pa_notified_persons';
 
 -- person_note
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM person_note pn
-    INNER JOIN countverification.lpa_persons lp
+    INNER JOIN {count_schema}.lpa_persons lp
         ON lp.id = pn.person_id
 )
 WHERE supervision_table = 'person_note';
 
 -- powerofattorney_person
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM powerofattorney_person
 )
 WHERE supervision_table = 'powerofattorney_person';
 
 -- documents
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM documents d
     INNER JOIN persons p
@@ -239,7 +239,7 @@ SET {working_column} = (
 WHERE supervision_table = 'documents';
 
 -- investigation
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*)
     FROM investigation i
@@ -255,139 +255,139 @@ SET {working_column} = (
 WHERE supervision_table = 'investigation';
 
 -- validation_check
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM validation_check
 )
 WHERE supervision_table = 'validation_check';
 
 -- visitor
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM visitor
 )
 WHERE supervision_table = 'visitor';
 
 -- case_timeline
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*)
     FROM case_timeline ct
-    INNER JOIN countverification.lpa_cases c
+    INNER JOIN {count_schema}.lpa_cases c
         ON c.id = ct.case_id
 )
 WHERE supervision_table = 'case_timeline';
 
 -- hold_period
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM hold_period
 )
 WHERE supervision_table = 'hold_period';
 
 -- person_document
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*)
     FROM person_document pt
-    INNER JOIN countverification.lpa_persons lpa
+    INNER JOIN {count_schema}.lpa_persons lpa
     ON lpa.id = pt.person_id
 )
 WHERE supervision_table = 'person_document';
 
 -- document_pages
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM document_pages
 )
 WHERE supervision_table = 'document_pages';
 
 -- document_secondaryrecipient
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM document_secondaryrecipient
 )
 WHERE supervision_table = 'document_secondaryrecipient';
 
 -- ingested_documents
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM ingested_documents
 )
 WHERE supervision_table = 'ingested_documents';
 
 -- caseitem_queue
-update countverification.counts
+update {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM caseitem_queue
 )
 WHERE supervision_table = 'caseitem_queue';
 
 -- finance_invoice_email_status
-update countverification.counts
+update {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM finance_invoice_email_status
 )
 WHERE supervision_table = 'finance_invoice_email_status';
 
 -- finance_invoice_fee_range
-update countverification.counts
+update {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM finance_invoice_fee_range
 )
 WHERE supervision_table = 'finance_invoice_fee_range';
 
 -- finance_report
-update countverification.counts
+update {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM finance_report
 )
 WHERE supervision_table = 'finance_report';
 
 -- opgcore_doctrine_migrations
-update countverification.counts
+update {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM opgcore_doctrine_migrations
 )
 WHERE supervision_table = 'opgcore_doctrine_migrations';
 
 -- person_personreference
-update countverification.counts
+update {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM person_personreference
 )
 WHERE supervision_table = 'person_personreference';
 
 -- person_references
-update countverification.counts
+update {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM person_references
 )
 WHERE supervision_table = 'person_references';
 
 -- person_research_preferences
-update countverification.counts
+update {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM person_research_preferences
 )
 WHERE supervision_table = 'person_research_preferences';
 
 -- queue_business_rules
-update countverification.counts
+update {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM queue_business_rules
 )
 WHERE supervision_table = 'queue_business_rules';
 
 -- scheduled_events
-update countverification.counts
+update {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM scheduled_events
 )
 WHERE supervision_table = 'scheduled_events';
 
 -- uploads
-update countverification.counts
+update {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM uploads
 )
@@ -429,15 +429,15 @@ WHERE supervision_table = 'uploads';
 
 
 -- total_documents (adding this here as just want to see count staying the same)
-UPDATE countverification.counts
+UPDATE {count_schema}.counts
 SET {working_column} = (
     SELECT COUNT(*) FROM documents d
 )
 WHERE supervision_table = 'total_documents';
 
-DROP INDEX countverification.lpa_persons_idx;
-DROP INDEX countverification.lpa_cases_idx;
+DROP INDEX {count_schema}.lpa_persons_idx;
+DROP INDEX {count_schema}.lpa_cases_idx;
 
-DROP TABLE countverification.lpa_persons;
-DROP TABLE countverification.lpa_cases;
+DROP TABLE {count_schema}.lpa_persons;
+DROP TABLE {count_schema}.lpa_cases;
 

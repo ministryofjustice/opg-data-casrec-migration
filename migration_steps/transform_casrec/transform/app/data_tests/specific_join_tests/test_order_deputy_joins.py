@@ -52,9 +52,9 @@ def test_order_deputy_joins(
                 "order"."Case" as caserecnumber,
                    deputy."Dep Forename" as firstname,
                    deputy."Dep Surname" as surname
-            from casrec_csv.order
-            left outer join casrec_csv.deputyship on "order"."Order No" = deputyship."Order No"
-            left outer join casrec_csv.deputy on deputyship."Deputy No" = deputy."Deputy No"
+            from {config.schemas["pre_transform"]}.order
+            left outer join {config.schemas["pre_transform"]}.deputyship on "order"."Order No" = deputyship."Order No"
+            left outer join {config.schemas["pre_transform"]}.deputy on deputyship."Deputy No" = deputy."Deputy No"
             where "order"."Case" = '{single_case}'
             order by "order"."Case", "Dep Forename", "Dep Surname";
         """

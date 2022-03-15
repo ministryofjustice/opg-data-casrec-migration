@@ -1,1 +1,1 @@
-DROP SCHEMA IF EXISTS countverification CASCADE;
+DROP SCHEMA IF EXISTS {count_schema} CASCADE;

@@ -20,7 +20,6 @@ import helpers
 
 config = helpers.get_config(env=environment)
 
-
 # database
 db_config = {
     "source_db_connection_string": config.get_db_connection_string("migration"),
@@ -61,6 +60,7 @@ def run_statements_from_file(statement_file):
 
         for line in lines:
             if len(line) > 0:
+                line = line.replace("{deletions_schema}", config.schemas["deletions"])
                 if ";" not in line:
                     sql_statement += f"{line.strip()}\n"
                 else:
@@ -147,11 +147,11 @@ def main():
     log.info("Checking deletion table counts")
     stop_migration = False
     for table in sirius_deletion_check_tables:
-        statement = f"SELECT id FROM deletions.deletions_{table};"
+        statement = f"""SELECT id FROM {config.schemas["deletions"]}.{table};"""
         response = target_db_engine.execute(statement)
         row_count = response.rowcount
         log.info(
-            f"Found {row_count} records in deletions.deletions_{table}. Expected 0."
+            f"""Found {row_count} records in {config.schemas["deletions"]}.{table}. Expected 0."""
         )
         if row_count > 0:
             stop_migration = True

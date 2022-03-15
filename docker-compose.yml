@@ -158,6 +158,25 @@ services:
       PGPASSWORD: api # pragma: allowlist secret
       POSTGRES_DB: api
     depends_on: [postgres-sirius]
+  postgres-sirius-post-lay-restore:
+    image: postgres:10.11
+    entrypoint: pg_restore
+    volumes: ["./sirius_db/db_snapshots:/db_snapshots"]
+    command:
+      - /db_snapshots/api-post-lay.backup
+      - --clean
+      - --if-exists
+      - --host=postgres-sirius
+      - --dbname=api
+      - --username=api
+      - -v
+      - --format=custom
+    environment:
+      POSTGRES_USER: api
+      POSTGRES_PASSWORD: api # pragma: allowlist secret
+      PGPASSWORD: api # pragma: allowlist secret
+      POSTGRES_DB: api
+    depends_on: [postgres-sirius]
   load_to_target:
     build:
       context: ./migration_steps

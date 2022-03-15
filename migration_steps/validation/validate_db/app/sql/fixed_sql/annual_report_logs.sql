@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS casrec_csv.exceptions_annual_report_logs;
+DROP TABLE IF EXISTS {casrec_schema}.exceptions_annual_report_logs;
 
-CREATE TABLE casrec_csv.exceptions_annual_report_logs(
+CREATE TABLE {casrec_schema}.exceptions_annual_report_logs(
     caserecnumber text default NULL,
     reportingperiodenddate text default NULL,
     reportingperiodstartdate text default NULL,
@@ -13,7 +13,7 @@ CREATE TABLE casrec_csv.exceptions_annual_report_logs(
     reviewstatus text default NULL
 );
 
-INSERT INTO casrec_csv.exceptions_annual_report_logs(
+INSERT INTO {casrec_schema}.exceptions_annual_report_logs(
     -- non-pending annual_report_logs derived from casrec account table
     SELECT * FROM (
         SELECT
@@ -24,8 +24,8 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
             CAST(receiveddate AS date) AS receiveddate,
             CAST(NULLIF(revisedduedate, '') AS date) AS revisedduedate,
             numberofchaseletters,
-            casrec_csv.report_element(full_status, 1) AS status,
-            NULLIF(casrec_csv.report_element(full_status, 3), '') AS reviewstatus,
+            {casrec_schema}.report_element(full_status, 1) AS status,
+            NULLIF({casrec_schema}.report_element(full_status, 3), '') AS reviewstatus,
             CAST(NULLIF(reviewdate, '') AS date) AS reviewdate
         FROM (
             SELECT
@@ -36,8 +36,8 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
                 receiveddate,
                 revisedduedate,
                 numberofchaseletters,
-                casrec_csv.report_status(
-                    casrec_csv.report_status_aggregate(
+                {casrec_schema}.report_status(
+                    {casrec_schema}.report_status_aggregate(
                         review_status, wd_count_end_date, receiveddate, lodged_date, reviewdate, next_yr_flag
                     )
                 ) full_status,
@@ -54,13 +54,13 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
                     ) AS receiveddate,
                     "Revise Date" AS revisedduedate,
                     0 AS numberofchaseletters,
-                    casrec_csv.weekday_count(account."End Date") AS wd_count_end_date,
+                    {casrec_schema}.weekday_count(account."End Date") AS wd_count_end_date,
                     "Rev Stat" AS review_status,
                     "Lodge Date" AS lodged_date,
                     "Review Date" AS reviewdate,
                     "Next Yr" AS next_yr_flag
                 FROM
-                    casrec_csv.account
+                    {casrec_schema}.account
             ) AS account_annual_report_logs
         ) AS non_pending_annual_report_logs
 
@@ -79,11 +79,11 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
             'NO_REVIEW' AS review_status,
             NULL AS reviewdate
         FROM
-            casrec_csv.pat p
+            {casrec_schema}.pat p
 
         INNER JOIN(
             SELECT account_case, reportingperiodstartdate
-            FROM casrec_csv.order o
+            FROM {casrec_schema}.order o
             INNER JOIN (
                 SELECT
                     a."Case" as account_case,
@@ -92,7 +92,7 @@ INSERT INTO casrec_csv.exceptions_annual_report_logs(
                         PARTITION BY a."Case"
                         ORDER BY a."End Date" DESC
                     ) AS rownum
-                FROM casrec_csv.account a
+                FROM {casrec_schema}.account a
             ) AS cases
             ON o."Case" = cases.account_case
             WHERE cases.rownum = 1

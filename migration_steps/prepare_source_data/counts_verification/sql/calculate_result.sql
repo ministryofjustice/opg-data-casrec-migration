@@ -37,11 +37,11 @@ SELECT
             THEN 'DELETE ERROR'
             WHEN
                 (non_cp1_pre_delete + (
-                    SELECT non_cp1_pre_delete FROM countverification.counts WHERE supervision_table = 'caseitem_document')
+                    SELECT non_cp1_pre_delete FROM {count_schema}.counts WHERE supervision_table = 'caseitem_document')
                 ) != non_cp1_post_delete AND supervision_table IN ('person_document')
             THEN 'DELETE ERROR'
             ELSE 'OK'
         END
     END AS  non_cp1_status
-FROM countverification.counts
+FROM {count_schema}.counts
 ORDER BY supervision_table;

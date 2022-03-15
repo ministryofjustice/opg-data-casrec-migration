@@ -9,6 +9,9 @@ sys.path.insert(0, str(current_path) + "/../../shared")
 import table_helpers
 import helpers
 
+environment = os.environ.get("ENVIRONMENT")
+config = helpers.get_config(env=environment)
+
 log = logging.getLogger("root")
 
 
@@ -50,8 +53,9 @@ def set_batch_numbers_in_migrated_tables(cursor):
 
             log.info(f"Setting batch number {batch_number} in {table}...")
             query = f"""
-                    UPDATE {table} SET batchnumber = {batch_number} WHERE batchnumber IS NULL AND source = 'CASRECMIGRATION';
-                """
+                UPDATE {table} SET batchnumber = {batch_number}
+                WHERE batchnumber IS NULL
+                AND source = '{config.migration_phase["migration_identifier"]}';"""
             cursor.execute(query)
 
 
@@ -73,7 +77,7 @@ def set_batch_numbers_in_finance_person(cursor):
         FROM persons
         WHERE finance_person.person_id = persons.id
         AND persons.type = 'actor_client'
-        AND persons.clientsource = 'CASRECMIGRATION'
+        AND persons.clientsource = '{config.migration_phase["migration_identifier"]}'
         AND finance_person.batchnumber IS NULL;
     """
     cursor.execute(query)

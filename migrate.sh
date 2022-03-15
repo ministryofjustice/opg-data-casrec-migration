@@ -24,16 +24,22 @@ then
       SYNC_CASREC_CSVS=${SYNC_CASREC_CSVS:-n}
       echo "${SYNC_CASREC_CSVS}"
   else
-    PRESERVE_SCHEMAS="casrec_csv"
+    PRESERVE_SCHEMAS="casrec_csv,casrec_csv_p2"
     SKIP_LOAD="true"
   fi
 
   read -rp "Migrate specific Correfs? (comma-separated list) [All]: " CORREFS
   if [ "${CORREFS}" == "" ]
   then
-      echo "Migrating ALL Correfs"
+    DEFAULT_P2_CORREFS="ODP,ORS,ORV,PGA,PGC,PGH,PGR,RGY,S1A,S1N,NA,NEW,A1,A2,A2A,A3,A3G,ADC,ARD,C1,DCS,DOD,FOE,HW"
+    CORREFS=${DEFAULT_P2_CORREFS}
+    echo "Migrating preset phase 2 correfs and data cut (${DEFAULT_P2_CORREFS})"
+  elif [ "${CORREFS}" == "ALL" ]
+  then
+    CORREFS=""
+    echo "Migrating ALL Correfs on Premigrated data source"
   else
-      echo "Migrating Correfs ${CORREFS} only"
+    echo "Migrating Correfs ${CORREFS} only"
   fi
 
   read -rp "Migrate to full sirius app? (y/n) [n]: " FULL_SIRIUS_APP
@@ -65,7 +71,14 @@ if [ "${FULL_SIRIUS_APP}" == "n" ]
 then
   docker-compose ${COMPOSE_ARGS} up --no-deps -d postgres-sirius
   docker-compose ${COMPOSE_ARGS} run --rm wait-for-it -address postgres-sirius:5432 --timeout=30 -debug
-  docker-compose ${COMPOSE_ARGS} up --no-deps -d postgres-sirius-restore
+  if [ "${CORREFS}" == "" ]
+  then
+    echo "Restoring Pre Phase 1 Data Cut"
+    docker-compose up --no-deps -d postgres-sirius-restore
+  else
+    echo "Restoring Post Phase 1 Data Cut"
+    docker-compose up --no-deps -d postgres-sirius-post-lay-restore
+  fi
 fi
 docker-compose ${COMPOSE_ARGS} run --rm wait-for-it -address casrec_db:5432 --timeout=30 -debug
 docker-compose ${COMPOSE_ARGS} run --rm wait-for-it -address $S3_HOST_AND_PORT --timeout=30 -debug
