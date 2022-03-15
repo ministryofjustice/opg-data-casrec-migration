@@ -56,6 +56,16 @@ FROM (
 
 ) to_update;
 
+-- Audit table for updates
+SELECT *
+INTO pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_updates_audit
+FROM (
+    SELECT * FROM annual_report_type_assignments
+    WHERE id IN (
+        SELECT id FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_updates
+    )
+) updates;
+
 -- Delete the non-PENDING annual_report_type_assignments we incorrectly migrated
 SELECT *
 INTO pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_deletes
@@ -83,6 +93,16 @@ FROM (
     AND carl.status = arl.status
 
 ) to_delete;
+
+-- Audit table for deletes
+SELECT *
+INTO pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_deletes_audit
+FROM (
+    SELECT * FROM annual_report_type_assignments
+    WHERE id IN (
+        SELECT id FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_deletes
+    )
+) deletes;
 
 BEGIN;
     UPDATE annual_report_type_assignments arta
