@@ -1,6 +1,7 @@
 -- 1. New schema per update pmf_[table]_[field]_[date]_[Jira]
 CREATE SCHEMA if not exists pmf_annual_report_logs_reviewstatus_20220310_in1198;
 
+
 -- 2. Build Update table: PK, original value, expected value
 SELECT sirius_arl_id, original_reviewstatus, expected_reviewstatus
 INTO pmf_annual_report_logs_reviewstatus_20220310_in1198.annual_report_logs_updates
@@ -34,12 +35,20 @@ FROM (
             arl.id AS sirius_arl_id,
             arl.reviewstatus AS original_reviewstatus
         FROM annual_report_logs arl
+
+        -- only modify annual_report_logs whose status has not changed since migration;
+        -- this also implicitly restricts the modifications to annual_report_logs
+        -- we created as we are using a casrec_mapping
+        INNER JOIN casrec_mapping.annual_report_logs carl
+        ON carl.sirius_id = arl.id
+        AND carl.status = arl.status
+
         INNER JOIN persons p
         ON arl.client_id = p.id
+
         INNER JOIN casrec_latest_s_accounts a
         ON p.caserecnumber = a.casrec_case
-        WHERE p.clientsource IN ('CASRECMIGRATION')
-        AND arl.status = 'PENDING'
+        WHERE arl.status = 'PENDING'
     ) arls
 ) to_update;
 
@@ -68,12 +77,10 @@ BEGIN;
     INNER JOIN pmf_annual_report_logs_reviewstatus_20220310_in1198.annual_report_logs_audit au
     ON arl.id = au.id;
 
+
 -- Rollback OR Commit
 -- affected row count looks BAD: back out
 ROLLBACK;
 -- OR
 -- affected row count correct: commit
 COMMIT;
-
-
-
