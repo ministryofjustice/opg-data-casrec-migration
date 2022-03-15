@@ -36,12 +36,13 @@ FROM (
             arl.reviewstatus AS original_reviewstatus
         FROM annual_report_logs arl
 
-        -- only modify annual_report_logs whose status has not changed since migration;
+        -- only modify annual_report_logs which have not changed since migration;
         -- this also implicitly restricts the modifications to annual_report_logs
         -- we created as we are using a casrec_mapping
         INNER JOIN casrec_mapping.annual_report_logs carl
         ON carl.sirius_id = arl.id
         AND carl.status = arl.status
+        AND carl.reviewstatus = arl.reviewstatus
 
         INNER JOIN persons p
         ON arl.client_id = p.id
