@@ -239,6 +239,11 @@ workflows:
           requires: [migration - response api tests preproduction]
           tf_workspace: preproduction
           runner_command: migration-light-touch-api-tests
+      - run_task:
+          name: migration - post migration fixes preproduction
+          requires: [migration - light touch api tests preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-post-migration-fixes
       - scale-services:
           name: scale up poller service for migration preproduction
           requires: [migration - light touch api tests preproduction]
@@ -357,9 +362,14 @@ workflows:
           requires: [migration - load sirius preqa]
           tf_workspace: preqa
           runner_command: migration-validation
+      - run_task:
+          name: migration - post migration fixes preqa
+          requires: [migration - validation preqa]
+          tf_workspace: preqa
+          runner_command: migration-post-migration-fixes
       - scale-services:
           name: scale up poller service for migration preqa
-          requires: [migration - validation preqa]
+          requires: [migration - post migration fixes preqa]
           replicas: "1"
           profile: "migrations-ci-sirius-pre"
           service: "notify-poller"
@@ -451,9 +461,14 @@ workflows:
           requires: [migration - load sirius qa]
           tf_workspace: qa
           runner_command: migration-validation
+      - run_task:
+          name: migration - post migration fixes qa
+          requires: [migration - validation qa]
+          tf_workspace: qa
+          runner_command: migration-post-migration-fixes
       - scale-services:
           name: scale up poller service for migration qa
-          requires: [migration - validation qa]
+          requires: [migration - post migration fixes qa]
           replicas: "1"
           profile: "migrations-ci-sirius-pre"
           service: "notify-poller"
@@ -584,9 +599,14 @@ workflows:
           requires: [migration - response api tests production]
           tf_workspace: production
           runner_command: migration-light-touch-api-tests
+      - run_task:
+          name: migration - post migration fixes production
+          requires: [migration - light touch api tests production]
+          tf_workspace: production
+          runner_command: migration-post-migration-fixes
       - run_elasticsearch_reset:
           name: full reindex elasticsearch production
-          requires: [migration - light touch api tests production]
+          requires: [migration - post migration fixes production]
           tf_workspace: production
       - job_complete:
           name: job complete notification
@@ -705,9 +725,14 @@ workflows:
           requires: [migration - response api tests rehearsal]
           tf_workspace: rehearsal
           runner_command: migration-light-touch-api-tests
+      - run_task:
+          name: migration - post migration fixes rehearsal
+          requires: [migration - light touch api tests rehearsal]
+          tf_workspace: rehearsal
+          runner_command: migration-post-migration-fixes
       - run_elasticsearch_reset:
           name: full reindex elasticsearch rehearsal
-          requires: [migration - light touch api tests rehearsal]
+          requires: [migration - post migration fixes rehearsal]
           tf_workspace: rehearsal
       - job_complete:
           name: job complete notification
@@ -782,16 +807,19 @@ workflows:
          ]
           runner_command: migration-initialise-pre-delete
           tf_workspace: preproduction
+          filters: {branches:{only:[main]}}
       - run_task:
           name: migration - load casrec preproduction
           requires: [migration - initialise environments 1 preproduction]
           tf_workspace: preproduction
           runner_command: migration-load-casrec
+          filters: {branches:{only:[main]}}
       - run_task:
           name: migration - initialise environments 2 preproduction
           requires: [migration - load casrec preproduction]
           runner_command: migration-initialise-post-delete
           tf_workspace: preproduction
+          filters: {branches:{only:[main]}}
       - run_task:
           name: migration - filter data preproduction
           requires: [migration - initialise environments 2 preproduction]
@@ -829,9 +857,14 @@ workflows:
           tf_workspace: preproduction
           runner_command: migration-response-api-tests
           filters: {branches:{only:[main]}}
+      - run_task:
+          name: migration - post migration fixes preproduction
+          requires: [migration - response api tests preproduction]
+          tf_workspace: preproduction
+          runner_command: migration-post-migration-fixes
       - scale-services:
           name: scale up poller service for migration preproduction
-          requires: [migration - light touch api tests preproduction]
+          requires: [migration - post migration fixes preproduction]
           replicas: "1"
           profile: "migrations-ci-sirius-pre"
           service: "notify-poller"
@@ -1450,6 +1483,9 @@ jobs:
       - run:
           name: Run light touch api tests task
           command: ecs-runner -task migration-light-touch-api-tests -timeout << parameters.timeout >>
+      - run:
+          name: Run post migration fixes
+          command: ecs-runner -task migration-post-migration-fixes -timeout << parameters.timeout >>
       - notififications/notify_env_vars
       - notififications/notify_if_fail
 

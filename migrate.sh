@@ -141,6 +141,8 @@ echo "=== Step 10 - Light Touch API Tests ==="
 docker-compose ${COMPOSE_ARGS} run --rm validation validation/light_touch_api_tests.sh
 echo "=== Step 11 - Functional API Tests ==="
 docker-compose ${COMPOSE_ARGS} run --rm validation validation/functional_api_tests.sh
+echo "=== Step 12 - Post Migration Fixes ==="
+docker-compose ${COMPOSE_ARGS} run --rm validation validation/post_migration_fixes.sh
 
 if [ "${GENERATE_DOCS}" == "true" ]
   then

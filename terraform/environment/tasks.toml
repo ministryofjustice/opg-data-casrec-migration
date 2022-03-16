@@ -358,6 +358,27 @@
         },
         "TaskDefinition":"${casrec-task-definition-validation}"
       },
+      "migration-post-migration-fixes":{
+        "Cluster":"${casrec-cluster}",
+        "LaunchType":"FARGATE",
+        "NetworkConfiguration":{
+            "AwsvpcConfiguration":{
+                "SecurityGroups":[
+                    "${casrec-sec-group}"
+                ],
+                "Subnets":[
+                    ${casrec-subnets}
+                ]
+            }
+        },
+        "Overrides": {
+            "ContainerOverrides": [{
+                "Name": "etl5",
+                "Command": ["validation/post_migration_fixes.sh"]
+            }]
+        },
+        "TaskDefinition":"${casrec-task-definition-validation}"
+      },
       "migration-connectivity-check":{
         "Cluster":"${casrec-cluster}",
         "LaunchType":"FARGATE",
