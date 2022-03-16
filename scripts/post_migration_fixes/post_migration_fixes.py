@@ -69,6 +69,11 @@ def _run_sql_scripts(sql_scripts):
         for script_path in sql_scripts:
             with open(script_path, "r") as script:
                 sql = script.read().replace("ROLLBACK;", "")
+                # these replacements make it possible to develop a script
+                # locally which will work on preqa/live as-is, but which
+                # will be applied correctly in a phase 2 migration environment
+                sql = sql.replace("casrec_csv.", "casrec_csv_p2.")
+                sql = sql.replace("'CASRECMIGRATION'", "'CASRECMIGRATION_P2'")
                 conn.execute(sqlalchemy.text(sql))
 
 
