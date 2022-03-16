@@ -71,7 +71,7 @@ SELECT *
 INTO pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_deletes
 FROM (
 
-    SELECT arta.id AS arta_id
+    SELECT arta.id AS arta_id, arl.client_id
     FROM annual_report_type_assignments arta
 
     -- only include annual_report_type_assignments where
@@ -85,6 +85,9 @@ FROM (
     INNER JOIN annual_report_logs arl
     ON arta.annualreport_id = arl.id
     AND arl.status != 'PENDING'
+
+    INNER JOIN persons p
+    ON arl.client_id = p.id
 
     -- only delete annual_report_type_assignments where the status
     -- hasn't changed since the migration
@@ -120,7 +123,10 @@ BEGIN;
     FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_updates
     EXCEPT
     SELECT id, annualreport_id, reporttype, type
-    FROM annual_report_type_assignments;
+    FROM annual_report_type_assignments
+    WHERE id IN (
+        SELECT id FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_deletes_audit
+    );
 
     -- Validation: check we haven't deleted too many rows, or updated too many
     SELECT
