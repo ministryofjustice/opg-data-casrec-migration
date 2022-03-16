@@ -113,10 +113,11 @@ _copy(
     f"""
     CREATE TABLE IF NOT EXISTS {CASREC_MAPPING_SCHEMA}.annual_report_logs (
         sirius_id int PRIMARY KEY,
-        status varchar
+        status varchar,
+        reviewstatus varchar
     )
     """,
-    "SELECT id AS sirius_id, status FROM integration.annual_report_logs",
+    "SELECT id AS sirius_id, status, reviewstatus FROM integration.annual_report_logs",
     f"{CASREC_MAPPING_SCHEMA}.annual_report_logs",
 )
 
