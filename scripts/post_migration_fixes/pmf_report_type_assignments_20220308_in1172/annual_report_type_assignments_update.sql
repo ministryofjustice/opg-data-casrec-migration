@@ -84,7 +84,7 @@ FROM (
     -- delete type assignments for non-PENDING reports only
     INNER JOIN annual_report_logs arl
     ON arta.annualreport_id = arl.id
-    AND arl.status != 'PENDING'
+    AND (arl.status != 'PENDING' OR arl.status IS NULL)
 
     INNER JOIN persons p
     ON arl.client_id = p.id
