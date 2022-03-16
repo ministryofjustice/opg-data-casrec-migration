@@ -62,7 +62,7 @@ INTO pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_
 FROM (
     SELECT * FROM annual_report_type_assignments
     WHERE id IN (
-        SELECT id FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_updates
+        SELECT arta_id FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_updates
     )
 ) updates;
 
@@ -103,7 +103,7 @@ INTO pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_
 FROM (
     SELECT * FROM annual_report_type_assignments
     WHERE id IN (
-        SELECT id FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_deletes
+        SELECT arta_id FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_deletes
     )
 ) deletes;
 
