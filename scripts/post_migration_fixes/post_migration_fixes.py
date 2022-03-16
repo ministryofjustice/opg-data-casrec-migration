@@ -6,6 +6,7 @@ a full successful migrate.sh run against it.
 import io
 import os
 import re
+import sys
 from glob import glob
 
 import sqlalchemy
@@ -63,8 +64,21 @@ def _copy(create_sql, from_sql, to_table):
     raw_conn.commit()
 
 
+def _run_sql_scripts(sql_scripts):
+    with engine.begin() as conn:
+        for script_path in sql_scripts:
+            with open(script_path, "r") as script:
+                sql = script.read().replace("ROLLBACK;", "")
+                # these replacements make it possible to develop a script
+                # locally which will work on preqa/live as-is, but which
+                # will be applied correctly in a phase 2 migration environment
+                sql = sql.replace("casrec_csv.", "casrec_csv_p2.")
+                sql = sql.replace("'CASRECMIGRATION'", "'CASRECMIGRATION_P2'")
+                conn.execute(sqlalchemy.text(sql))
+
+
 """
-Mapping tables.
+Mapping tables. This is idempotent, so we do it every time this script runs.
 """
 with engine.begin() as conn:
     conn.execute(f"CREATE SCHEMA IF NOT EXISTS {CASREC_MAPPING_SCHEMA};")
@@ -81,25 +95,50 @@ _copy(
     f"{CASREC_MAPPING_SCHEMA}.cases",
 )
 
-
-"""
-Run all the post migration scripts in folders prefixed with two digits;
-for the purposes of ordering, each post-migration script should be within a numbered folder
-in format XX_pmf_*; within each folder, if the scripts need to run in a specific order, they
-should also be prefixed with two digits to signify the ordering.
-"""
-sql_scripts = glob(os.path.join(os.path.dirname(__file__), "./**/*.sql"))
-sql_scripts = list(
-    filter(
-        lambda script_path: re.search(r"[\d]{2}_pmf", script_path) is not None,
-        sql_scripts,
+# Mapping from Sirius annual_report_type_assignments ID to migrated reporttype and type
+_copy(
+    f"""
+    CREATE TABLE IF NOT EXISTS {CASREC_MAPPING_SCHEMA}.annual_report_type_assignments (
+        sirius_id int PRIMARY KEY,
+        reporttype varchar,
+        type varchar
     )
+    """,
+    "SELECT id AS sirius_id, reporttype, type FROM integration.annual_report_type_assignments",
+    f"{CASREC_MAPPING_SCHEMA}.annual_report_type_assignments",
 )
-sql_scripts = sorted(sql_scripts)
+
+# Mapping from Sirius annual_report_logs ID to migrated status
+_copy(
+    f"""
+    CREATE TABLE IF NOT EXISTS {CASREC_MAPPING_SCHEMA}.annual_report_logs (
+        sirius_id int PRIMARY KEY,
+        status varchar,
+        reviewstatus varchar
+    )
+    """,
+    "SELECT id AS sirius_id, status, reviewstatus FROM integration.annual_report_logs",
+    f"{CASREC_MAPPING_SCHEMA}.annual_report_logs",
+)
 
 
-with engine.begin() as conn:
-    for script_path in sql_scripts:
-        with open(script_path, "r") as script:
-            sql = script.read().replace("ROLLBACK;", "")
-            conn.execute(sqlalchemy.text(sql))
+if len(sys.argv) > 1 and os.path.isfile(sys.argv[1]):
+    # run a single script
+    _run_sql_scripts([sys.argv[1]])
+else:
+    """
+    Run all the post migration scripts in folders prefixed with two digits;
+    for the purposes of ordering, each post-migration script should be within a numbered folder
+    in format XX_pmf_*; within each folder, if the scripts need to run in a specific order, they
+    should also be prefixed with two digits to signify the ordering.
+    """
+    sql_scripts = glob(os.path.join(os.path.dirname(__file__), "./**/*.sql"))
+    sql_scripts = list(
+        filter(
+            lambda script_path: re.search(r"[\d]{2}_pmf", script_path) is not None,
+            sql_scripts,
+        )
+    )
+    sql_scripts = sorted(sql_scripts)
+
+    _run_sql_scripts(sql_scripts)
