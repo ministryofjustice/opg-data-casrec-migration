@@ -125,7 +125,7 @@ BEGIN;
     SELECT id, annualreport_id, reporttype, type
     FROM annual_report_type_assignments
     WHERE id IN (
-        SELECT id FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_deletes_audit
+        SELECT id FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_updates_audit
     );
 
     -- Validation: check we haven't deleted too many rows, or updated too many
