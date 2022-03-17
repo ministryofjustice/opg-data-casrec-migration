@@ -26,18 +26,22 @@ class BaseConfig:
 
     phase = {
         "p1": {
+            "suffix": "",
             "migration_identifier": "CASRECMIGRATION",
             "deletions_schema": "deletions",
             "countverification_audit_schema": "countverificationaudit",
             "countverification_schema": "countverification",
             "casrec_schema": "casrec_csv",
+            "transform_mappings": "transform_mappings",
         },
         "p2": {
+            "suffix": "_p2",
             "migration_identifier": "CASRECMIGRATION_P2",
             "deletions_schema": "deletions_p2",
             "countverification_audit_schema": "countverificationaudit_p2",
             "countverification_schema": "countverification_p2",
             "casrec_schema": "casrec_csv_p2",
+            "transform_mappings": "transform_mappings_p2",
         },
     }
 
@@ -77,6 +81,7 @@ class BaseConfig:
         "count_verification": migration_phase["countverification_schema"],
         "count_verification_audit": migration_phase["countverification_audit_schema"],
         "deletions": migration_phase["deletions_schema"],
+        "transform_mappings": migration_phase["transform_mappings"],
     }
 
     row_limit = 5
