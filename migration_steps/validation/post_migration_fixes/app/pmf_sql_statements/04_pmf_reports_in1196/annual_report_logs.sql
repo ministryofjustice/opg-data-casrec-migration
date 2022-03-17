@@ -1,3 +1,5 @@
+--Purpose: update annual report logs casesupervisionlevel to be equal to supervision_level_log's supervisionlevel
+--where it's an active order and report log status is RECEIVED
 --@setup_tag
 CREATE SCHEMA IF NOT EXISTS {pmf_schema};
 
@@ -9,7 +11,7 @@ INNER JOIN supervision_level_log s ON c.id = s.order_id
 INNER JOIN annual_report_logs a ON p.id = a.client_id
 WHERE c.orderstatus = 'ACTIVE'
 AND a.status = 'RECEIVED'
-AND p.clientsource = 'CASRECMIGRATION';
+AND p.clientsource = '{client_source}';
 
 --@audit_tag
 SELECT a.*
@@ -33,4 +35,4 @@ INNER JOIN supervision_level_log s ON c.id = s.order_id
 INNER JOIN annual_report_logs a ON p.id = a.client_id
 WHERE c.orderstatus = 'ACTIVE'
 AND a.status = 'RECEIVED'
-AND p.clientsource = 'CASRECMIGRATION';
+AND p.clientsource = '{client_source}';

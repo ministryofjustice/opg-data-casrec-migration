@@ -1,3 +1,4 @@
+--Purpose: set status to LODGED on annual report logs where current status is RECEIVED and datereportlodged is set
 --@setup_tag
 CREATE SCHEMA IF NOT EXISTS {pmf_schema};
 
@@ -8,7 +9,7 @@ INNER JOIN annual_report_logs a ON p.id = a.client_id
 INNER JOIN annual_report_lodging_details d ON a.id = d.annual_report_log_id
 WHERE a.status = 'RECEIVED'
 AND d.datereportlodged IS NOT NULL
-AND p.clientsource = 'CASRECMIGRATION';
+AND p.clientsource = '{client_source}';
 
 --@audit_tag
 SELECT a.*
@@ -30,4 +31,4 @@ FROM persons p
 INNER JOIN annual_report_logs a ON p.id = a.client_id
 INNER JOIN annual_report_lodging_details d ON a.id = d.annual_report_log_id
 WHERE d.datereportlodged IS NOT NULL
-AND p.clientsource = 'CASRECMIGRATION';
+AND p.clientsource = '{client_source}';

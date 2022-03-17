@@ -71,6 +71,7 @@ def copy_mapping_tables(casrec_mapping_schema):
     Mapping tables.
     """
     with target_engine.begin() as conn:
+        conn.execute(f"DROP SCHEMA IF EXISTS {casrec_mapping_schema} CASCADE;")
         conn.execute(f"CREATE SCHEMA IF NOT EXISTS {casrec_mapping_schema};")
 
     # Mapping from Sirius case ID to casrec Order No
@@ -85,6 +86,42 @@ def copy_mapping_tables(casrec_mapping_schema):
         to_table=f"{casrec_mapping_schema}.cases",
     )
 
+    # Mapping from Sirius annual_report_type_assignments ID to migrated reporttype and type
+    _copy(
+        create_sql=f"""
+        CREATE TABLE IF NOT EXISTS {casrec_mapping_schema}.annual_report_type_assignments (
+            sirius_id int PRIMARY KEY,
+            reporttype varchar,
+            type varchar
+        )
+        """,
+        from_sql="SELECT id AS sirius_id, reporttype, type FROM integration.annual_report_type_assignments",
+        to_table=f"{casrec_mapping_schema}.annual_report_type_assignments",
+    )
+
+    # Mapping from Sirius annual_report_logs ID to migrated status
+    _copy(
+        create_sql=f"""
+        CREATE TABLE IF NOT EXISTS {casrec_mapping_schema}.annual_report_logs (
+            sirius_id int PRIMARY KEY,
+            status varchar,
+            reviewstatus varchar
+        )
+        """,
+        from_sql="SELECT id AS sirius_id, status, reviewstatus FROM integration.annual_report_logs",
+        to_table=f"{casrec_mapping_schema}.annual_report_logs",
+    )
+
+
+def delete_schema(schema_name, cursor, conn):
+    sql = f"""
+        DROP SCHEMA IF EXISTS {schema_name} CASCADE;
+    """
+
+    cursor.execute(sql)
+    conn.commit()
+    log.info(f"Dropped schema {schema_name}")
+
 
 def run_post_migration_fixes():
     """
@@ -95,11 +132,8 @@ def run_post_migration_fixes():
     """
 
     this_dir = os.path.dirname(__file__)
-    print(this_dir)
     sql_dir = os.path.join(this_dir, "pmf_sql_statements/*/*.sql")
-    print(sql_dir)
     sql_scripts = glob(sql_dir)
-    print(sql_scripts)
     sql_scripts = list(
         filter(
             lambda script_path: re.search(r"[\d]{2}_pmf", script_path) is not None,
@@ -112,6 +146,7 @@ def run_post_migration_fixes():
         schema_name = (
             f'{get_pmf_schema_name(script_path)}{config.migration_phase["suffix"]}'
         )
+
         setup_statements = get_statements(script_path, "setup", schema_name)
         audit_statements = get_statements(script_path, "audit", schema_name)
         update_statements = get_statements(script_path, "update", schema_name)
@@ -121,11 +156,16 @@ def run_post_migration_fixes():
         connection_string = target_db_conn_string
         conn = psycopg2.connect(connection_string)
         cursor = conn.cursor()
+        log.info("Deleting existing schema")
+        delete_schema(schema_name, cursor, conn)
 
         log.info("Running Setup Statements")
         for statement in setup_statements:
             cursor.execute(statement)
-            if "create schema" not in statement.lower():
+            if (
+                "create schema" not in statement.lower()
+                and "set datestyle" not in statement.lower()
+            ):
                 log.info(f"Setup inserted {cursor.rowcount} rows")
         conn.commit()
 
@@ -191,6 +231,10 @@ def get_statements(path, tag_prefix, pmf_schema):
                     "{casrec_schema}", config.schemas["pre_transform"]
                 )
                 line = line.replace("{pmf_schema}", pmf_schema)
+                line = line.replace(
+                    "{client_source}", config.migration_phase["migration_identifier"]
+                )
+                line = line.replace("{casrec_mapping}", casrec_mapping_schema)
                 if not line.endswith(";"):
                     sql_statement += f"{line}\n"
                 else:

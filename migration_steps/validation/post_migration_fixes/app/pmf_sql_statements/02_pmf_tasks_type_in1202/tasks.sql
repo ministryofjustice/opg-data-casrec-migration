@@ -1,3 +1,5 @@
+--Purpose: update tasks type to VIRD where sup_activity is ACTIVE and desc is URGENT VISIT REPORT
+--and latest activity_tracking row linked to sup_activity has Start Date that matches tasks duedate
 --@setup_tag
 CREATE SCHEMA if not exists {pmf_schema};
 
