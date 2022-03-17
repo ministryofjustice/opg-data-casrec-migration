@@ -35,7 +35,7 @@ FROM (
 ) deletes;
 
 -- Populate table with data we're going to insert;
--- no audit table for this, as the inserts table *is* the audit table
+-- audit table for inserts is populated after we do the deletes
 SELECT *
 INTO pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_inserts
 FROM (
@@ -64,32 +64,35 @@ BEGIN;
         SELECT arta_id FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_deletes
     );
 
+    -- Audit table for inserts; these are the inserts we'll actually do, along with their IDs
+    SELECT *
+    INTO pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_inserts_audit
+    FROM (
+        SELECT
+            nextval('annual_report_type_assignments_id_seq') AS id,
+            ins.annualreport_id,
+            ins.reporttype,
+            ins.type
+        FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_inserts ins
+        -- only add an arta row if the arl row doesn't already have one
+        LEFT JOIN annual_report_type_assignments arta
+        ON ins.annualreport_id = arta.annualreport_id
+        WHERE arta.id IS NULL
+    ) reports_without_types;
+
     INSERT INTO annual_report_type_assignments (id, annualreport_id, reporttype, type)
-    SELECT
-        nextval('annual_report_type_assignments_id_seq') AS id,
-        ins.annualreport_id,
-        ins.reporttype,
-        ins.type
-    FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_inserts ins
-    -- only add a row if the arl row doesn't already have an arta row
-    LEFT JOIN annual_report_type_assignments arta
-    ON ins.annualreport_id = arta.annualreport_id
-    WHERE arta.id IS NULL;
+    SELECT * FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_inserts_audit;
 
     -- Validation
     SELECT
         *,
-        ("# arta start" - "# arta deleted" + "# arta inserted" = "# arta current") AS "OK?"
+        ("arta start" - "arta deleted" + "arta inserted" = "arta current") AS "OK?"
     FROM (
         SELECT
-            (SELECT arta_starting_count FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_counts) AS "# arta start",
-            (SELECT COUNT(1) FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_deletes) AS "# arta deleted",
-            (
-                SELECT COUNT(1) FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_inserts ins
-                INNER JOIN annual_report_type_assignments arta
-                ON ins.id = arta.id
-            ) AS "# arta inserted",
-            (SELECT COUNT(1) FROM annual_report_type_assignments arta) AS "# arta current"
+            (SELECT arta_starting_count FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_counts) AS "arta start",
+            (SELECT COUNT(1) FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_deletes) AS "arta deleted",
+            (SELECT COUNT(1) FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_inserts_audit) AS "arta inserted",
+            (SELECT COUNT(1) FROM annual_report_type_assignments arta) AS "arta current"
     ) counts;
 
 -- Manually run if validation incorrect
