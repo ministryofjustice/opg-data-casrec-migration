@@ -41,7 +41,6 @@ INTO pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_
 FROM (
 
     SELECT
-        nextval('annual_report_type_assignments_id_seq') AS id,
         reports.id AS annualreport_id,
         (CASE
             WHEN reports.casesupervisionlevel = 'GENERAL' THEN 'OPG102'
@@ -66,7 +65,11 @@ BEGIN;
     );
 
     INSERT INTO annual_report_type_assignments (id, annualreport_id, reporttype, type)
-    SELECT ins.id, ins.annualreport_id, ins.reporttype, ins.type
+    SELECT
+        nextval('annual_report_type_assignments_id_seq') AS id,
+        ins.annualreport_id,
+        ins.reporttype,
+        ins.type
     FROM pmf_report_type_assignments_20220308_in1172.annual_report_type_assignments_inserts ins
     -- only add a row if the arl row doesn't already have an arta row
     LEFT JOIN annual_report_type_assignments arta
