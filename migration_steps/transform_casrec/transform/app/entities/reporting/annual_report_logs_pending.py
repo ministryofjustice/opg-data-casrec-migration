@@ -19,16 +19,13 @@ import pandas as pd
 from helpers import get_mapping_dict, get_table_def
 from transform_data.apply_datatypes import reapply_datatypes_to_fk_cols
 from transform_data.unique_id import add_unique_id
-from utilities.standard_transformations import (
-    calculate_date,
-    calculate_duedate,
-    calculate_startdate,
-)
 
 log = logging.getLogger("root")
 
 
-def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
+def insert_annual_report_logs_pending(
+    db_config, target_db, mapping_file, duedate_calculator
+):
     chunk_size = db_config["chunk_size"]
     offset = -chunk_size
     chunk_no = 0
@@ -170,11 +167,9 @@ def insert_annual_report_logs_pending(db_config, target_db, mapping_file):
             )
             continue
 
-        # calculate the duedate
-        annual_report_log_df = calculate_duedate(
-            original_col="reportingperiodenddate",
-            result_col="duedate",
-            df=annual_report_log_df,
+        # calculate duedate
+        annual_report_log_df = annual_report_log_df.apply(
+            duedate_calculator.calculate_duedate, axis=1
         )
 
         # set an ID on all the new records
