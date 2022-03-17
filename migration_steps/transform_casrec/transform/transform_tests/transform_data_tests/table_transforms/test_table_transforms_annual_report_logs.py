@@ -113,7 +113,7 @@ def case_table_transforms_annual_report_logs_rev_stat_n_all_dates_set():
     data["c_lodge_date"] = [THIRTY_WORKING_DAYS_AGO]
     data["c_review_date"] = [THIRTY_WORKING_DAYS_AGO]
 
-    return (data, {"status": "LODGED", "reviewstatus": None})
+    return (data, {"status": "LODGED", "reviewstatus": "NO_REVIEW"})
 
 
 def case_table_transforms_annual_report_logs_rev_stat_i_no_review_date():
@@ -192,7 +192,7 @@ def case_table_transforms_annual_report_logs_rev_stat_s_no_dates_set():
     data = _make_test_data()
     data["c_rev_stat"] = ["S"]
 
-    return (data, {"status": "OVERDUE", "reviewstatus": None})
+    return (data, {"status": "OVERDUE", "reviewstatus": "NO_REVIEW"})
 
 
 def case_table_transforms_annual_report_logs_rev_stat_r_all_dates_set():
@@ -216,7 +216,7 @@ def case_table_transforms_annual_report_logs_rev_stat_r_no_dates_set():
     data = _make_test_data()
     data["c_rev_stat"] = ["R"]
 
-    return (data, {"status": "OVERDUE", "reviewstatus": None})
+    return (data, {"status": "OVERDUE", "reviewstatus": "NO_REVIEW"})
 
 
 def case_table_transforms_annual_report_logs_rev_stat_r_no_review_date():
@@ -229,7 +229,7 @@ def case_table_transforms_annual_report_logs_rev_stat_r_no_review_date():
     data["c_rcvd_date1"] = [THIRTY_WORKING_DAYS_AGO]
     data["c_lodge_date"] = [THIRTY_WORKING_DAYS_AGO]
 
-    return (data, {"status": "OVERDUE", "reviewstatus": None})
+    return (data, {"status": "OVERDUE", "reviewstatus": "NO_REVIEW"})
 
 
 def case_table_transforms_annual_report_logs_rev_stat_r_no_lodge_or_review_dates():
