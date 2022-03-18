@@ -86,12 +86,13 @@ class DueDateCalculator:
         If the row references a case which has an active PA/PRO deputy,
         duedate = end date + 40 working days.
 
-        Otherwise, duedate = end date + 21 working days.
+        Otherwise, duedate = end date + 21 days (working and non-working).
 
         This ignores bank holidays and rolls the day forward if it falls on
         a weekend.
 
         :param row: row from the annual_report_logs select
+        :returns row: duedate field is set to date string in format YYYY-MM-DD
         :raises DueDateCalculatorUnpopulatedException: if called before
             self.cases has been populated
         """
@@ -108,16 +109,29 @@ class DueDateCalculator:
             return row
 
         if row["c_case"] in self.cases:
-            # active PA/PRO deputy
-            day_offset = 40
-        else:
-            # everything else
-            day_offset = 21
+            # active PA/PRO deputy: +40 working days
+            end_date = pd.to_datetime(
+                row["reportingperiodenddate"],
+                dayfirst=True,
+                errors="coerce",
+            )
 
-        row["duedate"] = calculate_date(
-            base_date=row["reportingperiodenddate"],
-            delta=pd.offsets.DateOffset(days=day_offset),
-            weekend_adjustment="next",
-        )
+            due_date = None
+            if end_date is not pd.NaT:
+                end_date = np.datetime64(end_date, "D")
+                due_date = np.busday_offset(end_date, 40, roll="forward")
+                due_date = pd.to_datetime(due_date)
+        else:
+            # everything else: +21 days (working and non-working)
+            due_date = calculate_date(
+                base_date=row["reportingperiodenddate"],
+                delta=pd.offsets.DateOffset(days=21),
+                weekend_adjustment="next",
+            )
+
+        if due_date is not None:
+            due_date = due_date.strftime("%Y-%m-%d")
+
+        row["duedate"] = due_date
 
         return row
