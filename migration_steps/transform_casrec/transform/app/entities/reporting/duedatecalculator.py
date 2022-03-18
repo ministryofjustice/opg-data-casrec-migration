@@ -19,11 +19,21 @@ class DueDateCalculator:
     """
 
     # Dep Type values which denote PA/PRO deputies; see IN-1208
-    PA_PRO_DEP_TYPES = list(range(20, 30)) + [
-        60,
-        73,
-        90,
-    ]
+    PA_PRO_DEP_TYPES = (
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "60",
+        "73",
+        "90",
+    )
 
     # Query to get all cases which have an active PA/PRO deputy;
     # "Stat" = '1' denotes an active deputy
@@ -32,7 +42,7 @@ class DueDateCalculator:
         FROM casrec_csv_p2.deputy d
         INNER JOIN {source_schema}.deputyship ds
         ON d."Deputy No" = ds."Deputy No"
-        WHERE d."Dep Type" IN ('{"', '".join(deputy_types)}')
+        WHERE d."Dep Type" IN {deputy_types}
         AND d."Stat" = '1'
     """
 
