@@ -28,7 +28,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- calculate_duedate (for reporting/annual_report_logs.duedate)
+-- calculate_duedate (for reporting/annual_report_logs.duedate, Lay deputies, + 21 calendar days)
 CREATE OR REPLACE FUNCTION transf_calculate_duedate(source varchar)
     RETURNS date as $$
 DECLARE
@@ -51,6 +51,19 @@ BEGIN
     RETURN DueDate;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION transf_add_business_days(in startDate date, in numDays int)
+RETURNS date AS $$
+    SELECT dd
+    FROM (
+        SELECT dd::date, row_number() OVER (ORDER BY dd ASC)
+        -- numDays / 5 full weeks, plus 2 days in case we land on a weekend and have
+        -- to move forward one or two days
+        FROM GENERATE_SERIES(startDate + 1, startDate + 2 + ((numDays / 5) * 7), '1d') dd
+        WHERE EXTRACT ('dow' from dd) NOT IN (0, 6)
+    ) series
+    where row_number = numDays;
+$$ LANGUAGE sql;
 
 -- combine date and time values to create a timestamp
 CREATE OR REPLACE FUNCTION transf_convert_to_timestamp(date_part varchar, time_part varchar, default_date varchar)
