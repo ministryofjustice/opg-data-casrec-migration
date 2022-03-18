@@ -129,7 +129,7 @@ class DueDateCalculator:
             due_date = None
             if end_date is not pd.NaT:
                 end_date = np.datetime64(end_date, "D")
-                due_date = np.busday_offset(end_date, 40, roll="forward")
+                due_date = np.busday_offset(end_date, 40, roll="backward")
                 due_date = pd.to_datetime(due_date)
         else:
             # everything else: +21 days (working and non-working)

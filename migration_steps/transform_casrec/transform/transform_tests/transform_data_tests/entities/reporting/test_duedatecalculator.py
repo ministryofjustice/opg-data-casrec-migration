@@ -5,10 +5,6 @@ from pandas.testing import assert_frame_equal
 from entities.reporting.duedatecalculator import DueDateCalculator
 
 
-def _to_date(date_str):
-    return pd.to_datetime(date_str, dayfirst=True).strftime("%Y-%m-%d")
-
-
 def test_examples():
     ddc = DueDateCalculator()
     ddc.set_cases(["1"])
@@ -73,16 +69,16 @@ def test_examples():
             },
             # PA/PRO => duedate = end date + 40 working days
             {
-                "reportingperiodenddate": "22/03/2022",
+                "reportingperiodenddate": "28/11/1999",
                 "c_case": "1",
-                "duedate": "2022-05-17",
+                "duedate": "2000-01-21",
                 "note": "Due Date = End Date + 40 working days",
             },
             # PA/PRO => duedate = end date + 40 working days
             {
-                "reportingperiodenddate": "20/06/2022",
+                "reportingperiodenddate": "09/06/2012",
                 "c_case": "1",
-                "duedate": "2022-08-15",
+                "duedate": "2012-08-03",
                 "note": "Due Date = End Date + 40 working days",
             },
             # PA/PRO => duedate = end date + 40 working days, treats 3 bank holidays in May as working days
