@@ -5,104 +5,119 @@ from pandas.testing import assert_frame_equal
 from entities.reporting.duedatecalculator import DueDateCalculator
 
 
-ddc = DueDateCalculator()
+def _to_date(date_str):
+    return pd.to_datetime(date_str, dayfirst=True).strftime("%Y-%m-%d")
 
 
-def test_duedatecalculator_no_end_date():
-    ddc.set_cases(
-        [
-            "1",
-        ]
-    )
-
-    df = pd.DataFrame(
-        [
-            # no end date, no active PA/PRO deputies
-            {"reportingperiodenddate": "", "c_case": "3"},
-            {"reportingperiodenddate": None, "c_case": "3"},
-            # no end date, has active PA/PRO deputies
-            {"reportingperiodenddate": "", "c_case": "1"},
-            {"reportingperiodenddate": None, "c_case": "1"},
-        ]
-    )
+def test_examples():
+    ddc = DueDateCalculator()
+    ddc.set_cases(["1"])
 
     expected = pd.DataFrame(
         [
-            # no end date, no active PA/PRO deputies => no duedate
-            {"reportingperiodenddate": "", "c_case": "3", "duedate": None},
-            {"reportingperiodenddate": None, "c_case": "3", "duedate": None},
-            # no end date, has active PA/PRO deputies => no duedate
-            {"reportingperiodenddate": "", "c_case": "1", "duedate": None},
-            {"reportingperiodenddate": None, "c_case": "1", "duedate": None},
-        ]
-    )
-
-    actual = df.apply(ddc.calculate_duedate, axis=1)
-
-    print(expected)
-    print(actual)
-
-    assert_frame_equal(expected, actual)
-
-
-def test_duedatecalculator_roll_forward_non_working_day():
-    """
-    NB empty reportingperiodenddate cases are included here again as they were
-    causing errors in the test due to data types being mis-aligned. By keeping them
-    here we can ensure this error doesn't recur.
-    """
-    ddc.set_cases(["1", "2"])
-
-    df = pd.DataFrame(
-        [
-            # no end date
-            {"reportingperiodenddate": "", "c_case": "3"},
-            {"reportingperiodenddate": None, "c_case": "3"},
-            # Saturday, Lay
-            {"reportingperiodenddate": "2022-03-19", "c_case": "3"},
-            # Sunday, Lay
-            {"reportingperiodenddate": "2022-03-20", "c_case": "3"},
-            # Monday, PA/PRO
-            {"reportingperiodenddate": "2022-03-21", "c_case": "1"},
-            # Tuesday, PA/PRO
-            {"reportingperiodenddate": "2022-03-22", "c_case": "1"},
-        ]
-    )
-
-    expected = pd.DataFrame(
-        [
-            # no end date => no duedate
-            {"reportingperiodenddate": "", "c_case": "3", "duedate": None},
-            {"reportingperiodenddate": None, "c_case": "3", "duedate": None},
+            # no end date, Lay => no duedate
+            {
+                "reportingperiodenddate": "",
+                "c_case": "3",
+                "duedate": None,
+                "note": "No End Date, so no Due Date",
+            },
+            # no end date, PA/PRO => no duedate
+            {
+                "reportingperiodenddate": "",
+                "c_case": "1",
+                "duedate": None,
+                "note": "No End Date, so no Due Date",
+            },
+            # bad end date, Lay => no duedate
+            {
+                "reportingperiodenddate": "88/11/2999",
+                "c_case": "3",
+                "duedate": None,
+                "note": "Bad End Date, so no Due Date",
+            },
+            # bad end date, PA/PRO => no duedate
+            {
+                "reportingperiodenddate": "99/12/2022",
+                "c_case": "1",
+                "duedate": None,
+                "note": "Bad End Date, so no Due Date",
+            },
             # Saturday, Lay => duedate = end date + 21 days, rolled forward to Monday
             {
-                "reportingperiodenddate": "2022-03-19",
+                "reportingperiodenddate": "19/03/2022",
                 "c_case": "3",
-                "duedate": np.datetime64("2022-04-11"),
+                "duedate": "2022-04-11",
+                "note": "Due Date = End Date + 21 days, falls on a Saturday, moves to following Monday",
             },
             # Sunday, Lay => duedate = end date + 21 days, rolled forward to Monday
             {
-                "reportingperiodenddate": "2022-03-20",
+                "reportingperiodenddate": "20/03/2022",
                 "c_case": "3",
-                "duedate": np.datetime64("2022-04-11"),
+                "duedate": "2022-04-11",
+                "note": "Due Date = End Date + 21 days, falls on a Sunday, moves to following Monday",
             },
-            # Monday, PA/PRO => duedate = end date + 40 days (ends up on a Saturday),
-            # rolled forward to Monday
+            # Friday, Lay => duedate = end date + 21 days
             {
-                "reportingperiodenddate": "2022-03-21",
-                "c_case": "1",
-                "duedate": np.datetime64("2022-05-02"),
+                "reportingperiodenddate": "04/03/2022",
+                "c_case": "3",
+                "duedate": "2022-03-25",
+                "note": "Due Date = End Date + 21 days, falls on a Friday, left as-is",
             },
-            # Tuesday, PA/PRO => duedate = end date + 40 days (ends up on a Sunday),
-            # rolled forward to Monday
+            # PA/PRO => duedate = end date + 40 working days
             {
-                "reportingperiodenddate": "2022-03-22",
+                "reportingperiodenddate": "21/03/2022",
                 "c_case": "1",
-                "duedate": np.datetime64("2022-05-02"),
+                "duedate": "2022-05-16",
+                "note": "Due Date = End Date + 40 working days",
+            },
+            # PA/PRO => duedate = end date + 40 working days
+            {
+                "reportingperiodenddate": "22/03/2022",
+                "c_case": "1",
+                "duedate": "2022-05-17",
+                "note": "Due Date = End Date + 40 working days",
+            },
+            # PA/PRO => duedate = end date + 40 working days
+            {
+                "reportingperiodenddate": "20/06/2022",
+                "c_case": "1",
+                "duedate": "2022-08-15",
+                "note": "Due Date = End Date + 40 working days",
+            },
+            # PA/PRO => duedate = end date + 40 working days, treats 3 bank holidays in May as working days
+            {
+                "reportingperiodenddate": "21/04/2022",
+                "c_case": "1",
+                "duedate": "2022-06-16",
+                "note": "Due Date = End Date + 40 working days, 3 bank holidays treated as working days",
             },
         ]
     )
 
-    actual = df.apply(ddc.calculate_duedate, axis=1)
+    test_df = expected.drop(columns=["duedate", "note"])
+    actual = test_df.apply(ddc.calculate_duedate, axis=1)
 
-    assert_frame_equal(expected, actual)
+    assert_frame_equal(expected.drop(columns=["note"]), actual)
+
+    # print the examples (useful for showing UaT)
+    expected["Has active PA/PRO deputy?"] = "no"
+    expected.loc[
+        expected["c_case"].isin(ddc.cases), "Has active PA/PRO deputy?"
+    ] = "yes"
+
+    expected = expected.drop(columns=["c_case"])
+    expected = expected.rename(
+        columns={
+            "reportingperiodenddate": "End Date",
+            "duedate": "Due Date",
+            "note": "Note",
+        }
+    )
+
+    print(
+        "\n"
+        + expected[
+            ["End Date", "Due Date", "Has active PA/PRO deputy?", "Note"]
+        ].to_markdown()
+    )
