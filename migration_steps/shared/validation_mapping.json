@@ -673,7 +673,6 @@
         "exclude": [
             "caserecnumber",
             "dateofdeath",
-            "middlenames",
             "uid",
             "deputycasrecid",
             "updateddate"
@@ -693,17 +692,18 @@
             "from_table": "deputyship",
             "transform": {
                 "deputynumber": "CAST(NULLIF(TRIM({casrec_schema}.deputy.\"Deputy No\"), '') AS integer)",
-                "organisationname": "CASE WHEN {casrec_schema}.deputy_type_lookup(TRIM({casrec_schema}.deputy.\"Dep Type\")) = 'PA' THEN transf_capitalise_first_letter(TRIM({casrec_schema}.deputy.\"Dep Surname\")) ELSE NULL END",
-                "deputysubtype": "CASE WHEN {casrec_schema}.deputy_type_lookup(TRIM({casrec_schema}.deputy.\"Dep Type\")) = 'PA' THEN 'ORGANISATION' WHEN {casrec_schema}.deputy_type_lookup(TRIM({casrec_schema}.deputy.\"Dep Type\")) = 'LAY' THEN 'PERSON' ELSE NULL END",
-                "surname": "CASE WHEN {casrec_schema}.deputy_type_lookup(TRIM({casrec_schema}.deputy.\"Dep Type\")) = 'PA' THEN NULL ELSE transf_capitalise_first_letter(NULLIF(TRIM({casrec_schema}.deputy.\"Dep Surname\"), '')) END",
-                "salutation": "CASE WHEN {casrec_schema}.deputy_type_lookup(TRIM({casrec_schema}.deputy.\"Dep Type\")) = 'PA' THEN NULL ELSE {casrec_schema}.title_codes_lookup(TRIM({casrec_schema}.deputy.\"Title\")) END",
-                "firstname": "CASE WHEN {casrec_schema}.deputy_type_lookup(TRIM({casrec_schema}.deputy.\"Dep Type\")) = 'PA' THEN NULL ELSE transf_first_word(NULLIF(TRIM({casrec_schema}.deputy.\"Dep Forename\"), '')) END",
-                "othernames": "NULLIF(TRIM(transf_last_words(NULLIF(TRIM({casrec_schema}.deputy.\"Dep Forename\"), ''))), '')"
+                "organisationname": "ddpc.organisationname",
+                "deputysubtype": "ddpc.deputysubtype",
+                "surname": "ddpc.surname",
+                "salutation": "ddpc.salutation",
+                "firstname": "ddpc.firstname",
+                "othernames": "ddpc.othernames"
             },
             "joins": [
                 "LEFT JOIN {casrec_schema}.order ON {casrec_schema}.order.\"Order No\" = {casrec_schema}.deputyship.\"Order No\"",
                 "LEFT JOIN {casrec_schema}.deputy ON {casrec_schema}.deputyship.\"Deputy No\" = {casrec_schema}.deputy.\"Deputy No\"",
-                "LEFT JOIN {casrec_schema}.pat ON {casrec_schema}.pat.\"Case\" = {casrec_schema}.order.\"Case\""
+                "LEFT JOIN {casrec_schema}.pat ON {casrec_schema}.pat.\"Case\" = {casrec_schema}.order.\"Case\"",
+                "LEFT JOIN {casrec_schema}.derive_deputy_persons_columns({casrec_schema}.deputyship.\"Order No\", {casrec_schema}.deputy.\"Deputy No\", {casrec_schema}.deputy.\"Dep Type\", {casrec_schema}.deputy.\"Title\", {casrec_schema}.deputy.\"Dep Forename\", {casrec_schema}.deputy.\"Dep Surname\") AS ddpc ON {casrec_schema}.deputyship.\"Deputy No\" = ddpc.deputynumber AND {casrec_schema}.deputyship.\"Order No\" = ddpc.ordernumber"
             ],
             "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_deputy_persons exc_table\n    ON exc_table.caserecnumber = pat.\"Case\"\n    AND exc_table.casesubtype = {casrec_schema}.order_type_lookup({casrec_schema}.order.\"Ord Type\")\n    AND exc_table.orderdate = {casrec_schema}.order.\"Made Date\"",
             "where_clauses": [

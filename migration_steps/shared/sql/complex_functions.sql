@@ -300,3 +300,82 @@ BEGIN
     RETURN bankstatementsreceived;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION {casrec_schema}.derive_deputy_persons_columns(
+	in order_no varchar,
+    in deputy_no varchar,
+    in deputy_type varchar,
+    in deputy_title varchar,
+    in deputy_forename varchar,
+    in deputy_surname varchar
+)
+RETURNS
+    TABLE(
+    	ordernumber varchar,
+        deputynumber varchar,
+        deputysubtype text,
+        organisationname text,
+        salutation text,
+        firstname text,
+        othernames text,
+        surname text
+    ) AS $$
+DECLARE
+    deputy_type_looked_up text;
+    is_pa_or_pro_deputy boolean;
+    is_lay_deputy boolean;
+    salutation text;
+    firstname text;
+    othernames text;
+    surname text;
+    has_firstname boolean;
+    has_surname boolean;
+    is_organisation boolean;
+    is_person boolean;
+BEGIN
+    SELECT {casrec_schema}.deputy_type_lookup(TRIM(deputy_type)) INTO deputy_type_looked_up;
+    SELECT deputy_type_looked_up IN ('PA', 'PRO') INTO is_pa_or_pro_deputy;
+    SELECT deputy_type_looked_up IN ('LAY') INTO is_lay_deputy;
+
+    SELECT {casrec_schema}.title_codes_lookup(TRIM(deputy_title)) INTO salutation;
+    SELECT transf_first_word(NULLIF(TRIM(deputy_forename), '')) INTO firstname;
+    SELECT NULLIF(TRIM(transf_last_words(deputy_forename)), '') INTO othernames;
+    SELECT transf_capitalise_first_letter(TRIM(deputy_surname)) INTO surname;
+
+    SELECT firstname != '' AND firstname IS NOT NULL INTO has_firstname;
+    SELECT surname != '' AND surname IS NOT NULL INTO has_surname;
+
+    SELECT (is_pa_or_pro_deputy AND NOT has_firstname) INTO is_organisation;
+    SELECT (is_lay_deputy OR (is_pa_or_pro_deputy AND has_firstname AND has_surname)) INTO is_person;
+
+    RETURN QUERY
+    SELECT
+    	order_no AS ordernumber,
+        deputy_no AS deputynumber,
+        (CASE
+            WHEN is_organisation THEN 'ORGANISATION'
+            WHEN is_person THEN 'PERSON'
+            ELSE NULL
+        END) AS deputysubtype,
+        (CASE
+            WHEN is_organisation THEN surname
+            ELSE NULL
+        END) AS organisationname,
+        (CASE
+            WHEN is_organisation THEN NULL
+            ELSE salutation
+        END) AS salutation,
+        (CASE
+            WHEN is_organisation THEN NULL
+            ELSE firstname
+        END) AS firstname,
+        (CASE
+            WHEN is_organisation THEN NULL
+            ELSE othernames
+        END) AS othernames,
+        (CASE
+            WHEN is_organisation THEN NULL
+            ELSE surname
+        END) AS surname;
+END;
+$$ LANGUAGE plpgsql;
