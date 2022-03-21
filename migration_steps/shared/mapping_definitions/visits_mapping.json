@@ -112,8 +112,8 @@
         },
         "transform_casrec": {
             "casrec_table": "REPVIS",
-            "casrec_column_name": "Commission Issued",
-            "alias": "Commission Issued",
+            "casrec_column_name": "Report Due",
+            "alias": "Report Due",
             "requires_transformation": "",
             "lookup_table": "",
             "default_value": "",
