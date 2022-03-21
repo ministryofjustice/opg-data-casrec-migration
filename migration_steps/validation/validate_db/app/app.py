@@ -22,7 +22,6 @@ from tabulate import tabulate
 import json
 from datetime import datetime
 import pprint
-import boto3
 
 pp = pprint.PrettyPrinter(indent=4)
 

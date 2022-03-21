@@ -1,3 +1,4 @@
+--Purpose: update tasks due date to activity_tracking_startdate of most recent activity_tracking record
 --@setup_tag
 CREATE SCHEMA if not exists {pmf_schema};
 
