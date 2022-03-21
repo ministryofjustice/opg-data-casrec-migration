@@ -682,7 +682,7 @@ def vacuum_and_analyse():
     old_isolation_level = conn_target.isolation_level
     conn_target.set_isolation_level(0)
     for table in tables_to_vacuum:
-        sql = f"VACUUM (ANALYZE) {table};"
+        sql = f"VACUUM (ANALYZE, VERBOSE) {table};"
         try:
             cursor.execute(sql)
             for notice in conn_target.notices:
@@ -866,10 +866,6 @@ def main(correfs, staging):
     is_staging = staging
     set_validation_target()
 
-    if not is_staging:
-        log.info("RUN SELECTIVE VACCUUM AND ANALYSE ON SIRIUS")
-        vacuum_and_analyse()
-
     log.info("SIMULATE AUTOMATED LETTERS")
     generate_letters(conn_target, str(target_schema))
 
@@ -883,6 +879,10 @@ def main(correfs, staging):
             s3_file_path = f"validation/sql/{file}"
             if file.endswith(".sql"):
                 upload_file(bucket_name, file_path, s3, log, s3_file_path)
+
+    if not is_staging:
+        log.info("RUN SELECTIVE VACCUUM AND ANALYSE ON SIRIUS")
+        vacuum_and_analyse()
 
     log.info("RUN VALIDATION")
 

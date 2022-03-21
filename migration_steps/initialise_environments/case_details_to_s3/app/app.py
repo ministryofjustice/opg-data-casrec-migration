@@ -322,7 +322,6 @@ def lower_snake(string):
 
 def get_list_of_tables(pks, tables):
     list_of_tables = []
-    log.info("in here...")
     log.info(pks)
     for table_pair in tables:
         log.info(table_pair)
