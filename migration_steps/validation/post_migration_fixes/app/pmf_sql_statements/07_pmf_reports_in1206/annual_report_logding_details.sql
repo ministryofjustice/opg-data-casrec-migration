@@ -1,3 +1,6 @@
+--Purpose: set lodged status on annual_report_lodging_details for following conditions:
+--bankstatementdeadlinedate = NOT NULL AND Bankstatementrecieved = f THEN LODGEDSTATUS = REFFERED_FOR_REVIEW
+--deadlinedate = NOT NULL AND Resubmitted date = NULL THEN LODGEDSTATUS = INCOMPLETE
 --@setup_tag
 CREATE SCHEMA IF NOT EXISTS {pmf_schema};
 
@@ -13,7 +16,7 @@ INTO {pmf_schema}.annual_report_lodging_details_updates
 FROM persons p
 INNER JOIN annual_report_logs arl ON p.id = arl.client_id
 INNER JOIN annual_report_lodging_details arld ON arl.id = arld.annual_report_log_id
-WHERE p.clientsource = 'CASRECMIGRATION'
+WHERE p.clientsource = '{client_source}'
 AND (
     arld.lodgedstatus IS NULL
     OR
@@ -44,7 +47,7 @@ SELECT p.caserecnumber, arld.lodgedstatus
 FROM persons p
 INNER JOIN annual_report_logs arl ON p.id = arl.client_id
 INNER JOIN annual_report_lodging_details arld ON arl.id = arld.annual_report_log_id
-WHERE p.clientsource = 'CASRECMIGRATION'
+WHERE p.clientsource = '{client_source}'
 AND (
     (arld.deadlinedate IS NOT NULL AND arld.resubmitteddate IS NULL)
     OR

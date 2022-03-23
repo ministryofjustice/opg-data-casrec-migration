@@ -1,3 +1,4 @@
+--Purpose: delete last pending report if there are multiples and create scheduled event for the reminaing one
 --@setup_tag
 CREATE SCHEMA IF NOT EXISTS {pmf_schema};
 
@@ -6,7 +7,7 @@ SELECT count(*), ar.client_id
 INTO {pmf_schema}.affected_cases
 FROM annual_report_logs ar
 INNER JOIN persons p ON p.id = ar.client_id
-WHERE p.clientsource = 'CASRECMIGRATION'
+WHERE p.clientsource = '{client_source}'
 AND ar.status = 'PENDING'
 GROUP BY ar.client_id
 HAVING count(*) > 1;
@@ -55,7 +56,7 @@ FROM {pmf_schema}.scheduled_events_inserts sei;
 SELECT count(*), ar.client_id
 FROM annual_report_logs ar
 INNER JOIN persons p ON p.id = ar.client_id
-WHERE p.clientsource = 'CASRECMIGRATION'
+WHERE p.clientsource = '{client_source}'
 AND ar.status = 'PENDING'
 GROUP BY ar.client_id
 HAVING count(*) > 1;

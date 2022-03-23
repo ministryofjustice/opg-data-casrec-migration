@@ -27,3 +27,4 @@ config~=0.5
 psutil==5.8.0
 faker
 py-moneyed
+aiohttp

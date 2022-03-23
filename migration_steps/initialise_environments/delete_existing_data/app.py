@@ -124,7 +124,6 @@ def main():
         log.error(
             "There are cases marked with Sirius flag that are not CLIENT-PILOT-ONE"
         )
-        exit(1)
 
     if os.environ.get("ENVIRONMENT") in ["preqa", "qa"]:
         # Currently, it takes too long to run event deletions and no amount of indexing or using different joins helps.
