@@ -137,6 +137,15 @@ def delete_schema(schema_name, cursor, conn):
     log.info(f"Dropped schema {schema_name}")
 
 
+# execute SQL and display the SQL if an exception is thrown
+def _execute_sql(cursor, statement):
+    try:
+        cursor.execute(statement)
+    except Exception:
+        log.error("Exception occurred while running SQL script:")
+        log.error(statement + "\n")
+
+
 def run_post_migration_fix(script_path, dump_sql):
     """
     Run one post-migration fix script
@@ -173,8 +182,8 @@ def run_post_migration_fix(script_path, dump_sql):
     delete_schema(schema_name, cursor, conn)
 
     log.info(f"Running Setup Statements")
-    for statement in setup_statements:
-        cursor.execute(statement)
+    for statement in statements["setup"]:
+        _execute_sql(cursor, statement)
 
         if (
             "create schema" not in statement.lower()
@@ -184,14 +193,14 @@ def run_post_migration_fix(script_path, dump_sql):
     conn.commit()
 
     log.info("Running Audit Statements")
-    for statement in audit_statements:
-        cursor.execute(statement)
+    for statement in statements["audit"]:
+        _execute_sql(cursor, statement)
         log.info(f"Audit inserted {cursor.rowcount} rows")
     conn.commit()
 
     log.info("Running Validation Statements Before Apply")
-    for statement in validate_statements:
-        cursor.execute(statement)
+    for statement in statements["validate"]:
+        _execute_sql(cursor, statement)
         log.info(f"Pre Validation bringing back {cursor.rowcount} rows")
         if cursor.rowcount < 1:
             log.warning("Nothing to apply here. Find out why!")
@@ -201,8 +210,8 @@ def run_post_migration_fix(script_path, dump_sql):
 
     rollback = False
     log.info("Running Update Statements")
-    for statement in update_statements:
-        cursor.execute(statement)
+    for statement in statements["update"]:
+        _execute_sql(cursor, statement)
         log.info(f"Updated {cursor.rowcount} rows")
         if cursor.rowcount < 1:
             rollback = True
@@ -210,8 +219,8 @@ def run_post_migration_fix(script_path, dump_sql):
             pass
 
     log.info("Running Validation Statements After Apply")
-    for statement in validate_statements:
-        cursor.execute(statement)
+    for statement in statements["validate"]:
+        _execute_sql(cursor, statement)
         log.info(f"Post Validation bringing back {cursor.rowcount} rows")
         if cursor.rowcount > 0:
             rollback = True
@@ -258,12 +267,12 @@ def get_statements(path, tag_prefix, pmf_schema):
 
             if line.startswith(f"--@{tag_prefix}_tag"):
                 continue_adding_lines = True
-            elif line.startswith(f"--@"):
+            elif line.startswith("--@"):
                 continue_adding_lines = False
             else:
                 pass
 
-            if continue_adding_lines and not line.startswith("--") and len(line) > 0:
+            if continue_adding_lines and not line.startswith("--@"):
                 line = line.strip().replace(
                     "{casrec_schema}", config.schemas["pre_transform"]
                 )
@@ -272,12 +281,12 @@ def get_statements(path, tag_prefix, pmf_schema):
                     "{client_source}", config.migration_phase["migration_identifier"]
                 )
                 line = line.replace("{casrec_mapping}", casrec_mapping_schema)
-                if not line.endswith(";"):
-                    sql_statement += f"{line}\n"
-                else:
+                if line.endswith(";") and not line.startswith("--"):
                     sql_statement += f"{line}\n"
                     sql_statements.append(sql_statement)
                     sql_statement = ""
+                else:
+                    sql_statement += f"{line}\n"
 
     return sql_statements
 

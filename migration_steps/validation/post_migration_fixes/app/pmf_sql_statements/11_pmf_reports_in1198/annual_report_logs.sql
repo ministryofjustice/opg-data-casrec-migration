@@ -38,7 +38,7 @@ FROM (
         -- only modify annual_report_logs which have not changed since migration;
         -- this also implicitly restricts the modifications to annual_report_logs
         -- we created as we are using a casrec mapping table
-        INNER JOIN {casrec_mapping_schema}.annual_report_logs carl
+        INNER JOIN {casrec_mapping}.annual_report_logs carl
         ON carl.sirius_id = arl.id
         AND carl.status = arl.status
         AND carl.reviewstatus = arl.reviewstatus
