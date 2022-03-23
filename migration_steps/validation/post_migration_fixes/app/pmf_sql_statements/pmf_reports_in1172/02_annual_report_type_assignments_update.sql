@@ -24,6 +24,15 @@ FROM (
 
 ) to_insert;
 
+-- This audit table is populated inside the update transaction, as it
+-- stores the actual IDs we're inserting
+CREATE TABLE IF NOT EXISTS {pmf_schema}.annual_report_type_assignments_inserts_audit (
+    id int PRIMARY KEY,
+    annualreport_id int,
+    reporttype varchar,
+    type varchar
+);
+
 --@audit_tag
 -- Keep a record of which annual_report_logs should have an
 -- annual_report_type_assignments row after insert, i.e. arls we migrated
@@ -38,15 +47,6 @@ FROM (
     WHERE p.clientsource = '{client_source}'
     AND arl.status = 'PENDING'
 ) pending_reports;
-
--- This audit table is populated inside the transaction, as it stores the actual IDs
--- we're inserting
-CREATE TABLE IF NOT EXISTS {pmf_schema}.annual_report_type_assignments_inserts_audit (
-    id int PRIMARY KEY,
-    annualreport_id int,
-    reporttype varchar,
-    type varchar
-);
 
 --@update_tag
 -- Audit table for inserts; these are the inserts we'll actually do, along with their IDs;
