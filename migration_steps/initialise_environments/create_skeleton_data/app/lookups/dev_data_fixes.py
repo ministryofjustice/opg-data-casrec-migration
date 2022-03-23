@@ -14,9 +14,7 @@ log = logging.getLogger("root")
 
 def amend_dev_assignees(db_engine):
     assignee_ids = [2657]
-    lookup_dict = get_lookup_dict(
-        file_name="caseowner_lookup"
-    )
+    lookup_dict = get_lookup_dict(file_name="caseowner_lookup")
     lookup_ids = list(lookup_dict.values())
 
     # We have a couple of casrec users mapping to the same assignee. Remove duplicates
@@ -90,7 +88,6 @@ def amend_dev_assignees(db_engine):
 
     try:
         db_engine.execute(sql)
-
     except Exception as e:
         log.error(
             f"Unable to insert/update assignees in Sirius DB",
@@ -101,6 +98,7 @@ def amend_dev_assignees(db_engine):
 
 
 def amend_dev_data(db_engine):
+    amend_dev_assignees(db_engine=db_engine)
     log.info(
         "Amending Dev Sirius DB to match preprod - this should NOT run on preprod!"
     )
@@ -122,5 +120,3 @@ def amend_dev_data(db_engine):
                 "error": format_error_message(e=e),
             },
         )
-
-    amend_dev_assignees(db_engine=db_engine)

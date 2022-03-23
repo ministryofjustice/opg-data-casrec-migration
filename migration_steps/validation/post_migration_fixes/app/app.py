@@ -287,7 +287,8 @@ def get_statements(path, tag_prefix, pmf_schema):
                     sql_statements.append(sql_statement)
                     sql_statement = ""
                 else:
-                    sql_statement += f"{line}\n"
+                    if not line.startswith("--"):
+                        sql_statement += f"{line}\n"
 
     return sql_statements
 
