@@ -1,3 +1,17 @@
+"""
+Usage:
+
+python3 app.py
+- run all post-migration scripts
+
+python3 app.py some.sql
+- run a single SQL script (in the post-migration tagged format)
+
+python3 app.py some.sql dumpsql
+- generate the SQL that would have been run for a single SQL script
+(but don't run it); note that this will still create the casrec
+mapping tables
+"""
 import os
 import io
 import re
@@ -123,6 +137,105 @@ def delete_schema(schema_name, cursor, conn):
     log.info(f"Dropped schema {schema_name}")
 
 
+# execute SQL and display the SQL if an exception is thrown
+def _execute_sql(cursor, statement):
+    try:
+        cursor.execute(statement)
+    except Exception:
+        log.error("Exception occurred while running SQL script:")
+        log.error(statement + "\n")
+
+
+def run_post_migration_fix(script_path, dump_sql):
+    """
+    Run one post-migration fix script
+
+    :param script_path: SQL script file to run
+    :param dump_sql: True to print SQL to screen without running it
+    """
+    schema_name = (
+        f'{get_pmf_schema_name(script_path)}{config.migration_phase["suffix"]}'
+    )
+
+    statements = {
+        "setup": get_statements(script_path, "setup", schema_name),
+        "audit": get_statements(script_path, "audit", schema_name),
+        "update": get_statements(script_path, "update", schema_name),
+        "validate": get_statements(script_path, "validate", schema_name),
+    }
+
+    # early return if dumping statements to screen
+    if dump_sql:
+        for key, statement_group in statements.items():
+            print(f"{'*' * 50} {key}")
+            for statement in statement_group:
+                print(statement)
+            print()
+        return statements
+
+    log.info(f"===== {schema_name} =====")
+
+    connection_string = target_db_conn_string
+    conn = psycopg2.connect(connection_string)
+    cursor = conn.cursor()
+    log.info(f"Deleting existing schema")
+    delete_schema(schema_name, cursor, conn)
+
+    log.info(f"Running Setup Statements")
+    for statement in statements["setup"]:
+        _execute_sql(cursor, statement)
+
+        if (
+            "create schema" not in statement.lower()
+            and "set datestyle" not in statement.lower()
+        ):
+            log.info(f"Setup inserted {cursor.rowcount} rows")
+    conn.commit()
+
+    log.info("Running Audit Statements")
+    for statement in statements["audit"]:
+        _execute_sql(cursor, statement)
+        log.info(f"Audit inserted {cursor.rowcount} rows")
+    conn.commit()
+
+    log.info("Running Validation Statements Before Apply")
+    for statement in statements["validate"]:
+        _execute_sql(cursor, statement)
+        log.info(f"Pre Validation bringing back {cursor.rowcount} rows")
+        if cursor.rowcount < 1:
+            log.warning("Nothing to apply here. Find out why!")
+    conn.commit()
+
+    rollback = False
+    log.info("Running Update Statements")
+    for statement in statements["update"]:
+        _execute_sql(cursor, statement)
+        log.info(f"Updated {cursor.rowcount} rows")
+        if cursor.rowcount < 1:
+            rollback = True
+            log.warning("No rows updated - will rollback")
+
+    log.info("Running Validation Statements After Apply")
+    for statement in statements["validate"]:
+        _execute_sql(cursor, statement)
+
+        log_fn = log.info
+        if cursor.rowcount > 0:
+            rollback = True
+            log_fn = log.warning
+
+        log_fn(f"Post Validation bringing back {cursor.rowcount} rows")
+
+    if rollback:
+        log.warning(f"Rolling back update transaction for {schema_name}")
+        conn.rollback()
+    else:
+        log.info(f"Committing transaction for {schema_name}")
+        conn.commit()
+
+    cursor.close()
+
+
 def run_post_migration_fixes():
     """
     Run all the post migration scripts in folders prefixed with two digits;
@@ -143,73 +256,7 @@ def run_post_migration_fixes():
     sql_scripts = sorted(sql_scripts)
 
     for script_path in sql_scripts:
-        schema_name = (
-            f'{get_pmf_schema_name(script_path)}{config.migration_phase["suffix"]}'
-        )
-
-        setup_statements = get_statements(script_path, "setup", schema_name)
-        audit_statements = get_statements(script_path, "audit", schema_name)
-        update_statements = get_statements(script_path, "update", schema_name)
-        validate_statements = get_statements(script_path, "validate", schema_name)
-        log.info(f"===== {schema_name} =====")
-
-        connection_string = target_db_conn_string
-        conn = psycopg2.connect(connection_string)
-        cursor = conn.cursor()
-        log.info("Deleting existing schema")
-        delete_schema(schema_name, cursor, conn)
-
-        log.info("Running Setup Statements")
-        for statement in setup_statements:
-            cursor.execute(statement)
-            if (
-                "create schema" not in statement.lower()
-                and "set datestyle" not in statement.lower()
-            ):
-                log.info(f"Setup inserted {cursor.rowcount} rows")
-        conn.commit()
-
-        log.info("Running Audit Statements")
-        for statement in audit_statements:
-            cursor.execute(statement)
-            log.info(f"Audit inserted {cursor.rowcount} rows")
-        conn.commit()
-
-        log.info("Running Validation Statements Before Apply")
-        for statement in validate_statements:
-            cursor.execute(statement)
-            log.info(f"Pre Validation bringing back {cursor.rowcount} rows")
-            if cursor.rowcount < 1:
-                log.warning("Nothing to apply here. Find out why!")
-            else:
-                pass
-        conn.commit()
-
-        rollback = False
-        log.info("Running Update Statements")
-        for statement in update_statements:
-            cursor.execute(statement)
-            log.info(f"Updated {cursor.rowcount} rows")
-            if cursor.rowcount < 1:
-                rollback = True
-            else:
-                pass
-
-        log.info("Running Validation Statements After Apply")
-        for statement in validate_statements:
-            cursor.execute(statement)
-            log.info(f"Post Validation bringing back {cursor.rowcount} rows")
-            if cursor.rowcount > 0:
-                rollback = True
-
-        if rollback:
-            log.info(f"Rolling back update transaction for {schema_name}")
-            conn.rollback()
-        else:
-            log.info(f"Committing transaction for {schema_name}")
-            conn.commit()
-
-        cursor.close()
+        run_post_migration_fix(script_path, dump_sql=False)
 
 
 def get_statements(path, tag_prefix, pmf_schema):
@@ -221,12 +268,12 @@ def get_statements(path, tag_prefix, pmf_schema):
 
             if line.startswith(f"--@{tag_prefix}_tag"):
                 continue_adding_lines = True
-            elif line.startswith(f"--@"):
+            elif line.startswith("--@"):
                 continue_adding_lines = False
             else:
                 pass
 
-            if continue_adding_lines and not line.startswith("--") and len(line) > 0:
+            if continue_adding_lines and not line.startswith("--@"):
                 line = line.strip().replace(
                     "{casrec_schema}", config.schemas["pre_transform"]
                 )
@@ -235,12 +282,12 @@ def get_statements(path, tag_prefix, pmf_schema):
                     "{client_source}", config.migration_phase["migration_identifier"]
                 )
                 line = line.replace("{casrec_mapping}", casrec_mapping_schema)
-                if not line.endswith(";"):
-                    sql_statement += f"{line}\n"
-                else:
+                if line.endswith(";") and not line.startswith("--"):
                     sql_statement += f"{line}\n"
                     sql_statements.append(sql_statement)
                     sql_statement = ""
+                else:
+                    sql_statement += f"{line}\n"
 
     return sql_statements
 
@@ -251,10 +298,17 @@ def get_pmf_schema_name(script_path):
     return schema_name
 
 
-def main():
+def main(script_path=None, dump_sql=False):
     log.info(log_title(message="Run Post Migration Fixes"))
+
     copy_mapping_tables(casrec_mapping_schema)
-    run_post_migration_fixes()
+
+    if script_path is None:
+        run_post_migration_fixes()
+    elif os.path.isfile(script_path):
+        run_post_migration_fix(script_path, dump_sql)
+    else:
+        raise FileNotFoundError(f"{script_path} is not a file")
 
 
 if __name__ == "__main__":
@@ -263,6 +317,14 @@ if __name__ == "__main__":
     log.setLevel(1)
     log.debug(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
-    main()
+    script_path = None
+    if len(sys.argv) > 1:
+        script_path = sys.argv[1]
+
+    dump_sql = False
+    if len(sys.argv) > 2:
+        dump_sql = sys.argv[2] == "dumpsql"
+
+    main(script_path, dump_sql)
 
     print(f"Total time: {round(time.process_time() - t, 2)}")

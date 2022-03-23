@@ -95,6 +95,7 @@ _copy(
     f"{CASREC_MAPPING_SCHEMA}.cases",
 )
 
+
 # Mapping from Sirius annual_report_type_assignments ID to migrated reporttype and type
 _copy(
     f"""
@@ -107,6 +108,7 @@ _copy(
     "SELECT id AS sirius_id, reporttype, type FROM integration.annual_report_type_assignments",
     f"{CASREC_MAPPING_SCHEMA}.annual_report_type_assignments",
 )
+
 
 # Mapping from Sirius annual_report_logs ID to migrated status
 _copy(
