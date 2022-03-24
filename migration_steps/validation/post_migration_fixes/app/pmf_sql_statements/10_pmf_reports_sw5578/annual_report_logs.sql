@@ -1,4 +1,4 @@
---Purpose: Update annual_report_logs status for LODGED and INCOMPLETE reports
+--Purpose: update annual_report_logs and set status to LODGED or INCOMPLETE based on annual_report_lodging_details logic
 --@setup_tag
 CREATE SCHEMA IF NOT EXISTS {pmf_schema};
 
