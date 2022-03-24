@@ -1,7 +1,20 @@
 --@setup_tag
 CREATE SCHEMA IF NOT EXISTS {pmf_schema};
 
--- Select data we're going to insert
+-- Select data we're going to insert: one arta row
+-- for each PENDING arl we migrated which doesn't already have
+-- an arta row; NB this only works after running the 01
+-- script for this post-migration, which deletes our arta rows
+WITH migrated_pending_arls_without_arta AS (
+    SELECT DISTINCT arl.id
+    FROM annual_report_logs arl
+    INNER JOIN {casrec_mapping}.annual_report_logs carl
+    ON arl.id = carl.sirius_id
+    LEFT JOIN annual_report_type_assignments arta
+    ON arl.id = arta.annualreport_id
+    WHERE arl.status = 'PENDING'
+    AND arta.id IS NULL
+)
 SELECT *
 INTO {pmf_schema}.annual_report_type_assignments_inserts
 FROM (
@@ -19,7 +32,8 @@ FROM (
         FROM {casrec_mapping}.annual_report_logs carl
         INNER JOIN annual_report_logs arl
         ON carl.sirius_id = arl.id
-        WHERE arl.status = 'PENDING'
+        INNER JOIN migrated_pending_arls_without_arta mpawa
+        ON carl.sirius_id = mpawa.id
     ) reports
 
 ) to_insert;
@@ -36,17 +50,20 @@ CREATE TABLE IF NOT EXISTS {pmf_schema}.annual_report_type_assignments_inserts_a
 --@audit_tag
 -- Keep a record of which annual_report_logs should have an
 -- annual_report_type_assignments row after insert, i.e. arls we migrated
--- with a status of 'PENDING'
+-- with a status of 'PENDING' which don't have an arta row
 SELECT *
 INTO {pmf_schema}.annual_report_type_assignments_inserts_expected
 FROM (
-    SELECT arl.id, arl.status
+    SELECT DISTINCT arl.id
     FROM annual_report_logs arl
     INNER JOIN persons p
     ON arl.client_id = p.id
-    WHERE p.clientsource = '{client_source}'
-    AND arl.status = 'PENDING'
-) pending_reports;
+    LEFT JOIN annual_report_type_assignments arta
+    ON arl.id = arta.annualreport_id
+    WHERE arl.status = 'PENDING'
+    AND arta.id IS NULL
+    AND p.clientsource = '{client_source}'
+) pending_reports_without_arta;
 
 --@update_tag
 -- Audit table for inserts; these are the inserts we'll actually do, along with their IDs;
@@ -73,18 +90,8 @@ SELECT * FROM (
             FROM {pmf_schema}.annual_report_type_assignments_inserts_audit
         ) AS casrec_counter,
         (
-            SELECT COUNT(1) FROM {pmf_schema}.annual_report_type_assignments_inserts_expected
-        ) AS sirius_counter,
-        (
             SELECT COUNT(1)
-            FROM annual_report_type_assignments arta
-            INNER JOIN annual_report_logs arl
-            ON arta.annualreport_id = arl.id
-            INNER JOIN persons p
-            ON arl.client_id = p.id
-            WHERE p.clientsource = '{client_source}'
-            AND arl.status = 'PENDING'
-        ) AS arta_counter
+            FROM {pmf_schema}.annual_report_type_assignments_inserts_expected
+        ) AS sirius_counter
 ) counted
-WHERE casrec_counter != sirius_counter
-OR casrec_counter != arta_counter;
+WHERE casrec_counter != sirius_counter;
