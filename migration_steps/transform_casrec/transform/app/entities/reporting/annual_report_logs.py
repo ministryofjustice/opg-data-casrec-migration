@@ -11,7 +11,7 @@ from transform_data.unique_id import add_unique_id
 log = logging.getLogger("root")
 
 
-def insert_annual_report_logs(db_config, target_db, mapping_file):
+def insert_annual_report_logs(db_config, target_db, mapping_file, duedate_calculator):
     chunk_size = db_config["chunk_size"]
     offset = -chunk_size
     chunk_no = 0
@@ -51,6 +51,7 @@ def insert_annual_report_logs(db_config, target_db, mapping_file):
         chunk_no += 1
 
         try:
+            # account table
             annual_report_log_df = get_basic_data_table(
                 db_config=db_config,
                 mapping_file_name=mapping_file_name,
@@ -73,6 +74,11 @@ def insert_annual_report_logs(db_config, target_db, mapping_file):
                 how="left",
                 left_on="c_case",
                 right_on="caserecnumber",
+            )
+
+            # calculate duedate
+            annual_report_log_df = annual_report_log_df.apply(
+                duedate_calculator.calculate_duedate, axis=1
             )
 
             # FKs which are NULL for now

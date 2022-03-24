@@ -223,12 +223,15 @@ def get_max_col(original_cols: list, result_col: str, df: pd.DataFrame) -> pd.Da
 #     if 'previous' and calculated date is on a weekend, move to previous working day;
 #     if 'next' and calculated date is on a weekend, move to next working day;
 #     if None, apply no adjustment
-# return: datetime, or None if the base_date is None or ""
+# return: datetime, or None if the base_date is None or "" or an invalid date string
 def calculate_date(base_date, delta: pd.DateOffset, weekend_adjustment: str = None):
     if base_date is None or base_date == "":
         return None
 
-    new_date = pd.to_datetime(base_date, dayfirst=True)
+    new_date = pd.to_datetime(base_date, dayfirst=True, errors="coerce")
+    if new_date is pd.NaT:
+        return None
+
     new_date = new_date + delta
 
     # Saturday, Sunday = [5, 6]

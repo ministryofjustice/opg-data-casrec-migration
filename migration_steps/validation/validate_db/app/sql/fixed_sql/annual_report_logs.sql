@@ -15,12 +15,12 @@ CREATE TABLE {casrec_schema}.exceptions_annual_report_logs(
 
 INSERT INTO {casrec_schema}.exceptions_annual_report_logs(
     -- non-pending annual_report_logs derived from casrec account table
-    SELECT * FROM (
+    WITH casrec_annual_report_logs AS (
         SELECT
             caserecnumber,
             reportingperiodenddate,
             reportingperiodstartdate,
-            duedate,
+            end_date,
             CAST(receiveddate AS date) AS receiveddate,
             CAST(NULLIF(revisedduedate, '') AS date) AS revisedduedate,
             numberofchaseletters,
@@ -32,7 +32,7 @@ INSERT INTO {casrec_schema}.exceptions_annual_report_logs(
                 caserecnumber,
                 reportingperiodenddate,
                 reportingperiodstartdate,
-                duedate,
+                end_date,
                 receiveddate,
                 revisedduedate,
                 numberofchaseletters,
@@ -47,7 +47,7 @@ INSERT INTO {casrec_schema}.exceptions_annual_report_logs(
                     "Case" AS caserecnumber,
                     CAST(account."End Date" AS date) AS reportingperiodenddate,
                     CAST(account."End Date" AS date) - INTERVAL '1 year' + INTERVAL '1 day' AS reportingperiodstartdate,
-                    transf_calculate_duedate(account."End Date") AS duedate,
+                    account."End Date" AS end_date,
                     COALESCE(
                         NULLIF(account."Rcvd Date", ''),
                         NULLIF(account."Lodge Date", '')
@@ -71,7 +71,7 @@ INSERT INTO {casrec_schema}.exceptions_annual_report_logs(
             "Case" AS caserecnumber,
             CAST(p."Report Due" AS date) AS reportingperiodenddate,
             active_cases.reportingperiodstartdate,
-            transf_calculate_duedate(p."Report Due") AS duedate,
+            p."Report Due" AS end_date,
             NULL AS receiveddate,
             NULL AS revisedduedate,
             0 AS numberofchaseletters,
@@ -102,7 +102,33 @@ INSERT INTO {casrec_schema}.exceptions_annual_report_logs(
         ON p."Case" = active_cases.account_case
 
         WHERE p."Report Due" != ''
-    ) AS casrec_annual_report_logs
+    ),
+    cases_with_active_pa_pro_deputies AS (
+        SELECT DISTINCT "Case"
+        FROM {casrec_schema}.deputy d
+        INNER JOIN {casrec_schema}.deputyship ds
+        ON d."Deputy No" = ds."Deputy No"
+        WHERE d."Dep Type" IN ('20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '60', '73', '90')
+        AND d."Stat" = '1'
+    )
+
+    SELECT
+        caserecnumber,
+        reportingperiodenddate,
+        CAST(reportingperiodstartdate AS date),
+        CASE
+            WHEN cwappd."Case" IS NOT NULL THEN transf_add_business_days(cast(end_date as date), 40)
+            ELSE transf_calculate_duedate(end_date)
+        END AS duedate,
+        receiveddate,
+        revisedduedate,
+        numberofchaseletters,
+        status,
+        reviewstatus,
+        reviewdate
+    FROM casrec_annual_report_logs carl
+    LEFT JOIN cases_with_active_pa_pro_deputies cwappd
+    ON carl.caserecnumber = cwappd."Case"
 
     EXCEPT
 

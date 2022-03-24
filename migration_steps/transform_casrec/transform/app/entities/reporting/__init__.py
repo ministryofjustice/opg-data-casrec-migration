@@ -10,6 +10,7 @@ from entities.reporting.annual_report_logs_pending import (
 from entities.reporting.annual_report_type_assignments import (
     insert_annual_report_type_assignments,
 )
+from entities.reporting.duedatecalculator import DueDateCalculator
 from helpers import log_title, check_entity_enabled
 
 log = logging.getLogger("root")
@@ -32,11 +33,17 @@ def runner(target_db, db_config):
 
     log.info(log_title(message=entity_name))
 
+    # Used in two places to determine whether a report references an active PA/PRO deputy,
+    # which affects the duedate of the report
+    duedate_calculator = DueDateCalculator(db_config)
+    duedate_calculator.populate()
+
     log.debug("insert_annual_report_logs")
     insert_annual_report_logs(
         mapping_file="annual_report_logs",
         target_db=target_db,
         db_config=db_config,
+        duedate_calculator=duedate_calculator,
     )
 
     log.debug("insert_annual_report_logs_pending")
@@ -44,6 +51,7 @@ def runner(target_db, db_config):
         mapping_file="annual_report_logs",
         target_db=target_db,
         db_config=db_config,
+        duedate_calculator=duedate_calculator,
     )
 
     log.debug("insert_annual_report_lodging_details")
