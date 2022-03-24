@@ -27,6 +27,30 @@ FROM (
     )
 ) via_casrec_mapping;
 
+-- annual_report_type_assignments belonging to
+-- annual_report_logs we migrated which have 2+ artas;
+-- all but one of these will have been added since migration;
+-- these shouldn't be an issue as the ones we added have
+-- an invalid type '-', so removing them should have no effect
+SELECT *
+INTO {pmf_schema}.arta_migrated_arls_with_multiple_artas_audit
+FROM (
+    SELECT arta.*, carta.sirius_id AS casrec_mapping_sirius_id
+    FROM annual_report_type_assignments arta
+    LEFT JOIN {casrec_mapping}.annual_report_type_assignments carta
+    ON arta.id = carta.sirius_id
+    WHERE arta.annualreport_id IN (
+        SELECT arl.id
+        FROM annual_report_logs arl
+        INNER JOIN {casrec_mapping}.annual_report_logs carl
+        ON arl.id = carl.sirius_id
+        INNER JOIN annual_report_type_assignments arta
+        ON arl.id = arta.annualreport_id
+        GROUP BY arl.id
+        HAVING count(arta.*) > 1
+    )
+) AS migrated_arls_with_multiple_artas;
+
 --@update_tag
 DELETE FROM annual_report_type_assignments
 WHERE id IN (
