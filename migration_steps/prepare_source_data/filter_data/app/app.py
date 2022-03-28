@@ -37,6 +37,30 @@ def set_logging_level(verbose):
         log.info(f"{verbose} is not a valid verbosity level")
 
 
+def corref_with_filter_conditions(correfs):
+    log.info(
+        f"Inserting cases associated with Correfs that have additional unmet conditions"
+    )
+    sql = f"""
+        INSERT INTO {config.schemas["pre_transform"]}.cases_to_filter_out (caserecnumber, notes)
+        select "Case", 'corref_conditions'
+        from casrec_csv_p2.pat p
+        where p."Corref" IN ({",".join([f"'{corref}'" for corref in correfs])})
+        and p."Case" NOT IN (
+            select distinct p."Case"
+            from casrec_csv_p2.pat p
+            inner join casrec_csv_p2.deputyship dp on p."Case" = dp."Case"
+            inner join casrec_csv_p2.order o on o."Order No" = dp."Order No"
+            where p."Corref" IN ({",".join([f"'{corref}'" for corref in correfs])})
+            and o."Ord Type" in ('1', '2', '40', '41')
+        );
+    """
+    conn_source = psycopg2.connect(config.get_db_connection_string("migration"))
+    cursor_source = conn_source.cursor()
+    cursor_source.execute(sql)
+    conn_source.commit()
+
+
 @click.command()
 @click.option("-v", "--verbose", count=True)
 @click.option("--correfs", default="")
@@ -91,6 +115,11 @@ def main(verbose, correfs, clear):
             WHERE "Corref" NOT IN ({",".join([f"'{corref}'" for corref in filtered_correfs])});
         """
         cursor_source.execute(sql)
+        conditional_correfs = ["RGY"]
+        filtered_conditional_correfs = list(
+            set(conditional_correfs).intersection(filtered_correfs)
+        )
+        corref_with_filter_conditions(filtered_conditional_correfs)
     else:
         log.info("No Corref filtering requested")
 
