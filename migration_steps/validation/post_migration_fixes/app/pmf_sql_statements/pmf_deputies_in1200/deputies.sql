@@ -5,8 +5,9 @@ CREATE SCHEMA IF NOT EXISTS {pmf_schema};
 
 -- Assumptions:
 -- 1. Any manual changes since migration can be overwritten by this script.
--- 2. If order_deputy.statusoncase = 'DECEASED', but cases.orderstatus is CLOSED,
---    statusoncase should be updated to 'CLOSED'.
+-- 2. Don't updated order_deputy.statusoncase if it's already 'CLOSED'
+-- 3. If order_deputy.statusoncase = 'DECEASED', but cases.orderstatus
+--    is 'CLOSED', statusoncase stays as 'DECEASED'.
 WITH order_deputy_updates AS (
     SELECT
         od.id,
@@ -19,7 +20,11 @@ WITH order_deputy_updates AS (
     ON od.deputy_id = p.id
     WHERE p.clientsource = '{client_source}'
     AND c.orderstatus = 'CLOSED'
-    AND (od.statusoncase IS NULL OR od.statusoncase != 'CLOSED')
+    AND (
+        od.statusoncase IS NULL
+        OR
+        od.statusoncase NOT IN ('CLOSED', 'DECEASED')
+    )
 )
 SELECT *
 INTO {pmf_schema}.order_deputy_updates
