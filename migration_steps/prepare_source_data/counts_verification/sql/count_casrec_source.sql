@@ -96,16 +96,16 @@ UPDATE {count_schema}.counts SET {working_column} =
 )+(
     -- deputy
    SELECT COUNT(*) FROM (
-        SELECT DISTINCT LOWER(TRIM(COALESCE(d."Email", ''))),
-        LOWER(TRIM(COALESCE(d."Dep Surname", ''))),
-        LOWER(TRIM(COALESCE(add."Dep Postcode", '')))
-        FROM {casrec_schema}.deputy_address add
-        INNER JOIN {casrec_schema}.deputyship ds
-            ON ds."Dep Addr No" = add."Dep Addr No"
-        INNER JOIN {count_schema}.casrec_orders o
-            ON o."Order No" = ds."Order No"
+        SELECT DISTINCT add."Dep Addr No"
+        FROM {count_schema}.casrec_deps cd
+        INNER JOIN {casrec_schema}.deplink dl
+            ON dl."Dep Addr No" = cd."Dep Addr No"
         INNER JOIN {casrec_schema}.deputy d
-        ON ds."Deputy No" = d."Deputy No"
+            ON d."Deputy No" = dl."Deputy No"
+        INNER JOIN {casrec_schema}.deputy_address add
+            ON add."Dep Addr No" = dl."Dep Addr No"
+        WHERE dl."Main Addr" = '1'
+        AND d."Dep Type" IN ('20','21','22','24','25','26','27','28','29','63','71')
    ) t1
 )
 WHERE supervision_table = 'addresses';
