@@ -38,8 +38,9 @@ VALUES
 ('PGR','Legal Team Deputyships'),
 ('RGY','Supervision Closed Cases team'),
 ('S1A','Deputyship Investigations'),
-('S1N','Deputyship Investigations');
---Unknown: NA, NEW
+('S1N','Deputyship Investigations'),
+('NA',  'Supervision Closed Cases team'),
+('NEW', 'Supervision Closed Cases team');
 
 CREATE SCHEMA IF NOT EXISTS {pmf_schema};
 
@@ -56,6 +57,7 @@ FROM
     INNER JOIN {casrec_schema}.pat pat on pat."Case" = per.caserecnumber
     INNER JOIN {casrec_mapping}.corref_to_team ctt on pat."Corref" = ctt.corref
     LEFT JOIN assignees a on a.name = ctt.team
+    WHERE per.supervisioncaseowner_id = 2657
 ) as updates;
 
 --@audit_tag
