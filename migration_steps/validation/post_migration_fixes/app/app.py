@@ -166,11 +166,11 @@ def run_post_migration_fix(script_path, dump_sql):
 
     # early return if dumping statements to screen
     if dump_sql:
+        log.info("Dumping SQL to stdout")
         for key, statement_group in statements.items():
-            print(f"{'*' * 50} {key}")
+            print(f"{'-' * 50} {key}")
             for statement in statement_group:
                 print(statement)
-            print()
         return statements
 
     log.info(f"===== {schema_name} =====")
@@ -265,24 +265,24 @@ def get_statements(path, tag_prefix, pmf_schema):
     with open(path, "r") as script:
         continue_adding_lines = False
         for line in script:
+            if line.strip() == "":
+                continue
 
             if line.startswith(f"--@{tag_prefix}_tag"):
                 continue_adding_lines = True
             elif line.startswith("--@"):
                 continue_adding_lines = False
-            else:
-                pass
 
             if continue_adding_lines and not line.startswith("--@"):
-                line = line.strip().replace(
-                    "{casrec_schema}", config.schemas["pre_transform"]
-                )
+                line = line.rstrip("\n")
+
+                line = line.replace("{casrec_schema}", config.schemas["pre_transform"])
                 line = line.replace("{pmf_schema}", pmf_schema)
                 line = line.replace(
                     "{client_source}", config.migration_phase["migration_identifier"]
                 )
                 line = line.replace("{casrec_mapping}", casrec_mapping_schema)
-                if line.endswith(";") and not line.startswith("--"):
+                if line.endswith(";") and not line.strip().startswith("--"):
                     sql_statement += f"{line}\n"
                     sql_statements.append(sql_statement)
                     sql_statement = ""
@@ -328,4 +328,4 @@ if __name__ == "__main__":
 
     main(script_path, dump_sql)
 
-    print(f"Total time: {round(time.process_time() - t, 2)}")
+    log.info(f"Total time: {round(time.process_time() - t, 2)}")
