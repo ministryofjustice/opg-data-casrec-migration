@@ -9,56 +9,67 @@ def test_map_deputy_subtype_with_examples():
     test_df = pd.DataFrame(
         [
             {
-                # Person: Lay
+                "id": 1,
                 "deputytype": "LAY",
                 "firstname": "Vone",
                 "surname": "Spork",
                 "salutation": "Mr",
-                "middlenames": "Ventafin",
+                "othernames": "Ventafin",
                 "note": "Lay deputy => person",
             },
             {
-                # Person: PA with firstname and surname
-                "deputytype": "PA",
-                "firstname": "Biffo",
-                "surname": "Andalusia",
-                "salutation": "Ms",
-                "middlenames": "Peregrin",
-                "note": "PA deputy with firstname and surname => person",
-            },
-            {
-                # Person: PRO with firstname and surname
+                "id": 2,
                 "deputytype": "PRO",
                 "firstname": "Majelian",
                 "surname": "DeCroscifor",
                 "salutation": "Dr",
-                "middlenames": "Subantafax",
+                "othernames": "Subantafax",
                 "note": "PRO deputy with firstname and surname => person",
             },
             {
-                # Organisation: PA without firstname
-                "deputytype": "PA",
-                "firstname": "",
-                "surname": "Baragron Corp",
-                "salutation": "Reverend",
-                "middlenames": "Bargastofon",
-                "note": "PA deputy without firstname => organisation",
-            },
-            {
+                "id": 3,
                 "deputytype": "PRO",
                 "firstname": None,
                 "surname": "Big Company",
                 "salutation": "Miss",
-                "middlenames": "Velocipede",
+                "othernames": "Velocipede",
                 "note": "PRO deputy without firstname => organisation",
             },
             {
+                "id": 4,
                 "deputytype": "PRO",
                 "firstname": None,
                 "surname": None,
                 "salutation": "Professor",
-                "middlenames": "Mandragorian",
+                "othernames": "Mandragorian",
                 "note": "PRO deputy with no firstname or surname => organisation",
+            },
+            {
+                "id": 5,
+                "deputytype": "PA",
+                "firstname": "Biffo",
+                "surname": "Andalusia",
+                "salutation": "Ms",
+                "othernames": "Peregrin",
+                "note": "PA deputy with firstname and surname => organisation",
+            },
+            {
+                "id": 6,
+                "deputytype": "PA",
+                "firstname": "",
+                "surname": "Baragron Corp",
+                "salutation": "Reverend",
+                "othernames": "Bargastofon",
+                "note": "PA deputy without firstname => organisation",
+            },
+            {
+                "id": 7,
+                "deputytype": "PA",
+                "firstname": "",
+                "surname": "Humalalala Inc",
+                "salutation": "Reverend",
+                "othernames": "Bargastofon",
+                "note": "PA deputy with surname only => organisation",
             },
         ]
     )
@@ -66,63 +77,82 @@ def test_map_deputy_subtype_with_examples():
     expected = pd.DataFrame(
         [
             {
+                "id": 1,
                 "deputytype": "LAY",
                 "firstname": "Vone",
                 "surname": "Spork",
                 "salutation": "Mr",
-                "middlenames": "Ventafin",
+                "othernames": "Ventafin",
                 "organisationname": None,
                 "deputysubtype": "PERSON",
             },
             {
-                "deputytype": "PA",
-                "firstname": "Biffo",
-                "surname": "Andalusia",
-                "salutation": "Ms",
-                "middlenames": "Peregrin",
-                "organisationname": None,
-                "deputysubtype": "PERSON",
-            },
-            {
+                "id": 2,
                 "deputytype": "PRO",
                 "firstname": "Majelian",
                 "surname": "DeCroscifor",
                 "salutation": "Dr",
-                "middlenames": "Subantafax",
+                "othernames": "Subantafax",
                 "organisationname": None,
                 "deputysubtype": "PERSON",
             },
             {
-                "deputytype": "PA",
-                "firstname": None,
-                "surname": None,
-                "salutation": None,
-                "middlenames": None,
-                "organisationname": "Baragron Corp",
-                "deputysubtype": "ORGANISATION",
-            },
-            {
+                "id": 3,
                 "deputytype": "PRO",
                 "firstname": None,
                 "surname": None,
                 "salutation": None,
-                "middlenames": None,
+                "othernames": None,
                 "organisationname": "Big Company",
                 "deputysubtype": "ORGANISATION",
             },
             {
+                "id": 4,
                 "deputytype": "PRO",
                 "firstname": None,
                 "surname": None,
                 "salutation": None,
-                "middlenames": None,
+                "othernames": None,
                 "organisationname": None,
+                "deputysubtype": "ORGANISATION",
+            },
+            {
+                "id": 5,
+                "deputytype": "PA",
+                "firstname": None,
+                "surname": None,
+                "salutation": None,
+                "othernames": None,
+                "organisationname": "Andalusia",
+                "deputysubtype": "ORGANISATION",
+            },
+            {
+                "id": 6,
+                "deputytype": "PA",
+                "firstname": None,
+                "surname": None,
+                "salutation": None,
+                "othernames": None,
+                "organisationname": "Baragron Corp",
+                "deputysubtype": "ORGANISATION",
+            },
+            {
+                "id": 7,
+                "deputytype": "PA",
+                "firstname": None,
+                "surname": None,
+                "salutation": None,
+                "othernames": None,
+                "organisationname": "Humalalala Inc",
                 "deputysubtype": "ORGANISATION",
             },
         ]
     )
 
     actual = test_df.apply(map_deputy_subtype, axis=1)
+
+    print(actual.drop(columns=["note"]).to_markdown())
+    print(expected.to_markdown())
 
     assert_frame_equal(expected, actual.drop(columns=["note"]))
 
