@@ -151,9 +151,6 @@ def test_map_deputy_subtype_with_examples():
 
     actual = test_df.apply(map_deputy_subtype, axis=1)
 
-    print(actual.drop(columns=["note"]).to_markdown())
-    print(expected.to_markdown())
-
     assert_frame_equal(expected, actual.drop(columns=["note"]))
 
     # print examples for verification with UAT
@@ -166,6 +163,9 @@ def test_map_deputy_subtype_with_examples():
         }
     )
     columns = examples.columns.tolist()
+
+    # this just moves the "Note" column to the last column in the table
     columns.remove("Note")
     columns.append("Note")
+
     print("\n" + examples[columns].to_markdown())
