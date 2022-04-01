@@ -8,22 +8,32 @@ from utilities.df_helpers import prep_df_for_merge
 
 
 def insert_addresses_deputies(db_config, target_db, mapping_file):
+    casrec_schema = db_config["source_schema"]
+    target_schema = db_config["target_schema"]
     pro_dep_types = ("20", "21", "22", "24", "25", "26", "27", "28", "29", "63", "71")
 
+    # All the rows in deplink which relate to PRO deputies but are not the main address,
+    # combined with all rows from deputy_address whose Dep Addr No is not in deplink
+    # (i.e. Lay and PA deputies)
     deplink_query = f"""
-        select p.id as person_id, dl."Dep Addr No"
-        from {db_config['source_schema']}.deplink dl
-        inner join {db_config['source_schema']}.deputy d on d."Deputy No" = dl."Deputy No"
-        inner join {db_config['target_schema']}.persons p on p.c_deputy_no = d."Deputy No"
-        where p.casrec_mapping_file_name = 'deputy_persons_mapping'
-        AND (
-                (
-                    dl."Main Addr" = '1'
-                    AND d."Dep Type" IN {pro_dep_types}
-                )
-                OR
-                d."Dep Type" NOT IN {pro_dep_types}
-        )
+        SELECT DISTINCT person_id, "Dep Addr No" FROM (
+            select p.id as person_id, dl."Dep Addr No"
+            from {casrec_schema}.deplink dl
+            inner join {casrec_schema}.deputy d on d."Deputy No" = dl."Deputy No"
+            inner join {target_schema}.persons p on CAST(p.deputynumber AS text) = d."Deputy No"
+            WHERE dl."Main Addr" = '1'
+            AND d."Dep Type" IN {pro_dep_types}
+
+            UNION
+
+            SELECT p.id AS person_id, ds."Dep Addr No"
+            FROM {casrec_schema}.deputy d
+            INNER JOIN {target_schema}.persons p
+            ON d."Deputy No" = CAST(p.deputynumber AS text)
+            INNER JOIN {casrec_schema}.deputyship ds
+            ON d."Deputy No" = ds."Deputy No"
+            WHERE d."Dep Type" NOT IN {pro_dep_types}
+        ) da
     """
     deplink_df = pd.read_sql_query(deplink_query, db_config["db_connection_string"])
 
@@ -59,8 +69,8 @@ def insert_addresses_deputies(db_config, target_db, mapping_file):
             address_persons_joined_df = addresses_df.merge(
                 deplink_df,
                 how="inner",
-                left_on="c_dep_addr_no",
-                right_on="Dep Addr No",
+                left_on=["c_dep_addr_no"],
+                right_on=["Dep Addr No"],
             )
 
             address_persons_joined_df = address_persons_joined_df.drop(
