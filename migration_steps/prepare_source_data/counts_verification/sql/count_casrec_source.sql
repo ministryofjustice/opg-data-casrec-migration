@@ -104,8 +104,19 @@ UPDATE {count_schema}.counts SET {working_column} =
             ON d."Deputy No" = dl."Deputy No"
         INNER JOIN {casrec_schema}.deputy_address add
             ON add."Dep Addr No" = dl."Dep Addr No"
-        WHERE dl."Main Addr" = '1'
-        AND d."Dep Type" IN ('20','21','22','24','25','26','27','28','29','63','71')
+        INNER JOIN {casrec_schema}.deputyship ds
+            ON d."Deputy No" = ds."Deputy No"
+        INNER JOIN {casrec_schema}.order ord
+            ON ord."Order No" = ds."Order No"
+        WHERE (
+            (
+                dl."Main Addr" = '1'
+                AND d."Dep Type" IN ('20','21','22','24','25','26','27','28','29','63','71')
+            )
+            OR
+            d."Dep Type" NOT IN ('20','21','22','24','25','26','27','28','29','63','71')
+        )
+        AND ord."Ord Stat" != 'Open'
    ) t1
 )
 WHERE supervision_table = 'addresses';
