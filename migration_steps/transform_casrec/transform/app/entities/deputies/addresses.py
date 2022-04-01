@@ -8,19 +8,26 @@ from utilities.df_helpers import prep_df_for_merge
 
 
 def insert_addresses_deputies(db_config, target_db, mapping_file):
+    pro_dep_types = ("20", "21", "22", "24", "25", "26", "27", "28", "29", "63", "71")
 
-    deputies_query = f"""
+    deplink_query = f"""
         select p.id as person_id, dl."Dep Addr No"
         from {db_config['source_schema']}.deplink dl
         inner join {db_config['source_schema']}.deputy d on d."Deputy No" = dl."Deputy No"
         inner join {db_config['target_schema']}.persons p on p.c_deputy_no = d."Deputy No"
-        where dl."Main Addr" = '1'
-        and d."Dep Type" IN ('20','21','22','24','25','26','27','28','29','63','71')
-        and p.casrec_mapping_file_name = 'deputy_persons_mapping'
+        where p.casrec_mapping_file_name = 'deputy_persons_mapping'
+        AND (
+                (
+                    dl."Main Addr" = '1'
+                    AND d."Dep Type" IN {pro_dep_types}
+                )
+                OR
+                d."Dep Type" NOT IN {pro_dep_types}
+        )
     """
-    deputies_df = pd.read_sql_query(deputies_query, db_config["db_connection_string"])
+    deplink_df = pd.read_sql_query(deplink_query, db_config["db_connection_string"])
 
-    deputies_df = prep_df_for_merge(df=deputies_df, column="Dep Addr No")
+    deplink_df = prep_df_for_merge(df=deplink_df, column="Dep Addr No")
 
     chunk_size = db_config["chunk_size"]
     offset = -chunk_size
@@ -50,7 +57,7 @@ def insert_addresses_deputies(db_config, target_db, mapping_file):
             addresses_df = prep_df_for_merge(df=addresses_df, column="c_dep_addr_no")
 
             address_persons_joined_df = addresses_df.merge(
-                deputies_df,
+                deplink_df,
                 how="inner",
                 left_on="c_dep_addr_no",
                 right_on="Dep Addr No",
