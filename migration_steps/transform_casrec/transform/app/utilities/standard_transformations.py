@@ -55,7 +55,7 @@ def convert_to_bool(
     drop_original_col: bool = True,
 ) -> pd.DataFrame:
 
-    df[new_col] = df[original_col] == "1.0"
+    df[new_col] = (df[original_col] == "1.0") | (df[original_col] == "1")
     if drop_original_col:
         df = df.drop(columns=original_col)
     return df
