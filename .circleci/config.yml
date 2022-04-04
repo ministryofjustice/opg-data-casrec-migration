@@ -240,8 +240,13 @@ workflows:
           tf_workspace: preproduction
           runner_command: migration-light-touch-api-tests
       - run_task:
-          name: migration - post migration fixes preproduction
+          name: migration - post migration sirius side fixes preproduction
           requires: [migration - light touch api tests preproduction]
+          tf_workspace: preproduction
+          runner_command: post-casrec-migration-script-update-report-status
+      - run_task:
+          name: migration - post migration fixes preproduction
+          requires: [migration - post migration sirius side fixes preproduction]
           tf_workspace: preproduction
           runner_command: migration-post-migration-fixes
       - scale-services:
@@ -363,8 +368,13 @@ workflows:
           tf_workspace: preqa
           runner_command: migration-validation
       - run_task:
-          name: migration - post migration fixes preqa
+          name: migration - post migration sirius side fixes preqa
           requires: [migration - validation preqa]
+          tf_workspace: preqa
+          runner_command: post-casrec-migration-script-update-report-status
+      - run_task:
+          name: migration - post migration fixes preqa
+          requires: [migration - post migration sirius side fixes preqa]
           tf_workspace: preqa
           runner_command: migration-post-migration-fixes
       - scale-services:
@@ -462,8 +472,13 @@ workflows:
           tf_workspace: qa
           runner_command: migration-validation
       - run_task:
-          name: migration - post migration fixes qa
+          name: migration - post migration sirius side fixes qa
           requires: [migration - validation qa]
+          tf_workspace: qa
+          runner_command: post-casrec-migration-script-update-report-status
+      - run_task:
+          name: migration - post migration fixes qa
+          requires: [migration - post migration sirius side fixes qa]
           tf_workspace: qa
           runner_command: migration-post-migration-fixes
       - scale-services:
@@ -600,8 +615,13 @@ workflows:
           tf_workspace: production
           runner_command: migration-light-touch-api-tests
       - run_task:
-          name: migration - post migration fixes production
+          name: migration - post migration sirius side fixes production
           requires: [migration - light touch api tests production]
+          tf_workspace: production
+          runner_command: post-casrec-migration-script-update-report-status
+      - run_task:
+          name: migration - post migration fixes production
+          requires: [migration - post migration sirius side fixes production]
           tf_workspace: production
           runner_command: migration-post-migration-fixes
       - run_elasticsearch_reset:
@@ -726,8 +746,13 @@ workflows:
           tf_workspace: rehearsal
           runner_command: migration-light-touch-api-tests
       - run_task:
-          name: migration - post migration fixes rehearsal
+          name: migration - post migration sirius side fixes rehearsal
           requires: [migration - light touch api tests rehearsal]
+          tf_workspace: rehearsal
+          runner_command: post-casrec-migration-script-update-report-status
+      - run_task:
+          name: migration - post migration fixes rehearsal
+          requires: [migration - post migration sirius side fixes rehearsal]
           tf_workspace: rehearsal
           runner_command: migration-post-migration-fixes
       - run_elasticsearch_reset:
@@ -858,8 +883,14 @@ workflows:
           runner_command: migration-response-api-tests
           filters: {branches:{only:[main]}}
       - run_task:
-          name: migration - post migration fixes preproduction
+          name: migration - post migration sirius side fixes preproduction
           requires: [migration - response api tests preproduction]
+          tf_workspace: preproduction
+          runner_command: post-casrec-migration-script-update-report-status
+          filters: {branches:{only:[main]}}
+      - run_task:
+          name: migration - post migration fixes preproduction
+          requires: [migration - post migration sirius side fixes preproduction]
           tf_workspace: preproduction
           runner_command: migration-post-migration-fixes
       - scale-services:
@@ -1483,6 +1514,9 @@ jobs:
       - run:
           name: Run light touch api tests task
           command: ecs-runner -task migration-light-touch-api-tests -timeout << parameters.timeout >>
+      - run:
+          name: Run sirius side post migration fixes
+          command: ecs-runner -task post-casrec-migration-script-update-report-status -timeout << parameters.timeout >>
       - run:
           name: Run post migration fixes
           command: ecs-runner -task migration-post-migration-fixes -timeout << parameters.timeout >>

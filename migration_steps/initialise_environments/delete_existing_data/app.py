@@ -80,15 +80,15 @@ def pre_deletion_flag_alignment_check():
     sql = f"""
          SELECT caserecnumber
          FROM {db_config["target_schema"]}.persons
-         WHERE clientsource = 'CLIENT-PILOT-ONE';
+         WHERE caseactorgroup = 'CLIENT-PILOT-ONE';
     """
     target_response = target_db_engine.execute(sql)
     sirius_cases = [r._mapping["caserecnumber"] for r in target_response]
 
     sql = f"""
-             SELECT "Case" as caserecnumber
-             FROM {db_config["source_schema"]}.pat
-             WHERE "Sirius" = 'Y';
+         SELECT "Case" as caserecnumber
+         FROM {db_config["source_schema"]}.pat
+         WHERE "Sirius" = 'Y';
     """
     source_response = source_db_engine.execute(sql)
     casrec_cases = [r._mapping["caserecnumber"] for r in source_response]
