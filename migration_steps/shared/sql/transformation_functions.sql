@@ -15,7 +15,7 @@ CREATE OR REPLACE FUNCTION transf_convert_to_bool(source varchar)
 RETURNS boolean AS $$
 DECLARE
 BEGIN
-    RETURN source = '1.0';
+    RETURN source in ('1.0', '1');
 END;
 $$ LANGUAGE plpgsql;
 
