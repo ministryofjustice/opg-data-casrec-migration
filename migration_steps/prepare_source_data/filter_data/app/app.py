@@ -115,7 +115,7 @@ def main(verbose, correfs, clear):
             WHERE "Corref" NOT IN ({",".join([f"'{corref}'" for corref in filtered_correfs])});
         """
         cursor_source.execute(sql)
-        conditional_correfs = ["RGY"]
+        conditional_correfs = ["RGY", "DCC", "ODP", "NA", "NEW"]
         filtered_conditional_correfs = list(
             set(conditional_correfs).intersection(filtered_correfs)
         )
