@@ -74,7 +74,7 @@ FROM
     pat."Corref" as corref, ctt.team, a.id as ass_id, {casrec_schema}.assignee_lookup(pdo."DPfcw") as pro_dep_owner_id
     FROM persons per
     INNER JOIN {casrec_schema}.pat pat on pat."Case" = per.caserecnumber
-    INNER JOIN {casrec_mapping}.corref_to_team ctt on pat."Corref" = ctt.corref
+    LEFT JOIN {casrec_mapping}.corref_to_team ctt on pat."Corref" = ctt.corref
     LEFT JOIN assignees a on a.name = ctt.team
     LEFT JOIN pro_dep_owner pdo on pdo."Case" = pat."Case"
     WHERE per.supervisioncaseowner_id = 2657
