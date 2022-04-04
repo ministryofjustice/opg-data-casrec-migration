@@ -31,7 +31,6 @@ then
   read -rp "Migrate specific Correfs? (comma-separated list) [All]: " CORREFS
   if [ "${CORREFS}" == "" ]
   then
-
     DEFAULT_P2_CORREFS="A1,A2,A2A,A3,A3G,ADC,ARD,C1,DCC,DCS,DOD,FOE,HW,L1,L2,L2A,L3,L3G,LDC,ODP,ORS,ORV,P1,P2,P2A,P3,P3G,PDC,PGA,PGC,PGH,PGR,RGY,S1A,S1N,NA,NEW"
     CORREFS=${DEFAULT_P2_CORREFS}
     echo "Migrating preset phase 2 correfs and data cut (${DEFAULT_P2_CORREFS})"

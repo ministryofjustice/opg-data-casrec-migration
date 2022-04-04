@@ -9,25 +9,18 @@ from utilities.df_helpers import prep_df_for_merge
 
 def insert_addresses_deputies(db_config, target_db, mapping_file):
 
-    deputyship_query = f"""
-        select "Dep Addr No", "Deputy No"
-        from {db_config['source_schema']}.deputyship
+    deputies_query = f"""
+        select p.id as person_id, dl."Dep Addr No"
+        from {db_config['source_schema']}.deplink dl
+        inner join {db_config['source_schema']}.deputy d on d."Deputy No" = dl."Deputy No"
+        inner join {db_config['target_schema']}.persons p on p.c_deputy_no = d."Deputy No"
+        where dl."Main Addr" = '1'
+        and d."Dep Type" IN ('20','21','22','24','25','26','27','28','29','63','71')
+        and p.casrec_mapping_file_name = 'deputy_persons_mapping'
     """
-    deputyship_df = pd.read_sql_query(
-        deputyship_query, db_config["db_connection_string"]
-    )
+    deputies_df = pd.read_sql_query(deputies_query, db_config["db_connection_string"])
 
-    deputyship_df = prep_df_for_merge(df=deputyship_df, column="Dep Addr No")
-
-    deputy_persons_query = f"""
-        select c_deputy_no, id as person_id
-        from {db_config['target_schema']}.persons
-        where casrec_mapping_file_name = 'deputy_persons_mapping'
-    """
-
-    deputy_persons_df = pd.read_sql_query(
-        deputy_persons_query, db_config["db_connection_string"]
-    )
+    deputies_df = prep_df_for_merge(df=deputies_df, column="Dep Addr No")
 
     chunk_size = db_config["chunk_size"]
     offset = -chunk_size
@@ -56,35 +49,22 @@ def insert_addresses_deputies(db_config, target_db, mapping_file):
 
             addresses_df = prep_df_for_merge(df=addresses_df, column="c_dep_addr_no")
 
-            address_deputyship_joined_df = addresses_df.merge(
-                deputyship_df,
-                how="left",
+            address_persons_joined_df = addresses_df.merge(
+                deputies_df,
+                how="inner",
                 left_on="c_dep_addr_no",
                 right_on="Dep Addr No",
             )
 
-            address_persons_joined_df = address_deputyship_joined_df.merge(
-                deputy_persons_df,
-                how="left",
-                left_on="Deputy No",
-                right_on="c_deputy_no",
-            )
-
             address_persons_joined_df = address_persons_joined_df.drop(
-                columns=["Dep Addr No", "Deputy No"]
+                columns=["Dep Addr No", "id"]
             )
 
             address_persons_joined_df["person_id"] = (
-                address_persons_joined_df["person_id"]
-                .fillna(0)
-                .astype(int)
-                .astype(object)
-                .where(address_persons_joined_df["person_id"].notnull())
+                address_persons_joined_df["person_id"].astype(int).astype(object)
             )
 
             address_persons_joined_df = address_persons_joined_df.drop_duplicates()
-
-            address_persons_joined_df = address_persons_joined_df.drop(columns=["id"])
 
             address_persons_joined_df = process_unique_id.add_unique_id(
                 db_conn_string=db_config["db_connection_string"],
@@ -92,11 +72,6 @@ def insert_addresses_deputies(db_config, target_db, mapping_file):
                 table_definition=table_definition,
                 source_data_df=address_persons_joined_df,
             )
-
-            # some addresses don't seem to match up with people...
-            address_persons_joined_df = address_persons_joined_df[
-                address_persons_joined_df["person_id"].notna()
-            ]
 
             address_persons_joined_df = reapply_datatypes_to_fk_cols(
                 columns=["person_id"], df=address_persons_joined_df

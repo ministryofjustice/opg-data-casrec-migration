@@ -38,24 +38,46 @@ VALUES
 ('PGR','Legal Team Deputyships'),
 ('RGY','Supervision Closed Cases team'),
 ('S1A','Deputyship Investigations'),
-('S1N','Deputyship Investigations');
---Unknown: NA, NEW
+('S1N','Deputyship Investigations'),
+('NA',  'Supervision Closed Cases team'),
+('NEW', 'Supervision Closed Cases team');
 
 CREATE SCHEMA IF NOT EXISTS {pmf_schema};
 
+WITH pro_dep_owner AS (
+    SELECT "Case", "DPfcw"
+    FROM
+    (
+        SELECT
+        row_number() over (partition BY p."Case" ORDER BY CASE WHEN ds."Fee Payer" = 'Y' THEN 1 ELSE 0 END desc, ds."Create" desc) as rown,
+        p."Case", d."DPfcw", ds."Create", ds."Fee Payer"
+        FROM {casrec_schema}.pat p
+        INNER JOIN {casrec_schema}.order o ON p."Case" = o."Case"
+        INNER JOIN {casrec_schema}.deputyship ds ON o."Order No" = ds."Order No"
+        INNER JOIN {casrec_schema}.deputy d ON d."Deputy No" = ds."Deputy No"
+        WHERE d."Dep Type" in ('20','21','22','24','25','26','27','28','29','63','71')
+        and p."Corref" in ('P1','P2','P2A','P3','P3G','PDC')
+        and o."Ord Stat" = 'Active'
+        and d."DPfcw" != ''
+    ) as a
+    WHERE rown = 1
+)
 SELECT
 caserecnumber as caserecnumber,
 id as person_id,
 supervisioncaseowner_id as original_value,
-ass_id as expected_value
+coalesce(pro_dep_owner_id, ass_id, 2657) as expected_value
 INTO {pmf_schema}.persons_updates
 FROM
 (
-    SELECT per.caserecnumber, per.id, per.supervisioncaseowner_id, pat."Corref" as corref, ctt.team, a.id as ass_id
+    SELECT per.caserecnumber, per.id, per.supervisioncaseowner_id,
+    pat."Corref" as corref, ctt.team, a.id as ass_id, {casrec_schema}.assignee_lookup(pdo."DPfcw") as pro_dep_owner_id
     FROM persons per
     INNER JOIN {casrec_schema}.pat pat on pat."Case" = per.caserecnumber
     INNER JOIN {casrec_mapping}.corref_to_team ctt on pat."Corref" = ctt.corref
     LEFT JOIN assignees a on a.name = ctt.team
+    LEFT JOIN pro_dep_owner pdo on pdo."Case" = pat."Case"
+    WHERE per.supervisioncaseowner_id = 2657
 ) as updates;
 
 --@audit_tag
