@@ -322,7 +322,8 @@ RETURNS
     ) AS $$
 DECLARE
     deputy_type_looked_up text;
-    is_pa_or_pro_deputy boolean;
+    is_pa_deputy boolean;
+    is_pro_deputy boolean;
     is_lay_deputy boolean;
     salutation text;
     firstname text;
@@ -334,8 +335,9 @@ DECLARE
     is_person boolean;
 BEGIN
     SELECT {casrec_schema}.deputy_type_lookup(TRIM(deputy_type)) INTO deputy_type_looked_up;
-    SELECT deputy_type_looked_up IN ('PA', 'PRO') INTO is_pa_or_pro_deputy;
-    SELECT deputy_type_looked_up IN ('LAY') INTO is_lay_deputy;
+    SELECT deputy_type_looked_up = 'PA' INTO is_pa_deputy;
+    SELECT deputy_type_looked_up = 'PRO' INTO is_pro_deputy;
+    SELECT deputy_type_looked_up = 'LAY' INTO is_lay_deputy;
 
     SELECT {casrec_schema}.title_codes_lookup(TRIM(deputy_title)) INTO salutation;
     SELECT transf_first_word(NULLIF(TRIM(deputy_forename), '')) INTO firstname;
@@ -345,8 +347,8 @@ BEGIN
     SELECT firstname != '' AND firstname IS NOT NULL INTO has_firstname;
     SELECT surname != '' AND surname IS NOT NULL INTO has_surname;
 
-    SELECT (is_pa_or_pro_deputy AND NOT has_firstname) INTO is_organisation;
-    SELECT (is_lay_deputy OR (is_pa_or_pro_deputy AND has_firstname AND has_surname)) INTO is_person;
+    SELECT (is_pa_deputy OR (is_pro_deputy AND NOT has_firstname)) INTO is_organisation;
+    SELECT (is_lay_deputy OR (is_pro_deputy AND has_firstname AND has_surname)) INTO is_person;
 
     RETURN QUERY
     SELECT
