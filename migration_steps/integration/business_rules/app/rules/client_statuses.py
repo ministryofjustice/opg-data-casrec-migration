@@ -126,8 +126,8 @@ def update_client_statuses_table(db_config, cursor, conn):
         UPDATE {db_config["target_schema"]}.{client_status_lkp_table}
         SET final_client_status =
         CASE
-            WHEN death_notified_status = 'DEATH_NOTIFIED' THEN 'DEATH_NOTIFIED'
             WHEN death_proof_status = 'DEATH_CONFIRMED' THEN 'DEATH_CONFIRMED'
+            WHEN death_notified_status = 'DEATH_NOTIFIED' THEN 'DEATH_NOTIFIED'
             WHEN has_active_status = 'ACTIVE' THEN 'ACTIVE'
             WHEN latest_status = 'OPEN' THEN 'OPEN'
             WHEN closed_dup_status = 'CLOSED'
