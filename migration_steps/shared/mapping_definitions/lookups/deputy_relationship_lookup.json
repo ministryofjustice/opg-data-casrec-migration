@@ -49,5 +49,8 @@
     },
     "25": {
         "sirius_mapping": "LEGAL"
+    },
+    "26": {
+        "sirius_mapping": "TRUST"
     }
 }
