@@ -1345,53 +1345,22 @@
         }
     },
     "deputy_addresses": {
-        "exclude": [
-            "person_id"
-        ],
-        "casenumber_source": "cases.caserecnumber",
-        "orderby": {
-            "casesubtype": {
-                "mapping_table": "cases.casesubtype",
-                "direction": "ASC"
-            },
-            "orderdate": {
-                "mapping_table": "cases.orderdate",
-                "direction": "ASC"
-            }
-        },
+        "exclude": [],
+        "casenumber_source": "client_persons.caserecnumber",
+        "orderby": {},
         "casrec": {
-            "from_table": "deputyship",
-            "transform": {
-                "address_lines": "CONCAT(\"Dep Adrs1\", ',', \"Dep Adrs2\")",
-                "type": "CASE WHEN deputy_address.\"Dep Addr No\" IS NULL THEN NULL ELSE 'Primary' END"
-            },
-            "joins": [
-                "INNER JOIN {casrec_schema}.deputy ON {casrec_schema}.deputy.\"Deputy No\" = {casrec_schema}.deputyship.\"Deputy No\"",
-                "INNER JOIN {casrec_schema}.order ON {casrec_schema}.order.\"Order No\" = {casrec_schema}.deputyship.\"Order No\"",
-                "LEFT JOIN {casrec_schema}.deplink ON {casrec_schema}.deputy.\"Deputy No\" = {casrec_schema}.deplink.\"Deputy No\"",
-                "LEFT JOIN {casrec_schema}.deputy_address ON {casrec_schema}.deputy_address.\"Dep Addr No\" = {casrec_schema}.deplink.\"Dep Addr No\""
-            ],
-            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_deputy_addresses exc_table ON exc_table.caserecnumber = {casrec_schema}.order.\"Case\"",
-            "where_clauses": [
-                "COALESCE({casrec_schema}.deplink.\"Main Addr\", 'NO MAIN ADDRESS') IN ('1', 'NO MAIN ADDRESS')",
-                "{casrec_schema}.deputy.\"Dep Type\" IN ('20','21','22','24','25','26','27','28','29','63','71')"
-            ]
+            "from_table": "deputy_addresses",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "",
+            "where_clauses": []
         },
         "sirius": {
-            "from_table": "order_deputy",
-            "transform": {
-                "address_lines": "array_to_string(ARRAY(SELECT json_array_elements_text(addresses.address_lines)), ',')"
-            },
-            "joins": [
-                "INNER JOIN {target_schema}.cases ON cases.id = order_deputy.order_id",
-                "INNER JOIN {target_schema}.persons ON persons.id = order_deputy.deputy_id",
-                "INNER JOIN {target_schema}.addresses ON addresses.person_id = persons.id"
-            ],
-            "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_deputy_addresses exc_table ON exc_table.caserecnumber = persons.caserecnumber",
-            "where_clauses": [
-                "persons.type = 'actor_deputy'",
-                "persons.clientsource = '{client_source}'"
-            ]
+            "from_table": "persons",
+            "transform": {},
+            "joins": [],
+            "exception_table_join": "",
+            "where_clauses": []
         },
         "manual_checks": {
           "column": "",
