@@ -94,30 +94,37 @@ UPDATE {count_schema}.counts SET {working_column} =
     -- client
     SELECT COUNT(*) FROM {casrec_schema}.pat
 )+(
-    -- deputy
-   SELECT COUNT(*) FROM (
-        SELECT DISTINCT add."Dep Addr No"
-        FROM {count_schema}.casrec_deps cd
-        INNER JOIN {casrec_schema}.deplink dl
-            ON dl."Dep Addr No" = cd."Dep Addr No"
+    -- deputy PRO
+    SELECT COUNT(*) FROM (
+        SELECT DISTINCT
+            dl.casrec_row_id dl_id
+        FROM {casrec_schema}.deplink dl
+        INNER JOIN {count_schema}.casrec_deps cd
+            ON dl."Deputy No" = cd."Deputy No"
         INNER JOIN {casrec_schema}.deputy d
-            ON d."Deputy No" = dl."Deputy No"
+            ON cd."Deputy No" = d."Deputy No"
         INNER JOIN {casrec_schema}.deputy_address add
             ON add."Dep Addr No" = dl."Dep Addr No"
+        WHERE d."Dep Type" IN ('20','21','22','24','25','26','27','28','29','63','71')
+        AND dl."Main Addr" = '1'
+    ) dep_pro_count
+)+(
+    -- deputy Non-PRO
+    -- exactly the same as Phase 1 migration with added dep type filter
+    SELECT COUNT(*) FROM (
+        SELECT DISTINCT
+            LOWER(TRIM(COALESCE(d."Email", ''))),
+            LOWER(TRIM(COALESCE(d."Dep Surname", ''))),
+            LOWER(TRIM(COALESCE(add."Dep Postcode", '')))
+        FROM {casrec_schema}.deputy_address add
         INNER JOIN {casrec_schema}.deputyship ds
-            ON d."Deputy No" = ds."Deputy No"
-        INNER JOIN {casrec_schema}.order ord
-            ON ord."Order No" = ds."Order No"
-        WHERE (
-            (
-                dl."Main Addr" = '1'
-                AND d."Dep Type" IN ('20','21','22','24','25','26','27','28','29','63','71')
-            )
-            OR
-            d."Dep Type" NOT IN ('20','21','22','24','25','26','27','28','29','63','71')
-        )
-        AND ord."Ord Stat" != 'Open'
-   ) t1
+            ON ds."Dep Addr No" = add."Dep Addr No"
+        INNER JOIN {count_schema}.casrec_orders o
+            ON o."Order No" = ds."Order No"
+        INNER JOIN {casrec_schema}.deputy d
+            ON ds."Deputy No" = d."Deputy No"
+        WHERE d."Dep Type" NOT IN ('20','21','22','24','25','26','27','28','29','63','71')
+    ) dep_non_pro_count
 )
 WHERE supervision_table = 'addresses';
 
