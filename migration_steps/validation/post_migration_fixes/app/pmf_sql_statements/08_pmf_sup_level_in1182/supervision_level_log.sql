@@ -4,30 +4,6 @@ CREATE SCHEMA IF NOT EXISTS {pmf_schema};
 
 SET datestyle = "ISO, DMY";
 
-WITH migrated_sup_levels AS (
-    SELECT sll.*
-    FROM supervision_level_log sll
-    INNER JOIN cases c ON c.id = sll.order_id
-    INNER JOIN persons p ON p.id = c.client_id
-    WHERE p.clientsource = '{client_source}'
-)
-SELECT *
-INTO {pmf_schema}.supervision_level_log_keep
-FROM (
-    SELECT msl.*
-    FROM migrated_sup_levels msl
-    WHERE msl.appliesfrom <> '2022-03-05'::date
-       OR msl.createddate <> '2022-03-05'::timestamp(0)
-       OR msl.notes <> 'placeholder note'
-    UNION
-    SELECT id, order_id, appliesfrom, createddate, supervisionlevel, notes, assetlevel
-    FROM (
-        SELECT *, ROW_NUMBER() OVER (PARTITION BY order_id ORDER BY order_id, id) as row_number
-        FROM migrated_sup_levels
-    ) numbered_logs
-    WHERE numbered_logs.row_number <> 1
-) logs;
-
 WITH casrec_supervision_levels AS (
     SELECT a.*, ROW_NUMBER() OVER (ORDER BY a."Order No", a."Start Date"::date) AS row_number
     FROM (
@@ -67,9 +43,7 @@ WHERE p.clientsource = '{client_source}';
 
 SELECT audit.*
 INTO {pmf_schema}.supervision_level_log_deletes
-FROM {pmf_schema}.supervision_level_log_audit audit
-LEFT JOIN {pmf_schema}.supervision_level_log_keep keep ON audit.id = keep.id
-WHERE keep.id IS NULL;
+FROM {pmf_schema}.supervision_level_log_audit audit;
 
 --@update_tag
 DELETE FROM supervision_level_log sll
@@ -91,10 +65,6 @@ WITH sirius_side AS (
 casrec_side AS (
     SELECT order_id, appliesfrom, createddate, supervisionlevel, notes, assetlevel
     FROM {pmf_schema}.supervision_level_log_inserts
-),
-not_deleted AS (
-    SELECT order_id, appliesfrom, createddate, supervisionlevel, notes, assetlevel
-    FROM {pmf_schema}.supervision_level_log_keep
 )
 SELECT 'not in Sirius' as validation, * FROM (
     SELECT * FROM casrec_side
@@ -106,12 +76,4 @@ SELECT 'not in Casrec' as validation, * FROM (
     SELECT * FROM sirius_side
     EXCEPT
     SELECT * FROM casrec_side
-    EXCEPT
-    SELECT * FROM not_deleted
-) validation2
-UNION
-SELECT 'erroneously deleted' as validation, * FROM (
-    SELECT * FROM not_deleted
-    EXCEPT
-    SELECT * FROM sirius_side
-) validation3;
+) validation2;

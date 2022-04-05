@@ -206,14 +206,12 @@ def run_post_migration_fix(script_path, dump_sql):
             log.warning("Nothing to apply here. Find out why!")
     conn.commit()
 
-    rollback = False
     log.info("Running Update Statements")
     for statement in statements["update"]:
         _execute_sql(cursor, statement)
         log.info(f"Updated {cursor.rowcount} rows")
         if cursor.rowcount < 1:
-            rollback = True
-            log.warning("No rows updated - will rollback")
+            log.warning("No rows updated")
 
     log.info("Running Validation Statements After Apply")
     for statement in statements["validate"]:
@@ -221,17 +219,12 @@ def run_post_migration_fix(script_path, dump_sql):
 
         log_fn = log.info
         if cursor.rowcount > 0:
-            rollback = True
             log_fn = log.warning
 
         log_fn(f"Post Validation bringing back {cursor.rowcount} rows")
 
-    if rollback:
-        log.warning(f"Rolling back update transaction for {schema_name}")
-        conn.rollback()
-    else:
-        log.info(f"Committing transaction for {schema_name}")
-        conn.commit()
+    log.info(f"Committing transaction for {schema_name}")
+    conn.commit()
 
     cursor.close()
 
