@@ -123,7 +123,7 @@
         "sirius_mapping": "CWGN"
     },
     "Automatic introductory prompt on the first assessment for HW.": {
-        "sirius_mapping": "VIRD"
+        "sirius_mapping": "CWGN"
     },
     "visit to be commissioned on a set date. Also to be furthered on 8 weeks when visit is commissioned.": {
         "sirius_mapping": "VICO"
@@ -138,7 +138,7 @@
         "sirius_mapping": "CNC"
     },
     "Activity to prompt proof of death checks etc.": {
-        "sirius_mapping": "CPOD"
+        "sirius_mapping": "CWGN"
     },
     "Annual report required for H+W only.": {
         "sirius_mapping": "CWGN"
@@ -385,5 +385,23 @@
     },
     "Visit repot should be returned 12 weeks from this date.": {
         "sirius_mapping": "VIRD"
+    },
+    "Review the annual financial report. Consider follow-up action.": {
+        "sirius_mapping": "RERR"
+    },
+    "Use chase process for non compliant                                                                                               +": {
+        "sirius_mapping": "CNC"
+    },
+    "Send out an ad-hoc financial report. Review and consider follow-up action.": {
+        "sirius_mapping": "CWGN"
+    },
+    "Reminder to check case - not to be used, use Deadline": {
+        "sirius_mapping": "CWGN"
+    },
+    "Reminder to check case - not to be used, use deadline": {
+        "sirius_mapping": "CWGN"
+    },
+    "Visit D,P or 3rd party to advise on financial report or examine financial records": {
+        "sirius_mapping": "VICO"
     }
 }
