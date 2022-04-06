@@ -343,6 +343,7 @@ BEGIN
     SELECT transf_first_word(NULLIF(TRIM(deputy_forename), '')) INTO firstname;
     SELECT NULLIF(TRIM(transf_last_words(deputy_forename)), '') INTO othernames;
     SELECT transf_capitalise_first_letter(TRIM(deputy_surname)) INTO surname;
+    SELECT CONCAT_WS(' ', NULLIF(firstname, ''), NULLIF(othernames, ''), NULLIF(surname, '')) INTO organisationname;
 
     SELECT firstname != '' AND firstname IS NOT NULL INTO has_firstname;
     SELECT surname != '' AND surname IS NOT NULL INTO has_surname;
@@ -360,7 +361,7 @@ BEGIN
             ELSE NULL
         END) AS deputysubtype,
         (CASE
-            WHEN is_organisation THEN surname
+            WHEN is_organisation THEN organisationname
             ELSE NULL
         END) AS organisationname,
         (CASE
