@@ -46,13 +46,13 @@ def map_deputy_subtype(row: pd.Series) -> pd.Series:
     if is_organisation:
         row["deputysubtype"] = "ORGANISATION"
 
-        # Ordering is important for next two lines
-        row["organisationname"] = row["surname"]
-        row["surname"] = None
+        names = [row["firstname"], row["othernames"], row["surname"]]
+        row["organisationname"] = " ".join(filter(None, names))
 
         row["salutation"] = None
         row["firstname"] = None
         row["othernames"] = None
+        row["surname"] = None
 
     elif is_person:
         row["deputysubtype"] = "PERSON"

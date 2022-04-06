@@ -103,7 +103,7 @@ def test_map_deputy_subtype_with_examples():
                 "surname": None,
                 "salutation": None,
                 "othernames": None,
-                "organisationname": "Big Company",
+                "organisationname": "Velocipede Big Company",
                 "deputysubtype": "ORGANISATION",
             },
             {
@@ -113,7 +113,7 @@ def test_map_deputy_subtype_with_examples():
                 "surname": None,
                 "salutation": None,
                 "othernames": None,
-                "organisationname": None,
+                "organisationname": "Mandragorian",
                 "deputysubtype": "ORGANISATION",
             },
             {
@@ -123,7 +123,7 @@ def test_map_deputy_subtype_with_examples():
                 "surname": None,
                 "salutation": None,
                 "othernames": None,
-                "organisationname": "Andalusia",
+                "organisationname": "Biffo Peregrin Andalusia",
                 "deputysubtype": "ORGANISATION",
             },
             {
@@ -133,7 +133,7 @@ def test_map_deputy_subtype_with_examples():
                 "surname": None,
                 "salutation": None,
                 "othernames": None,
-                "organisationname": "Baragron Corp",
+                "organisationname": "Bargastofon Baragron Corp",
                 "deputysubtype": "ORGANISATION",
             },
             {
@@ -143,7 +143,7 @@ def test_map_deputy_subtype_with_examples():
                 "surname": None,
                 "salutation": None,
                 "othernames": None,
-                "organisationname": "Humalalala Inc",
+                "organisationname": "Bargastofon Humalalala Inc",
                 "deputysubtype": "ORGANISATION",
             },
         ]
