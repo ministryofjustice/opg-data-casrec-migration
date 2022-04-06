@@ -1450,5 +1450,44 @@
     },
     "LT8": {
         "sirius_mapping": 3945
+    },
+    "C41": {
+        "sirius_mapping": 8631
+    },
+    "C52": {
+        "sirius_mapping": 743
+    },
+    "C94": {
+        "sirius_mapping": 1145
+    },
+    "O24": {
+        "sirius_mapping": 2639
+    },
+    "R62": {
+        "sirius_mapping": 1003
+    },
+    "R96": {
+        "sirius_mapping": 1980
+    },
+    "S02": {
+        "sirius_mapping": 8764
+    },
+    "S03": {
+        "sirius_mapping": 8765
+    },
+    "S06": {
+        "sirius_mapping": 8766
+    },
+    "S18": {
+        "sirius_mapping": 8664
+    },
+    "S36": {
+        "sirius_mapping": 8767
+    },
+    "S52": {
+        "sirius_mapping": 8763
+    },
+    "S82": {
+        "sirius_mapping": 7123
     }
 }
