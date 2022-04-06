@@ -36,7 +36,7 @@ INSERT INTO {casrec_schema}.exceptions_deputy_addresses(
                 select p.id as person_id, dl."Dep Addr No"
                 from {casrec_schema}.deplink dl
                 inner join {casrec_schema}.deputy d on d."Deputy No" = dl."Deputy No"
-                inner join {target_schema}.persons p on CAST(p.deputynumber AS text) = d."Deputy No"
+                inner join {target_schema}.persons p on CAST(p.deputynumber AS INT) = CAST(d."Deputy No" AS INT)
                 WHERE dl."Main Addr" = '1'
                 AND d."Dep Type" IN ('20', '21', '22', '24', '25', '26', '27', '28', '29', '63', '71')
 
@@ -45,7 +45,7 @@ INSERT INTO {casrec_schema}.exceptions_deputy_addresses(
                 SELECT p.id AS person_id, ds."Dep Addr No"
                 FROM {casrec_schema}.deputy d
                 INNER JOIN {target_schema}.persons p
-                ON d."Deputy No" = CAST(p.deputynumber AS text)
+                ON CAST(d."Deputy No" AS INT) = CAST(p.deputynumber AS INT)
                 INNER JOIN {casrec_schema}.deputyship ds
                 ON d."Deputy No" = ds."Deputy No"
                 WHERE d."Dep Type" NOT IN ('20', '21', '22', '24', '25', '26', '27', '28', '29', '63', '71')
