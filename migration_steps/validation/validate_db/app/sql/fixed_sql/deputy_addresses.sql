@@ -39,6 +39,7 @@ INSERT INTO {casrec_schema}.exceptions_deputy_addresses(
                 inner join {target_schema}.persons p on CAST(p.deputynumber AS INT) = CAST(d."Deputy No" AS INT)
                 WHERE dl."Main Addr" = '1'
                 AND d."Dep Type" IN ('20', '21', '22', '24', '25', '26', '27', '28', '29', '63', '71')
+                AND p.clientsource = '{client_source}'
 
                 UNION
 
@@ -49,6 +50,7 @@ INSERT INTO {casrec_schema}.exceptions_deputy_addresses(
                 INNER JOIN {casrec_schema}.deputyship ds
                 ON d."Deputy No" = ds."Deputy No"
                 WHERE d."Dep Type" NOT IN ('20', '21', '22', '24', '25', '26', '27', '28', '29', '63', '71')
+                AND p.clientsource = '{client_source}'
             ) da
         ) da2
         ON {casrec_schema}.deputy_address."Dep Addr No" = da2."Dep Addr No"
