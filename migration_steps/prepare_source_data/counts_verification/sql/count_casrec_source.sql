@@ -97,7 +97,9 @@ UPDATE {count_schema}.counts SET {working_column} =
     -- deputy PRO
     SELECT COUNT(*) FROM (
         SELECT DISTINCT
-            dl.casrec_row_id dl_id
+            LOWER(TRIM(COALESCE(d."Email", ''))),
+            LOWER(TRIM(COALESCE(d."Dep Surname", ''))),
+            LOWER(TRIM(COALESCE(add."Dep Postcode", '')))
         FROM {casrec_schema}.deplink dl
         INNER JOIN {count_schema}.casrec_deps cd
             ON dl."Deputy No" = cd."Deputy No"
