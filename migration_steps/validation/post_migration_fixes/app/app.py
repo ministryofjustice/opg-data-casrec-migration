@@ -126,6 +126,21 @@ def copy_mapping_tables(casrec_mapping_schema):
         to_table=f"{casrec_mapping_schema}.annual_report_logs",
     )
 
+    # Mapping from Sirius annual_report_logs ID to casrec_row_id
+    # \copy (SELECT casrec_row_id, id FROM integration.annual_report_logs where casrec_table_name = 'account')
+    # To 'arl.csv' With CSV DELIMITER ',' HEADER
+    # \copy casrec_mapping_p2.annual_report_logs_casrec_id(id, casrec_row_id) FROM 'arl.csv' DELIMITER ',' CSV HEADER
+    _copy(
+        create_sql=f"""
+        CREATE TABLE IF NOT EXISTS {casrec_mapping_schema}.annual_report_logs_casrec_id (
+            id int PRIMARY KEY,
+            casrec_row_id varchar
+        )
+        """,
+        from_sql="SELECT casrec_row_id, id FROM integration.annual_report_logs where casrec_table_name = 'account'",
+        to_table=f"{casrec_mapping_schema}.annual_report_logs_casrec_id",
+    )
+
 
 def delete_schema(schema_name, cursor, conn):
     sql = f"""
