@@ -107,8 +107,12 @@ SELECT * FROM (
                 FROM {pmf_schema}.annual_report_logs_missing
                 EXCEPT
                 -- Migrated cases with a pending annual report (after this pmf)
-                SELECT status, reviewstatus, order_id, client_id
-                FROM {pmf_schema}.annual_report_logs_inserts
+                SELECT arli.status, arli.reviewstatus, arli.order_id, arli.client_id
+                FROM {pmf_schema}.annual_report_logs_inserts arli
+                INNER JOIN annual_report_logs arl
+                ON arli.order_id = arl.order_id
+                AND arli.client_id = arl.client_id
+                AND arl.status = 'PENDING'
             ) a
         ) AS count_diff,
         (
@@ -117,7 +121,11 @@ SELECT * FROM (
         ) AS count_missing,
         (
             SELECT COUNT(*)
-            FROM {pmf_schema}.annual_report_logs_inserts
+            FROM {pmf_schema}.annual_report_logs_inserts arli
+            INNER JOIN annual_report_logs arl
+            ON arli.order_id = arl.order_id
+            AND arli.client_id = arl.client_id
+            AND arl.status = 'PENDING'
         ) AS count_added
 ) b
 WHERE count_diff != 0
