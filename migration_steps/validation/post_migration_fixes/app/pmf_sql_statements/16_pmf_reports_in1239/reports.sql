@@ -4,7 +4,7 @@ CREATE SCHEMA IF NOT EXISTS {pmf_schema};
 
 WITH relevant_orders AS (
     SELECT DISTINCT
-        p.caserecnumber,
+        c.caserecnumber,
         CAST(c.orderdate AS date) AS orderdate,
         c.id AS order_id,
         c.client_id AS client_id
