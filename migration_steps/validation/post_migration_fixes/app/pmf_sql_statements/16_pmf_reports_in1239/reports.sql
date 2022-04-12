@@ -14,7 +14,7 @@ WITH relevant_orders AS (
     LEFT JOIN cases c
     ON c.client_id = p.id
     WHERE p.type = 'actor_client'
-    AND p.clientsource IN ('CASRECMIGRATION', 'CASRECMIGRATION_P2')
+    AND p.clientsource LIKE 'CASRECMIGRATION%'
     AND c.orderstatus = 'ACTIVE'
     AND arl.id IS NULL
 ),
@@ -73,7 +73,7 @@ FROM (
     LEFT JOIN cases c
         ON c.client_id = p.id
     WHERE p.type = 'actor_client'
-    AND p.clientsource IN ('CASRECMIGRATION', 'CASRECMIGRATION_P2')
+    AND p.clientsource LIKE 'CASRECMIGRATION%'
     AND c.orderstatus = 'ACTIVE'
     AND arl.id IS NULL
 ) active_orders_without_arls;
