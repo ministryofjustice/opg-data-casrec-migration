@@ -3,29 +3,29 @@
 CREATE SCHEMA IF NOT EXISTS {pmf_schema};
 
 WITH relevant_orders AS (
-    SELECT
-        o."Case",
-        o."Made Date",
+    SELECT DISTINCT
+        p.caserecnumber,
+        CAST(c.orderdate AS date) AS orderdate,
         c.id AS order_id,
-        c.client_id as client_id
-    FROM {casrec_schema}.order o
-    INNER JOIN {casrec_mapping}.cases cmc
-    ON o."Order No" = cmc."Order No"
-    INNER JOIN cases c
-    ON cmc.sirius_id = c.id
-    LEFT JOIN {casrec_schema}.account a
-    ON o."Case" = a."Case"
-    WHERE o."Ord Stat" = 'Active'
-    AND a."Case" IS NULL
-    AND c.type = 'order'
+        c.client_id AS client_id
+    FROM persons p
+    LEFT JOIN annual_report_logs arl
+    ON p.id = arl.client_id
+    LEFT JOIN cases c
+    ON c.client_id = p.id
+    WHERE p.type = 'actor_client'
+    AND p.clientsource IN ('CASRECMIGRATION', 'CASRECMIGRATION_P2')
+    AND c.orderstatus = 'ACTIVE'
+    AND arl.id IS NULL
 ),
 pa_pro_cases_with_active_deputies AS (
-    SELECT DISTINCT ds."Case"
-    FROM {casrec_schema}.deputy d
-    INNER JOIN {casrec_schema}.deputyship ds
-    ON d."Deputy No" = ds."Deputy No"
-    WHERE d."Dep Type" IN ('20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '60', '73', '90')
-    AND d."Stat" = '1'
+    SELECT DISTINCT c.caserecnumber
+    FROM order_deputy od
+    INNER JOIN cases c
+    ON od.order_id = c.id
+    WHERE od.statusoncase = 'ACTIVE'
+    AND od.statusoncaseoverride IS NULL
+    AND od.deputytype IN ('PA', 'PRO')
 )
 SELECT *
 INTO {pmf_schema}.annual_report_logs_inserts
@@ -34,18 +34,18 @@ FROM (
         'PENDING' AS status,
         'NO_REVIEW' AS reviewstatus,
         0 AS numberofchaseletters,
-        CAST(ro."Made Date" AS date) + INTERVAL '1 day' AS reportingperiodstartdate,
-        CAST(ro."Made Date" AS date) + INTERVAL '366 days' AS reportingperiodenddate,
+        ro.orderdate + INTERVAL '1 day' AS reportingperiodstartdate,
+        ro.orderdate + INTERVAL '366 days' AS reportingperiodenddate,
         -- duedate = reportingperiodenddate + 21 days for Lay (shifting to next working day if on a weekend),
         -- reportingperiodenddate + 40 working days for PA/PRO
         (
             CASE
                 WHEN
-                    ro."Case" IN (SELECT "Case" FROM pa_pro_cases_with_active_deputies)
+                    ro.caserecnumber IN (SELECT caserecnumber FROM pa_pro_cases_with_active_deputies)
                 THEN
-                    {casrec_mapping}.transf_add_business_days(CAST((CAST(ro."Made Date" AS date) + INTERVAL '366 days') AS date), 40)
+                    {casrec_mapping}.transf_add_business_days(CAST((ro.orderdate + INTERVAL '366 days') AS date), 40)
                 ELSE
-                    {casrec_mapping}.transf_calculate_duedate(CAST((CAST(ro."Made Date" AS date) + INTERVAL '366 days') AS date))
+                    {casrec_mapping}.transf_calculate_duedate(CAST((ro.orderdate + INTERVAL '366 days') AS date))
             END
         ) AS duedate,
         ro.order_id AS order_id,
@@ -62,24 +62,20 @@ FROM (
 SELECT *
 INTO {pmf_schema}.annual_report_logs_missing
 FROM (
-    SELECT
+    SELECT DISTINCT
         'PENDING' AS status,
         'NO_REVIEW' AS reviewstatus,
         c.id AS order_id,
-        c.client_id as client_id
-    FROM {casrec_schema}.order o
-    INNER JOIN {casrec_mapping}.cases cmc
-    ON o."Order No" = cmc."Order No"
-    INNER JOIN cases c
-    ON cmc.sirius_id = c.id
+        c.client_id AS client_id
+    FROM persons p
     LEFT JOIN annual_report_logs arl
-    ON cmc.sirius_id = arl.order_id
-    LEFT JOIN {casrec_schema}.account a
-    ON o."Case" = a."Case"
-    WHERE o."Ord Stat" = 'Active'
-    AND a."Case" IS NULL
+        ON p.id = arl.client_id
+    LEFT JOIN cases c
+        ON c.client_id = p.id
+    WHERE p.type = 'actor_client'
+    AND p.clientsource IN ('CASRECMIGRATION', 'CASRECMIGRATION_P2')
+    AND c.orderstatus = 'ACTIVE'
     AND arl.id IS NULL
-    AND c.type = 'order'
 ) active_orders_without_arls;
 
 --@update_tag
