@@ -3,8 +3,10 @@
 --@setup_tag
 CREATE SCHEMA IF NOT EXISTS {pmf_schema};
 
-SELECT
+SELECT DISTINCT
 "Case",
+"casrec_row_id",
+"End Date",
 "Further Date1",
 "Further Date2",
 "Further Date3",
@@ -25,6 +27,7 @@ FROM
     SELECT
     "Case",
     "casrec_row_id",
+    "End Date",
     CASE
     WHEN "Further Date1" != '' and "Rcvd Date1" = ''
     OR "Further Date2" != '' and "Rcvd Date2" = ''
@@ -49,11 +52,12 @@ FROM
     from {casrec_schema}.account
     where "Review Date" != ''
 ) as account_records
-INNER JOIN {casrec_mapping}.annual_report_logs_casrec_id map
-ON cast(map.casrec_row_id as int) = cast(account_records."casrec_row_id" as int)
-INNER JOIN annual_report_logs arl on arl.id = map.id
-INNER JOIN annual_report_lodging_details arld on arld.annual_report_log_id = arl.id
-INNER JOIN persons p on p.id = arl.client_id
+INNER JOIN persons p on p.caserecnumber = account_records."Case"
+INNER JOIN annual_report_logs arl
+ON CAST(account_records."End Date" AS DATE) = CAST(arl.reportingperiodenddate AS DATE)
+AND account_records."Case" = p.caserecnumber
+AND p.id = arl.client_id
+INNER JOIN annual_report_lodging_details arld ON arld.annual_report_log_id = arl.id
 WHERE account_records.mismatch = 1
 AND p.clientsource = '{client_source}';
 
@@ -66,7 +70,8 @@ INNER JOIN {pmf_schema}.annual_report_lodging_details_updates u ON arld.id = u.a
 --@update_tag
 UPDATE annual_report_lodging_details arld SET resubmitteddate = u.expected_value
 FROM {pmf_schema}.annual_report_lodging_details_updates u
-WHERE u.arld_id = arld.id;
+WHERE u.arld_id = arld.id
+and arld.resubmitteddate is null;
 
 --@validate_tag
 SELECT arld_id, cast(expected_value as date)
