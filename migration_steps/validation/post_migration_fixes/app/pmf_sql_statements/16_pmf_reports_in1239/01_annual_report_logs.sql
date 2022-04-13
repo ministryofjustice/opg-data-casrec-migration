@@ -19,6 +19,7 @@ WITH relevant_orders AS (
     AND c.casesubtype = 'pfa'
     AND LOWER(c.type) = 'order'
     AND arl.id IS NULL
+    AND c.orderdate >= CAST('2021-03-04' AS date)
 ),
 pa_pro_cases_with_active_deputies AS (
     SELECT DISTINCT c.caserecnumber
@@ -80,6 +81,7 @@ FROM (
     AND arl.id IS NULL
     AND c.type = 'order'
     AND c.casesubtype = 'pfa'
+    AND c.orderdate >= CAST('2021-03-04' AS date)
 ) active_orders_without_arls;
 
 --@update_tag
