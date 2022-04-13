@@ -78,6 +78,8 @@ FROM (
     AND p.clientsource LIKE 'CASRECMIGRATION%'
     AND c.orderstatus = 'ACTIVE'
     AND arl.id IS NULL
+    AND c.type = 'order'
+    AND c.casesubtype = 'pfa'
 ) active_orders_without_arls;
 
 --@update_tag

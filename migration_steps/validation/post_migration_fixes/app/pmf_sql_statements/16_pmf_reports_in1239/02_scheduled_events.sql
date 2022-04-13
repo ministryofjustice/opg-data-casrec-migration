@@ -33,7 +33,7 @@ FROM {pmf_schema}.scheduled_events_inserts_audit seia;
 
 --@validate_tag
 -- Check that scheduled events have been created for the PENDING reports
-SELECT ar.id
+SELECT arl.id
 FROM {pmf_schema}.annual_report_logs_inserts_audit arlia
 INNER JOIN annual_report_logs arl ON arl.id = arlia.id
 LEFT JOIN scheduled_events se ON se.event->'payload'->>'reportingPeriodId' = arlia.id::text
