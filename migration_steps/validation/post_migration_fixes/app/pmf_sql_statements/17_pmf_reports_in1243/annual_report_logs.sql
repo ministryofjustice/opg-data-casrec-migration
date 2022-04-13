@@ -9,8 +9,8 @@ FROM (
         p.caserecnumber,
         arl.id AS arl_id,
         reportingperiodenddate,
-        (reportingperiodenddate - INTERVAL '365 DAY')::DATE AS startdate_expected,
-        (reportingperiodenddate::DATE - (reportingperiodenddate - INTERVAL '365 DAY')::DATE) diff_days_expected,
+        (reportingperiodenddate - INTERVAL '364 DAY')::DATE AS startdate_expected,
+        (reportingperiodenddate::DATE - (reportingperiodenddate - INTERVAL '364 DAY')::DATE) diff_days_expected,
         reportingperiodstartdate AS startdate_actual,
         (reportingperiodenddate::DATE - reportingperiodstartdate::DATE) diff_days_actual
     FROM annual_report_logs arl
