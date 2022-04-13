@@ -36,8 +36,8 @@ FROM (
         'PENDING' AS status,
         'NO_REVIEW' AS reviewstatus,
         0 AS numberofchaseletters,
-        ro.orderdate + INTERVAL '1 day' AS reportingperiodstartdate,
-        ro.orderdate + INTERVAL '366 days' AS reportingperiodenddate,
+        ro.orderdate AS reportingperiodstartdate,
+        ro.orderdate + INTERVAL '364 days' AS reportingperiodenddate,
         -- duedate = reportingperiodenddate + 21 days for Lay (shifting to next working day if on a weekend),
         -- reportingperiodenddate + 40 working days for PA/PRO
         (
@@ -45,9 +45,9 @@ FROM (
                 WHEN
                     ro.caserecnumber IN (SELECT caserecnumber FROM pa_pro_cases_with_active_deputies)
                 THEN
-                    {casrec_mapping}.transf_add_business_days(CAST((ro.orderdate + INTERVAL '366 days') AS date), 40)
+                    {casrec_mapping}.transf_add_business_days(CAST((ro.orderdate + INTERVAL '364 days') AS date), 40)
                 ELSE
-                    {casrec_mapping}.transf_calculate_duedate(CAST((ro.orderdate + INTERVAL '366 days') AS date))
+                    {casrec_mapping}.transf_calculate_duedate(CAST((ro.orderdate + INTERVAL '364 days') AS date))
             END
         ) AS duedate,
         ro.order_id AS order_id,
