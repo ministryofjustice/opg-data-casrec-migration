@@ -16,6 +16,8 @@ WITH relevant_orders AS (
     WHERE p.type = 'actor_client'
     AND p.clientsource LIKE 'CASRECMIGRATION%'
     AND c.orderstatus = 'ACTIVE'
+    AND c.casesubtype = 'pfa'
+    AND LOWER(c.type) = 'order'
     AND arl.id IS NULL
 ),
 pa_pro_cases_with_active_deputies AS (
