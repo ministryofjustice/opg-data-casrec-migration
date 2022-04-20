@@ -51,6 +51,7 @@ FROM (
 
 -- order_deputies to insert
 SELECT
+    nextval('order_deputy_id_seq') as order_deputy_id,
     mo.person_id,
     mo.order_id,
     od.deputy_id,
@@ -83,7 +84,7 @@ INSERT INTO order_deputy (
 SELECT
     order_id,
     deputy_id,
-    nextval('order_deputy_id_seq'),
+    order_deputy_id,
     deputytype,
     statusoncase,
     relationshiptoclient,
