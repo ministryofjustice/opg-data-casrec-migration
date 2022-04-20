@@ -97,3 +97,30 @@ FROM {pmf_schema}.order_deputy_inserts;
 
 -- Some checking SQL.. this isn't validation
 --@validate_tag
+SELECT
+    order_id,
+    deputy_id,
+    order_deputy_id,
+    deputytype,
+    statusoncase,
+    relationshiptoclient,
+    relationshipother,
+    maincorrespondent,
+    statusoncaseoverride,
+    statuschangedate,
+    statusnotes
+FROM {pmf_schema}.order_deputy_inserts
+EXCEPT
+SELECT
+    order_id,
+    deputy_id,
+    id,
+    deputytype,
+    statusoncase,
+    relationshiptoclient,
+    relationshipother,
+    maincorrespondent,
+    statusoncaseoverride,
+    statuschangedate,
+    statusnotes
+FROM order_deputy;
