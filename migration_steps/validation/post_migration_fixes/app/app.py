@@ -127,6 +127,17 @@ def copy_mapping_tables(casrec_mapping_schema):
     )
 
 
+def load_functions(casrec_mapping_schema):
+    this_dir = os.path.dirname(__file__)
+    functions_file_path = os.path.join(this_dir, "pmf_sql_statements/functions.sql")
+    with open(functions_file_path, "r") as functions_file:
+        functions_sql = functions_file.read()
+        functions_sql = functions_sql.replace("{casrec_mapping}", casrec_mapping_schema)
+
+        with target_engine.connect() as conn:
+            conn.execute(sqlalchemy.text(functions_sql))
+
+
 def delete_schema(schema_name, cursor, conn):
     sql = f"""
         DROP SCHEMA IF EXISTS {schema_name} CASCADE;
@@ -141,9 +152,10 @@ def delete_schema(schema_name, cursor, conn):
 def _execute_sql(cursor, statement):
     try:
         cursor.execute(statement)
-    except Exception:
+    except Exception as e:
         log.error("Exception occurred while running SQL script:")
         log.error(statement + "\n")
+        log.exception(e)
 
 
 def run_post_migration_fix(script_path, dump_sql):
@@ -296,6 +308,7 @@ def main(script_path=None, dump_sql=False):
     log.info(log_title(message="Run Post Migration Fixes"))
 
     copy_mapping_tables(casrec_mapping_schema)
+    load_functions(casrec_mapping_schema)
 
     if script_path is None:
         run_post_migration_fixes()
