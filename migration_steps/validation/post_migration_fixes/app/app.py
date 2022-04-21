@@ -158,16 +158,13 @@ def _execute_sql(cursor, statement):
         log.exception(e)
 
 
-def run_post_migration_fix(script_path, dump_sql):
+def run_post_migration_fix(script_path, schema_name, dump_sql):
     """
     Run one post-migration fix script
 
     :param script_path: SQL script file to run
     :param dump_sql: True to print SQL to screen without running it
     """
-    schema_name = (
-        f'{get_pmf_schema_name(script_path)}{config.migration_phase["suffix"]}'
-    )
 
     statements = {
         "setup": get_statements(script_path, "setup", schema_name),
@@ -186,12 +183,9 @@ def run_post_migration_fix(script_path, dump_sql):
         return statements
 
     log.info(f"===== {schema_name} =====")
-
     connection_string = target_db_conn_string
     conn = psycopg2.connect(connection_string)
     cursor = conn.cursor()
-    log.info(f"Deleting existing schema")
-    delete_schema(schema_name, cursor, conn)
 
     log.info(f"Running Setup Statements")
     for statement in statements["setup"]:
@@ -260,8 +254,25 @@ def run_post_migration_fixes():
     )
     sql_scripts = sorted(sql_scripts)
 
+    last_script_pr_tag = None
+
+    connection_string = target_db_conn_string
+
     for script_path in sql_scripts:
-        run_post_migration_fix(script_path, dump_sql=False)
+        conn = psycopg2.connect(connection_string)
+        cursor = conn.cursor()
+        schema_name = (
+            f'{get_pmf_schema_name(script_path)}{config.migration_phase["suffix"]}'
+        )
+        if last_script_pr_tag != get_pr(script_path):
+            delete_schema(schema_name, cursor, conn)
+        last_script_pr_tag = get_pr(script_path)
+        cursor.close()
+        run_post_migration_fix(script_path, schema_name, dump_sql=False)
+
+
+def get_pr(script_path):
+    return str(get_pmf_schema_name(script_path).split("_")[-1])
 
 
 def get_statements(path, tag_prefix, pmf_schema):
