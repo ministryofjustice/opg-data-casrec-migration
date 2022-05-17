@@ -1,16 +1,13 @@
 endpoint,entity_ref,json_locator,test_purpose,api_response
 /api/v1/orders/{id},13572211,orderStatus.handle,orderStatus_,ACTIVE
-/api/v1/orders/{id},11466112,orderStatus.handle,orderStatus_,CLOSED
 /api/v1/orders/{id},13572211,caseSubtype,caseSubtype_pfa1,pfa
 /api/v1/orders/{id},95056617,caseSubtype,caseSubtype_hw2,hw
-/api/v1/orders/{id},11466112,caseSubtype,caseSubtype_pfa26,pfa
 /api/v1/orders/{id},13547686,caseSubtype,caseSubtype_pfa40,pfa
 /api/v1/orders/{id},12779384,caseSubtype,caseSubtype_pfa41,pfa
 /api/v1/orders/{id},13482478,caseSubtype,caseSubtype_pfa43,pfa
 /api/v1/orders/{id},13448593,caseSubtype,caseSubtype_pfa45,pfa
 /api/v1/orders/{id},13572211,orderSubtype.handle,orderSubtype_dep1,NEW DEPUTY
 /api/v1/orders/{id},95056617,orderSubtype.handle,orderSubtype_dep2,NEW DEPUTY
-/api/v1/orders/{id},11466112,orderSubtype.handle,orderSubtype_sup,SUPPLEMENTARY
 /api/v1/orders/{id},13547686,orderSubtype.handle,orderSubtype_replace,REPLACEMENT
 /api/v1/orders/{id},12779384,orderSubtype.handle,orderSubtype_interim,INTERIM ORDER
 /api/v1/orders/{id},13482478,orderSubtype.handle,orderSubtype_direction,DIRECTION

@@ -11,7 +11,7 @@ endpoint,entity_ref,json_locator,test_purpose,api_response
 /api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=5,10096406,tasks.[*].type,type_VIRD,VIRD
 /api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=5,10149066,tasks.[*].type,type_FCSIC,FCSIC
 /api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=5,98141395,tasks.[*].type,type_FCQS,FCQS
-/api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=5,95032391,tasks.[*].type,type_CPOD,CPOD
+/api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=5,95032391,tasks.[*].type,type_CPOD,CWGN
 /api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=5,10259249,tasks.[*].type,type_FCCUC,FCCUC
 /api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=5,10246308,tasks.[*].type,type_ORRE,ORRE
 /api/v1/persons/{id}/tasks?filter=status:Not+started&sort=dueDate:asc&limit=5,10292742,tasks.[*].type,type_RERR,RERR

@@ -1514,12 +1514,12 @@ jobs:
       - run:
           name: Run light touch api tests task
           command: ecs-runner -task migration-light-touch-api-tests -timeout << parameters.timeout >>
-      - run:
-          name: Run sirius side post migration fixes
-          command: ecs-runner -task post-casrec-migration-script-update-report-status -timeout << parameters.timeout >>
-      - run:
-          name: Run post migration fixes
-          command: ecs-runner -task migration-post-migration-fixes -timeout << parameters.timeout >>
+#      - run:
+#          name: Run sirius side post migration fixes
+#          command: ecs-runner -task post-casrec-migration-script-update-report-status -timeout << parameters.timeout >>
+#      - run:
+#          name: Run post migration fixes
+#          command: ecs-runner -task migration-post-migration-fixes -timeout << parameters.timeout >>
       - notififications/notify_env_vars
       - notififications/notify_if_fail
 

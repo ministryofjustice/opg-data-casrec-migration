@@ -39,7 +39,7 @@ class DueDateCalculator:
     # "Stat" = '1' denotes an active deputy
     PA_PRO_CASES_WITH_ACTIVE_DEPUTIES_QUERY = """
         SELECT DISTINCT CAST(ds."Case" AS text) AS case
-        FROM casrec_csv_p2.deputy d
+        FROM {source_schema}.deputy d
         INNER JOIN {source_schema}.deputyship ds
         ON d."Deputy No" = ds."Deputy No"
         WHERE d."Dep Type" IN {deputy_types}
