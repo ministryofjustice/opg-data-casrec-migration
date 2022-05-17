@@ -44,13 +44,13 @@ def corref_with_filter_conditions(correfs):
     sql = f"""
         INSERT INTO {config.schemas["pre_transform"]}.cases_to_filter_out (caserecnumber, notes)
         select "Case", 'corref_conditions'
-        from casrec_csv_p2.pat p
+        from {config.schemas["pre_transform"]}.pat p
         where p."Corref" IN ({",".join([f"'{corref}'" for corref in correfs])})
         and p."Case" NOT IN (
             select distinct p."Case"
-            from casrec_csv_p2.pat p
-            inner join casrec_csv_p2.deputyship dp on p."Case" = dp."Case"
-            inner join casrec_csv_p2.order o on o."Order No" = dp."Order No"
+            from {config.schemas["pre_transform"]}.pat p
+            inner join {config.schemas["pre_transform"]}.deputyship dp on p."Case" = dp."Case"
+            inner join {config.schemas["pre_transform"]}.order o on o."Order No" = dp."Order No"
             where p."Corref" IN ({",".join([f"'{corref}'" for corref in correfs])})
             and o."Ord Type" in ('1', '2', '40', '41')
         );
@@ -119,7 +119,8 @@ def main(verbose, correfs, clear):
         filtered_conditional_correfs = list(
             set(conditional_correfs).intersection(filtered_correfs)
         )
-        corref_with_filter_conditions(filtered_conditional_correfs)
+        if len(filtered_conditional_correfs) > 0:
+            corref_with_filter_conditions(filtered_conditional_correfs)
     else:
         log.info("No Corref filtering requested")
 
