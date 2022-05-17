@@ -174,7 +174,6 @@ def run_post_migration_fix(script_path, schema_name, dump_sql):
     }
 
     # early return if dumping statements to screen
-    dump_sql = True
     if dump_sql:
         log.info("Dumping SQL to stdout")
         for key, statement_group in statements.items():

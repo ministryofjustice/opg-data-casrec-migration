@@ -841,7 +841,7 @@
             "alias": "",
             "requires_transformation": "",
             "lookup_table": "",
-            "default_value": "CASRECMIGRATION_P2",
+            "default_value": "CASRECMIGRATION_P3",
             "calculated": "",
             "additional_columns": ""
         },

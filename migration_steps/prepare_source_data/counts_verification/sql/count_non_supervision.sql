@@ -137,16 +137,6 @@ SET {working_column} = (
 )
 WHERE supervision_table = 'caseitem_note';
 
--- caseitem_paymenttype
-UPDATE {count_schema}.counts
-SET {working_column} = (
-    SELECT COUNT(*)
-    FROM caseitem_paymenttype cpt
-    INNER JOIN {count_schema}.lpa_cases c
-        ON cpt.caseitem_id = c.id
-)
-WHERE supervision_table = 'caseitem_paymenttype';
-
 -- caseitem_task
 UPDATE {count_schema}.counts
 SET {working_column} = (

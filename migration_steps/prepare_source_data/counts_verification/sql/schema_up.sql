@@ -17,7 +17,6 @@ VALUES
 ('case_timeline'),
 ('caseitem_document'),
 ('caseitem_note'),
-('caseitem_paymenttype'),
 ('caseitem_queue'),
 ('caseitem_task'),
 ('caseitem_warning'),
