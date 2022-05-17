@@ -57,12 +57,13 @@ def amend_dev_assignees(db_engine):
         479,
         480,
     ]
+    role_permissions = str('{"OPG User":"OPG User"}')
     teams = [
-        f"({team_id}, 'Migration Team {team_id}', 'assignee_team', 'ALLOCATIONS')"
+        f"({team_id}, 'Migration Team {team_id}', 'assignee_team', 'ALLOCATIONS', '{role_permissions}')"
         for team_id in team_ids
     ]
     users = [
-        f"({user_id}, 'Migration User', 'assignee_user', null)"
+        f"({user_id}, 'Migration User', 'assignee_user', null, '{role_permissions}')"
         for user_id in assignee_ids
         if user_id not in team_ids
     ]
@@ -74,7 +75,7 @@ def amend_dev_assignees(db_engine):
     ]
 
     sql = f"""
-        INSERT INTO public.assignees (id, name, type, teamtype)
+        INSERT INTO public.assignees (id, name, type, teamtype, roles)
         VALUES {",".join(assignees)}
         ON CONFLICT (id) DO UPDATE
             SET name = excluded.name,
@@ -91,6 +92,23 @@ def amend_dev_assignees(db_engine):
     except Exception as e:
         log.error(
             f"Unable to insert/update assignees in Sirius DB",
+            extra={
+                "error": format_error_message(e=e),
+            },
+        )
+
+    # Sadly there is a default migration user that we don't create that needs updating also
+    sql = f"""
+        UPDATE public.assignees SET roles = '{role_permissions}'
+        WHERE name = 'Migration User'
+        AND roles IS NULL;
+    """
+
+    try:
+        db_engine.execute(sql)
+    except Exception as e:
+        log.error(
+            f"Unable to update roles on assignees in Sirius DB",
             extra={
                 "error": format_error_message(e=e),
             },
