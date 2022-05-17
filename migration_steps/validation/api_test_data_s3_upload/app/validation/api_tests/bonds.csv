@@ -2,7 +2,6 @@ endpoint,entity_ref,json_locator,test_purpose,api_response
 /api/v1/orders/{id},10207131,bond.bondProvider.name,provider_NoFid,DBS|DBS|OTHER
 /api/v1/orders/{id},13560544,bond.bondProvider.name,provider_Sec,OTHER
 /api/v1/orders/{id},10243489,bond.bondProvider.name,provider_ALBION,OTHER|OTHER
-/api/v1/orders/{id},13539594,bond.bondProvider.name,provider_CGA,OTHER
 /api/v1/orders/{id},1126792T,bond.bondProvider.name,provider_CO-OP,MARSH|OTHER|OTHER
 /api/v1/orders/{id},10215183,bond.bondProvider.name,provider_CO-OP,OTHER
 /api/v1/orders/{id},10064669,bond.bondProvider.name,provider_Deputy,DBS|MARSH
@@ -25,7 +24,6 @@ endpoint,entity_ref,json_locator,test_purpose,api_response
 /api/v1/orders/{id},10207131,bond.companyName,provider_NoFid,Deputy Bond Services (DBS)|Deputy Bond Services (DBS)|No Fidelity CO. code input at this time.
 /api/v1/orders/{id},13560544,bond.companyName,provider_Sec,Security dispensed with
 /api/v1/orders/{id},10243489,bond.companyName,provider_ALBION,ALBION INSURANCE CO LTD|Security dispensed with
-/api/v1/orders/{id},13539594,bond.companyName,provider_CGA,CGA INSURANCE BROKERS LTD
 /api/v1/orders/{id},1126792T,bond.companyName,provider_CO-OP,CO-OPERATIVE INSURANCE SOCIETY LTD|CO-OPERATIVE INSURANCE SOCIETY LTD|Marsh Brokers
 /api/v1/orders/{id},10215183,bond.companyName,provider_CO-OP,CO-OPERATIVE INSURANCE SOCIETY LTD
 /api/v1/orders/{id},10064669,bond.companyName,provider_DBS,Deputy Bond Services (DBS)|Marsh Brokers

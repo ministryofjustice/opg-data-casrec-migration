@@ -28,7 +28,6 @@ endpoint,entity_ref,json_locator,test_purpose,api_response
 /api/v1/clients/{id},10004637,salutation,salutation_Professor,Professor
 /api/v1/clients/{id},10004741,salutation,salutation_Lord,Lord
 /api/v1/clients/{id},10004879,salutation,salutation_Right_Honourable,Right Honourable
-/api/v1/clients/{id},1005934T,salutation,salutation_Major,Major
 /api/v1/clients/{id},10005243,salutation,salutation_Father,Father
 /api/v1/clients/{id},10005433,salutation,salutation_Rabbi,Rabbi
 /api/v1/clients/{id},10006413,salutation,salutation_Baron,Baron
@@ -43,7 +42,6 @@ endpoint,entity_ref,json_locator,test_purpose,api_response
 /api/v1/clients/{id},10012643,salutation,salutation_Reverend_Mrs,Reverend Mrs
 /api/v1/clients/{id},10013116,salutation,salutation_Captain,Captain
 /api/v1/clients/{id},10013560,salutation,salutation_Dame,Dame
-/api/v1/clients/{id},1005934T,salutation,salutation_Major,Major
 /api/v1/clients/{id},10013583,salutation,salutation_Colonel,Colonel
 /api/v1/clients/{id},10013617,salutation,salutation_The_Authorised_Officer_for,The Authorised Officer for
 /api/v1/clients/{id},1001404T,salutation,salutation_His_Honour,His Honour
