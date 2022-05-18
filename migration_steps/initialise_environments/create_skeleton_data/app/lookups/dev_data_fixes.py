@@ -6,8 +6,11 @@ from helpers import get_lookup_dict
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, str(current_path) + "/../../shared")
-from helpers import format_error_message
+from helpers import format_error_message, get_config
 from sqlalchemy.sql import text
+
+environment = os.environ.get("ENVIRONMENT")
+config = get_config(env=environment)
 
 log = logging.getLogger("root")
 
@@ -135,6 +138,24 @@ def amend_dev_data(db_engine):
             f"Unable to amend Sirius DB: data probably already exists",
             extra={
                 "file_name": "",
+                "error": format_error_message(e=e),
+            },
+        )
+
+
+def amend_blank_correfs(db_engine):
+    sql = f"""
+           UPDATE {config.schemas["pre_transform"]}.pat
+           SET "Corref" = 'P2'
+           WHERE "Corref" = '';
+       """
+
+    try:
+        db_engine.execute(sql)
+    except Exception as e:
+        log.error(
+            f"Unable to amend blank correfs",
+            extra={
                 "error": format_error_message(e=e),
             },
         )

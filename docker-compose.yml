@@ -177,6 +177,42 @@ services:
       PGPASSWORD: api # pragma: allowlist secret
       POSTGRES_DB: api
     depends_on: [postgres-sirius]
+  postgres-sirius-post-p2-restore:
+    image: postgres:10.11
+    entrypoint: pg_restore
+    volumes: ["./sirius_db/db_snapshots:/db_snapshots"]
+    command:
+      - /db_snapshots/api-post-p2-m2.backup
+      - --clean
+      - --if-exists
+      - --host=postgres-sirius
+      - --dbname=api
+      - --username=api
+      - -v
+      - --format=custom
+    environment:
+      POSTGRES_USER: api
+      POSTGRES_PASSWORD: api # pragma: allowlist secret
+      PGPASSWORD: api # pragma: allowlist secret
+      POSTGRES_DB: api
+    depends_on: [postgres-sirius]
+  postgres-sirius-backup:
+    image: postgres:10.20
+    entrypoint: pg_dump
+    command:
+      - --host=postgres-sirius
+      - --dbname=api
+      - --username=api
+      - --file=/db_snapshots/api-post-p2-m2.backup
+      - -b
+      - --format=custom
+    volumes: ["./sirius_db/db_snapshots:/db_snapshots"]
+    environment:
+      POSTGRES_USER: api
+      POSTGRES_PASSWORD: api # pragma: allowlist secret
+      PGPASSWORD: api # pragma: allowlist secret
+      POSTGRES_DB: api
+    depends_on: [postgres-sirius]
   load_to_target:
     build:
       context: ./migration_steps

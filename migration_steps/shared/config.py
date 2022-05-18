@@ -43,10 +43,19 @@ class BaseConfig:
             "casrec_schema": "casrec_csv_p2",
             "transform_mappings": "transform_mappings_p2",
         },
+        "p3": {
+            "suffix": "_p3",
+            "migration_identifier": "CASRECMIGRATION_P3",
+            "deletions_schema": "deletions_p3",
+            "countverification_audit_schema": "countverificationaudit_p3",
+            "countverification_schema": "countverification_p3",
+            "casrec_schema": "casrec_csv_p3",
+            "transform_mappings": "transform_mappings_p3",
+        },
     }
 
     # This is where we set the actual migration phase
-    migration_phase = phase["p2"]
+    migration_phase = phase["p3"]
 
     db_config = {
         "casrec": {

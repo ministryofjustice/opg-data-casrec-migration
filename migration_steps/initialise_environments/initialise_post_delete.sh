@@ -16,7 +16,6 @@ python3 "${DIR}/delete_existing_data/app.py"
 python3 "${DIR}/counts_verification/app.py" --stage=post_delete
 python3 "${DIR}/create_stage_schema/app/app.py"
 
-
 # envcheck - skeleton data should ONLY be created on dev databases
 if [ "${ENVIRONMENT}" == "local" ] \
   || [ "${ENVIRONMENT}" == "development" ]

@@ -1508,9 +1508,9 @@ jobs:
       - run:
           name: Run response api tests task
           command: ecs-runner -task migration-response-api-tests -timeout << parameters.timeout >>
-      - run:
-          name: Run functional api tests task
-          command: ecs-runner -task migration-functional-api-tests -timeout << parameters.timeout >>
+#      - run:
+#          name: Run functional api tests task
+#          command: ecs-runner -task migration-functional-api-tests -timeout << parameters.timeout >>
       - run:
           name: Run light touch api tests task
           command: ecs-runner -task migration-light-touch-api-tests -timeout << parameters.timeout >>
@@ -1542,7 +1542,7 @@ jobs:
       - terraform/setup_ecs_runner
       - run:
           name: Reset Elasticsearch
-          command: ecs-runner -task reindex-elasticsearch-by-date -timeout 18000
+          command: ecs-runner -task reset-elasticsearch7 -timeout 18000
       - notififications/notify_env_vars
       - notififications/notify_if_fail
 
