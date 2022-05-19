@@ -259,16 +259,22 @@ def run_post_migration_fixes():
     connection_string = target_db_conn_string
 
     for script_path in sql_scripts:
-        conn = psycopg2.connect(connection_string)
-        cursor = conn.cursor()
-        schema_name = (
-            f'{get_pmf_schema_name(script_path)}{config.migration_phase["suffix"]}'
-        )
-        if last_script_pr_tag != get_pr(script_path):
-            delete_schema(schema_name, cursor, conn)
-        last_script_pr_tag = get_pr(script_path)
-        cursor.close()
-        run_post_migration_fix(script_path, schema_name, dump_sql=False)
+        schema_basename = get_pmf_schema_name(script_path)
+        pr_reference = schema_basename.split("_")[-1]
+        if pr_reference not in config.migration_phase["pmf_ignore_list"]:
+            conn = psycopg2.connect(connection_string)
+            cursor = conn.cursor()
+
+            schema_name = f'{schema_basename}{config.migration_phase["suffix"]}'
+            if last_script_pr_tag != get_pr(script_path):
+                delete_schema(schema_name, cursor, conn)
+            last_script_pr_tag = get_pr(script_path)
+            cursor.close()
+            run_post_migration_fix(script_path, schema_name, dump_sql=False)
+        else:
+            log.info(
+                f"Skipping {pr_reference} as does not apply to this phase of migration"
+            )
 
 
 def get_pr(script_path):

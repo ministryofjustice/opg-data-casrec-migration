@@ -229,24 +229,24 @@ workflows:
           requires: [migration - load sirius preproduction]
           tf_workspace: preproduction
           runner_command: migration-validation
-      - run_task:
-          name: migration - response api tests preproduction
-          requires: [migration - validation preproduction]
-          tf_workspace: preproduction
-          runner_command: migration-response-api-tests
+#      - run_task:
+#          name: migration - response api tests preproduction
+#          requires: [migration - validation preproduction]
+#          tf_workspace: preproduction
+#          runner_command: migration-response-api-tests
       - run_task:
           name: migration - light touch api tests preproduction
-          requires: [migration - response api tests preproduction]
+          requires: [migration - validation preproduction]
           tf_workspace: preproduction
           runner_command: migration-light-touch-api-tests
-      - run_task:
-          name: migration - post migration sirius side fixes preproduction
-          requires: [migration - light touch api tests preproduction]
-          tf_workspace: preproduction
-          runner_command: post-casrec-migration-script-update-report-status
+#      - run_task:
+#          name: migration - post migration sirius side fixes preproduction
+#          requires: [migration - light touch api tests preproduction]
+#          tf_workspace: preproduction
+#          runner_command: post-casrec-migration-script-update-report-status
       - run_task:
           name: migration - post migration fixes preproduction
-          requires: [migration - post migration sirius side fixes preproduction]
+          requires: [migration - light touch api tests preproduction]
           tf_workspace: preproduction
           runner_command: migration-post-migration-fixes
       - scale-services:
@@ -367,14 +367,14 @@ workflows:
           requires: [migration - load sirius preqa]
           tf_workspace: preqa
           runner_command: migration-validation
-      - run_task:
-          name: migration - post migration sirius side fixes preqa
-          requires: [migration - validation preqa]
-          tf_workspace: preqa
-          runner_command: post-casrec-migration-script-update-report-status
+#      - run_task:
+#          name: migration - post migration sirius side fixes preqa
+#          requires: [migration - validation preqa]
+#          tf_workspace: preqa
+#          runner_command: post-casrec-migration-script-update-report-status
       - run_task:
           name: migration - post migration fixes preqa
-          requires: [migration - post migration sirius side fixes preqa]
+          requires: [migration - validation preqa]
           tf_workspace: preqa
           runner_command: migration-post-migration-fixes
       - scale-services:
@@ -471,14 +471,14 @@ workflows:
           requires: [migration - load sirius qa]
           tf_workspace: qa
           runner_command: migration-validation
-      - run_task:
-          name: migration - post migration sirius side fixes qa
-          requires: [migration - validation qa]
-          tf_workspace: qa
-          runner_command: post-casrec-migration-script-update-report-status
+#      - run_task:
+#          name: migration - post migration sirius side fixes qa
+#          requires: [migration - validation qa]
+#          tf_workspace: qa
+#          runner_command: post-casrec-migration-script-update-report-status
       - run_task:
           name: migration - post migration fixes qa
-          requires: [migration - post migration sirius side fixes qa]
+          requires: [migration - validation qa]
           tf_workspace: qa
           runner_command: migration-post-migration-fixes
       - scale-services:
@@ -604,24 +604,24 @@ workflows:
           name: get latest tag production
           requires: [persist parameters production]
           image_tag: production
-      - run_task:
-          name: migration - response api tests production
-          requires: [get latest tag production]
-          tf_workspace: production
-          runner_command: migration-response-api-tests
+#      - run_task:
+#          name: migration - response api tests production
+#          requires: [get latest tag production]
+#          tf_workspace: production
+#          runner_command: migration-response-api-tests
       - run_task:
           name: migration - light touch api tests production
-          requires: [migration - response api tests production]
+          requires: [get latest tag production]
           tf_workspace: production
           runner_command: migration-light-touch-api-tests
-      - run_task:
-          name: migration - post migration sirius side fixes production
-          requires: [migration - light touch api tests production]
-          tf_workspace: production
-          runner_command: post-casrec-migration-script-update-report-status
+#      - run_task:
+#          name: migration - post migration sirius side fixes production
+#          requires: [migration - light touch api tests production]
+#          tf_workspace: production
+#          runner_command: post-casrec-migration-script-update-report-status
       - run_task:
           name: migration - post migration fixes production
-          requires: [migration - post migration sirius side fixes production]
+          requires: [migration - light touch api tests production]
           tf_workspace: production
           runner_command: migration-post-migration-fixes
       - run_elasticsearch_reset:
@@ -735,24 +735,24 @@ workflows:
           name: get latest tag rehearsal
           requires: [persist parameters rehearsal]
           image_tag: rehearsal
-      - run_task:
-          name: migration - response api tests rehearsal
-          requires: [get latest tag rehearsal]
-          tf_workspace: rehearsal
-          runner_command: migration-response-api-tests
+#      - run_task:
+#          name: migration - response api tests rehearsal
+#          requires: [get latest tag rehearsal]
+#          tf_workspace: rehearsal
+#          runner_command: migration-response-api-tests
       - run_task:
           name: migration - light touch api tests rehearsal
-          requires: [migration - response api tests rehearsal]
+          requires: [get latest tag rehearsal]
           tf_workspace: rehearsal
           runner_command: migration-light-touch-api-tests
-      - run_task:
-          name: migration - post migration sirius side fixes rehearsal
-          requires: [migration - light touch api tests rehearsal]
-          tf_workspace: rehearsal
-          runner_command: post-casrec-migration-script-update-report-status
+#      - run_task:
+#          name: migration - post migration sirius side fixes rehearsal
+#          requires: [migration - light touch api tests rehearsal]
+#          tf_workspace: rehearsal
+#          runner_command: post-casrec-migration-script-update-report-status
       - run_task:
           name: migration - post migration fixes rehearsal
-          requires: [migration - post migration sirius side fixes rehearsal]
+          requires: [migration - light touch api tests rehearsal]
           tf_workspace: rehearsal
           runner_command: migration-post-migration-fixes
       - run_elasticsearch_reset:
@@ -875,22 +875,22 @@ workflows:
           tf_workspace: preproduction
           runner_command: migration-validation
           filters: {branches:{only:[main]}}
-      - run_task:
-          name: migration - response api tests preproduction
-          requires: [migration - validation preproduction]
-          notify_validation_fails: true
-          tf_workspace: preproduction
-          runner_command: migration-response-api-tests
-          filters: {branches:{only:[main]}}
-      - run_task:
-          name: migration - post migration sirius side fixes preproduction
-          requires: [migration - response api tests preproduction]
-          tf_workspace: preproduction
-          runner_command: post-casrec-migration-script-update-report-status
-          filters: {branches:{only:[main]}}
+#      - run_task:
+#          name: migration - response api tests preproduction
+#          requires: [migration - validation preproduction]
+#          notify_validation_fails: true
+#          tf_workspace: preproduction
+#          runner_command: migration-response-api-tests
+#          filters: {branches:{only:[main]}}
+#      - run_task:
+#          name: migration - post migration sirius side fixes preproduction
+#          requires: [migration - response api tests preproduction]
+#          tf_workspace: preproduction
+#          runner_command: post-casrec-migration-script-update-report-status
+#          filters: {branches:{only:[main]}}
       - run_task:
           name: migration - post migration fixes preproduction
-          requires: [migration - post migration sirius side fixes preproduction]
+          requires: [migration - validation preproduction]
           tf_workspace: preproduction
           runner_command: migration-post-migration-fixes
       - scale-services:
@@ -904,11 +904,11 @@ workflows:
       - tag_image_for_environment:
           name: tag image for qa
           environment_tag: qa
-          requires: [migration - response api tests preproduction]
+          requires: [migration - validation preproduction]
           filters: {branches:{only:[main]}}
       - run_elasticsearch_reset:
           name: full reindex elasticsearch preproduction
-          requires: [migration - response api tests preproduction]
+          requires: [migration - validation preproduction]
           tf_workspace: preproduction
           filters: {branches:{only:[main]}}
       - kick_off_environment:

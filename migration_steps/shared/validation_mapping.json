@@ -1166,7 +1166,7 @@
             "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_finance_remissions exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
                 "pat.\"Remis\" <> '0'",
-                "pat.\"Award Date\"::timestamp >= '2021-04-02'::timestamp"
+                "NULLIF(pat.\"Award Date\", '')::timestamp >= '2021-04-02'::timestamp"
             ]
         },
         "sirius": {
@@ -1199,7 +1199,7 @@
             "exception_table_join": "LEFT JOIN {casrec_schema}.exceptions_finance_exemptions exc_table ON exc_table.caserecnumber = pat.\"Case\"",
             "where_clauses": [
                 "pat.\"Exempt\" <> '0'",
-                "pat.\"Award Date\"::timestamp >= '2021-04-02'::timestamp"
+                "NULLIF(pat.\"Award Date\", '')::timestamp >= '2021-04-02'::timestamp"
             ]
         },
         "sirius": {

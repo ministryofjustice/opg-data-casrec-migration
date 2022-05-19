@@ -363,7 +363,7 @@ UPDATE {count_schema}.counts SET {working_column} =
         CAST(NULLIF(NULLIF(TRIM({casrec_schema}.pat."Award Date"), 'NaT'), '') AS date) AS enddate
         FROM {casrec_schema}.pat
         WHERE pat."Remis" <> '0'
-        AND pat."Award Date"::timestamp >= '2021-04-02'::timestamp
+        AND NULLIF(pat."Award Date", '')::timestamp >= '2021-04-02'::timestamp
     ) t1
 )
 WHERE supervision_table = 'finance_remissions';
@@ -377,7 +377,7 @@ UPDATE {count_schema}.counts SET {working_column} =
         CAST(NULLIF(NULLIF(TRIM({casrec_schema}.pat."Award Date"), 'NaT'), '') AS date) AS enddate
         FROM {casrec_schema}.pat
         WHERE pat."Exempt" <> '0'
-        AND pat."Award Date"::timestamp >= '2021-04-02'::timestamp
+        AND NULLIF(pat."Award Date", '')::timestamp >= '2021-04-02'::timestamp
     ) t1
 )
 WHERE supervision_table = 'finance_exemptions';
