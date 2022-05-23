@@ -73,7 +73,6 @@ FROM (
         ON nd_orgs.join_name = sd.new_deputy_name
 ) t1;
 
--- Works for both migrations phases
 DROP TABLE IF EXISTS {pmf_schema}.deputies;
 SELECT id, deputynumber, clientsource
 INTO {pmf_schema}.deputies
@@ -114,7 +113,8 @@ WITH od_updates AS (
         LEFT JOIN order_deputy od2
             ON od2.order_id = cmc.sirius_id
             AND od2.deputy_id = changed_deputies.new_deputy_id
-        WHERE deputy_mapping.clientsource = '{client_source}'
+        WHERE od.id IS NOT NULL OR od2.id IS NOT NULL
+        AND deputy_mapping.clientsource = '{client_source}'
     ) t1
 )
 SELECT *
