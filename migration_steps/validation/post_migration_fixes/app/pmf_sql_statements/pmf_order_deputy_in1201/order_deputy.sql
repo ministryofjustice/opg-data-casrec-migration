@@ -3,6 +3,16 @@
 -- up for another post-migration script
 CREATE SCHEMA IF NOT EXISTS {pmf_schema};
 
+-- Works for both migrations phases
+DROP TABLE IF EXISTS {pmf_schema}.deputies;
+SELECT id, deputynumber, clientsource
+INTO {pmf_schema}.deputies
+FROM persons
+WHERE type = 'actor_deputy'
+AND (clientsource LIKE 'CASRECMIGRATION%');
+CREATE INDEX idx_pmf1201_deputies_id ON {pmf_schema}.deputies USING btree (id);
+CREATE INDEX idx_pmf1201_deputies_deputynumber ON {pmf_schema}.deputies USING btree (deputynumber);
+
 WITH od_updates AS (
     SELECT DISTINCT
         od.id AS od_id,
@@ -10,12 +20,13 @@ WITH od_updates AS (
         (CASE WHEN TRIM(ds."Corr") = 'Y' THEN True ELSE False END) AS expected_maincorrespondent
     FROM order_deputy od
     INNER JOIN {casrec_mapping}.cases cmc
-    ON od.order_id = cmc.sirius_id
-    INNER JOIN {casrec_mapping}.deputyship cmds
-    ON od.deputy_id = cmds.sirius_id
+        ON od.order_id = cmc.sirius_id
+    INNER JOIN {pmf_schema}.deputies deputy_mapping
+        ON deputy_mapping.deputynumber = CAST(ds."Deputy No" AS INT)
     INNER JOIN {casrec_schema}.deputyship ds
-    ON cmc."Order No" = ds."Order No"
-    AND cmds."Deputy No" = ds."Deputy No"
+        ON cmc."Order No" = ds."Order No"
+        AND cmds."Deputy No" = ds."Deputy No"
+    WHERE deputy_mapping.clientsource = '{client_source}'
 )
 SELECT *
 INTO {pmf_schema}.order_deputy_updates

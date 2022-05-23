@@ -126,20 +126,6 @@ def copy_mapping_tables(casrec_mapping_schema):
         to_table=f"{casrec_mapping_schema}.annual_report_logs",
     )
 
-    # Mapping from Sirius persons ID to casrec Deputy No
-    _copy(
-        create_sql=f"""
-        CREATE TABLE IF NOT EXISTS {casrec_mapping_schema}.deputyship (
-            sirius_id int PRIMARY KEY,
-            "Deputy No" varchar
-        )
-        """,
-        from_sql="""
-            SELECT id AS sirius_id, c_deputy_no AS "Deputy No" FROM integration.persons WHERE c_deputy_no IS NOT NULL
-        """,
-        to_table=f"{casrec_mapping_schema}.deputyship",
-    )
-
 
 def load_functions(casrec_mapping_schema):
     this_dir = os.path.dirname(__file__)
