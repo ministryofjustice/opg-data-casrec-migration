@@ -62,18 +62,25 @@ def set_fee_reduction_finance_person_ids(db_config, cursor):
     log.info("Setting finance_person_id on fee reductions...")
 
     query = f"""
-        WITH fee_reduction_person AS (
-            SELECT fp.id, p.caserecnumber
-            FROM {db_config['target_schema']}.finance_person fp
-            INNER JOIN {db_config['target_schema']}.persons p ON p.id = fp.person_id
-        )
-
-        UPDATE {db_config['target_schema']}.finance_remission_exemption fre
-        SET finance_person_id = frp.id
-        FROM fee_reduction_person frp
-        WHERE fre.c_case = frp.caserecnumber;
+        SELECT COUNT(*) FROM {db_config['target_schema']}.finance_remission_exemption;
     """
     cursor.execute(query)
+    result = cursor.fetchone()
+
+    if result[0] > 0:
+        query = f"""
+            WITH fee_reduction_person AS (
+                SELECT fp.id, p.caserecnumber
+                FROM {db_config['target_schema']}.finance_person fp
+                INNER JOIN {db_config['target_schema']}.persons p ON p.id = fp.person_id
+            )
+
+            UPDATE {db_config['target_schema']}.finance_remission_exemption fre
+            SET finance_person_id = frp.id
+            FROM fee_reduction_person frp
+            WHERE fre.c_case = frp.caserecnumber;
+        """
+        cursor.execute(query)
 
 
 def set_finance_order_finance_person_ids(db_config, cursor):
