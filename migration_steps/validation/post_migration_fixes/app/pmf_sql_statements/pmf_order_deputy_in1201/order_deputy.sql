@@ -18,14 +18,14 @@ WITH od_updates AS (
         od.id AS od_id,
         od.maincorrespondent AS original_maincorrespondent,
         (CASE WHEN TRIM(ds."Corr") = 'Y' THEN True ELSE False END) AS expected_maincorrespondent
-    FROM order_deputy od
+    FROM {casrec_schema}.deputyship ds
     INNER JOIN {casrec_mapping}.cases cmc
         ON od.order_id = cmc.sirius_id
     INNER JOIN {pmf_schema}.deputies deputy_mapping
         ON deputy_mapping.deputynumber = CAST(ds."Deputy No" AS INT)
-    INNER JOIN {casrec_schema}.deputyship ds
-        ON cmc."Order No" = ds."Order No"
-        AND cmds."Deputy No" = ds."Deputy No"
+    LEFT JOIN order_deputy od
+        ON od.order_id = cmc.sirius_id
+        AND od.deputy_id = deputy_mapping.id
     WHERE deputy_mapping.clientsource = '{client_source}'
 )
 SELECT *
