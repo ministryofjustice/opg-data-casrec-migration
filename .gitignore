@@ -9,7 +9,6 @@ __pycache__/
 .terraform
 .notes
 .vs
-**terraform/.terraform.lock.hcl
 
 # Virtual Environments
 .venv
