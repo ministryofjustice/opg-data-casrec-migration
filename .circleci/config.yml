@@ -1671,6 +1671,7 @@ jobs:
       - run:
           name: Full local migration run through
           command: ./migrate.sh
+          no_output_timeout: 30m
       - run:
           name: Push images
           command: docker-compose -f docker-compose.ci.yml push
