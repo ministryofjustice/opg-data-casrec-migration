@@ -107,6 +107,7 @@ docker-compose ${COMPOSE_ARGS} run --rm initialise initialise_environments/initi
 echo "=== Step 1 - Load casrec schema ==="
 if [ "${REBUILD_CASREC_CSV_SCHEMA}" == "y" ]
 then
+  docker container prune -f
   docker rm casrec_load_1 &>/dev/null || echo "casrec_load_1 does not exist. This is OK"
   docker rm casrec_load_2 &>/dev/null || echo "casrec_load_2 does not exist. This is OK"
   docker rm casrec_load_3 &>/dev/null || echo "casrec_load_3 does not exist. This is OK"
