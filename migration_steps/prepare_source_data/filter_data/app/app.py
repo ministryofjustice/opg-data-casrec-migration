@@ -61,6 +61,21 @@ def corref_with_filter_conditions(correfs):
     conn_source.commit()
 
 
+def filter_by_away_date():
+    log.info(f"Inserting cases that have a put away date of more than 7 years ago")
+    sql = f"""
+        INSERT INTO {config.schemas["pre_transform"]}.cases_to_filter_out (caserecnumber, notes)
+        SELECT "Case", 'put_away_date'
+        FROM {config.schemas["pre_transform"]}.pat p
+        WHERE NULLIF("Away Date", '')::timestamp < (now() - interval '7 years')::timestamp
+    """
+    conn_source = psycopg2.connect(config.get_db_connection_string("migration"))
+    cursor_source = conn_source.cursor()
+    cursor_source.execute(sql)
+    conn_source.commit()
+    cursor_source.close()
+
+
 @click.command()
 @click.option("-v", "--verbose", count=True)
 @click.option("--correfs", default="")
@@ -121,11 +136,14 @@ def main(verbose, correfs, clear):
         )
         if len(filtered_conditional_correfs) > 0:
             corref_with_filter_conditions(filtered_conditional_correfs)
+
     else:
         log.info("No Corref filtering requested")
 
     cursor_source.close()
     conn_source.commit()
+
+    filter_by_away_date()
 
     if pilot_cases or filtered_correfs:
         log.info(f"Deleting data associated with cases in cases_to_filter_out table")

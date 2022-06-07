@@ -5,12 +5,12 @@
 
 -- Filters Crec
 DELETE FROM {casrec_schema}.crec WHERE "Case" IN (
-    SELECT caserecnumber FROM {casrec_schema}.cases_to_filter_out
+    SELECT DISTINCT caserecnumber FROM {casrec_schema}.cases_to_filter_out
 );
 
 -- Filters deputyships
 DELETE FROM {casrec_schema}.deputyship WHERE "Case" IN (
-    SELECT caserecnumber FROM {casrec_schema}.cases_to_filter_out
+    SELECT DISTINCT caserecnumber FROM {casrec_schema}.cases_to_filter_out
 );
 
 -- Filters:
@@ -39,26 +39,26 @@ DELETE FROM {casrec_schema}.deputy_remarks WHERE NOT EXISTS (
 -- "cases",
 -- "supervision_level_log"
 DELETE FROM {casrec_schema}.order WHERE "Case" IN (
-    SELECT caserecnumber FROM {casrec_schema}.cases_to_filter_out
+    SELECT DISTINCT caserecnumber FROM {casrec_schema}.cases_to_filter_out
 );
 
 -- Filters:
 -- "supervision_notes"
 -- "warnings" (P1 client remarks)
 DELETE FROM {casrec_schema}.remarks WHERE "Case" IN (
-    SELECT caserecnumber FROM {casrec_schema}.cases_to_filter_out
+    SELECT DISTINCT caserecnumber FROM {casrec_schema}.cases_to_filter_out
 );
 
 -- Filters visits
 DELETE FROM {casrec_schema}.repvis WHERE "Case" IN (
-    SELECT caserecnumber FROM {casrec_schema}.cases_to_filter_out
+    SELECT DISTINCT caserecnumber FROM {casrec_schema}.cases_to_filter_out
 );
 
 -- Filters:
 -- "annual_report_logs"
 -- "annual_report_lodging_details"
 DELETE FROM {casrec_schema}.account WHERE "Case" IN (
-    SELECT caserecnumber FROM {casrec_schema}.cases_to_filter_out
+    SELECT DISTINCT caserecnumber FROM {casrec_schema}.cases_to_filter_out
 );
 
 -- Filters:
@@ -66,12 +66,12 @@ DELETE FROM {casrec_schema}.account WHERE "Case" IN (
 -- "finance_ledger"
 -- "finance_ledger_allocation"
 DELETE FROM {casrec_schema}.feeexport WHERE "Case" IN (
-    SELECT caserecnumber FROM {casrec_schema}.cases_to_filter_out
+    SELECT DISTINCT caserecnumber FROM {casrec_schema}.cases_to_filter_out
 );
 
 -- Filters tasks
 DELETE FROM {casrec_schema}.sup_activity WHERE "Case" IN (
-    SELECT caserecnumber FROM {casrec_schema}.cases_to_filter_out
+    SELECT DISTINCT caserecnumber FROM {casrec_schema}.cases_to_filter_out
 );
 
 -- Filters:
@@ -87,10 +87,10 @@ DELETE FROM {casrec_schema}.sup_activity WHERE "Case" IN (
 -- "finance_remissions",
 -- "finance_exemptions",
 DELETE FROM {casrec_schema}.pat WHERE "Case" IN (
-    SELECT caserecnumber FROM {casrec_schema}.cases_to_filter_out
+    SELECT DISTINCT caserecnumber FROM {casrec_schema}.cases_to_filter_out
 );
 
 -- Filters casrec_letters (only used for validation purposes)
 DELETE FROM {casrec_schema}.casrec_letters WHERE "caseno" IN (
-    SELECT caserecnumber FROM {casrec_schema}.cases_to_filter_out
+    SELECT DISTINCT caserecnumber FROM {casrec_schema}.cases_to_filter_out
 );
