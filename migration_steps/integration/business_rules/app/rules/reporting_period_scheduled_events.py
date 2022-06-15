@@ -7,7 +7,9 @@ log = logging.getLogger("root")
 
 
 def update_report_log_scheduled_events_foreign_keys(db_config):
-    log.info("Updating foreign keys in JSON col scheduled_events.event for annual report log events")
+    log.info(
+        "Updating foreign keys in JSON col scheduled_events.event for annual report log events"
+    )
 
     query = f"""
         WITH report_logs AS (
@@ -24,7 +26,7 @@ def update_report_log_scheduled_events_foreign_keys(db_config):
             '{{payload}}',
             (event->'payload')::jsonb
                 || CONCAT(
-                    '{{"clientId":', client_id, ', "reportingPeriodId":', report_log_id, '}}'
+                    '{{"clientId":', report_logs.client_id, ', "reportingPeriodId":', report_log_id, '}}'
                 )::jsonb
         )
         FROM report_logs
