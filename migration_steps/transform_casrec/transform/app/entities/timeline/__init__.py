@@ -24,11 +24,20 @@ def runner(target_db, db_config):
 
     log.info(log_title(message=entity_name))
 
-    log.debug("insert_timeline_events")
+    log.debug("insert_timeline_events_migration")
     insert_timeline_events(
         mapping_file="timeline_event",
         target_db=target_db,
         db_config=db_config,
+        event_sub_type="migration",
+    )
+
+    log.debug("insert_timeline_events_archive")
+    insert_timeline_events(
+        mapping_file="timeline_event",
+        target_db=target_db,
+        db_config=db_config,
+        event_sub_type="archive",
     )
 
     log.debug("insert_person_timeline")

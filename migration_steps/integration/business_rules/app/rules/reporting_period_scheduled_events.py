@@ -7,7 +7,9 @@ log = logging.getLogger("root")
 
 
 def update_report_log_scheduled_events_foreign_keys(db_config):
-    log.info("Updating foreign keys in JSON col scheduled_events.event for annual report log events")
+    log.info(
+        "Updating foreign keys in JSON col scheduled_events.event for annual report log events"
+    )
 
     query = f"""
         WITH report_logs AS (
@@ -15,10 +17,10 @@ def update_report_log_scheduled_events_foreign_keys(db_config):
                     transformation_schema_id AS old_report_log_id,
                     client_id,
                     transformation_schema_client_id AS old_client_id
-                FROM {db_config['target_schema']}.annual_report_logs
+                FROM integration.annual_report_logs
             )
 
-        UPDATE {db_config['target_schema']}.scheduled_events
+        UPDATE integration.scheduled_events
         SET event = jsonb_set(
             event::jsonb,
             '{{payload}}',

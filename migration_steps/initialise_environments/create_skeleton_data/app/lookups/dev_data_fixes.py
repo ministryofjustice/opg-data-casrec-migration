@@ -159,3 +159,20 @@ def amend_blank_correfs(db_engine):
                 "error": format_error_message(e=e),
             },
         )
+
+
+def amend_blank_away_dates(db_engine):
+    sql = f"""
+           UPDATE {config.schemas["pre_transform"]}.pat
+           SET "Away Date" = '2021-01-01 00:00:00';
+       """
+
+    try:
+        db_engine.execute(sql)
+    except Exception as e:
+        log.error(
+            f"Unable to amend away date",
+            extra={
+                "error": format_error_message(e=e),
+            },
+        )
