@@ -17,16 +17,16 @@ def update_report_log_scheduled_events_foreign_keys(db_config):
                     transformation_schema_id AS old_report_log_id,
                     client_id,
                     transformation_schema_client_id AS old_client_id
-                FROM integration.annual_report_logs
+                FROM {db_config['target_schema']}.annual_report_logs
             )
 
-        UPDATE integration.scheduled_events
+        UPDATE {db_config['target_schema']}.scheduled_events
         SET event = jsonb_set(
             event::jsonb,
             '{{payload}}',
             (event->'payload')::jsonb
                 || CONCAT(
-                    '{{"clientId":', client_id, ', "reportingPeriodId":', report_log_id, '}}'
+                    '{{"clientId":', report_logs.client_id, ', "reportingPeriodId":', report_log_id, '}}'
                 )::jsonb
         )
         FROM report_logs

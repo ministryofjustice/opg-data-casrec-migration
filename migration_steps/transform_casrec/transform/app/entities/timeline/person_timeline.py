@@ -33,7 +33,7 @@ def insert_person_timeline(db_config, target_db, mapping_file):
         SELECT te.id AS timelineevent_id, te.c_case AS timelineevent_case
         FROM {db_config["target_schema"]}.timeline_event te
         WHERE (te.event->'payload'->>'isPersonEvent')::bool IS true AND
-        (te.event->'payload'->>'subject') = 'Migration Notice'
+        (te.event->'payload'->>'subject') in ('Migration Notice', 'Put Away Notice')
     """
 
     timeline_event_df = pd.read_sql_query(
