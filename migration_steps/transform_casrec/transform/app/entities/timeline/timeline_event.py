@@ -15,7 +15,9 @@ log = logging.getLogger("root")
 
 
 def _generate_timeline_event_data(
-    row: pd.Series, current_datetime: datetime = datetime.now()
+    row: pd.Series,
+    current_datetime: datetime = datetime.now(),
+    event_sub_type="migration",
 ) -> str:
     """
     Generate the JSON blob required for timeline_event.event column.
@@ -53,8 +55,21 @@ def _generate_timeline_event_data(
         case = ""
 
     # current datetime in format 2021-11-23T00:00:00+00:00
-    event_date = current_datetime.strftime("%Y-%m-%dT00:00:00+00:00")
-
+    if event_sub_type == "archive":
+        event_date = datetime.strptime(
+            row["c_away_date"], "%Y-%m-%d %H:%M:%S"
+        ).strftime("%Y-%m-%dT00:00:00+00:00")
+        subject = "Put Away Notice"
+        notes = """
+            <p>This case has a put away date and is archived</p>
+        """
+    else:
+        event_date = current_datetime.strftime("%Y-%m-%dT00:00:00+00:00")
+        subject = "Migration Notice"
+        notes = """
+            <p>This case was migrated from casrec, all case notes before this date
+            (migrated remarks) are in the case notes tab only</p>
+        """
     # name in format "Mr Pete Crawwfford" from Title, Forename, Surname
     name_parts = [row["c_title"], row["c_forename_first"], row["c_surname_caps"]]
     name = " ".join(name_parts).strip()
@@ -71,9 +86,8 @@ def _generate_timeline_event_data(
                 "courtReference": f"{case}",
                 "type": "Case note",
                 "eventDate": f"{event_date}",
-                "subject": "Migration Notice",
-                "notes": "<p>This case was migrated from casrec, all case notes before this date "
-                + "(migrated remarks) are in the case notes tab only</p>",
+                "subject": f"{subject}",
+                "notes": f"{notes}",
                 "personType": "Client",
                 "personId": "",
                 "personUid": "",
@@ -84,7 +98,7 @@ def _generate_timeline_event_data(
     )
 
 
-def insert_timeline_events(db_config, target_db, mapping_file):
+def insert_timeline_events(db_config, target_db, mapping_file, event_sub_type):
     chunk_size = db_config["chunk_size"]
     offset = -chunk_size
     chunk_no = 0
@@ -125,7 +139,10 @@ def insert_timeline_events(db_config, target_db, mapping_file):
 
             # Make the JSON in event column
             timeline_events_df["event"] = timeline_events_df.apply(
-                _generate_timeline_event_data, axis=1
+                lambda row: _generate_timeline_event_data(
+                    row=row, event_sub_type=event_sub_type
+                ),
+                axis=1,
             )
 
             if len(timeline_events_df) > 0:

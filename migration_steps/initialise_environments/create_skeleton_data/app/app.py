@@ -10,7 +10,11 @@ sys.path.insert(0, str(current_path) + "/../../../shared")
 
 from lookups.check_lookups_in_mapping import check_lookups
 from lookups.sync_lookups_in_staging import sync_lookups
-from lookups.dev_data_fixes import amend_dev_data, amend_blank_correfs
+from lookups.dev_data_fixes import (
+    amend_dev_data,
+    amend_blank_correfs,
+    amend_blank_away_dates,
+)
 
 from skeleton_data import insert_skeleton_data
 import time
@@ -61,6 +65,8 @@ def main():
 
     amend_dev_data(db_engine=sirius_db_engine)
     amend_blank_correfs(db_engine=casrec_db_engine)
+    if config.migration_phase["migration_identifier"] == "CASRECMIGRATION_P3":
+        amend_blank_away_dates(db_engine=casrec_db_engine)
     check_lookups(db_config=db_config)
     sync_lookups(db_engine=casrec_db_engine, db_config=db_config)
 
