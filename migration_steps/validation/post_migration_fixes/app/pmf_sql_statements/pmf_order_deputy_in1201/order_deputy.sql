@@ -36,6 +36,15 @@ CREATE TABLE IF NOT EXISTS {pmf_schema}.new_deputies (
 \copy {pmf_schema}.new_deputies FROM 'IN1201_new_deputies.csv' CSV HEADER;
 -- file source: s3://async-upload.casrecdmpq.eu-west-1.sirius.opg.justice.gov.uk/post-migration-files/new_deputies.csv
 
+DROP TABLE IF EXISTS {pmf_schema}.deputies;
+SELECT id, deputynumber, clientsource
+INTO {pmf_schema}.deputies
+FROM persons
+WHERE type = 'actor_deputy'
+AND (clientsource LIKE 'CASRECMIGRATION%' OR clientsource IS NULL);
+CREATE INDEX idx_pmf1201_deputies_id ON {pmf_schema}.deputies USING btree (id);
+CREATE INDEX idx_pmf1201_deputies_deputynumber ON {pmf_schema}.deputies USING btree (deputynumber);
+
 -- make a mapping table from the two imported documents
 DROP TABLE IF EXISTS {pmf_schema}.changed_deputies;
 SELECT DISTINCT caserecnumber, deputy_number, COALESCE(non_org_deputy_id, org_deputy_id) AS new_deputy_id
@@ -73,20 +82,12 @@ FROM (
         ON nd_orgs.join_name = sd.new_deputy_name
 ) t1;
 
-DROP TABLE IF EXISTS {pmf_schema}.deputies;
-SELECT id, deputynumber, clientsource
-INTO {pmf_schema}.deputies
-FROM persons
-WHERE type = 'actor_deputy'
-AND (clientsource LIKE 'CASRECMIGRATION%' OR clientsource IS NULL);
-CREATE INDEX idx_pmf1201_deputies_id ON {pmf_schema}.deputies USING btree (id);
-CREATE INDEX idx_pmf1201_deputies_deputynumber ON {pmf_schema}.deputies USING btree (deputynumber);
-
 -- END OF HELPER TABLES
 
 WITH od_updates AS (
     SELECT DISTINCT
         order_deputy_id,
+        '{client_source}' AS clientsource,
         maincorrespondent,
         expected_maincorrespondent
     FROM (
@@ -121,6 +122,11 @@ SELECT *
 INTO {pmf_schema}.order_deputy_updates
 FROM od_updates;
 
+-- Delete rows that don't change (simpler to do this than add even more complexity to above query)
+DELETE FROM {pmf_schema}.order_deputy_updates
+WHERE maincorrespondent IS NOT NULL
+  AND maincorrespondent = expected_maincorrespondent;
+
 --@audit_tag
 SELECT od.*
 INTO {pmf_schema}.order_deputy_audit
@@ -132,10 +138,10 @@ ON od.id = u.order_deputy_id;
 UPDATE order_deputy od
 SET maincorrespondent = u.expected_maincorrespondent
 FROM {pmf_schema}.order_deputy_updates u
-WHERE u.od_id = od.id;
+WHERE u.order_deputy_id = od.id;
 
 --@validate_tag
-SELECT od_id AS id, expected_maincorrespondent AS maincorrespondent
+SELECT order_deputy_id AS id, expected_maincorrespondent AS maincorrespondent
 FROM {pmf_schema}.order_deputy_updates
 EXCEPT
 SELECT id, maincorrespondent
