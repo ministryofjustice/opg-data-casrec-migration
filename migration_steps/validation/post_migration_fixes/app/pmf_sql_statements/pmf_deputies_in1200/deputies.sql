@@ -18,7 +18,7 @@ WITH order_deputy_updates AS (
     ON od.order_id = c.id
     INNER JOIN persons p
     ON od.deputy_id = p.id
-    WHERE p.clientsource = '{client_source}'
+    WHERE p.clientsource LIKE ('CASRECMIGRATION%')
     AND c.orderstatus = 'CLOSED'
     AND (
         od.statusoncase IS NULL
