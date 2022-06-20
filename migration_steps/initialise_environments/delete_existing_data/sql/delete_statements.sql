@@ -1,3 +1,5 @@
+SET random_page_cost = 0.01;
+
 UPDATE cases SET correspondent_id = NULL
 WHERE id in (
     SELECT id FROM {deletions_schema}.client_cases

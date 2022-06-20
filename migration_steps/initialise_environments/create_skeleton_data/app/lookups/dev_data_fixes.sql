@@ -14,4 +14,5 @@ INSERT INTO public.assignees (id,parent_id,"name","type",email,surname,roles,sus
 ((SELECT max(id) + 4 from assignees),NULL,'Health and Welfare Team','assignee_user',NULL,NULL,NULL,false,NULL,NULL,NULL,NULL,NULL,false),
 ((SELECT max(id) + 5 from assignees),NULL,'Lay Team 1','assignee_user',NULL,NULL,NULL,false,NULL,NULL,NULL,NULL,NULL,false),
 ((SELECT max(id) + 6 from assignees),NULL,'Professional Team 1','assignee_user',NULL,NULL,NULL,false,NULL,NULL,NULL,NULL,NULL,false),
+(8730,NULL,'Supervision Closed Cases','assignee_user',NULL,NULL,NULL,false,NULL,NULL,NULL,NULL,NULL,false),
 ((SELECT max(id) + 7 from assignees),NULL,'Deputyship Investigations','assignee_user',NULL,NULL,NULL,false,NULL,NULL,NULL,NULL,NULL,false)

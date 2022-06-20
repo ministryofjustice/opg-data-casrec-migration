@@ -258,13 +258,13 @@ workflows:
           cluster: "casrecdmpp"
       - run_elasticsearch_reset:
           name: full reindex elasticsearch preprod
-          requires: [migration - response api tests preproduction]
+          requires: [scale up poller service for migration preproduction]
           tf_workspace: preproduction
       - tag_image_for_environment:
           name: tag image for qa
           environment_tag: qa
           previous_tag: main
-          requires: [migration - response api tests preproduction]
+          requires: [full reindex elasticsearch preprod]
       - approve:
           name: approve qa kick off
           type: approval
