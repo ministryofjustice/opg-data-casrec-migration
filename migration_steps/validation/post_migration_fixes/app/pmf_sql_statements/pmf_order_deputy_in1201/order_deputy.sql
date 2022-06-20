@@ -84,14 +84,45 @@ FROM (
 
 -- END OF HELPER TABLES
 
+DROP TABLE IF EXISTS pmf_order_deputy_in1201.order_deputy_updates;
+
+-- We'll collect Phase 1 and phase 2 migrated data with two separate queries.
+-- Phase 1 data is straightforward to quantify, but for Phase 2 we must take into account
+-- recent Sirius work on remapping deputies, see ticket https://opgtransform.atlassian.net/browse/SW-5461
+
+-- (Phase 1 data)
 WITH od_updates AS (
     SELECT DISTINCT
+        od.id AS order_deputy_id,
+        deputy_mapping.clientsource,
+        od.maincorrespondent AS maincorrespondent,
+        (CASE WHEN TRIM(ds."Corr") = 'Y' THEN True ELSE False END) AS expected_maincorrespondent
+    FROM casrec_csv.deputyship ds
+    INNER JOIN casrec_mapping.cases cmc
+        ON cmc."Order No" = ds."Order No"
+    INNER JOIN pmf_order_deputy_in1201.deputies deputy_mapping
+        ON deputy_mapping.deputynumber = CAST(ds."Deputy No" AS INT)
+    LEFT JOIN order_deputy od
+        ON od.order_id = cmc.sirius_id
+        AND od.deputy_id = deputy_mapping.id
+    WHERE od.id IS NOT NULL
+    AND deputy_mapping.clientsource = 'CASRECMIGRATION'
+)
+SELECT *
+INTO pmf_order_deputy_in1201.order_deputy_updates_p1
+FROM od_updates;
+
+-- (Phase 2 data)
+INSERT INTO pmf_order_deputy_in1201.order_deputy_updates
+(
+    SELECT DISTINCT
         order_deputy_id,
-        '{client_source}' AS clientsource,
+        t1.clientsource,
         maincorrespondent,
         expected_maincorrespondent
     FROM (
         SELECT DISTINCT
+            deputy_mapping.clientsource,
             ds."Deputy No",
             ds."Order No",
             ds."Case",
@@ -100,12 +131,12 @@ WITH od_updates AS (
             COALESCE(od2.id, od.id) AS order_deputy_id,
             COALESCE(od2.maincorrespondent, od.maincorrespondent) AS maincorrespondent,
             (CASE WHEN TRIM(ds."Corr") = 'Y' THEN True ELSE False END) AS expected_maincorrespondent
-        FROM {casrec_schema}.deputyship ds
-        INNER JOIN {casrec_mapping}.cases cmc
+        FROM casrec_csv_p2.deputyship ds
+        INNER JOIN casrec_mapping_p2.cases cmc
             ON cmc."Order No" = ds."Order No"
-        INNER JOIN {pmf_schema}.deputies deputy_mapping
+        INNER JOIN pmf_order_deputy_in1201.deputies deputy_mapping
             ON deputy_mapping.deputynumber = CAST(ds."Deputy No" AS INT)
-        LEFT JOIN {pmf_schema}.changed_deputies
+        LEFT JOIN pmf_order_deputy_in1201.changed_deputies
             ON changed_deputies.caserecnumber = ds."Case"
             AND changed_deputies.deputy_number = deputy_mapping.deputynumber
         LEFT JOIN order_deputy od
@@ -115,17 +146,14 @@ WITH od_updates AS (
             ON od2.order_id = cmc.sirius_id
             AND od2.deputy_id = changed_deputies.new_deputy_id
         WHERE od.id IS NOT NULL OR od2.id IS NOT NULL
-        AND deputy_mapping.clientsource = '{client_source}'
+        AND deputy_mapping.clientsource = 'CASRECMIGRATION_P2'
     ) t1
-)
-SELECT *
-INTO {pmf_schema}.order_deputy_updates
-FROM od_updates;
+);
 
 -- Delete rows that don't change (simpler to do this than add even more complexity to above query)
 DELETE FROM {pmf_schema}.order_deputy_updates
 WHERE maincorrespondent IS NOT NULL
-  AND maincorrespondent = expected_maincorrespondent;
+AND maincorrespondent = expected_maincorrespondent;
 
 --@audit_tag
 SELECT od.*
