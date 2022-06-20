@@ -33,7 +33,7 @@ class BaseConfig:
             "countverification_schema": "countverification",
             "casrec_schema": "casrec_csv",
             "transform_mappings": "transform_mappings",
-            "pmf_ignore_list": [],
+            "pmf_ignore_list": ["in1201P2"],
         },
         "p2": {
             "suffix": "_p2",
@@ -43,7 +43,7 @@ class BaseConfig:
             "countverification_schema": "countverification_p2",
             "casrec_schema": "casrec_csv_p2",
             "transform_mappings": "transform_mappings_p2",
-            "pmf_ignore_list": [],
+            "pmf_ignore_list": ["in1201"],
         },
         "p3": {
             "suffix": "_p3",
@@ -53,7 +53,14 @@ class BaseConfig:
             "countverification_schema": "countverification_p3",
             "casrec_schema": "casrec_csv_p3",
             "transform_mappings": "transform_mappings_p3",
-            "pmf_ignore_list": ["in1197", "in1221", "in1243", "in1239", "in1245"],
+            "pmf_ignore_list": [
+                "in1197",
+                "in1221",
+                "in1243",
+                "in1239",
+                "in1245",
+                "in1201P2",
+            ],
         },
     }
 
