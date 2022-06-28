@@ -137,6 +137,14 @@ def insert_timeline_events(db_config, target_db, mapping_file, event_sub_type):
                 "c_forename", "c_forename_first", timeline_events_df
             )
 
+            if event_sub_type == "archive":
+                timeline_events_df["timestamp"] = timeline_events_df.apply(
+                    lambda row: datetime.strptime(
+                        row["c_away_date"], "%Y-%m-%d %H:%M:%S"
+                    ).strftime("%Y-%m-%dT00:00:00+00:00"),
+                    axis=1,
+                )
+
             # Make the JSON in event column
             timeline_events_df["event"] = timeline_events_df.apply(
                 lambda row: _generate_timeline_event_data(
