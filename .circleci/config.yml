@@ -1543,6 +1543,13 @@ jobs:
       - run:
           name: Reset Elasticsearch
           command: ecs-runner -task reset-elasticsearch7 -timeout 18000
+      - run:
+          name: Reset Elasticsearch
+          command: ecs-runner -task reindex-elasticsearch -timeout 18000
+          background: true
+      - run:
+          name: Wait to show start of reindex output before continuing
+          command: sleep 120
       - notififications/notify_env_vars
       - notififications/notify_if_fail
 

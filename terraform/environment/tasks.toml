@@ -447,7 +447,7 @@
         },
         "TaskDefinition": "arn:aws:ecs:eu-west-1:${account}:task-definition/reindex-elasticsearch-by-date-${cluster}"
       },
-      "elasticsearch-reindex": {
+      "reindex-elasticsearch": {
         "Cluster": "${cluster}",
         "LaunchType": "FARGATE",
         "NetworkConfiguration": {
@@ -461,7 +461,7 @@
             ]
           }
         },
-        "TaskDefinition": "arn:aws:ecs:eu-west-1:${account}:task-definition/elasticsearch-reindex-${cluster}"
+        "TaskDefinition": "arn:aws:ecs:eu-west-1:${account}:task-definition/reindex-elasticsearch-${cluster}"
       },
       "post-casrec-migration-script-update-report-status": {
         "Cluster": "${cluster}",
