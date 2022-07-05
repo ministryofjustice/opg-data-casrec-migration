@@ -303,14 +303,14 @@ WHERE supervision_table = 'feepayer_id';
 -- timeline_event
 UPDATE {count_schema}.counts SET {working_column} =
 (
-    SELECT COUNT(*) FROM {casrec_schema}.pat
+    SELECT COUNT(*) * 2 FROM {casrec_schema}.pat
 )
 WHERE supervision_table = 'timeline_event';
 
 -- person_timeline
 UPDATE {count_schema}.counts SET {working_column} =
 (
-    SELECT COUNT(*) FROM {casrec_schema}.pat
+    SELECT COUNT(*) * 2 FROM {casrec_schema}.pat
 )
 WHERE supervision_table = 'person_timeline';
 
