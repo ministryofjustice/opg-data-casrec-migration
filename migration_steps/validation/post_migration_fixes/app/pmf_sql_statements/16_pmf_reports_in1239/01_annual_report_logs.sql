@@ -14,7 +14,7 @@ WITH relevant_orders AS (
     LEFT JOIN cases c
     ON c.client_id = p.id
     WHERE p.type = 'actor_client'
-    AND p.clientsource LIKE 'CASRECMIGRATION%'
+    AND p.clientsource = '{client_source}'
     AND c.orderstatus = 'ACTIVE'
     AND c.casesubtype = 'pfa'
     AND LOWER(c.type) = 'order'
@@ -76,7 +76,7 @@ FROM (
     LEFT JOIN cases c
         ON c.client_id = p.id
     WHERE p.type = 'actor_client'
-    AND p.clientsource LIKE 'CASRECMIGRATION%'
+    AND p.clientsource = '{client_source}'
     AND c.orderstatus = 'ACTIVE'
     AND arl.id IS NULL
     AND c.type = 'order'

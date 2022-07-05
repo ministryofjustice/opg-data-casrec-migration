@@ -21,7 +21,7 @@ FROM
     INNER JOIN cases c on c.client_id = p.id
     INNER JOIN annual_report_logs arl ON p.id = arl.client_id
     INNER JOIN annual_report_lodging_details arld ON arld.annual_report_log_id = arl.id
-    WHERE p.clientsource like 'CASRECMIGRATION%'
+    WHERE p.clientsource = '{client_source}'
     AND c.orderstatus = 'ACTIVE'
 ) as a
 WHERE bankstatements = 0
