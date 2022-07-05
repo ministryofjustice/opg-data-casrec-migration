@@ -8,7 +8,7 @@ SELECT id, deputynumber, clientsource
 INTO {pmf_schema}.deputies
 FROM persons
 WHERE type = 'actor_deputy'
-AND (clientsource LIKE 'CASRECMIGRATION%' OR clientsource IS NULL);
+AND (clientsource = '{client_source}' OR clientsource IS NULL);
 CREATE INDEX idx_pmf1201_deputies_id ON {pmf_schema}.deputies USING btree (id);
 CREATE INDEX idx_pmf1201_deputies_deputynumber ON {pmf_schema}.deputies USING btree (deputynumber);
 -- END OF HELPER TABLES

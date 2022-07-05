@@ -599,38 +599,19 @@ workflows:
       - persist_parameters:
           name: persist parameters production
           param_workspace: production
-          environment_title: Rehearsal-Manual
+          environment_title: Production-Manual
       - get_latest_image:
           name: get latest tag production
           requires: [persist parameters production]
           image_tag: production
-#      - run_task:
-#          name: migration - response api tests production
-#          requires: [get latest tag production]
-#          tf_workspace: production
-#          runner_command: migration-response-api-tests
-      - run_task:
-          name: migration - light touch api tests production
-          requires: [get latest tag production]
-          tf_workspace: production
-          runner_command: migration-light-touch-api-tests
-#      - run_task:
-#          name: migration - post migration sirius side fixes production
-#          requires: [migration - light touch api tests production]
-#          tf_workspace: production
-#          runner_command: post-casrec-migration-script-update-report-status
       - run_task:
           name: migration - post migration fixes production
-          requires: [migration - light touch api tests production]
+          requires: [get latest tag production]
           tf_workspace: production
           runner_command: migration-post-migration-fixes
-      - run_elasticsearch_reset:
-          name: full reindex elasticsearch production
-          requires: [migration - post migration fixes production]
-          tf_workspace: production
       - job_complete:
           name: job complete notification
-          requires: [full reindex elasticsearch production]
+          requires: [migration - post migration fixes production]
           workspace: production
 
   rehearsal_1:
@@ -735,33 +716,14 @@ workflows:
           name: get latest tag rehearsal
           requires: [persist parameters rehearsal]
           image_tag: rehearsal
-#      - run_task:
-#          name: migration - response api tests rehearsal
-#          requires: [get latest tag rehearsal]
-#          tf_workspace: rehearsal
-#          runner_command: migration-response-api-tests
-      - run_task:
-          name: migration - light touch api tests rehearsal
-          requires: [get latest tag rehearsal]
-          tf_workspace: rehearsal
-          runner_command: migration-light-touch-api-tests
-#      - run_task:
-#          name: migration - post migration sirius side fixes rehearsal
-#          requires: [migration - light touch api tests rehearsal]
-#          tf_workspace: rehearsal
-#          runner_command: post-casrec-migration-script-update-report-status
       - run_task:
           name: migration - post migration fixes rehearsal
-          requires: [migration - light touch api tests rehearsal]
+          requires: [get latest tag rehearsal]
           tf_workspace: rehearsal
           runner_command: migration-post-migration-fixes
-      - run_elasticsearch_reset:
-          name: full reindex elasticsearch rehearsal
-          requires: [migration - post migration fixes rehearsal]
-          tf_workspace: rehearsal
       - job_complete:
           name: job complete notification
-          requires: [full reindex elasticsearch rehearsal]
+          requires: [migration - post migration fixes rehearsal]
           workspace: rehearsal
 
   nightly_development_restore:
