@@ -111,6 +111,31 @@ def pre_deletion_flag_alignment_check():
         return True
 
 
+def add_migration_caserefs_to_sirius():
+    sql = f"""
+         SELECT TRIM("Case") as caserecnumber
+         FROM {db_config["source_schema"]}.pat;
+    """
+    source_response = source_db_engine.execute(sql)
+    casrec_cases = [r._mapping["caserecnumber"] for r in source_response]
+    sql = "DROP SCHEMA IF EXISTS migration_p3_setup CASCADE"
+    target_db_engine.execute(sql)
+    sql = "CREATE SCHEMA IF NOT EXISTS migration_p3_setup;"
+    target_db_engine.execute(sql)
+    sql = "CREATE TABLE migration_p3_setup.clients (caserecnumber varchar(20));"
+    target_db_engine.execute(sql)
+    sql = f"""
+        INSERT INTO migration_p3_setup.clients (caserecnumber)
+        VALUES ('{"'), ('".join(casrec_cases)}')
+    """
+    response = target_db_engine.execute(sql)
+    log.info(
+        f"Case list used in deletions script created with {response.rowcount} rows"
+    )
+    sql = "CREATE UNIQUE INDEX migration_setup_caserecnumbers_idx ON migration_p3_setup.clients (caserecnumber);"
+    target_db_engine.execute(sql)
+
+
 def main():
     log.info(helpers.log_title(message="Delete data adjoining sirius data"))
     log.info(
@@ -120,10 +145,12 @@ def main():
     )
     log.info(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
 
-    if not pre_deletion_flag_alignment_check():
-        log.error(
-            "There are cases marked with Sirius flag that are not CLIENT-PILOT-ONE"
-        )
+    # if not pre_deletion_flag_alignment_check():
+    #     log.error(
+    #         "There are cases marked with Sirius flag that are not CLIENT-PILOT-ONE"
+    #     )
+
+    add_migration_caserefs_to_sirius()
 
     if os.environ.get("ENVIRONMENT") in ["preqa", "qa"]:
         # Currently, it takes too long to run event deletions and no amount of indexing or using different joins helps.

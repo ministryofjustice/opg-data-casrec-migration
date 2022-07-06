@@ -8,7 +8,11 @@ CREATE TABLE IF NOT EXISTS {deletions_schema}.base_clients_persons (id int, case
 INSERT INTO {deletions_schema}.base_clients_persons (id, caserecnumber)
 SELECT distinct p.id, p.caserecnumber
 FROM persons p
-WHERE p.type = 'actor_client' AND COALESCE(caseactorgroup, '') <> 'CLIENT-PILOT-ONE';
+WHERE p.type = 'actor_client' AND COALESCE(caseactorgroup, '') <> 'CLIENT-PILOT-ONE'
+AND p.caserecnumber in (
+    SELECT caserecnumber
+    FROM migration_p3_setup.clients
+);
 
 CREATE UNIQUE INDEX stub_person_id_idx ON {deletions_schema}.base_clients_persons (id);
 
@@ -19,7 +23,9 @@ CREATE TABLE IF NOT EXISTS {deletions_schema}.pilot_one_clients (id int);
 INSERT INTO {deletions_schema}.pilot_one_clients (id)
 SELECT distinct p.id
 FROM persons p
-WHERE p.type = 'actor_client' and p.caseactorgroup = 'CLIENT-PILOT-ONE';
+LEFT JOIN migration_p3_setup.clients cli ON p.caserecnumber = cli.caserecnumber
+WHERE p.type = 'actor_client' AND
+(p.caseactorgroup = 'CLIENT-PILOT-ONE' OR cli.caserecnumber IS NULL);
 
 -- Create table for list of deputies to keep
 CREATE TABLE IF NOT EXISTS {deletions_schema}.pilot_one_deputies (id int);
@@ -31,7 +37,9 @@ FROM persons dep
 INNER JOIN order_deputy od ON dep.id = od.deputy_id
 INNER JOIN cases c  ON c.id = od.order_id
 INNER JOIN persons p ON p.id = c.client_id
-WHERE p.type = 'actor_client' and p.caseactorgroup = 'CLIENT-PILOT-ONE'
+LEFT JOIN migration_p3_setup.clients cli ON p.caserecnumber = cli.caserecnumber
+WHERE p.type = 'actor_client' AND
+(p.caseactorgroup = 'CLIENT-PILOT-ONE' OR cli.caserecnumber IS NULL)
 UNION
 SELECT distinct p.feepayer_id
 FROM persons p

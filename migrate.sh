@@ -127,10 +127,10 @@ then
   cat docker_load.log
   rm docker_load.log
 fi
-echo "=== Step 2 - Deletions and post deletion initialise ==="
-docker-compose ${COMPOSE_ARGS} run --rm initialise initialise_environments/initialise_post_delete.sh -i "${PRESERVE_SCHEMAS}"
 echo "=== Step 3 - Filter data ==="
 docker-compose ${COMPOSE_ARGS} run --rm initialise prepare_source_data/prepare_source_data.sh --correfs="${CORREFS}"
+echo "=== Step 2 - Deletions and post deletion initialise ==="
+docker-compose ${COMPOSE_ARGS} run --rm initialise initialise_environments/initialise_post_delete.sh -i "${PRESERVE_SCHEMAS}"
 echo "=== Step 4 - Transform ==="
 docker-compose ${COMPOSE_ARGS} run --rm transform_casrec transform_casrec/transform.sh --correfs="${CORREFS}"
 echo "=== Step 5 - Integrate with Sirius ==="
