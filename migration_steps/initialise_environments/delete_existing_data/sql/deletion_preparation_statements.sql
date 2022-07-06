@@ -43,8 +43,9 @@ WHERE p.type = 'actor_client' AND
 UNION
 SELECT distinct p.feepayer_id
 FROM persons p
+LEFT JOIN migration_p3_setup.clients cli ON p.caserecnumber = cli.caserecnumber
 WHERE p.type = 'actor_client'
-AND p.caseactorgroup = 'CLIENT-PILOT-ONE'
+AND (p.caseactorgroup = 'CLIENT-PILOT-ONE' OR cli.caserecnumber IS NULL)
 AND p.feepayer_id IS NOT NULL;
 
 CREATE UNIQUE INDEX stub_pilot_one_deputies_idx ON {deletions_schema}.pilot_one_deputies (id);

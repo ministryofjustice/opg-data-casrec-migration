@@ -1,9 +1,19 @@
 DROP TABLE IF EXISTS {count_schema}.cp1_clients;
 CREATE TABLE IF NOT EXISTS {count_schema}.cp1_clients (id int, caserecnumber varchar);
 INSERT INTO {count_schema}.cp1_clients (id, caserecnumber)
-SELECT id, caserecnumber FROM persons p
+SELECT p.id, p.caserecnumber
+FROM persons p
+LEFT JOIN migration_p3_setup.clients cli ON cli.caserecnumber = p.caserecnumber
 WHERE p.type = 'actor_client'
-  AND p.caseactorgroup = 'CLIENT-PILOT-ONE';
+AND
+(
+    cli.caserecnumber IS NULL
+    OR
+    p.clientsource = 'CASRECMIGRATION_P3'
+);
+
+--  AND p.caseactorgroup = 'CLIENT-PILOT-ONE'
+
 CREATE UNIQUE INDEX cp1_clients_idx ON {count_schema}.cp1_clients (id);
 
 DROP TABLE IF EXISTS {count_schema}.cp1_cases;
@@ -103,8 +113,14 @@ SET {working_column} =
             INNER JOIN order_deputy od ON od.order_id = c.id
             INNER JOIN persons dep ON dep.id = od.deputy_id
             INNER join addresses a ON dep.id = a.person_id
+            LEFT JOIN migration_p3_setup.clients cli ON cli.caserecnumber = p.caserecnumber
             WHERE p.type = 'actor_client'
-            AND p.caseactorgroup = 'CLIENT-PILOT-ONE'
+            AND
+            (
+                cli.caserecnumber IS NULL
+                OR
+                p.clientsource = 'CASRECMIGRATION_P3'
+            )
             AND COALESCE(p.clientsource, '') = '{client_source}'
             INTERSECT
             select DISTINCT LOWER(TRIM(COALESCE(dep.email, ''))),
@@ -115,8 +131,14 @@ SET {working_column} =
             INNER JOIN order_deputy od ON od.order_id = c.id
             INNER JOIN persons dep ON dep.id = od.deputy_id
             INNER join addresses a ON dep.id = a.person_id
+            LEFT JOIN migration_p3_setup.clients cli ON cli.caserecnumber = p.caserecnumber
             WHERE p.type = 'actor_client'
-            AND p.caseactorgroup = 'CLIENT-PILOT-ONE'
+            AND
+            (
+                cli.caserecnumber IS NULL
+                OR
+                p.clientsource = 'CASRECMIGRATION_P3'
+            )
             AND COALESCE(p.clientsource, '') != '{client_source}'
         ) AS inter
     )

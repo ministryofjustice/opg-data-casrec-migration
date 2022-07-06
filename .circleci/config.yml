@@ -58,15 +58,12 @@ workflows:
         - << pipeline.parameters.run_main >>
     jobs:
       - persist_parameters:
-          name: persist parameters casrecdmpq
-          param_workspace: casrecdmpq
-          environment_title: Casrecdmpq-Branch
-      - manage_workflow:
-          requires: [persist parameters development]
-          name: manage workflow
+          name: persist parameters preqa
+          param_workspace: preqa
+          environment_title: PreQA-Manual
       - build:
           name: build and unit tests
-          requires: [manage workflow, persist parameters casrecdmpq]
+          requires: [persist parameters preqa]
       - reset_sirius_full_restore:
           name: run and monitor jenkins restore job preqa
           requires: [persist parameters preqa]
