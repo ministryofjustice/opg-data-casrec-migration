@@ -58,9 +58,9 @@ workflows:
         - << pipeline.parameters.run_main >>
     jobs:
       - persist_parameters:
-          name: persist parameters development
-          param_workspace: development
-          environment_title: Development-Branch
+            name: persist parameters development
+            param_workspace: development
+            environment_title: Development-Branch
       - manage_workflow:
           requires: [persist parameters development]
           name: manage workflow
@@ -136,7 +136,7 @@ workflows:
           name: build and unit tests main
           requires: [persist parameters main]
       - approve:
-          name: approve preproduction kick off
+          name: approve development kick off
           type: approval
           requires: [build and unit tests main]
       - kick_off_environment:
@@ -200,18 +200,18 @@ workflows:
           tf_workspace: preproduction
           runner_command: migration-load-casrec
       - run_task:
-          name: migration - initialise environments 2 preproduction
-          requires: [migration - load casrec preproduction]
-          runner_command: migration-initialise-post-delete
-          tf_workspace: preproduction
-      - run_task:
           name: migration - filter data preproduction
-          requires: [migration - initialise environments 2 preproduction]
+          requires: [migration - load casrec preproduction]
           tf_workspace: preproduction
           runner_command: migration-filter-data
       - run_task:
-          name: migration - transform preproduction
+          name: migration - initialise environments 2 preproduction
           requires: [migration - filter data preproduction]
+          runner_command: migration-initialise-post-delete
+          tf_workspace: preproduction
+      - run_task:
+          name: migration - transform preproduction
+          requires: [migration - initialise environments 2 preproduction]
           tf_workspace: preproduction
           runner_command: migration-transform
       - run_task:
@@ -338,18 +338,18 @@ workflows:
           tf_workspace: preqa
           runner_command: migration-load-casrec
       - run_task:
-          name: migration - initialise environments 2 preqa
-          requires: [migration - load casrec preqa]
-          runner_command: migration-initialise-post-delete
-          tf_workspace: preqa
-      - run_task:
           name: migration - filter data preqa
-          requires: [migration - initialise environments 2 preqa]
+          requires: [migration - load casrec preqa]
           tf_workspace: preqa
           runner_command: migration-filter-data
       - run_task:
-          name: migration - transform preqa
+          name: migration - initialise environments 2 preqa
           requires: [migration - filter data preqa]
+          runner_command: migration-initialise-post-delete
+          tf_workspace: preqa
+      - run_task:
+          name: migration - transform preqa
+          requires: [migration - initialise environments 2 preqa]
           tf_workspace: preqa
           runner_command: migration-transform
       - run_task:
@@ -442,18 +442,18 @@ workflows:
           tf_workspace: qa
           runner_command: migration-load-casrec
       - run_task:
-          name: migration - initialise environments 2 qa
-          requires: [migration - load casrec qa]
-          runner_command: migration-initialise-post-delete
-          tf_workspace: qa
-      - run_task:
           name: migration - filter data qa
-          requires: [migration - initialise environments 2 qa]
+          requires: [migration - load casrec qa]
           tf_workspace: qa
           runner_command: migration-filter-data
       - run_task:
-          name: migration - transform qa
+          name: migration - initialise environments 2 qa
           requires: [migration - filter data qa]
+          runner_command: migration-initialise-post-delete
+          tf_workspace: qa
+      - run_task:
+          name: migration - transform qa
+          requires: [migration - initialise environments 2 qa]
           tf_workspace: qa
           runner_command: migration-transform
       - run_task:
@@ -537,18 +537,18 @@ workflows:
           tf_workspace: production
           runner_command: migration-load-casrec
       - run_task:
-          name: migration - initialise environments 2 production
-          requires: [migration - load casrec production]
-          runner_command: migration-initialise-post-delete
-          tf_workspace: production
-      - run_task:
           name: migration - filter data production
-          requires: [migration - initialise environments 2 production]
+          requires: [migration - load casrec production]
           tf_workspace: production
           runner_command: migration-filter-data
       - run_task:
-          name: migration - transform production
+          name: migration - initialise environments 2 production
           requires: [migration - filter data production]
+          runner_command: migration-initialise-post-delete
+          tf_workspace: production
+      - run_task:
+          name: migration - transform production
+          requires: [migration - initialise environments 2 production]
           tf_workspace: production
           runner_command: migration-transform
       - run_task:
@@ -649,18 +649,18 @@ workflows:
           tf_workspace: rehearsal
           runner_command: migration-load-casrec
       - run_task:
-          name: migration - initialise environments 2 rehearsal
-          requires: [migration - load casrec rehearsal]
-          runner_command: migration-initialise-post-delete
-          tf_workspace: rehearsal
-      - run_task:
           name: migration - filter data rehearsal
-          requires: [migration - initialise environments 2 rehearsal]
+          requires: [migration - load casrec rehearsal]
           tf_workspace: rehearsal
           runner_command: migration-filter-data
       - run_task:
-          name: migration - transform rehearsal
+          name: migration - initialise environments 2 rehearsal
           requires: [migration - filter data rehearsal]
+          runner_command: migration-initialise-post-delete
+          tf_workspace: rehearsal
+      - run_task:
+          name: migration - transform rehearsal
+          requires: [migration - initialise environments 2 rehearsal]
           tf_workspace: rehearsal
           runner_command: migration-transform
       - run_task:
@@ -1450,11 +1450,11 @@ jobs:
           name: Run load casrec task
           command: ecs-runner -task migration-load-casrec -timeout << parameters.timeout >>
       - run:
-          name: Run initialise environments part 2 task
-          command: ecs-runner -task migration-initialise-post-delete -timeout << parameters.timeout >>
-      - run:
           name: Run filter data task
           command: ecs-runner -task migration-filter-data -timeout << parameters.timeout >>
+      - run:
+          name: Run initialise environments part 2 task
+          command: ecs-runner -task migration-initialise-post-delete -timeout << parameters.timeout >>
       - run:
           name: Run transform task
           command: ecs-runner -task migration-transform -timeout << parameters.timeout >>

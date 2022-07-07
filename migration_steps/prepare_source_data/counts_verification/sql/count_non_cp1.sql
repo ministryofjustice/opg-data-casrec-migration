@@ -4,9 +4,18 @@ ALTER TABLE {count_schema}.counts ADD COLUMN {working_column} int;
 DROP TABLE IF EXISTS {count_schema}.non_cp1_clients;
 CREATE TABLE IF NOT EXISTS {count_schema}.non_cp1_clients (id int, caserecnumber varchar);
 INSERT INTO {count_schema}.non_cp1_clients (id, caserecnumber) (
-    SELECT p.id, p.caserecnumber FROM persons p
+    SELECT p.id, p.caserecnumber
+    FROM persons p
     WHERE p.type = 'actor_client'
-      AND (COALESCE(caseactorgroup, '') != 'CLIENT-PILOT-ONE')
+    AND
+    (
+        p.caserecnumber in (
+            SELECT caserecnumber
+            FROM migration_p3_setup.clients
+        )
+        AND p.clientsource != 'CASRECMIGRATION_P3'
+    )
+--    (COALESCE(caseactorgroup, '') != 'CLIENT-PILOT-ONE' OR cli.caserecnumber IS NULL)
 );
 CREATE UNIQUE INDEX non_cp1_clients_idx ON {count_schema}.non_cp1_clients (id);
 

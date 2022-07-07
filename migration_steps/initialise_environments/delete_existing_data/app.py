@@ -1,5 +1,6 @@
 import os
 import sys
+import click
 from pathlib import Path
 
 current_path = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -111,62 +112,93 @@ def pre_deletion_flag_alignment_check():
         return True
 
 
-def main():
-    log.info(helpers.log_title(message="Delete data adjoining sirius data"))
+def add_migration_caserefs_to_sirius():
+    sql = f"""
+         SELECT TRIM("Case") as caserecnumber
+         FROM {db_config["source_schema"]}.pat;
+    """
+    source_response = source_db_engine.execute(sql)
+    casrec_cases = [r._mapping["caserecnumber"] for r in source_response]
+    sql = "DROP SCHEMA IF EXISTS migration_p3_setup CASCADE"
+    target_db_engine.execute(sql)
+    sql = "CREATE SCHEMA IF NOT EXISTS migration_p3_setup;"
+    target_db_engine.execute(sql)
+    sql = "CREATE TABLE migration_p3_setup.clients (caserecnumber varchar(20));"
+    target_db_engine.execute(sql)
+    sql = f"""
+        INSERT INTO migration_p3_setup.clients (caserecnumber)
+        VALUES ('{"'), ('".join(casrec_cases)}')
+    """
+    response = target_db_engine.execute(sql)
     log.info(
-        helpers.log_title(
-            message=f"Source: {db_config['source_schema']}, Target: {db_config['target_schema']}, Chunk Size: {db_config['chunk_size']}"
-        )
+        f"Case list used in deletions script created with {response.rowcount} rows"
     )
-    log.info(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
+    sql = "CREATE UNIQUE INDEX migration_setup_caserecnumbers_idx ON migration_p3_setup.clients (caserecnumber);"
+    target_db_engine.execute(sql)
 
-    if not pre_deletion_flag_alignment_check():
-        log.error(
-            "There are cases marked with Sirius flag that are not CLIENT-PILOT-ONE"
-        )
 
-    if os.environ.get("ENVIRONMENT") in ["preqa", "qa"]:
-        # Currently, it takes too long to run event deletions and no amount of indexing or using different joins helps.
-        # It's just a huge amount of data in the events table, so we will take the practical approach
-        # of just truncating it for our most frequent deploys
-        log.info(f"Truncating the events table for speed")
-        target_db_engine.execute("TRUNCATE TABLE events;")
-
-    elif os.environ.get("ENVIRONMENT") in ["local", "development"]:
-        # Delete finance data linked to clients without a CLIENT-PILOT-ONE flag.
-        # This only runs on local and dev environments.
-        # Finance data does not get deleted automatically by the deletion script and will fail the build.
-        log.info(f"Deleting non-CP1 finance data")
-        target_db_engine.execute(
-            "DELETE FROM finance_order WHERE id IN (1,2,3,4,5,6,7);"
-        )
-
-    run_statements_from_file("deletion_preparation_statements")
-
-    log.info("Checking deletion table counts")
-    stop_migration = False
-    for table in sirius_deletion_check_tables:
-        statement = f"""SELECT id FROM {config.schemas["deletions"]}.{table};"""
-        response = target_db_engine.execute(statement)
-        row_count = response.rowcount
+@click.command()
+@click.option("--pre_delete_setup", default="false")
+def main(pre_delete_setup):
+    if pre_delete_setup == "true":
+        log.info(helpers.log_title(message="Pre Delete Case Setup"))
+        add_migration_caserefs_to_sirius()
+    else:
+        log.info(helpers.log_title(message="Delete data adjoining sirius data"))
         log.info(
-            f"""Found {row_count} records in {config.schemas["deletions"]}.{table}. Expected 0."""
+            helpers.log_title(
+                message=f"Source: {db_config['source_schema']}, Target: {db_config['target_schema']}, Chunk Size: {db_config['chunk_size']}"
+            )
         )
-        if row_count > 0:
-            stop_migration = True
-            ids = [r._mapping["id"] for r in response]
-            log.info("To delete these records manually, run:")
-            log.info(
-                f"DELETE FROM {table} WHERE id IN ({','.join([str(i) for i in ids])});"
+        log.info(f"Working in environment: {os.environ.get('ENVIRONMENT')}")
+
+        # if not pre_deletion_flag_alignment_check():
+        #     log.error(
+        #         "There are cases marked with Sirius flag that are not CLIENT-PILOT-ONE"
+        #     )
+
+        if os.environ.get("ENVIRONMENT") in ["preqa", "qa"]:
+            # Currently, it takes too long to run event deletions and no amount of indexing or using different joins helps.
+            # It's just a huge amount of data in the events table, so we will take the practical approach
+            # of just truncating it for our most frequent deploys
+            log.info(f"Truncating the events table for speed")
+            target_db_engine.execute("TRUNCATE TABLE events;")
+
+        elif os.environ.get("ENVIRONMENT") in ["local", "development"]:
+            # Delete finance data linked to clients without a CLIENT-PILOT-ONE flag.
+            # This only runs on local and dev environments.
+            # Finance data does not get deleted automatically by the deletion script and will fail the build.
+            log.info(f"Deleting non-CP1 finance data")
+            target_db_engine.execute(
+                "DELETE FROM finance_order WHERE id IN (1,2,3,4,5,6,7);"
             )
 
-    if stop_migration:
-        log.error(
-            "Stopping migration due to unexpected deletion counts. Check log output above."
-        )
-        os._exit(1)
+        run_statements_from_file("deletion_preparation_statements")
 
-    run_statements_from_file("delete_statements")
+        log.info("Checking deletion table counts")
+        stop_migration = False
+        for table in sirius_deletion_check_tables:
+            statement = f"""SELECT id FROM {config.schemas["deletions"]}.{table};"""
+            response = target_db_engine.execute(statement)
+            row_count = response.rowcount
+            log.info(
+                f"""Found {row_count} records in {config.schemas["deletions"]}.{table}. Expected 0."""
+            )
+            if row_count > 0:
+                stop_migration = True
+                ids = [r._mapping["id"] for r in response]
+                log.info("To delete these records manually, run:")
+                log.info(
+                    f"DELETE FROM {table} WHERE id IN ({','.join([str(i) for i in ids])});"
+                )
+
+        if stop_migration:
+            log.error(
+                "Stopping migration due to unexpected deletion counts. Check log output above."
+            )
+            os._exit(1)
+
+        run_statements_from_file("delete_statements")
 
 
 if __name__ == "__main__":
