@@ -58,86 +58,86 @@ workflows:
         - << pipeline.parameters.run_main >>
     jobs:
       - persist_parameters:
-          name: persist parameters preproduction
-          param_workspace: preproduction
-          environment_title: Preproduction-Manual
+          name: persist parameters rehearsal
+          param_workspace: rehearsal
+          environment_title: Rehearsal-Manual
       - build:
           name: build and unit tests
-          requires: [persist parameters preproduction]
+          requires: [persist parameters rehearsal]
 #      - reset_sirius_full_restore:
-#          name: run and monitor jenkins restore job preproduction
-#          requires: [persist parameters preproduction]
+#          name: run and monitor jenkins restore job rehearsal
+#          requires: [persist parameters rehearsal]
 #          sirius_environment: casrecdmpq
       - infrastructure:
-          name: plan infra preproduction
+          name: plan infra rehearsal
           requires: [build and unit tests]
-          tf_workspace: preproduction
+          tf_workspace: rehearsal
           tf_command: plan
       - infrastructure:
-          name: build infra preproduction
-          requires: [plan infra preproduction]
-          tf_workspace: preproduction
+          name: build infra rehearsal
+          requires: [plan infra rehearsal]
+          tf_workspace: rehearsal
           tf_command: apply
       - run_task:
-          name: migration - initialise environments 1 preproduction
+          name: migration - initialise environments 1 rehearsal
           requires: [
-            build infra preproduction
+            build infra rehearsal
          ]
           runner_command: migration-initialise-pre-delete
-          tf_workspace: preproduction
+          tf_workspace: rehearsal
       - run_task:
-          name: migration - load casrec preproduction
-          requires: [migration - initialise environments 1 preproduction]
-          tf_workspace: preproduction
+          name: migration - load casrec rehearsal
+          requires: [migration - initialise environments 1 rehearsal]
+          tf_workspace: rehearsal
           runner_command: migration-load-casrec
       - run_task:
-          name: migration - filter data preproduction
-          requires: [migration - load casrec preproduction]
-          tf_workspace: preproduction
+          name: migration - filter data rehearsal
+          requires: [migration - load casrec rehearsal]
+          tf_workspace: rehearsal
           runner_command: migration-filter-data
       - run_task:
-          name: migration - initialise environments 2 preproduction
-          requires: [migration - filter data preproduction]
+          name: migration - initialise environments 2 rehearsal
+          requires: [migration - filter data rehearsal]
           runner_command: migration-initialise-post-delete
-          tf_workspace: preproduction
+          tf_workspace: rehearsal
       - run_task:
-          name: migration - transform preproduction
-          requires: [migration - initialise environments 2 preproduction]
-          tf_workspace: preproduction
+          name: migration - transform rehearsal
+          requires: [migration - initialise environments 2 rehearsal]
+          tf_workspace: rehearsal
           runner_command: migration-transform
       - run_task:
-          name: migration - integration preproduction
-          requires: [migration - transform preproduction]
-          tf_workspace: preproduction
+          name: migration - integration rehearsal
+          requires: [migration - transform rehearsal]
+          tf_workspace: rehearsal
           runner_command: migration-integration
       - run_task:
-          name: migration - load sirius preproduction
-          requires: [migration - integration preproduction]
-          tf_workspace: preproduction
+          name: migration - load sirius rehearsal
+          requires: [migration - integration rehearsal]
+          tf_workspace: rehearsal
           runner_command: migration-load-sirius
       - run_task:
-          name: migration - validation preproduction
-          requires: [migration - load sirius preproduction]
-          tf_workspace: preproduction
+          name: migration - validation rehearsal
+          requires: [migration - load sirius rehearsal]
+          tf_workspace: rehearsal
           runner_command: migration-validation
 #      - run_task:
-#          name: migration - post migration sirius side fixes preproduction
-#          requires: [migration - validation preproduction]
-#          tf_workspace: preproduction
+#          name: migration - post migration sirius side fixes rehearsal
+#          requires: [migration - validation rehearsal]
+#          tf_workspace: rehearsal
 #          runner_command: post-casrec-migration-script-update-report-status
       - run_task:
-          name: migration - post migration fixes preproduction
-          requires: [migration - validation preproduction]
-          tf_workspace: preproduction
+          name: migration - post migration fixes rehearsal
+          requires: [migration - validation rehearsal]
+          tf_workspace: rehearsal
           runner_command: migration-post-migration-fixes
       - run_elasticsearch_reset:
-          name: full reindex elasticsearch preproduction
-          requires: [migration - post migration fixes preproduction]
-          tf_workspace: preproduction
+          name: full reindex elasticsearch rehearsal
+          requires: [migration - post migration fixes rehearsal]
+          tf_workspace: rehearsal
       - job_complete:
           name: job complete notification
-          requires: [full reindex elasticsearch preproduction]
-          workspace: preproduction
+          requires: [full reindex elasticsearch rehearsal]
+          workspace: rehearsal
 #      - reset_sirius:
 #          name: reset the sirius fixtures development
 #          requires: [manage workflow]
@@ -210,7 +210,7 @@ workflows:
           name: build and unit tests main
           requires: [persist parameters main]
       - approve:
-          name: approve preproduction kick off
+          name: approve development kick off
           type: approval
           requires: [build and unit tests main]
       - kick_off_environment:
