@@ -58,102 +58,86 @@ workflows:
         - << pipeline.parameters.run_main >>
     jobs:
       - persist_parameters:
-          name: persist parameters preqa
-          param_workspace: preqa
-          environment_title: PreQA-Manual
+          name: persist parameters preproduction
+          param_workspace: preproduction
+          environment_title: Preproduction-Manual
       - build:
           name: build and unit tests
-          requires: [persist parameters preqa]
-      - reset_sirius_full_restore:
-          name: run and monitor jenkins restore job preqa
-          requires: [persist parameters preqa]
-          sirius_environment: casrecdmpq
+          requires: [persist parameters preproduction]
+#      - reset_sirius_full_restore:
+#          name: run and monitor jenkins restore job preproduction
+#          requires: [persist parameters preproduction]
+#          sirius_environment: casrecdmpq
       - infrastructure:
-          name: plan infra preqa
+          name: plan infra preproduction
           requires: [build and unit tests]
-          tf_workspace: preqa
+          tf_workspace: preproduction
           tf_command: plan
       - infrastructure:
-          name: build infra preqa
-          requires: [plan infra preqa]
-          tf_workspace: preqa
+          name: build infra preproduction
+          requires: [plan infra preproduction]
+          tf_workspace: preproduction
           tf_command: apply
-      - scale-services:
-          name: scale down poller service for migration preqa
-          requires: [run and monitor jenkins restore job preqa]
-          replicas: "0"
-          profile: "migrations-ci-sirius-pre"
-          service: "notify-poller"
-          cluster: "casrecdmpq"
       - run_task:
-          name: migration - initialise environments 1 preqa
+          name: migration - initialise environments 1 preproduction
           requires: [
-            build infra preqa,
-            run and monitor jenkins restore job preqa,
-            scale down poller service for migration preqa
+            build infra preproduction
          ]
           runner_command: migration-initialise-pre-delete
-          tf_workspace: preqa
+          tf_workspace: preproduction
       - run_task:
-          name: migration - load casrec preqa
-          requires: [migration - initialise environments 1 preqa]
-          tf_workspace: preqa
+          name: migration - load casrec preproduction
+          requires: [migration - initialise environments 1 preproduction]
+          tf_workspace: preproduction
           runner_command: migration-load-casrec
       - run_task:
-          name: migration - filter data preqa
-          requires: [migration - load casrec preqa]
-          tf_workspace: preqa
+          name: migration - filter data preproduction
+          requires: [migration - load casrec preproduction]
+          tf_workspace: preproduction
           runner_command: migration-filter-data
       - run_task:
-          name: migration - initialise environments 2 preqa
-          requires: [migration - filter data preqa]
+          name: migration - initialise environments 2 preproduction
+          requires: [migration - filter data preproduction]
           runner_command: migration-initialise-post-delete
-          tf_workspace: preqa
+          tf_workspace: preproduction
       - run_task:
-          name: migration - transform preqa
-          requires: [migration - initialise environments 2 preqa]
-          tf_workspace: preqa
+          name: migration - transform preproduction
+          requires: [migration - initialise environments 2 preproduction]
+          tf_workspace: preproduction
           runner_command: migration-transform
       - run_task:
-          name: migration - integration preqa
-          requires: [migration - transform preqa]
-          tf_workspace: preqa
+          name: migration - integration preproduction
+          requires: [migration - transform preproduction]
+          tf_workspace: preproduction
           runner_command: migration-integration
       - run_task:
-          name: migration - load sirius preqa
-          requires: [migration - integration preqa]
-          tf_workspace: preqa
+          name: migration - load sirius preproduction
+          requires: [migration - integration preproduction]
+          tf_workspace: preproduction
           runner_command: migration-load-sirius
       - run_task:
-          name: migration - validation preqa
-          requires: [migration - load sirius preqa]
-          tf_workspace: preqa
+          name: migration - validation preproduction
+          requires: [migration - load sirius preproduction]
+          tf_workspace: preproduction
           runner_command: migration-validation
 #      - run_task:
-#          name: migration - post migration sirius side fixes preqa
-#          requires: [migration - validation preqa]
-#          tf_workspace: preqa
+#          name: migration - post migration sirius side fixes preproduction
+#          requires: [migration - validation preproduction]
+#          tf_workspace: preproduction
 #          runner_command: post-casrec-migration-script-update-report-status
       - run_task:
-          name: migration - post migration fixes preqa
-          requires: [migration - validation preqa]
-          tf_workspace: preqa
+          name: migration - post migration fixes preproduction
+          requires: [migration - validation preproduction]
+          tf_workspace: preproduction
           runner_command: migration-post-migration-fixes
-      - scale-services:
-          name: scale up poller service for migration preqa
-          requires: [migration - post migration fixes preqa]
-          replicas: "1"
-          profile: "migrations-ci-sirius-pre"
-          service: "notify-poller"
-          cluster: "casrecdmpq"
       - run_elasticsearch_reset:
-          name: full reindex elasticsearch preqa
-          requires: [migration - validation preqa]
-          tf_workspace: preqa
+          name: full reindex elasticsearch preproduction
+          requires: [migration - post migration fixes preproduction]
+          tf_workspace: preproduction
       - job_complete:
           name: job complete notification
-          requires: [migration - validation preqa]
-          workspace: preqa
+          requires: [full reindex elasticsearch preproduction]
+          workspace: preproduction
 #      - reset_sirius:
 #          name: reset the sirius fixtures development
 #          requires: [manage workflow]
