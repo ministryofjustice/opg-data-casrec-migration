@@ -58,143 +58,69 @@ workflows:
         - << pipeline.parameters.run_main >>
     jobs:
       - persist_parameters:
-          name: persist parameters rehearsal
-          param_workspace: rehearsal
-          environment_title: Rehearsal-Manual
+            name: persist parameters development
+            param_workspace: development
+            environment_title: Development-Branch
+      - manage_workflow:
+          requires: [persist parameters development]
+          name: manage workflow
+      - reset_sirius:
+          name: reset the sirius fixtures development
+          requires: [manage workflow]
+          tf_workspace: development
       - build:
           name: build and unit tests
-          requires: [persist parameters rehearsal]
-#      - reset_sirius_full_restore:
-#          name: run and monitor jenkins restore job rehearsal
-#          requires: [persist parameters rehearsal]
-#          sirius_environment: casrecdmpq
+          requires: [manage workflow, persist parameters development]
       - infrastructure:
-          name: plan infra rehearsal
+          name: build shared infra development
           requires: [build and unit tests]
-          tf_workspace: rehearsal
+          tf_workspace: development
+          tf_command: apply
+          folder: shared
+      - load_casrec_db:
+          name: load casrec db
+          requires: [build shared infra development]
+      - infrastructure:
+          name: plan infra development
+          requires: [build shared infra development]
+          tf_workspace: development
           tf_command: plan
       - infrastructure:
-          name: build infra rehearsal
-          requires: [plan infra rehearsal]
-          tf_workspace: rehearsal
+          name: build infra development
+          requires: [plan infra development]
+          tf_workspace: development
           tf_command: apply
-      - run_task:
-          name: migration - initialise environments 1 rehearsal
+      - scale-services:
+          name: scale down poller service for migration development
+          requires: [reset the sirius fixtures development]
+          replicas: "0"
+          profile: "migrations-ci-sirius-dev"
+          service: "notify-poller"
+          cluster: "casmigrate"
+      - run_tasks:
+          name: migration - run all tasks development
           requires: [
-            build infra rehearsal
-         ]
-          runner_command: migration-initialise-pre-delete
-          tf_workspace: rehearsal
-      - run_task:
-          name: migration - load casrec rehearsal
-          requires: [migration - initialise environments 1 rehearsal]
-          tf_workspace: rehearsal
-          runner_command: migration-load-casrec
-      - run_task:
-          name: migration - filter data rehearsal
-          requires: [migration - load casrec rehearsal]
-          tf_workspace: rehearsal
-          runner_command: migration-filter-data
-      - run_task:
-          name: migration - initialise environments 2 rehearsal
-          requires: [migration - filter data rehearsal]
-          runner_command: migration-initialise-post-delete
-          tf_workspace: rehearsal
-      - run_task:
-          name: migration - transform rehearsal
-          requires: [migration - initialise environments 2 rehearsal]
-          tf_workspace: rehearsal
-          runner_command: migration-transform
-      - run_task:
-          name: migration - integration rehearsal
-          requires: [migration - transform rehearsal]
-          tf_workspace: rehearsal
-          runner_command: migration-integration
-      - run_task:
-          name: migration - load sirius rehearsal
-          requires: [migration - integration rehearsal]
-          tf_workspace: rehearsal
-          runner_command: migration-load-sirius
-      - run_task:
-          name: migration - validation rehearsal
-          requires: [migration - load sirius rehearsal]
-          tf_workspace: rehearsal
-          runner_command: migration-validation
-#      - run_task:
-#          name: migration - post migration sirius side fixes rehearsal
-#          requires: [migration - validation rehearsal]
-#          tf_workspace: rehearsal
-#          runner_command: post-casrec-migration-script-update-report-status
-      - run_task:
-          name: migration - post migration fixes rehearsal
-          requires: [migration - validation rehearsal]
-          tf_workspace: rehearsal
-          runner_command: migration-post-migration-fixes
+            build infra development,
+            load casrec db,
+            reset the sirius fixtures development,
+            scale down poller service for migration development
+          ]
+          tf_workspace: development
+      - scale-services:
+          name: scale up poller service for migration development
+          requires: [migration - run all tasks development]
+          replicas: "1"
+          profile: "migrations-ci-sirius-dev"
+          service: "notify-poller"
+          cluster: "casmigrate"
       - run_elasticsearch_reset:
-          name: full reindex elasticsearch rehearsal
-          requires: [migration - post migration fixes rehearsal]
-          tf_workspace: rehearsal
+          name: full reindex elasticsearch development
+          requires: [migration - run all tasks development]
+          tf_workspace: development
       - job_complete:
           name: job complete notification
-          requires: [full reindex elasticsearch rehearsal]
-          workspace: rehearsal
-#      - reset_sirius:
-#          name: reset the sirius fixtures development
-#          requires: [manage workflow]
-#          tf_workspace: development
-#      - build:
-#          name: build and unit tests
-#          requires: [manage workflow, persist parameters development]
-#      - infrastructure:
-#          name: build shared infra development
-#          requires: [build and unit tests]
-#          tf_workspace: development
-#          tf_command: apply
-#          folder: shared
-#      - load_casrec_db:
-#          name: load casrec db
-#          requires: [build shared infra development]
-#      - infrastructure:
-#          name: plan infra development
-#          requires: [build shared infra development]
-#          tf_workspace: development
-#          tf_command: plan
-#      - infrastructure:
-#          name: build infra development
-#          requires: [plan infra development]
-#          tf_workspace: development
-#          tf_command: apply
-#      - scale-services:
-#          name: scale down poller service for migration development
-#          requires: [reset the sirius fixtures development]
-#          replicas: "0"
-#          profile: "migrations-ci-sirius-dev"
-#          service: "notify-poller"
-#          cluster: "casmigrate"
-#      - run_tasks:
-#          name: migration - run all tasks development
-#          requires: [
-#            build infra development,
-#            load casrec db,
-#            reset the sirius fixtures development,
-#            scale down poller service for migration development
-#          ]
-#          tf_workspace: development
-#      - scale-services:
-#          name: scale up poller service for migration development
-#          requires: [migration - run all tasks development]
-#          replicas: "1"
-#          profile: "migrations-ci-sirius-dev"
-#          service: "notify-poller"
-#          cluster: "casmigrate"
-#      - run_elasticsearch_reset:
-#          name: full reindex elasticsearch development
-#          requires: [migration - run all tasks development]
-#          tf_workspace: development
-#      - job_complete:
-#          name: job complete notification
-#          requires: [migration - run all tasks development]
-#          workspace: development
+          requires: [migration - run all tasks development]
+          workspace: development
 
   main:
     when:
@@ -1524,11 +1450,11 @@ jobs:
           name: Run load casrec task
           command: ecs-runner -task migration-load-casrec -timeout << parameters.timeout >>
       - run:
-          name: Run initialise environments part 2 task
-          command: ecs-runner -task migration-initialise-post-delete -timeout << parameters.timeout >>
-      - run:
           name: Run filter data task
           command: ecs-runner -task migration-filter-data -timeout << parameters.timeout >>
+      - run:
+          name: Run initialise environments part 2 task
+          command: ecs-runner -task migration-initialise-post-delete -timeout << parameters.timeout >>
       - run:
           name: Run transform task
           command: ecs-runner -task migration-transform -timeout << parameters.timeout >>
