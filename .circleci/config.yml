@@ -136,7 +136,7 @@ workflows:
           name: build and unit tests main
           requires: [persist parameters main]
       - approve:
-          name: approve development kick off
+          name: approve preproduction kick off
           type: approval
           requires: [build and unit tests main]
       - kick_off_environment:
